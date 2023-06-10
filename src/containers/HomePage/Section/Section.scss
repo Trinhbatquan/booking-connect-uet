@@ -1,0 +1,175 @@
+.section-container {
+  border-bottom: 3px solid #efeef5;
+  padding: 30px 0;
+  &.department-container {
+    background-color: #fff;
+  }
+  &.faculty-container {
+    background-color: #f6f6f6;
+  }
+  &.teacher-container {
+    background-color: #fff;
+  }
+  &.health-container {
+    background-color: #f6f6f6;
+  }
+  &.notification-container {
+    background-color: #fff;
+  }
+  &.contact-container {
+    background-color: #f6f6f6;
+  }
+  .section-content {
+    max-width: 80%;
+    width: 80%;
+    margin: 0 auto;
+    .section-header {
+      padding-bottom: 30px;
+      &-text {
+        font-weight: bold;
+        color: black;
+        opacity: 0.9;
+        font-size: 24px;
+      }
+      &-button {
+        padding: 8px 14px;
+        border-radius: 5px;
+        font-size: 14px;
+        cursor: pointer;
+      }
+    }
+    .section-body {
+      margin: 0 auto;
+      .healthy-body {
+        gap: 20px;
+      }
+      .section-item {
+        margin: 0 auto;
+        cursor: pointer;
+        width: 300px;
+        height: 220px;
+        min-height: 220px;
+        max-width: 300px;
+        & .section-item-teacher {
+          border: 1px solid #eee;
+          width: 95%;
+          max-width: 95%;
+          height: 220px;
+          max-height: 220px;
+          border-radius: 4px;
+        }
+        &-img {
+          background-image: url("../../../assets/image/banner.jpeg");
+          width: 92%;
+          background-position: center center;
+          background-repeat: no-repeat;
+          background-size: cover;
+          height: 80%;
+          margin: 0 auto;
+        }
+        &-img.section-item-img-teacher {
+          background-image: none;
+          margin-top: 10px;
+          margin-bottom: 5px;
+          width: 120px;
+          height: 120px;
+          border-radius: 50%;
+          & img {
+            width: auto;
+            margin: 0 auto;
+            height: 100%;
+            border-radius: 50%;
+          }
+        }
+        &-text {
+          padding-top: 5px;
+          margin: 0 auto;
+          text-align: center;
+          width: 85%;
+          font-size: 13px;
+          &.section-item-text-teacher {
+            width: 80%;
+            text-align: center;
+          }
+        }
+        &.health-item {
+          cursor: pointer;
+          width: 49%;
+          max-width: 49%;
+          display: flex;
+          align-items: start;
+          justify-content: center;
+          gap: 10px;
+          &:first-child {
+            padding: 0 8px;
+          }
+          & .section-item-img {
+            width: 60%;
+            height: 80%;
+          }
+          & .section-item-text {
+            font-weight: 600;
+            font-size: 15px;
+            width: 40%;
+          }
+        }
+        &.notification-item {
+          cursor: pointer;
+          display: flex;
+          align-items: start;
+          justify-content: center;
+          gap: 10px;
+          width: 410px;
+          height: 270px;
+          min-height: 270px;
+          max-width: 410px;
+        }
+      }
+    }
+  }
+}
+
+//arrow custom
+
+.slick-disabled {
+  display: none !important;
+}
+
+.slick-prev,
+.slick-next {
+  width: 35px !important;
+  height: 30px !important;
+  background-color: rgb(76, 76, 150) !important;
+  color: white !important;
+  transform: translateY(-100%) !important;
+  z-index: 10000 !important;
+  border-radius: 4px !important;
+}
+
+.slick-prev {
+  left: -10px !important;
+}
+
+.slick-next {
+  right: -1px !important;
+}
+
+.slick-prev::before,
+.slick-next::before {
+  font-size: 24px !important;
+  line-height: 1 !important;
+  opacity: 0.45 !important;
+  color: white !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  text-align: center !important;
+  position: absolute !important;
+  left: 5px !important;
+  bottom: 4px !important;
+  font-family: inherit !important
+}
+
+.slick-prev:hover::before,
+.slick-next:hover::before {
+  opacity: 1 !important;
+}

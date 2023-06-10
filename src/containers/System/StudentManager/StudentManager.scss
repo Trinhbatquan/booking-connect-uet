@@ -1,0 +1,19 @@
+table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  td, th {
+    border: 1px solid #8e8787;
+    text-align: left;
+    padding: 8px;
+  }
+  
+  thead tr:nth-child(1) {
+    background-color: blue;
+    color: white;
+    opacity: 0.8;
+  }
+  tbody tr:nth-child(even) {
+    background-color: #dddddd;
+  }

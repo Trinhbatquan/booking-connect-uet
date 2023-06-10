@@ -1,0 +1,46 @@
+.detail-container {
+  max-width: 100%;
+  width: 100%;
+  margin: 0 auto;
+  margin-top: 80px;
+}
+
+.detail-teacher-container {
+  display: flex;
+  flex-direction: column;
+  padding: 5px 0;
+  justify-content: center;
+  align-items: self-start;
+  .detail-teacher {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+    padding: 20px 15%;
+    margin: 5px 0;
+
+    &-avatar {
+      background-repeat: no-repeat;
+      background-size: cover;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+    }
+    &-content {
+      &-name {
+        font-size: 20px;
+        font-weight: bold;
+      }
+    }
+  }
+  .description-teacher {
+    padding: 10px 15%;
+    margin: 5px 0;
+    width: 100%;
+  }
+}
+
+img {
+  object-fit: cover;
+}

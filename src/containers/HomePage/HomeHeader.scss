@@ -1,0 +1,44 @@
+.homepage-header-container {
+  max-height: 80px;
+  height: 80px;
+  background-color: #2f468c;
+  width: 100%;
+  padding: 40px 50px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+
+  .homepage-herder-left {
+    min-width: 65%;
+    width: 65%;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    gap: 15px;
+
+    .logo {
+      background-image: url("https://uet.vnu.edu.vn/wp-content/uploads/2017/02/logo2_new.png");
+      background-repeat: no-repeat;
+      background-size: contain;
+      height: 60px;
+      width: 60px;
+      cursor: pointer;
+    }
+  }
+  .homepage-herder-right {
+    padding: 10px 10px 10px 0;
+    max-width: 35%;
+    width: 35%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 15px;
+    .avatar {
+      &-modal {
+        font-size: 15px;
+      }
+    }
+  }
+}
