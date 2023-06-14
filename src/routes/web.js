@@ -25,6 +25,8 @@ const {
 const {
   createScheduleController,
   getScheduleByIdAndDateController,
+  getScheduleSystemController,
+  deleteScheduleController,
 } = require("../controllers/scheduleController");
 
 const checkExpiredToken = require("../middleware/protectToken");
@@ -52,6 +54,8 @@ const initWebRoutes = (app) => {
   router.get("/api/get-markdown", getMarkDownController);
 
   router.post("/api/create-schedule", createScheduleController);
+  router.get("/api/get-schedule-system", getScheduleSystemController);
+  router.delete("/api/delete-schedule", deleteScheduleController);
 
   router.post("/api/create-teacher_info", createTeacherInfoController);
   router.get("/api/get-teacher_info", getTeacherInfoController);

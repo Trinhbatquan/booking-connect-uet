@@ -18,7 +18,7 @@ const createMarkDownService = async (
         });
         resolve({
           codeNumber: 0,
-          message: "Create a new markdown succeed",
+          message: "create",
         });
       } else {
         await db.MarkDown.update(
@@ -35,7 +35,7 @@ const createMarkDownService = async (
         );
         resolve({
           codeNumber: 0,
-          message: "Update markdown succeed",
+          message: "update",
         });
       }
     } catch (e) {
