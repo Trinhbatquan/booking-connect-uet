@@ -1,8 +1,7 @@
 import "./TeacherManager.scss";
 import React, { Fragment, useEffect, useState, useRef } from "react";
-import {Buffer} from 'buffer'
+import { Buffer } from "buffer";
 import { FiEdit } from "react-icons/fi";
-import { RiDeleteBack2Fill } from "react-icons/ri";
 import { BsEyeSlash } from "react-icons/bs";
 import { IoMdEye } from "react-icons/io";
 import { AiOutlineDelete } from "react-icons/ai";
@@ -10,7 +9,8 @@ import { ToastContainer, toast } from "react-toastify";
 import { BsPersonPlusFill } from "react-icons/bs";
 import { useContext } from "react";
 import { ContextScrollTop } from "../RootSystem";
-import {HiOutlinePencilAlt} from 'react-icons/hi'
+import { HiOutlinePencilAlt } from "react-icons/hi";
+import { useTranslation } from "react-i18next";
 
 import {
   createUserApi,
@@ -25,7 +25,6 @@ import DeleteModal from "./../Modal/DeleteModal";
 import convertFileToBase64 from "../../../utils/convertFileToBase64";
 
 const TeacherManager = () => {
-  console.log("teacher manager")
   // const [isCreateUser, setIsCreateUser] = useState(false);
   const [isDeleteUser, setIsDeleteUser] = useState(false);
   const [dataUserDelete, setDataUserDelete] = useState("");
@@ -51,6 +50,8 @@ const TeacherManager = () => {
 
   //scroll top
   const scroll = useContext(ContextScrollTop);
+  const { t, i18n } = useTranslation();
+
   //ref
   const inputFileRef = useRef();
   useEffect(() => {
@@ -135,7 +136,7 @@ const TeacherManager = () => {
       position,
       gender,
     ];
-    const notification = [
+    const notification_en = [
       "Email",
       "Password",
       "FullName",
@@ -144,9 +145,25 @@ const TeacherManager = () => {
       "Position",
       "Gender",
     ];
+    const notification_vi = [
+      "Trường Email",
+      "Trường mật khẩu",
+      "Trường tên ",
+      "Trường số điện thoại",
+      "Trường địa chỉ",
+      "Trường giới tính",
+    ];
     for (let i = 0; i < stateArr.length; i++) {
       if (!stateArr[i]) {
-        setNotifyCheckState(`${notification[i]} is required`);
+        if (i18n.language === "vi") {
+          setNotifyCheckState(
+            `${notification_vi[i]} ${t("system.notification.required")}`
+          );
+        } else {
+          setNotifyCheckState(
+            `${notification_en[i]} ${t("system.notification.required")}`
+          );
+        }
         result = false;
         break;
       } else {
@@ -166,23 +183,19 @@ const TeacherManager = () => {
       const rejexPhoneNumber = /\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/;
       const regexName = /^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$/;
       if (!regexEmail.test(email)) {
-        setNotifyCheckState("Please enter right form of email");
+        setNotifyCheckState(`${t("system.notification.email")}`);
         return false;
       }
       if (!regexPassword.test(password)) {
-        setNotifyCheckState(
-          `Password must to have minimum eight characters, at least one letter, one number and one special character`
-        );
+        setNotifyCheckState(`${t("system.notification.password")}`);
         return false;
       }
       if (!regexName.test(fullName)) {
-        setNotifyCheckState(
-          "Please enter right form of full name. VD: Bui Van A"
-        );
+        setNotifyCheckState(`${t("system.notification.name")}`);
         return false;
       }
       if (!rejexPhoneNumber.test(phoneNumber)) {
-        setNotifyCheckState("Please enter right form of phone number");
+        setNotifyCheckState(`${t("system.notification.phone")}`);
         return false;
       }
 
@@ -205,8 +218,10 @@ const TeacherManager = () => {
       };
       createUserApi.create({}, body).then(async (data) => {
         if (data?.codeNumber === 1) {
-          toast.error(data?.message, {
+          toast.error(`${t("system.notification.fail")}`, {
             autoClose: 2000,
+            position: "bottom-right",
+            theme: "colored",
           });
         } else {
           await getUserApi.getUserByRole({ role: "R5" }).then((data) => {
@@ -218,8 +233,10 @@ const TeacherManager = () => {
           //     emitter.emit("CLEAR_DATA_MODAL");
           //   }
           // });
-          toast.success("Create a new user succeed", {
+          toast.success(`${t("system.notification.create")}`, {
             autoClose: 2000,
+            position: "bottom-right",
+            theme: "colored",
           });
           setEmail("");
           setPassword("");
@@ -252,7 +269,9 @@ const TeacherManager = () => {
   //   createUserApi.create({}, body).then((data) => {
   //     if (data?.codeNumber === 1) {
   //       toast.error(data?.message, {
-  //         autoClose: 2000,
+  //          autoClose: 2000,
+  // position: "bottom-right",
+  // theme: "colored",
   //       });
   //     } else {
   //       getUserApi.getAllUsers({ id: "All" }).then((data) => {
@@ -260,7 +279,9 @@ const TeacherManager = () => {
   //           setUsers(data?.user);
   //           setIsCreateUser(false);
   //           toast.success("Create a new user succeed", {
-  //             autoClose: 2000,
+  //              autoClose: 2000,
+  // position: "bottom-right",
+  // theme: "colored",
   //           });
 
   //           //clear data modal
@@ -275,7 +296,9 @@ const TeacherManager = () => {
   //   updateUserApi.update({}, body).then((data) => {
   //     if (data?.codeNumber === 1) {
   //       toast.error(data?.message, {
-  //         autoClose: 2000,
+  //          autoClose: 2000,
+  // position: "bottom-right",
+  // theme: "colored",
   //       });
   //     } else {
   //       getUserApi.getAllUsers({ id: "All" }).then((data) => {
@@ -283,7 +306,9 @@ const TeacherManager = () => {
   //           setUsers(data?.user);
   //           setIsUpdateUser(false);
   //           toast.success("Update user succeed", {
-  //             autoClose: 2000,
+  //              autoClose: 2000,
+  // position: "bottom-right",
+  // theme: "colored",
   //           });
   //         }
   //       });
@@ -293,11 +318,12 @@ const TeacherManager = () => {
 
   //update user
   const isOpenUpdateUser = async (user) => {
+    console.log(user);
     setLoading(true);
     setDataUserUpdate(user);
     let base64File = "";
     if (user?.image?.data) {
-       base64File = new Buffer(user.image.data, 'base64').toString('binary');
+      base64File = new Buffer(user.image.data, "base64").toString("binary");
     }
     setTimeout(async () => {
       setEmail(user?.email);
@@ -305,7 +331,7 @@ const TeacherManager = () => {
       setFullName(user?.fullName);
       setPhoneNumber(user?.phoneNumber);
       setAddress(user?.address);
-      setPosition(user?.position);
+      setPosition(user?.positionId);
       setGender(user?.gender);
       setLoading(false);
       setIsUpdateUser(true);
@@ -326,39 +352,43 @@ const TeacherManager = () => {
       gender,
       address,
       position,
-      image: avatar
+      image: avatar,
     };
     setTimeout(() => {
-        updateUserApi.update({}, body).then(async (data) => {
-          if (data?.codeNumber === 1) {
-            toast.error(data?.message, {
-              autoClose: 2000,
-            });
-          } else {
-            await getUserApi.getUserByRole({ role: "R5" }).then((data) => {
-              if (data?.codeNumber === 0) {
-                setUsers(data.user);
-              }
-            });
-            toast.success("Update user succeed", {
-              autoClose: 2000,
-            });
-            setEmail("");
-            setPassword("");
-            setFullName("");
-            setPhoneNumber("");
-            setAddress("");
-            setPosition("");
-            setGender("");
-            setIsUpdateUser(false);
-            setDataUserUpdate("");
-            setPreviewAvatar("");
-            inputFileRef.current.value = "";
-            setAvatar("");
-            setLoading(false)
-          }
-        });
-    }, 2000)
+      updateUserApi.update({}, body).then(async (data) => {
+        if (data?.codeNumber === 1) {
+          toast.error(`${t("system.notification.fail")}`, {
+            autoClose: 2000,
+            position: "bottom-right",
+            theme: "colored",
+          });
+        } else {
+          await getUserApi.getUserByRole({ role: "R5" }).then((data) => {
+            if (data?.codeNumber === 0) {
+              setUsers(data.user);
+            }
+          });
+          toast.success(`${t("system.notification.update")}`, {
+            autoClose: 2000,
+            position: "bottom-right",
+            theme: "colored",
+          });
+          setEmail("");
+          setPassword("");
+          setFullName("");
+          setPhoneNumber("");
+          setAddress("");
+          setPosition("");
+          setGender("");
+          setIsUpdateUser(false);
+          setDataUserUpdate("");
+          setPreviewAvatar("");
+          inputFileRef.current.value = "";
+          setAvatar("");
+          setLoading(false);
+        }
+      });
+    }, 2000);
   };
 
   const handleCloseUpdateUser = () => {
@@ -374,7 +404,7 @@ const TeacherManager = () => {
     setIsUpdateUser(false);
     setDataUserUpdate("");
     inputFileRef.current.value = "";
-  }
+  };
 
   //delete user
   const isCloseDeleteUserModal = () => {
@@ -389,8 +419,10 @@ const TeacherManager = () => {
     setTimeout(() => {
       deleteUserApi.delete({ id }).then((data) => {
         if (data?.codeNumber === 1) {
-          toast.error(data?.message, {
+          toast.error(`${t("system.notification.fail")}`, {
             autoClose: 2000,
+            position: "bottom-right",
+            theme: "colored",
           });
         } else {
           getUserApi.getUserByRole({ role: "R5" }).then((data) => {
@@ -399,8 +431,10 @@ const TeacherManager = () => {
               setLoading(false);
               setIsDeleteUser(false);
               setDataUserDelete("");
-              toast.success("Delete user succeed", {
+              toast.success(`${t("system.notification.delete")}`, {
                 autoClose: 2000,
+                position: "bottom-right",
+                theme: "colored",
               });
             }
           });
@@ -417,7 +451,7 @@ const TeacherManager = () => {
         style={{ maxWidth: "80%", width: "80%" }}
       >
         <p className="mx-auto text-2xl text-blue-600 font-semibold">
-         TEACHER MANAGER
+          {t("system.teacher.manager-teacher")}
         </p>
 
         <div
@@ -433,7 +467,9 @@ const TeacherManager = () => {
             style={{ fontSize: "16px" }}
             modal
           />
-          {isUpdateUser ? "Update Teacher" : "Create a new teacher"}
+          {isUpdateUser
+            ? t("system.teacher.update")
+            : t("system.teacher.create")}
         </div>
         {loading && <Loading />}
         <div className="flex overflow-hidden flex-col h-auto bg-slate-200 rounded-lg shadow backdrop-blur-md shadow-gray-300 mt-2 mb-1">
@@ -446,7 +482,12 @@ const TeacherManager = () => {
             </span>
             <div className="w-full flex items-center justify-center gap-6">
               <div className="flex-1 flex flex-col justify-center">
-                <label htmlFor="email" className="mb-1 text-headingColor opacity-80 flex items-center gap-1">Email <HiOutlinePencilAlt /></label>
+                <label
+                  htmlFor="email"
+                  className="mb-1 text-headingColor opacity-80 flex items-center gap-1"
+                >
+                  {t("system.table.email")} <HiOutlinePencilAlt />
+                </label>
                 <input
                   className={`shadow-sm bg-gray-50 border border-gray-400 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-2 py-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light 
                   ${isUpdateUser ? "bg-blurColor opacity-30" : ""}`}
@@ -461,7 +502,12 @@ const TeacherManager = () => {
                 />
               </div>
               <div className="flex-1 flex flex-col justify-center relative">
-                <label htmlFor="password" className="mb-1 text-headingColor opacity-80 flex items-center gap-1">Password <HiOutlinePencilAlt /></label>
+                <label
+                  htmlFor="password"
+                  className="mb-1 text-headingColor opacity-80 flex items-center gap-1"
+                >
+                  {t("system.table.password")} <HiOutlinePencilAlt />
+                </label>
                 <input
                   className={`shadow-sm bg-gray-50 border border-gray-400 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-2 py-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light 
                   ${isUpdateUser ? "bg-blurColor opacity-30" : ""}`}
@@ -491,7 +537,12 @@ const TeacherManager = () => {
 
             <div className="w-full flex items-center justify-center gap-6 mt-3">
               <div className="flex-1 flex flex-col justify-center">
-                <label htmlFor="name" className="mb-1 text-headingColor opacity-80 flex items-center gap-1">FullName <HiOutlinePencilAlt /></label>
+                <label
+                  htmlFor="name"
+                  className="mb-1 text-headingColor opacity-80 flex items-center gap-1"
+                >
+                  {t("system.table.name")} <HiOutlinePencilAlt />
+                </label>
                 <input
                   className="shadow-sm bg-gray-50 border border-gray-400 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-2 py-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
                   name="name"
@@ -505,8 +556,11 @@ const TeacherManager = () => {
                 />
               </div>
               <div className="flex-1 flex flex-col justify-center">
-                <label htmlFor="phone" className="mb-1 text-headingColor opacity-80 flex items-center gap-1">
-                  PhoneNumber <HiOutlinePencilAlt />
+                <label
+                  htmlFor="phone"
+                  className="mb-1 text-headingColor opacity-80 flex items-center gap-1"
+                >
+                  {t("system.table.phone")} <HiOutlinePencilAlt />
                 </label>
                 <input
                   className=" shadow-sm bg-gray-50 border border-gray-400 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-2 py-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
@@ -524,7 +578,12 @@ const TeacherManager = () => {
 
             <div className="w-full flex items-center justify-center gap-6 mt-3">
               <div className="flex flex-col justify-center w-2/3">
-                <label htmlFor="address" className="mb-1 text-headingColor opacity-80 flex items-center gap-1">Address <HiOutlinePencilAlt /></label>
+                <label
+                  htmlFor="address"
+                  className="mb-1 text-headingColor opacity-80 flex items-center gap-1"
+                >
+                  {t("system.table.address")} <HiOutlinePencilAlt />
+                </label>
                 <input
                   className=" shadow-sm bg-gray-50 border border-gray-400 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-2 py-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
                   name="address"
@@ -536,14 +595,21 @@ const TeacherManager = () => {
                 />
               </div>
               <div className="flex flex-col justify-center w-1/3">
-                <label htmlFor="position" className="mb-1 text-headingColor opacity-80 flex items-center gap-1">Position <HiOutlinePencilAlt /></label>
+                <label
+                  htmlFor="position"
+                  className="mb-1 text-headingColor opacity-80 flex items-center gap-1"
+                >
+                  {t("system.table.position")} <HiOutlinePencilAlt />
+                </label>
                 <select
                   className=" shadow-sm bg-gray-50 border border-gray-400 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-2 py-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
                   name="position"
                   type="text"
                   id="position"
                   value={position}
-                  onChange={(e) => handleChangeEvent(e.target.value, "Position")}
+                  onChange={(e) =>
+                    handleChangeEvent(e.target.value, "Position")
+                  }
                   onFocus={() => setNotifyCheckState("")}
                 >
                   <option name="position" value="">
@@ -553,7 +619,7 @@ const TeacherManager = () => {
                     positionAPI?.map((e, i) => {
                       return (
                         <option key={i} name="position" value={e?.keyMap}>
-                          {e?.valueVn}
+                          {i18n.language === "vi" ? e?.valueVn : e?.valueEn}
                         </option>
                       );
                     })}
@@ -563,7 +629,12 @@ const TeacherManager = () => {
 
             <div className="w-full flex items-center justify-center gap-6 mt-3">
               <div className="flex-1 flex flex-col justify-center">
-                <label htmlFor="gender" className="mb-1 text-headingColor opacity-80 flex items-center gap-1">Gender <HiOutlinePencilAlt /></label>
+                <label
+                  htmlFor="gender"
+                  className="mb-1 text-headingColor opacity-80 flex items-center gap-1"
+                >
+                  {t("system.table.gender")} <HiOutlinePencilAlt />
+                </label>
                 <select
                   className=" shadow-sm bg-gray-50 border border-gray-400 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-2 py-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
                   name="gender"
@@ -580,15 +651,18 @@ const TeacherManager = () => {
                     genderAPI?.map((e, i) => {
                       return (
                         <option key={i} name="role" value={e?.keyMap}>
-                          {e?.valueVn}
+                          {i18n.language === "vi" ? e?.valueVn : e?.valueEn}
                         </option>
                       );
                     })}
                 </select>
               </div>
               <div className="flex-1 flex-col justify-center flex">
-                <label className="mb-1 text-headingColor opacity-80 flex items-center gap-1" htmlFor="file_input">
-                  Avatar
+                <label
+                  className="mb-1 text-headingColor opacity-80 flex items-center gap-1"
+                  htmlFor="file_input"
+                >
+                  {t("system.table.avatar")}
                 </label>
                 <input
                   className="block w-full text-sm text-gray-900 border border-gray-400 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
@@ -603,7 +677,8 @@ const TeacherManager = () => {
 
             <div className="w-full flex item-center justify-start mt-3 gap-6">
               <span className="text-red-500 font-semibold flex-1 flex items-center gap-1">
-                All Field have <HiOutlinePencilAlt /> is required
+                {t("system.table.mess-1")} <HiOutlinePencilAlt />
+                {t("system.table.mess-2")}
               </span>
               {previewAvatar && (
                 <div className="w-full h-24 flex-1">
@@ -633,25 +708,25 @@ const TeacherManager = () => {
                     : () => handleCreateNewUser()
                 }
               >
-                {isUpdateUser ? "Save Changes" : "Add new"}
+                {isUpdateUser
+                  ? t("system.teacher.save")
+                  : t("system.teacher.add")}
               </button>
-             {
-              isUpdateUser && (
+              {isUpdateUser && (
                 <button
-                className={` text-white mt-6 py-2 px-1 font-semibold rounded-md shadow backdrop-blur-md bg-opacity-80 hover:bg-opacity-100 bg-blue-600`}
-                style={{ maxWidth: "10%", width: "10%" }}
-                onClick={() => handleCloseUpdateUser()}
-              >
-                Close
-              </button>
-              )
-             }
+                  className={` text-white mt-6 py-2 px-1 font-semibold rounded-md shadow backdrop-blur-md bg-opacity-80 hover:bg-opacity-100 bg-blue-600`}
+                  style={{ maxWidth: "10%", width: "10%" }}
+                  onClick={() => handleCloseUpdateUser()}
+                >
+                  {t("system.teacher.close")}
+                </button>
+              )}
             </div>
           </div>
 
           {/* <RiDeleteBack2Fill
             className="absolute top-2 right-2 text-white text-xl cursor-pointer" */}
-            {/* // onClick={() => isClose()} */}
+          {/* // onClick={() => isClose()} */}
           {/* /> */}
 
           {/* <AiOutlineClose
@@ -664,13 +739,13 @@ const TeacherManager = () => {
           <table className="mt-20">
             <thead>
               <tr>
-                <th>FullName</th>
-                <th>Email</th>
-                <th>Address</th>
-                <th>Gender</th>
-                <th>PhoneNumber</th>
-                <th>Position</th>
-                <th>Actions</th>
+                <th>{t("system.table.name")}</th>
+                <th>{t("system.table.email")}</th>
+                <th>{t("system.table.address")}</th>
+                <th>{t("system.table.gender")}</th>
+                <th>{t("system.table.phone")}</th>
+                <th>{t("system.table.position")}</th>
+                <th>{t("system.table.action")}</th>
               </tr>
             </thead>
             <tbody>
@@ -694,9 +769,8 @@ const TeacherManager = () => {
                         : user?.positionId === "P2"
                         ? "Phó Giáo Sư"
                         : user?.positionId === "P3"
-                        ? "Tiến sĩ" 
-                        : null
-                        }
+                        ? "Tiến sĩ"
+                        : null}
                     </td>
                     <td>
                       <div className="flex items-center justify-center gap-6">

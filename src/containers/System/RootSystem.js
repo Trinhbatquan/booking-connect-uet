@@ -6,6 +6,8 @@ import { createContext } from "react";
 import Header from "./Header/Header";
 import { path } from "../../utils/constant";
 
+import "./RootSystem.scss";
+
 export const ContextScrollTop = createContext();
 const RootSystem = () => {
   console.log(`${path.SYSTEM}${path.LOGIN_SYSTEM}`);

@@ -39,67 +39,142 @@
             }
         }
     },
+
+
+
     "system": {
-        "user-manage": {
-            "system": "System",
-            "user-manager": "User Management",
-            "create-user": "Create User",
-            "department-manager": "Department Management",
-            "faculty-manager": "Faculty Management",
-            "teacher-manager": "Teacher Management",
-            "healthStudent-manager": "Health of students Management"
+ 
+        "header": {
+            "admin": "Administrator",
+            "manager-schedule": "Schedule Management",
+            "teacher": "Teacher",
+            "manager-teacher": "Teacher Management",
+            "desc-teacher": "Add description of teacher",
+            "department": "Department",
+            "manager-department": "Department Management",
+            "desc-department": "Add description of department",
+            "faculty": "Faculty",
+            "manager-faculty": "Faculty Management",
+            "desc-faculty": "Add description of faculty",
+            "health-student": "Student Health Department",
+            "manager-health-student": "Student Health Department Management",
+            "desc-health-student": "Add description of student health department",
+
+
+            "edit-profile": "Edit profile",
+            "change-password": "Change Password",
+            "sign-out": "Sign out"
         },
-        "product-manage": {
-            "fail-to-load-foprtype": "Fail to load packages list",
-            "prid": "Package ID",
-            "prname": "Package name",
-            "prtype": "Package type",
-            "status": "Status",
-            "description": "Description",
-            "effective-date": "Effective date",
-            "expiration-date": "Expiration date",
-            "add-product": "Add package",
-            "add-product-success": "Add package successfully",
-            "add-product-fail": "Fail to add package",
-            "edit-product": "Edit package information",
-            "package-decentralize": "Package decentralize",
-            "edit-product-success": "Edit package information successfully",
-            "edit-product-fail": "Fail to edit package information",
-            "delete-product-success": "Delete package successfully",
-            "delete-product-fail": "Fail to delete package",
-            "invalid-input": {
-                "prid": "Please fill in package ID",
-                "prname": "Please fill in package name"
-            },
-            "fail-to-load-decentralize-info": "Fail to load decentralize info",
-            "save-decentralize-success": "Save decentralization successfully",
-            "save-decentralize-fail": "Fail to save decentralization",
-            "sure-delete-package": "Are you sure to delete this package?"
+         "department": {
+             "manager-department": "Department Management",
+             "create": "Create department",
+             "add": "Add new",
+             "close": "Close",
+             "update": "Update department",
+             "save": "Save change",
+             "description": "Department Description",
+             "create-description": "Create department description",
+             "update-description": "Update department description",
+             "choose": "Choose a department",
+             "overview": "Overview of department",
+             "note": "Note",
+             "detail": "Department Detail"
         },
-        "register-package-group-or-acc": {
-            "assign-service-package-to-customer": "Assign service package to customer",
-            "package-name": "Package name",
-            "assign-type": "Assign type",
-            "cust-acc-group": "Customer/account group",
-            "effective-date": "Effective date",
-            "expiration-date": "Expiration date",
-            "assign": "Assign",
-            "manage-assign-groups": "Manage assign groups",
-            "group-cust-acc-name": "Group/customer account name",
-            "del-assign": "Del assign",
-            "fail-to-load-manage-assign-groups-list": "Fail to load manage assign groups list",
-            "invalid-selected": {
-                "currentfoProduct": "Invalid package",
-                "currentAssignType": "Invalid assign type",
-                "currentFoUser": "Invalid customer/account group"
-            },
-            "assign-service-package-to-customer-success": "Assign service package to customer successfully",
-            "assign-service-package-to-customer-fail": "Fail to assign service package to customer",
-            "remove-assign-success": "Unassign service package to customer successfully",
-            "remove-assign-fail": "Fail to unassign service package to customer",
-            "sure-delete-assign": "Are you sure to unassign service package to customer?"
+        "faculty": {
+             "manager-faculty": "Faculty Management",
+             "create": "Create faculty",
+             "add": "Add new",
+             "close": "Close",
+             "update": "Update faculty",
+             "save": "Save change",
+             "description": "Faculty Description",
+             "create-description": "Create faculty description",
+             "update-description": "Update faculty description",
+             "choose": "Choose a faculty",
+             "overview": "Overview of faculty",
+             "note": "Note",
+             "detail": "Faculty Detail"
+        },
+          "health-student": {
+             "manager-student-heath-department": "Student Health Department Management",
+             "create": "Create student health department",
+             "add": "Add new",
+             "close": "Close",
+             "update": "Update student health department",
+             "save": "Save change",
+             "description": "Student Health Department Description",
+             "create-description": "Create student health department description",
+             "update-description": "Update student health department description",
+             "choose": "Choose a student health department",
+             "overview": "Overview of student health department",
+             "note": "Note",
+             "detail": "Student Health Department Detail"
+        },
+         "teacher": {
+             "manager-teacher": "Teacher Management",
+             "create": "Create teacher",
+             "add": "Add new",
+             "close": "Close",
+             "update": "Update teacher",
+             "save": "Save change",
+             "description": "Teacher Description",
+             "create-description": "Create teacher description",
+             "update-description": "Update teacher description",
+             "choose": "Choose a teacher",
+             "overview": "Overview of teacher",
+             "teacher-faculty": "Faculty of teacher",
+             "note": "Note",
+             "detail": "Teacher Detail"
+        },
+        
+
+        "table": {
+            "email": "Email",
+            "password": "Password",
+            "name": "FullName",
+            "phone": "PhoneNumber",
+            "address": "Address",
+            "gender": "Gender",
+            "avatar": "Avatar",
+            "mess-1": "All Field have",
+            "mess-2": "is required",
+            "action": "Action",
+            "position": "Position"
+        },
+        "notification": {
+            "required": " is required.",
+            "email": "Please enter right form of email",
+            "password": "Password must to have minimum eight characters, at least one letter, one number and one special character.",
+            "name": "Please enter right form of full name.",
+            "phone": "Please enter right form of phone number",
+            "create": "Create Successfully!",
+            "update": "Update Successfully!",
+            "delete": "Delete Successfully!",
+            "fail": "Error. Please try again or contact admin!",
+            "miss": "Please enter all field."
+        },
+         "schedule": {
+            "department": "Department",
+            "faculty": "Faculty",
+            "teacher": "Teacher",
+            "health": "Student Health Department",
+            "manager": "Schedule Manager",
+            "choose": "Choose field to schedule",
+            "mess": "Choose",
+            "time": "Choose time",
+            "date": "Choose date",
+            "save": "Save data",
+            "update": "Update data",
+            "table": {
+                "date": "Date",
+                "time": "Time",
+                "action": "Action"
+            }
         }
     },
+
+
+  
     "header": {
         "UET": "UNIVERSITY OF ENGINEERING AND TECHNOLOGY",
         "VNU": "VIETNAM NATIONAL UNIVERSITY",
@@ -117,4 +192,10 @@
      "navigate": {
         "teacher": "Teacher"
     }
+
+
+
+
+
+
 }

@@ -6,7 +6,7 @@ import { useNavigate } from "react-router";
 
 import { path } from "../../../utils/constant";
 
-import "../../Auth/Login/Login.scss";
+import "./Login.scss";
 import { loginHomePageApi } from "../../../services/userService";
 import { loginUserFailed, loginUserSucceed } from "../../../redux/studentSlice";
 import Loading from "./../../../utils/Loading";
@@ -64,7 +64,7 @@ const Login = () => {
   }, []);
 
   return (
-    <div className="login-container">
+    <div className="login-homepage-container">
       <div className="login">
         <div className="font-semibold pt-4 text-center login-text mt-1">
           Login

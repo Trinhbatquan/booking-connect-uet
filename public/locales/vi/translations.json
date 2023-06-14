@@ -39,67 +39,143 @@
             }
         }
     },
-    "system": {
-        "user-manage": {
-            "system": "Hệ thống",
-            "user-manager": "Quản lý người dùng",
-            "create-user": "Thêm mới người dùng",
-            "department-manager": "Quản lý phòng ban",
-            "faculty-manager": "Quản lý khoa, viện",
-            "teacher-manager": "Quản lý giảng viên",
-            "healthStudent-manager": "Quản lý sức khoẻ sinh viên"
+
+
+
+     "system": {
+ 
+        "header": {
+            "admin": "Quản trị viên",
+            "manager-schedule": "Quản lý lịch hẹn",
+            "teacher": "Giảng viên",
+            "manager-teacher": "Quản lý giảng viên",
+            "desc-teacher": "Thêm thông tin của giảng viên",
+            "department": "Phòng ban",
+            "manager-department": "Quản lý phòng ban",
+            "desc-department": "Thêm thông tin của phòng ban",
+            "faculty": "Khoa, viện",
+            "manager-faculty": "Quản lý khoa, viện",
+            "desc-faculty": "Thêm thông tin của khoa, viện",
+            "health-student": "Ban sức khoẻ sinh viên",
+            "manager-health-student": "Quản lý ban sức khoẻ sinh viên",
+            "desc-health-student": "Thêm thông tin của ban sức khoẻ sinh viên",
+
+
+            "edit-profile": "Chỉnh sửa thông tin",
+            "change-password": "Đổi mật khẩu",
+            "sign-out": "Đăng xuất"
         },
-        "product-manage": {
-            "fail-to-load-foprtype": "Không thể tải về danh sách gói",
-            "prid": "Mã gói",
-            "prname": "Tên gói",
-            "prtype": "Loại gói",
-            "status": "Trạng thái",
-            "description": "Diễn giải",
-            "effective-date": "Ngày hiệu lực",
-            "expiration-date": "Ngày hết hiệu lực",
-            "add-product": "Thêm gói",
-            "add-product-success": "Thêm gói thành công",
-            "add-product-fail": "Thêm gói thất bại",
-            "edit-product": "Sửa thông tin gói",
-            "package-decentralize": "Phân quyền chức năng",
-            "edit-product-success": "Thay đổi thông tin gói thành công",
-            "edit-product-fail": "Thay đổi thông tin gói thất bại",
-            "delete-product-success": "Xóa gói thành công",
-            "delete-product-fail": "Xóa gói thất bại",
-            "invalid-input": {
-                "prid": "Quý khách vui lòng nhập mã gói",
-                "prname": "Quý khách vui lòng nhập tên gói"
-            },
-            "fail-to-load-decentralize-info": "Không thể tải về thông tin phân quyền chức năng",
-            "save-decentralize-success": "Lưu phân quyền chức năng thành công",
-            "save-decentralize-fail": "Lưu phân quyền chức năng thất bại",
-            "sure-delete-package": "Bạn có chắc chắn muốn xóa gói này?"
+        "department": {
+             "manager-department": "Quản lý phòng ban",
+             "create": "Tạo phòng ban",
+             "add": "Thêm mới",
+             "close": "Đóng",
+             "update": "Cập nhật phòng ban",
+             "save": "Lưu thay đổi",
+              "description": "Thông tin phòng ban",
+             "create-description": "Tạo thông tin phòng ban",
+             "update-description": "Cập nhật thông tin phòng ban",
+             "choose": "Chọn phòng ban",
+             "overview": "Tổng quan",
+             "note": "Ghi chú",
+             "detail": "Chi tiết phòng ban"
+             
         },
-        "register-package-group-or-acc": {
-            "assign-service-package-to-customer": "Gán gói dịch vụ cho khách hàng",
-            "package-name": "Tên gói",
-            "assign-type": "Loại gán",
-            "cust-acc-group": "Nhóm KH/Tài khoản",
-            "effective-date": "Ngày hiệu lực",
-            "expiration-date": "Ngày hết hiệu lực",
-            "assign": "Gán",
-            "manage-assign-groups": "Quản lý gán nhóm",
-            "group-cust-acc-name": "Tên nhóm/tài khoản KH",
-            "del-assign": "Xóa gán",
-            "fail-to-load-manage-assign-groups-list": "Không thể tải về thông tin quản lý gán nhóm",
-            "invalid-selected": {
-                "currentfoProduct": "Gói đang chọn không hợp lệ",
-                "currentAssignType": "Loại gán không hợp lệ",
-                "currentFoUser": "Nhóm KH/Tài khoản không hợp lệ"
-            },
-            "assign-service-package-to-customer-success": "Gán gói dịch vụ cho khách hàng thành công",
-            "assign-service-package-to-customer-fail": "Gán gói dịch vụ cho khách hàng thất bại",
-            "remove-assign-success": "Bỏ gán gói dịch vụ cho khách hàng thành công",
-            "remove-assign-fail": "Bỏ gán gói dịch vụ cho khách hàng thất bại",
-            "sure-delete-assign": "Bạn có chắc chắn muốn bỏ gán gói dịch vụ cho khách hàng?"
+         "faculty": {
+            "manager-faculty": "Quản lý khoa, viện",
+             "create": "Tạo khoa, viện",
+             "add": "Thêm mới",
+             "close": "Đóng",
+             "update": "Cập nhật khoa, viện",
+             "save": "Lưu thay đổi",
+              "description": "Thông tin khoa, viện",
+             "create-description": "Tạo thông tin khoa, viện",
+             "update-description": "Cập nhật thông tin khoa, viện",
+             "choose": "Chọn khoa, viện",
+             "overview": "Tổng quan",
+             "note": "Ghi chú",
+             "detail": "Chi tiết khoa, viện"
+        },
+         "health-student": {
+            "manager-student-health-department": "Quản lý ban sức khoẻ sinh viên",
+             "create": "Tạo ban sức khoẻ sinh viên",
+             "add": "Thêm mới",
+             "close": "Đóng",
+             "update": "Cập nhật ban sức khoẻ sinh viên",
+             "save": "Lưu thay đổi",
+              "description": "Thông tin ban sức khoẻ sinh viên",
+             "create-description": "Tạo thông tin ban sức khoẻ sinh viên",
+             "update-description": "Cập nhật thông tin ban sức khoẻ sinh viên",
+             "choose": "Chọn ban sức khoẻ sinh viên",
+             "overview": "Tổng quan",
+             "note": "Ghi chú",
+             "detail": "Chi tiết ban sức khoẻ sinh viên"
+        },
+         "teacher": {
+            "manager-teacher": "Quản lý giảng viên",
+             "create": "Tạo giảng viên",
+             "add": "Thêm mới",
+             "close": "Đóng",
+             "update": "Cập nhật giảng viên",
+             "save": "Lưu thay đổi",
+              "description": "Thông tin giảng viên",
+             "create-description": "Tạo thông tin giảng viên",
+             "update-description": "Cập nhật thông tin giảng viên",
+             "choose": "Chọn giảng viên",
+             "overview": "Tổng quan",
+             "teacher-faculty": "Thuộc khoa, viện",
+             "note": "Ghi chú",
+             "detail": "Chi tiết giảng viên"
+        },
+        "table": {
+            "email": "Email",
+            "password": "Mật khẩu",
+            "name": "Tên đầy đủ",
+            "phone": "Số điện thoại",
+            "address": "Địa chỉ",
+            "gender": "Giới tính",
+            "avatar": "Ảnh đại diện",
+            "mess-1": "Tất cả các trường có",
+            "mess-2": "bắt buộc nhập",
+            "action": "Hành động",
+            "position": "Chức vụ"
+
+        },
+           "notification": {
+            "required": "là bắt buộc nhập.",
+              "email": "Vui lòng nhập đúng định dạng email.",
+            "password": "Mật khẩu phải có ít nhất 8 ký tự, có ít nhất một chữ số, một số và một kí tự đặc biệt.",
+            "name": "Vui lòng nhập đúng định dạng tên.",
+            "phone": "Vui lòng nhập đúng định dạng số điện thoại.",
+             "create": "Thêm mới thành công!",
+            "update": "Cập nhật thành công!",
+            "delete": "Xoá bỏ thành công!",
+            "fail": "Có lỗi. Vui lòng thử lại hoặc liên hệ quản trị viên!",
+            "miss": "Vui lòng nhập đủ các trường."
+        },
+        "schedule": {
+            "department": "Phòng ban",
+            "faculty": "Khoa, viện",
+            "teacher": "Giảng viên",
+            "health": "Ban sức khoẻ sinh viên",
+             "manager": "Quản lý lịch hẹn",
+            "choose": "Chọn đối tượng quản lý",
+            "mess": "Chọn",
+            "time": "Chọn thời gian",
+            "date": "Chọn ngày",
+            "save": "Lưu thông tin",
+            "update": "Cập nhật thông tin",
+             "table": {
+                "date": "Ngày",
+                "time": "Thời gian",
+                "action": "Hành động"
+            }
         }
     },
+
+
+
+
     "header": {
         "UET": "TRƯỜNG ĐẠI HỌC CÔNG NGHỆ",
         "VNU": "ĐẠI HỌC QUỐC GIA HÀ NỘI",

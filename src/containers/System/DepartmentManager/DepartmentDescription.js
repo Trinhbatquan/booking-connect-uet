@@ -4,14 +4,12 @@ import { BsPersonPlusFill } from "react-icons/bs";
 import MdEditor from "react-markdown-editor-lite";
 import Select from "react-select";
 import { ToastContainer, toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
+import { HiOutlinePencilAlt } from "react-icons/hi";
 
 import Loading from "../../../utils/Loading";
 import { getUserApi } from "../../../services/userService";
 import { createMarkDown, getMarkDown } from "../../../services/markdownService";
-import {
-  createTeacherInfo,
-  getTeacherInfo,
-} from "../../../services/teacherService";
 
 const mdParser = new MarkdownIt(/* Markdown-it options */);
 
@@ -21,56 +19,49 @@ const DepartmentDescription = () => {
   const [markdownText, setMarkdownText] = useState("");
   const [description, setDescription] = useState("");
 
-  const [selectedOptionTeacherInfo, setSelectedOptionTeacherInfo] =
-    useState(null);
-  const [note, setNote] = useState("");
-
-  const [teachers, setTeachers] = useState([]);
-  const [faculties, setFaculties] = useState([]);
+  const [department, setDepartment] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
+  const [notifyCheckState, setNotifyCheckState] = useState("");
+
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     setLoading(true);
     setTimeout(async () => {
-      await getUserApi.getUserByRole({ role: "R5" }).then((data) => {
+      await getUserApi.getUserByRole({ role: "R2" }).then((data) => {
         if (data?.codeNumber === 0) {
-          setTeachers(data.user);
+          setDepartment(data.user);
         }
       });
-      await getUserApi.getUserByRole({ role: "R4" }).then((data) => {
-        if (data?.codeNumber === 0) {
-          setFaculties(data.user);
-        }
-      });
+      // await getUserApi.getUserByRole({ role: "R4" }).then((data) => {
+      //   if (data?.codeNumber === 0) {
+      //     setFaculties(data.user);
+      //   }
+      // });
       setLoading(false);
     }, 1000);
   }, []);
 
-  let optionsTeachers = [];
-  if (teachers.length > 0) {
-    teachers.forEach((user, index) => {
-      optionsTeachers.push({ value: user?.id, label: user?.fullName });
+  let optionsDepartment = [];
+  if (department.length > 0) {
+    department.forEach((user, index) => {
+      optionsDepartment.push({ value: user?.id, label: user?.fullName });
     });
   }
 
-  let optionsFaculties = [];
-  if (faculties.length > 0) {
-    faculties.forEach((user, index) => {
-      optionsFaculties.push({ value: user?.id, label: user?.fullName });
-    });
-  }
+  // let optionsFaculties = [];
+  // if (faculties.length > 0) {
+  //   faculties.forEach((user, index) => {
+  //     optionsFaculties.push({ value: user?.id, label: user?.fullName });
+  //   });
+  // }
 
   // Finish change markdown
   function handleEditorChange({ html, text }) {
     setMarkdownHtml(html);
     setMarkdownText(text);
   }
-
-  //change select teacher info
-  const handleChangeSelectTeacherInfo = (e) => {
-    setSelectedOptionTeacherInfo(e);
-  };
 
   //change select teacher id
   const handleChangeSelect = async (e) => {
@@ -88,65 +79,103 @@ const DepartmentDescription = () => {
       setMarkdownHtml(markdownHtml);
       setIsUpdate(true);
     }
-    const res = await getTeacherInfo.getById({ id: e?.value });
-    if (res?.codeNumber === 1) {
-      setSelectedOptionTeacherInfo(null);
-      setNote("");
-      setIsUpdate(false);
-    } else {
-      const { faculty_id, note } = res?.teacher_info;
-      let optionFacultySelect = {};
-      for (let i = 0; i < optionsFaculties.length; i++) {
-        if (optionsFaculties[i]?.value === faculty_id) {
-          optionFacultySelect = optionsFaculties[i];
-          break;
-        }
+    // const res = await getTeacherInfo.getById({ id: e?.value });
+    // if (res?.codeNumber === 1) {
+    //   setSelectedOptionTeacherInfo(null);
+    //   setNote("");
+    //   setIsUpdate(false);
+    // } else {
+    //   const { faculty_id, note } = res?.teacher_info;
+    //   let optionFacultySelect = {};
+    //   for (let i = 0; i < optionsFaculties.length; i++) {
+    //     if (optionsFaculties[i]?.value === faculty_id) {
+    //       optionFacultySelect = optionsFaculties[i];
+    //       break;
+    //     }
+    //   }
+    //   setSelectedOptionTeacherInfo(optionFacultySelect);
+    //   setNote(note);
+    //   setIsUpdate(true);
+    // }
+  };
+
+  const checkNullData = () => {
+    let result = true;
+    const dataArr = [
+      selectedOption?.value,
+      description,
+      markdownText,
+      markdownHtml,
+    ];
+    for (let i = 0; i < dataArr.length; i++) {
+      if (!dataArr[i]) {
+        result = false;
+        break;
       }
-      setSelectedOptionTeacherInfo(optionFacultySelect);
-      setNote(note);
-      setIsUpdate(true);
     }
+    return result;
   };
 
   const handleMarkDown = () => {
-    setLoading(true);
-    const dataMarkDown = {
-      markdownHtml,
-      markdownText,
-      description,
-      userId: selectedOption?.value,
-      action: isUpdate ? "update" : "create",
-    };
-    const dataTeacherInfo = {
-      facultyId: selectedOptionTeacherInfo?.value,
-      teacherId: selectedOption?.value,
-      note,
-      action: isUpdate ? "update" : "create",
-    };
-    setTimeout(async () => {
-      await createMarkDown.create({}, dataMarkDown).then((res) => {
-        createTeacherInfo.create({}, dataTeacherInfo).then((data) => {
-          if (res?.codeNumber !== 0 || data?.codeNumber !== 0) {
-            toast.error(res?.message, {
+    if (checkNullData()) {
+      setLoading(true);
+      const dataMarkDown = {
+        markdownHtml,
+        markdownText,
+        description,
+        userId: selectedOption?.value,
+        action: isUpdate ? "update" : "create",
+      };
+      // const dataTeacherInfo = {
+      //   facultyId: selectedOptionTeacherInfo?.value,
+      //   teacherId: selectedOption?.value,
+      //   note,
+      //   action: isUpdate ? "update" : "create",
+      // };
+      setTimeout(async () => {
+        await createMarkDown.create({}, dataMarkDown).then((res) => {
+          // createTeacherInfo.create({}, dataTeacherInfo).then((data) => {
+          if (res?.codeNumber !== 0) {
+            toast.error(`${t("system.notification.fail")}`, {
               autoClose: 2000,
+              position: "bottom-right",
+              theme: "colored",
             });
             setLoading(false);
           } else {
+            if (res?.message === "create") {
+              toast.success(`${t("system.notification.create")}`, {
+                autoClose: 2000,
+                position: "bottom-right",
+                theme: "colored",
+              });
+            } else {
+              toast.success(`${t("system.notification.update")}`, {
+                autoClose: 2000,
+                position: "bottom-right",
+                theme: "colored",
+              });
+            }
             setDescription("");
             setSelectedOption(null);
-            setSelectedOptionTeacherInfo(null);
             setMarkdownHtml("");
             setMarkdownText("");
-            setNote("");
             setLoading(false);
             setIsUpdate(false);
-            toast.success(res?.message, {
-              autoClose: 2000,
-            });
           }
         });
-      });
-    }, 1000);
+      }, 1000);
+    } else {
+      setNotifyCheckState(`${t("system.notification.miss")}`);
+    }
+  };
+
+  const handleCloseUpdateDepartment = () => {
+    setDescription("");
+    setSelectedOption(null);
+    setMarkdownHtml("");
+    setMarkdownText("");
+    setIsUpdate(false);
   };
 
   return (
@@ -156,12 +185,12 @@ const DepartmentDescription = () => {
     >
       <ToastContainer />
       <p className="mx-auto text-2xl text-blue-600 font-semibold mb-10">
-        DESCRIPTION TEACHER
+        {t("system.department.description")}
       </p>
       {loading && <Loading />}
       <div
         className={`flex items-center justify-center mt-3 gap-1 py-2 px-1 text-white font-semibold rounded-md  
-        bg-blue-600 mb-4
+        bg-blue-600 mb-1
         `}
         // type="text"
         // onClick={() => setIsCreateUser(true)}
@@ -172,27 +201,36 @@ const DepartmentDescription = () => {
           style={{ fontSize: "16px" }}
           modal
         />
-        {isUpdate ? "Update description teacher" : "Create description teacher"}
+        {isUpdate
+          ? t("system.department.update-description")
+          : t("system.department.create-description")}
       </div>
       <div className="">
+        <div
+          className="mx-auto text-red-500 mb-3 text-center text-xl"
+          style={notifyCheckState ? { opacity: "1" } : { opacity: "0" }}
+        >
+          {notifyCheckState ? notifyCheckState : "Null"}
+        </div>
         <div className="flex items-start gap-5 mb-4">
           <div className="flex-1 flex flex-col justify-start items-start">
-            <label className="text-lg text-opacity-60 text-black">
-              Choose a teacher
+            <label className="text-lg text-opacity-60 text-black flex items-center gap-1">
+              {t("system.department.choose")} <HiOutlinePencilAlt />
             </label>
             <Select
               value={selectedOption}
               onChange={(e) => handleChangeSelect(e)}
-              options={optionsTeachers}
+              options={optionsDepartment}
               className="w-full"
+              onFocus={() => setNotifyCheckState("")}
             />
           </div>
           <div className="flex-1 flex flex-col items-start">
             <label
               htmlFor="detail"
-              className="text-lg text-opacity-60 text-black"
+              className="text-lg text-opacity-60 text-black flex items-center gap-1"
             >
-              Detail of teacher
+              {t("system.department.overview")} <HiOutlinePencilAlt />
             </label>
             <textarea
               id="detail"
@@ -201,10 +239,11 @@ const DepartmentDescription = () => {
               className="w-full border-opacity-50 border-blurColor rounded-md"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
+              onFocus={() => setNotifyCheckState("")}
             />
           </div>
         </div>
-        <div className="flex items-start gap-5 mb-4">
+        {/* <div className="flex items-start gap-5 mb-4">
           <div className="flex-1 flex flex-col justify-start items-start">
             <label className="text-lg text-opacity-60 text-black">
               Faculty teacher
@@ -227,17 +266,18 @@ const DepartmentDescription = () => {
               onChange={(e) => setNote(e.target.value)}
             />
           </div>
-        </div>
+        </div> */}
 
         <div className="flex flex-col items-start w-full">
-          <label className="text-lg text-opacity-60 text-black">
-            Description teacher
+          <label className="text-lg text-opacity-60 text-black flex items-center gap-1">
+            {t("system.department.detail")} <HiOutlinePencilAlt />
           </label>
           <MdEditor
             value={markdownText}
             style={{ width: "100%", height: "400px", border: "1px solid #aaa" }}
             renderHTML={(text) => mdParser.render(text)}
             onChange={handleEditorChange}
+            onFocus={() => setNotifyCheckState("")}
           />
         </div>
         <button
@@ -246,8 +286,19 @@ const DepartmentDescription = () => {
           style={{ maxWidth: "15%", width: "15%" }}
           onClick={() => handleMarkDown()}
         >
-          {isUpdate ? "Update" : "Create"}
+          {isUpdate
+            ? t("system.department.update")
+            : t("system.department.add")}
         </button>
+        {isUpdate && (
+          <button
+            className={` ml-5 text-white mt-6 py-2 px-1 font-semibold rounded-md shadow backdrop-blur-md bg-opacity-100 hover:bg-opacity-80 bg-blue-500`}
+            style={{ maxWidth: "10%", width: "10%" }}
+            onClick={() => handleCloseUpdateDepartment()}
+          >
+            {t("system.department.close")}
+          </button>
+        )}
       </div>
     </div>
   );

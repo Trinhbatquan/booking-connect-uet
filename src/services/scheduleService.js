@@ -1,5 +1,6 @@
 import axiosClient from "../axios";
 
+//system
 //create schedule
 const createSchedule = {
   create: (params, data) => {
@@ -7,7 +8,21 @@ const createSchedule = {
     return axiosClient.post(url, data, { params });
   },
 };
+const getScheduleSystem = {
+  get: (params) => {
+    const url = "/api/get-schedule-system";
+    return axiosClient.get(url, { params });
+  },
+};
 
+const deleteScheduleByIdAndDate = {
+  delete: (params) => {
+    const url = "/api/delete-schedule";
+    return axiosClient.delete(url, { params });
+  },
+};
+
+//homepage
 //get schedule
 const getScheduleByIdAndDate = {
   get: (params) => {
@@ -16,4 +31,9 @@ const getScheduleByIdAndDate = {
   },
 };
 
-export { createSchedule, getScheduleByIdAndDate };
+export {
+  createSchedule,
+  getScheduleByIdAndDate,
+  getScheduleSystem,
+  deleteScheduleByIdAndDate,
+};

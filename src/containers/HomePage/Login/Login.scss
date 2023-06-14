@@ -1,0 +1,82 @@
+.login-homepage-container {
+  background: linear-gradient(
+    135deg,
+    rgba(34, 193, 195, 1) 0%,
+    rgba(253, 187, 45, 1) 100%
+  );
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .login {
+    max-width: 500px;
+    min-width: 300px;
+    max-height: 900px;
+    width: 15%;
+    height: 60%;
+    background-color: #ffffff;
+    border-radius: 25px;
+    .login-text {
+      font-size: 24px;
+    }
+
+    .messageLogin-text {
+      font-size: 12px;
+      color: red;
+    }
+
+    .messageLogin-email {
+      font-size: 12px;
+      color: blue;
+    }
+    & > * {
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+
+    .login-form {
+      label {
+        font-size: 13px;
+      }
+
+      input {
+        font-size: 12px;
+      }
+
+      &-input-one:focus {
+        -webkit-box-shadow: 0px 0px 1px 1px rgb(192, 147, 147);
+        -moz-box-shadow: 0px 0px 1px 1px rgb(192, 147, 147);
+        box-shadow: 0px 0px 1px 1px rgb(192, 147, 147);
+      }
+
+      &-input-two:focus {
+        -webkit-box-shadow: 0px 0px 1px 1px rgb(192, 147, 147);
+        -moz-box-shadow: 0px 0px 1px 1px rgb(192, 147, 147);
+        box-shadow: 0px 0px 1px 1px rgb(192, 147, 147);
+      }
+    }
+
+    .login-btn {
+      background: linear-gradient(
+        135deg,
+        rgba(34, 193, 195, 1) 0%,
+        rgba(253, 187, 45, 1) 100%
+      );
+      font-size: 15px;
+      color: white;
+      font-weight: bold;
+    }
+
+    .login-forgot {
+      font-size: 11px;
+      opacity: 0.7;
+    }
+
+    .login-other {
+      font-size: 12px;
+      opacity: 0.7;
+    }
+  }
+}

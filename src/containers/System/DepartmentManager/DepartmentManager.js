@@ -1,8 +1,7 @@
 import "./DepartmentManager.scss";
 import React, { Fragment, useEffect, useState, useRef } from "react";
-import {Buffer} from 'buffer'
+import { Buffer } from "buffer";
 import { FiEdit } from "react-icons/fi";
-import { RiDeleteBack2Fill } from "react-icons/ri";
 import { BsEyeSlash } from "react-icons/bs";
 import { IoMdEye } from "react-icons/io";
 import { AiOutlineDelete } from "react-icons/ai";
@@ -10,7 +9,9 @@ import { ToastContainer, toast } from "react-toastify";
 import { BsPersonPlusFill } from "react-icons/bs";
 import { useContext } from "react";
 import { ContextScrollTop } from "../RootSystem";
-import {HiOutlinePencilAlt} from 'react-icons/hi'
+import { HiOutlinePencilAlt } from "react-icons/hi";
+
+import { useTranslation } from "react-i18next";
 
 import {
   createUserApi,
@@ -34,31 +35,33 @@ const DepartmentManager = () => {
   const [users, setUsers] = useState([]);
   const [eye, setEye] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [genderAPI, setGenderAPI] = useState([]);
+  // const [genderAPI, setGenderAPI] = useState([]);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [avatar, setAvatar] = useState("");
+  // const [avatar, setAvatar] = useState("");
   const [address, setAddress] = useState("");
-  const [gender, setGender] = useState("");
+  // const [gender, setGender] = useState("");
   const [notifyCheckState, setNotifyCheckState] = useState("");
-  const [previewAvatar, setPreviewAvatar] = useState("");
+  // const [previewAvatar, setPreviewAvatar] = useState("");
 
   //scroll top
   const scroll = useContext(ContextScrollTop);
+  const { t, i18n } = useTranslation();
+
   //ref
   const inputFileRef = useRef();
   useEffect(() => {
     setLoading(true);
-    const gender = "GENDER";
+    // const gender = "GENDER";
     setTimeout(async () => {
-      await getAllCodeApi.getByType({ type: gender }).then((data) => {
-        if (data?.codeNumber === 0) {
-          setGenderAPI(data.allCode);
-        }
-      });
+      // await getAllCodeApi.getByType({ type: gender }).then((data) => {
+      //   if (data?.codeNumber === 0) {
+      //     setGenderAPI(data.allCode);
+      //   }
+      // });
 
       await getUserApi.getUserByRole({ role: "R2" }).then((data) => {
         if (data?.codeNumber === 0) {
@@ -77,7 +80,7 @@ const DepartmentManager = () => {
       "FullName",
       "PhoneNumber",
       "Address",
-      "Gender",
+      // "Gender",
     ];
     const setStateArr = [
       setEmail,
@@ -85,7 +88,7 @@ const DepartmentManager = () => {
       setFullName,
       setPhoneNumber,
       setAddress,
-      setGender,
+      // setGender,
     ];
     for (let i = 0; i < stateArr.length; i++) {
       if (type === stateArr[i]) {
@@ -97,42 +100,51 @@ const DepartmentManager = () => {
     }
   };
 
-  const handleChangeAndPreviewImage = async (e) => {
-    let data = e.target.files;
-    let file = data[0];
-    if (file) {
-      let urlAvatar = URL.createObjectURL(file);
-      setPreviewAvatar(urlAvatar);
-      try {
-        const base64File = await convertFileToBase64(file);
-        setAvatar(base64File);
-      } catch (e) {
-        console.log("base64 file " + e);
-      }
-    }
-  };
+  // const handleChangeAndPreviewImage = async (e) => {
+  //   let data = e.target.files;
+  //   let file = data[0];
+  //   if (file) {
+  //     let urlAvatar = URL.createObjectURL(file);
+  //     setPreviewAvatar(urlAvatar);
+  //     try {
+  //       const base64File = await convertFileToBase64(file);
+  //       setAvatar(base64File);
+  //     } catch (e) {
+  //       console.log("base64 file " + e);
+  //     }
+  //   }
+  // };
 
   const handleCheckNullState = () => {
     let result = true;
-    const stateArr = [
-      email,
-      password,
-      fullName,
-      phoneNumber,
-      address,
-      gender,
-    ];
-    const notification = [
+    const stateArr = [email, password, fullName, phoneNumber, address];
+    const notification_en = [
       "Email",
       "Password",
       "FullName",
       "PhoneNumber",
       "Address",
-      "Gender",
+      // "Gender",
+    ];
+    const notification_vi = [
+      "Trường Email",
+      "Trường mật khẩu",
+      "Trường tên ",
+      "Trường số điện thoại",
+      "Trường địa chỉ",
+      // "Gender",
     ];
     for (let i = 0; i < stateArr.length; i++) {
       if (!stateArr[i]) {
-        setNotifyCheckState(`${notification[i]} is required`);
+        if (i18n.language === "vi") {
+          setNotifyCheckState(
+            `${notification_vi[i]} ${t("system.notification.required")}`
+          );
+        } else {
+          setNotifyCheckState(
+            `${notification_en[i]} ${t("system.notification.required")}`
+          );
+        }
         result = false;
         break;
       } else {
@@ -152,23 +164,19 @@ const DepartmentManager = () => {
       const rejexPhoneNumber = /\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/;
       const regexName = /^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$/;
       if (!regexEmail.test(email)) {
-        setNotifyCheckState("Please enter right form of email");
+        setNotifyCheckState(`${t("system.notification.email")}`);
         return false;
       }
       if (!regexPassword.test(password)) {
-        setNotifyCheckState(
-          `Password must to have minimum eight characters, at least one letter, one number and one special character`
-        );
+        setNotifyCheckState(`${t("system.notification.password")}`);
         return false;
       }
       if (!regexName.test(fullName)) {
-        setNotifyCheckState(
-          "Please enter right form of full name. VD: Bui Van A"
-        );
+        setNotifyCheckState(`${t("system.notification.name")}`);
         return false;
       }
       if (!rejexPhoneNumber.test(phoneNumber)) {
-        setNotifyCheckState("Please enter right form of phone number");
+        setNotifyCheckState(`${t("system.notification.phone")}`);
         return false;
       }
 
@@ -185,13 +193,15 @@ const DepartmentManager = () => {
         phoneNumber,
         roleId: "R2",
         address,
-        gender,
-        image: avatar,
+        // gender,
+        // image: avatar,
       };
       createUserApi.create({}, body).then(async (data) => {
         if (data?.codeNumber === 1) {
-          toast.error(data?.message, {
+          toast.error(`${t("system.notification.fail")}`, {
             autoClose: 2000,
+            position: "bottom-right",
+            theme: "colored",
           });
         } else {
           await getUserApi.getUserByRole({ role: "R2" }).then((data) => {
@@ -203,18 +213,20 @@ const DepartmentManager = () => {
           //     emitter.emit("CLEAR_DATA_MODAL");
           //   }
           // });
-          toast.success("Create a new user succeed", {
+          toast.success(`${t("system.notification.create")}`, {
             autoClose: 2000,
+            position: "bottom-right",
+            theme: "colored",
           });
           setEmail("");
           setPassword("");
           setFullName("");
           setPhoneNumber("");
           setAddress("");
-          setGender("");
-          setAvatar("");
-          setPreviewAvatar("");
-          inputFileRef.current.value = "";
+          // setGender("");
+          // setAvatar("");
+          // setPreviewAvatar("");
+          // inputFileRef.current.value = "";
         }
       });
     }
@@ -236,7 +248,9 @@ const DepartmentManager = () => {
   //   createUserApi.create({}, body).then((data) => {
   //     if (data?.codeNumber === 1) {
   //       toast.error(data?.message, {
-  //         autoClose: 2000,
+  //          autoClose: 2000,
+  // position: "bottom-right",
+  // theme: "colored"
   //       });
   //     } else {
   //       getUserApi.getAllUsers({ id: "All" }).then((data) => {
@@ -244,7 +258,9 @@ const DepartmentManager = () => {
   //           setUsers(data?.user);
   //           setIsCreateUser(false);
   //           toast.success("Create a new user succeed", {
-  //             autoClose: 2000,
+  //              autoClose: 2000,
+  // position: "bottom-right",
+  // theme: "colored"
   //           });
 
   //           //clear data modal
@@ -259,7 +275,9 @@ const DepartmentManager = () => {
   //   updateUserApi.update({}, body).then((data) => {
   //     if (data?.codeNumber === 1) {
   //       toast.error(data?.message, {
-  //         autoClose: 2000,
+  //          autoClose: 2000,
+  // position: "bottom-right",
+  // theme: "colored"
   //       });
   //     } else {
   //       getUserApi.getAllUsers({ id: "All" }).then((data) => {
@@ -267,7 +285,9 @@ const DepartmentManager = () => {
   //           setUsers(data?.user);
   //           setIsUpdateUser(false);
   //           toast.success("Update user succeed", {
-  //             autoClose: 2000,
+  //              autoClose: 2000,
+  // position: "bottom-right",
+  // theme: "colored"
   //           });
   //         }
   //       });
@@ -279,24 +299,24 @@ const DepartmentManager = () => {
   const isOpenUpdateUser = async (user) => {
     setLoading(true);
     setDataUserUpdate(user);
-    let base64File = "";
-    if (user?.image?.data) {
-       base64File = new Buffer(user.image.data, 'base64').toString('binary');
-    }
+    // let base64File = "";
+    // if (user?.image?.data) {
+    //   base64File = new Buffer(user.image.data, "base64").toString("binary");
+    // }
     setTimeout(async () => {
       setEmail(user?.email);
-      setPassword("permitUpdate1@");
+      setPassword("*************");
       setFullName(user?.fullName);
       setPhoneNumber(user?.phoneNumber);
       setAddress(user?.address);
-      setGender(user?.gender);
+      // setGender(user?.gender);
       setLoading(false);
       setIsUpdateUser(true);
-      if (base64File) {
-        setPreviewAvatar(base64File);
-      } else {
-        setPreviewAvatar("");
-      }
+      // if (base64File) {
+      //   setPreviewAvatar(base64File);
+      // } else {
+      //   setPreviewAvatar("");
+      // }
     }, 0);
   };
 
@@ -306,40 +326,44 @@ const DepartmentManager = () => {
       id: dataUserUpdate?.id,
       fullName,
       phoneNumber,
-      gender,
+      // gender,
       address,
-      image: avatar
+      // image: avatar,
     };
     setTimeout(() => {
-        updateUserApi.update({}, body).then(async (data) => {
-          if (data?.codeNumber === 1) {
-            toast.error(data?.message, {
-              autoClose: 2000,
-            });
-          } else {
-            await getUserApi.getUserByRole({ role: "R2" }).then((data) => {
-              if (data?.codeNumber === 0) {
-                setUsers(data.user);
-              }
-            });
-            toast.success("Update user succeed", {
-              autoClose: 2000,
-            });
-            setEmail("");
-            setPassword("");
-            setFullName("");
-            setPhoneNumber("");
-            setAddress("");
-            setGender("");
-            setIsUpdateUser(false);
-            setDataUserUpdate("");
-            setPreviewAvatar("");
-            inputFileRef.current.value = "";
-            setAvatar("");
-            setLoading(false)
-          }
-        });
-    }, 1000)
+      updateUserApi.update({}, body).then(async (data) => {
+        if (data?.codeNumber === 1) {
+          toast.error(`${t("system.notification.fail")}`, {
+            autoClose: 2000,
+            position: "bottom-right",
+            theme: "colored",
+          });
+        } else {
+          await getUserApi.getUserByRole({ role: "R2" }).then((data) => {
+            if (data?.codeNumber === 0) {
+              setUsers(data.user);
+            }
+          });
+          toast.success(`${t("system.notification.update")}`, {
+            autoClose: 2000,
+            position: "bottom-right",
+            theme: "colored",
+          });
+          setEmail("");
+          setPassword("");
+          setFullName("");
+          setPhoneNumber("");
+          setAddress("");
+          // setGender("");
+          setIsUpdateUser(false);
+          setDataUserUpdate("");
+          // setPreviewAvatar("");
+          // inputFileRef.current.value = "";
+          // setAvatar("");
+          setLoading(false);
+        }
+      });
+    }, 1000);
   };
 
   const handleCloseUpdateUser = () => {
@@ -348,13 +372,13 @@ const DepartmentManager = () => {
     setFullName("");
     setPhoneNumber("");
     setAddress("");
-    setGender("");
-    setAvatar("");
-    setPreviewAvatar("");
+    // setGender("");
+    // setAvatar("");
+    // setPreviewAvatar("");
     setIsUpdateUser(false);
     setDataUserUpdate("");
-    inputFileRef.current.value = "";
-  }
+    // inputFileRef.current.value = "";
+  };
 
   //delete user
   const isCloseDeleteUserModal = () => {
@@ -369,18 +393,22 @@ const DepartmentManager = () => {
     setTimeout(() => {
       deleteUserApi.delete({ id }).then((data) => {
         if (data?.codeNumber === 1) {
-          toast.error(data?.message, {
+          toast.error(`${t("system.notification.fail")}`, {
             autoClose: 2000,
+            position: "bottom-right",
+            theme: "colored",
           });
         } else {
           getUserApi.getUserByRole({ role: "R2" }).then((data) => {
             if (data?.codeNumber === 0) {
               setUsers(data.user);
               setLoading(false);
-              setDataUserDelete("")
+              setDataUserDelete("");
               setIsDeleteUser(false);
-              toast.success("Delete user succeed", {
+              toast.success(`${t("system.notification.delete")}`, {
                 autoClose: 2000,
+                position: "bottom-right",
+                theme: "colored",
               });
             }
           });
@@ -391,18 +419,19 @@ const DepartmentManager = () => {
 
   return (
     <Fragment>
-      <ToastContainer />
       <div
         className="mt-3 flex flex-col mx-auto pb-10"
         style={{ maxWidth: "80%", width: "80%" }}
       >
-        <p className="mx-auto text-2xl text-blue-600 font-semibold">
-         DEPARTMENT MANAGER
+        <ToastContainer />
+
+        <p className="mx-auto text-2xl text-blue-500 font-semibold">
+          {t("system.department.manager-department")}
         </p>
 
         <div
           className={`flex items-center justify-center mt-3 gap-1 py-2 px-1 text-white font-semibold rounded-md  ${
-            isUpdateUser ? "bg-backColor" : "bg-blue-700"
+            isUpdateUser ? "bg-backColor" : "bg-blue-500"
           }`}
           // type="text"
           // onClick={() => setIsCreateUser(true)}
@@ -413,7 +442,9 @@ const DepartmentManager = () => {
             style={{ fontSize: "16px" }}
             modal
           />
-          {isUpdateUser ? "Update Department" : "Create a new department"}
+          {isUpdateUser
+            ? t("system.department.update")
+            : t("system.department.create")}
         </div>
         {loading && <Loading />}
         <div className="flex overflow-hidden flex-col h-auto bg-slate-200 rounded-lg shadow backdrop-blur-md shadow-gray-300 mt-2 mb-1">
@@ -426,7 +457,12 @@ const DepartmentManager = () => {
             </span>
             <div className="w-full flex items-center justify-center gap-6">
               <div className="flex-1 flex flex-col justify-center">
-                <label htmlFor="email" className="mb-1 text-headingColor opacity-80 flex items-center gap-1">Email <HiOutlinePencilAlt /></label>
+                <label
+                  htmlFor="email"
+                  className="mb-1 text-headingColor opacity-80 flex items-center gap-1"
+                >
+                  {t("system.table.email")} <HiOutlinePencilAlt />
+                </label>
                 <input
                   className={`shadow-sm bg-gray-50 border border-gray-400 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-2 py-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light 
                   ${isUpdateUser ? "bg-blurColor opacity-30" : ""}`}
@@ -441,7 +477,12 @@ const DepartmentManager = () => {
                 />
               </div>
               <div className="flex-1 flex flex-col justify-center relative">
-                <label htmlFor="password" className="mb-1 text-headingColor opacity-80 flex items-center gap-1">Password <HiOutlinePencilAlt /></label>
+                <label
+                  htmlFor="password"
+                  className="mb-1 text-headingColor opacity-80 flex items-center gap-1"
+                >
+                  {t("system.table.password")} <HiOutlinePencilAlt />
+                </label>
                 <input
                   className={`shadow-sm bg-gray-50 border border-gray-400 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-2 py-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light 
                   ${isUpdateUser ? "bg-blurColor opacity-30" : ""}`}
@@ -471,7 +512,12 @@ const DepartmentManager = () => {
 
             <div className="w-full flex items-center justify-center gap-6 mt-3">
               <div className="flex-1 flex flex-col justify-center">
-                <label htmlFor="name" className="mb-1 text-headingColor opacity-80 flex items-center gap-1">FullName <HiOutlinePencilAlt /></label>
+                <label
+                  htmlFor="name"
+                  className="mb-1 text-headingColor opacity-80 flex items-center gap-1"
+                >
+                  {t("system.table.name")} <HiOutlinePencilAlt />
+                </label>
                 <input
                   className="shadow-sm bg-gray-50 border border-gray-400 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-2 py-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
                   name="name"
@@ -482,11 +528,15 @@ const DepartmentManager = () => {
                     handleChangeEvent(e.target.value, "FullName")
                   }
                   onFocus={() => setNotifyCheckState("")}
+                  placeholder="VD: Phòng Công Tác Sinh Viên"
                 />
               </div>
               <div className="flex-1 flex flex-col justify-center">
-                <label htmlFor="phone" className="mb-1 text-headingColor opacity-80 flex items-center gap-1">
-                  PhoneNumber <HiOutlinePencilAlt />
+                <label
+                  htmlFor="phone"
+                  className="mb-1 text-headingColor opacity-80 flex items-center gap-1"
+                >
+                  {t("system.table.phone")} <HiOutlinePencilAlt />
                 </label>
                 <input
                   className=" shadow-sm bg-gray-50 border border-gray-400 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-2 py-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
@@ -504,7 +554,12 @@ const DepartmentManager = () => {
 
             <div className="w-full flex items-center justify-center gap-6 mt-3">
               <div className="flex flex-col justify-center flex-1">
-                <label htmlFor="address" className="mb-1 text-headingColor opacity-80 flex items-center gap-1">Address <HiOutlinePencilAlt /></label>
+                <label
+                  htmlFor="address"
+                  className="mb-1 text-headingColor opacity-80 flex items-center gap-1"
+                >
+                  {t("system.table.address")} <HiOutlinePencilAlt />
+                </label>
                 <input
                   className=" shadow-sm bg-gray-50 border border-gray-400 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-2 py-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
                   name="address"
@@ -513,13 +568,19 @@ const DepartmentManager = () => {
                   value={address}
                   onChange={(e) => handleChangeEvent(e.target.value, "Address")}
                   onFocus={() => setNotifyCheckState("")}
+                  placeholder="VD: Phòng 235 Toà E3"
                 />
               </div>
             </div>
 
-            <div className="w-full flex items-center justify-center gap-6 mt-3">
+            {/* <div className="w-full flex items-center justify-center gap-6 mt-3">
               <div className="flex-1 flex flex-col justify-center">
-                <label htmlFor="gender" className="mb-1 text-headingColor opacity-80 flex items-center gap-1">Gender <HiOutlinePencilAlt /></label>
+                <label
+                  htmlFor="gender"
+                  className="mb-1 text-headingColor opacity-80 flex items-center gap-1"
+                >
+                  {t("system.table.gender")} <HiOutlinePencilAlt />
+                </label>
                 <select
                   className=" shadow-sm bg-gray-50 border border-gray-400 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-2 py-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
                   name="gender"
@@ -543,8 +604,11 @@ const DepartmentManager = () => {
                 </select>
               </div>
               <div className="flex-1 flex-col justify-center flex">
-                <label className="mb-1 text-headingColor opacity-80 flex items-center gap-1" htmlFor="file_input">
-                  Avatar
+                <label
+                  className="mb-1 text-headingColor opacity-80 flex items-center gap-1"
+                  htmlFor="file_input"
+                >
+                  {t("system.table.avatar")}
                 </label>
                 <input
                   className="block w-full text-sm text-gray-900 border border-gray-400 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
@@ -555,13 +619,14 @@ const DepartmentManager = () => {
                   ref={inputFileRef}
                 />
               </div>
-            </div>
+            </div> */}
 
             <div className="w-full flex item-center justify-start mt-3 gap-6">
               <span className="text-red-500 font-semibold flex-1 flex items-center gap-1">
-                All Field have <HiOutlinePencilAlt /> is required
+                {t("system.table.mess-1")} <HiOutlinePencilAlt />{" "}
+                {t("system.table.mess-2")}
               </span>
-              {previewAvatar && (
+              {/* {previewAvatar && (
                 <div className="w-full h-24 flex-1">
                   <div
                     style={{
@@ -574,14 +639,14 @@ const DepartmentManager = () => {
                     }}
                   ></div>
                 </div>
-              )}
+              )} */}
             </div>
 
             <div className="flex items-center gap-5">
               <button
                 className={`${
-                  isUpdateUser ? "bg-backColor" : "bg-blue-600"
-                } text-white mt-6 py-2 px-1 font-semibold rounded-md shadow backdrop-blur-md bg-opacity-80 hover:bg-opacity-100`}
+                  isUpdateUser ? "bg-backColor" : "bg-blue-500"
+                } text-white mt-6 py-2 px-1 font-semibold rounded-md shadow backdrop-blur-md bg-opacity-100 hover:bg-opacity-80`}
                 style={{ maxWidth: "15%", width: "15%" }}
                 onClick={
                   isUpdateUser
@@ -589,25 +654,25 @@ const DepartmentManager = () => {
                     : () => handleCreateNewUser()
                 }
               >
-                {isUpdateUser ? "Save Changes" : "Add new"}
+                {isUpdateUser
+                  ? t("system.department.save")
+                  : t("system.department.add")}
               </button>
-             {
-              isUpdateUser && (
+              {isUpdateUser && (
                 <button
-                className={` text-white mt-6 py-2 px-1 font-semibold rounded-md shadow backdrop-blur-md bg-opacity-80 hover:bg-opacity-100 bg-blue-600`}
-                style={{ maxWidth: "10%", width: "10%" }}
-                onClick={() => handleCloseUpdateUser()}
-              >
-                Close
-              </button>
-              )
-             }
+                  className={` text-white mt-6 py-2 px-1 font-semibold rounded-md shadow backdrop-blur-md bg-opacity-100 hover:bg-opacity-80 bg-blue-500`}
+                  style={{ maxWidth: "10%", width: "10%" }}
+                  onClick={() => handleCloseUpdateUser()}
+                >
+                  {t("system.department.close")}
+                </button>
+              )}
             </div>
           </div>
 
           {/* <RiDeleteBack2Fill
             className="absolute top-2 right-2 text-white text-xl cursor-pointer" */}
-            {/* // onClick={() => isClose()} */}
+          {/* // onClick={() => isClose()} */}
           {/* /> */}
 
           {/* <AiOutlineClose
@@ -620,12 +685,12 @@ const DepartmentManager = () => {
           <table className="mt-20">
             <thead>
               <tr>
-                <th>FullName</th>
-                <th>Email</th>
-                <th>Address</th>
-                <th>Gender</th>
-                <th>PhoneNumber</th>
-                <th>Actions</th>
+                <th>{t("system.table.name")}</th>
+                <th>{t("system.table.email")}</th>
+                <th>{t("system.table.address")}</th>
+                {/* <th>{t("system.table.gender")}</th> */}
+                <th>{t("system.table.phone")}</th>
+                <th>{t("system.table.action")}</th>
               </tr>
             </thead>
             <tbody>
@@ -635,13 +700,13 @@ const DepartmentManager = () => {
                     <td>{user?.fullName}</td>
                     <td>{user?.email}</td>
                     <td>{user?.address}</td>
-                    <td>
+                    {/* <td>
                       {user?.gender === "M"
                         ? "Male"
                         : user?.gender === "F"
                         ? "Female"
                         : "Other"}
-                    </td>
+                    </td> */}
                     <td>{user?.phoneNumber}</td>
                     <td>
                       <div className="flex items-center justify-center gap-6">
