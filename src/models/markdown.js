@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class MarkDown extends Model {
     /**
@@ -11,30 +9,38 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-    //   MarkDown.belongsTo(models.AllCode, {
-    //     foreignKey: "positionId",
-    //     targetKey: "keyMap",
-    //     as: "positionData"
-    //   }),
-    //   MarkDown.belongsTo(models.AllCode, {
-    //     foreignKey: "gender",
-    //     targetKey: "keyMap",
-    //     as: "genderData"
-    //   })
-    MarkDown.belongsTo(models.User, {
+      //   MarkDown.belongsTo(models.AllCode, {
+      //     foreignKey: "positionId",
+      //     targetKey: "keyMap",
+      //     as: "positionData"
+      //   }),
+      //   MarkDown.belongsTo(models.AllCode, {
+      //     foreignKey: "gender",
+      //     targetKey: "keyMap",
+      //     as: "genderData"
+      //   })
+      MarkDown.belongsTo(models.OtherUser, {
         foreignKey: "userId",
-        as: "markdownData"
-      })
+        as: "markdownData_other",
+      }),
+        MarkDown.belongsTo(models.Teacher, {
+          foreignKey: "userId",
+          as: "markdownData_teacher",
+        });
     }
   }
-  MarkDown.init({
-  markdownHtml: DataTypes.TEXT('long'),
-  markdownText: DataTypes.TEXT('long'),
-  description: DataTypes.TEXT('long'),
-  userId: DataTypes.INTEGER,
-  }, {
-    sequelize,
-    modelName: 'MarkDown',
-  });
+  MarkDown.init(
+    {
+      markdownHtml: DataTypes.TEXT("long"),
+      markdownText: DataTypes.TEXT("long"),
+      description: DataTypes.TEXT("long"),
+      userId: DataTypes.INTEGER,
+      type: DataTypes.STRING,
+    },
+    {
+      sequelize,
+      modelName: "MarkDown",
+    }
+  );
   return MarkDown;
 };

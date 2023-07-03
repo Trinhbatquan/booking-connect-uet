@@ -3,10 +3,7 @@ const db = require("../models");
 const getTeacherService = (limit) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const data = await db.User.findAll({
-        where: {
-          roleId: "R5",
-        },
+      const data = await db.Teacher.findAll({
         attributes: {
           exclude: ["password"],
         },
@@ -21,12 +18,17 @@ const getTeacherService = (limit) => {
             as: "genderData",
             attributes: ["valueEn", "valueVn"],
           },
+          {
+            model: db.OtherUser,
+            as: "facultyData",
+            attributes: ["fullName"],
+          },
         ],
         order: [
           ["createdAt", "DESC"],
           ["updatedAt", "DESC"],
         ],
-        limit: +limit,
+        limit: limit ? +limit : null,
         raw: true,
         nest: true, //fix result.get is not a function
       });
@@ -40,11 +42,7 @@ const getTeacherService = (limit) => {
 const getOneTeacherService = (id) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const data = await db.User.findOne({
-        where: {
-          roleId: "R5",
-          id,
-        },
+      const data = await db.Teacher.findOne({
         attributes: {
           exclude: ["password"],
         },
@@ -61,10 +59,16 @@ const getOneTeacherService = (id) => {
           },
           {
             model: db.MarkDown,
-            as: "markdownData",
+            as: "markdownData_teacher",
             attributes: ["markdownHtml", "markdownText", "description"],
+            where: {
+              type: "teacher",
+            },
           },
         ],
+        where: {
+          id,
+        },
         raw: true,
         nest: true, //fix result.get is not a function
       });

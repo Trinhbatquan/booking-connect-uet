@@ -3,6 +3,7 @@ require("dotenv/config");
 const {
   loginSystemService,
   loginHomePageService,
+  registerHomePageService,
   verificationEmailService,
   getUserService,
   createNewUserService,
@@ -25,7 +26,7 @@ const loginSystem = async (req, res) => {
     } else {
       const data = await loginSystemService(email, password);
       if (data?.codeNumber === 0) {
-        const { email, roleId } = data?.user;
+        const { email, roleId, fullName } = data?.user;
         const token = await createTokenRandom(email, roleId, "system");
         return res
           .cookie("access_token_booking_UET_system", token, {
@@ -62,18 +63,23 @@ const logoutSystemController = async (req, res) => {
   }
 };
 
-const loginHomePage = async (req, res) => {
-  const { email, password } = req.body;
-  if (!email || !password) {
+const registerHomePage = async (req, res) => {
+  const { email, password, fullName, faculty } = req.body;
+  if (!email || !password || !fullName || !faculty) {
     return res.status(400).send({
       codeNumber: 1,
-      message: "Email and Password are required.",
+      message: "Missing parameters.",
     });
   } else {
     try {
       const checkVNU = email.split("@")[1];
       if (checkVNU && checkVNU === process.env.EMAIL_VNU) {
-        let data = await loginHomePageService(email, password);
+        let data = await registerHomePageService(
+          email,
+          password,
+          fullName,
+          faculty
+        );
         if (data?.codeNumber === 0) {
           const { email, roleId } = data?.user;
           const token = await createTokenRandom(email, roleId, "student");
@@ -92,7 +98,65 @@ const loginHomePage = async (req, res) => {
       } else {
         return res.status(400).send({
           codeNumber: 1,
-          message: "Not student of UET",
+          message: "Please use email of UET.",
+        });
+      }
+    } catch (e) {
+      console.log(e);
+      res.status(400).send({
+        codeNumber: -1,
+        message: "Not register home page",
+      });
+    }
+  }
+};
+
+const loginHomePage = async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).send({
+      codeNumber: 1,
+      message: "Email and Password are required.",
+    });
+  } else {
+    try {
+      const checkVNU = email.split("@")[1];
+      if (checkVNU && checkVNU === process.env.EMAIL_VNU) {
+        let data = await loginHomePageService(email, password);
+        if (data?.codeNumber === 0) {
+          const { email, roleId } = data?.user;
+          const token = await createTokenRandom(email, roleId, "student");
+          const old_token = await req.cookies.access_token_booking_UET_homepage;
+          if (old_token) {
+            return (
+              res
+                //  .cookie("access_token_booking_UET_homepage", token, {
+                //    httpOnly: true,
+                //    secure: true,
+                //    sameSite: "lax",
+                //    expires: new Date(Date.now() + 30 * 24 * 3600000), //1 month
+                //  })
+                .status(200)
+                .send(data)
+            );
+          } else {
+            return res
+              .cookie("access_token_booking_UET_homepage", token, {
+                httpOnly: true,
+                secure: true,
+                sameSite: "lax",
+                expires: new Date(Date.now() + 30 * 24 * 3600000), //1 month
+              })
+              .status(200)
+              .send(data);
+          }
+        } else {
+          return res.status(401).send(data);
+        }
+      } else {
+        return res.status(400).send({
+          codeNumber: 1,
+          message: "Please enter email of UET.",
         });
       }
     } catch (e) {
@@ -190,22 +254,44 @@ const getUserByRoleController = async (req, res) => {
 };
 
 const createUserController = async (req, res) => {
-  const data = await createNewUserService(req.body);
-  return res.send(data);
+  try {
+    const data = await createNewUserService(req.body);
+    return res.status(200).json(data);
+  } catch (e) {
+    return res.status(501).json({
+      codeNumber: -1,
+      message: "error",
+    });
+  }
 };
 
 const editUserController = async (req, res) => {
-  const data = await editUserService(req.body);
-  return res.send(data);
+  try {
+    const data = await editUserService(req.body);
+    return res.status(200).json(data);
+  } catch (e) {
+    return res.status(501).json({
+      codeNumber: -1,
+      message: "error",
+    });
+  }
 };
 
 const deleteUserController = async (req, res) => {
-  const data = await deleteUserService(req.query);
-  return res.send(data);
+  try {
+    const data = await deleteUserService(req.query);
+    return res.status(200).json(data);
+  } catch (e) {
+    return res.status(501).json({
+      codeNumber: -1,
+      message: "error",
+    });
+  }
 };
 
 module.exports = {
   loginSystem,
+  registerHomePage,
   loginHomePage,
   logoutSystemController,
   logoutHomePageController,

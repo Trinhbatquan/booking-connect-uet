@@ -7,12 +7,12 @@ const {
 
 const getTeacherController = async (req, res) => {
   const { limit } = req.query;
-  if (!limit) {
-    res.status(400).send({
-      codeNumber: 1,
-      message: "Missing parameter limit",
-    });
-  }
+  // if (!limit) {
+  //   res.status(400).send({
+  //     codeNumber: 1,
+  //     message: "Missing parameter limit",
+  //   });
+  // }
   try {
     const data = await getTeacherService(limit);
     res.status(200).send({

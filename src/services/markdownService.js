@@ -5,7 +5,8 @@ const createMarkDownService = async (
   markdownText,
   description,
   userId,
-  action
+  action,
+  type
 ) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -15,6 +16,7 @@ const createMarkDownService = async (
           markdownText,
           description,
           userId,
+          type,
         });
         resolve({
           codeNumber: 0,
@@ -30,6 +32,7 @@ const createMarkDownService = async (
           {
             where: {
               userId,
+              type,
             },
           }
         );
@@ -44,12 +47,13 @@ const createMarkDownService = async (
   });
 };
 
-const getMarkDownByIdService = async (id) => {
+const getMarkDownByIdService = async (id, type) => {
   return new Promise(async (resolve, reject) => {
     try {
       const data = await db.MarkDown.findOne({
         where: {
           userId: id,
+          type,
         },
       });
       if (data?.userId || data?.markdownHtml) {

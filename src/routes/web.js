@@ -7,6 +7,7 @@ const {
   editUserController,
   deleteUserController,
   getUserByRoleController,
+  registerHomePage,
   loginHomePage,
   logoutHomePageController,
   verificationEmailController,
@@ -29,7 +30,11 @@ const {
   deleteScheduleController,
 } = require("../controllers/scheduleController");
 
-const checkExpiredToken = require("../middleware/protectToken");
+const {
+  checkExpiredToken,
+  protectAdminToken,
+  protectUserToken,
+} = require("../middleware/protectToken");
 
 let router = express.Router();
 
@@ -39,28 +44,59 @@ const initWebRoutes = (app) => {
   router.get("/api/system/logout", logoutSystemController);
 
   //system administration api
-  router.get("/api/user", getUserController);
-  router.post("/api/create-new-user", createUserController);
-  router.put("/api/edit-user", editUserController);
-  router.delete("/api/delete-user", deleteUserController);
-  router.get("/api/user_by_role", getUserByRoleController);
+  router.get("/api/user", getUserController); //other user
+  router.post(
+    "/api/create-new-user",
+    (req, res, next) => checkExpiredToken(req, res, next, "system"),
+    protectAdminToken,
+    createUserController
+  ); //type
+  router.put(
+    "/api/edit-user",
+    (req, res, next) => checkExpiredToken(req, res, next, "system"),
+    protectAdminToken,
+    editUserController
+  ); //type
+  router.delete(
+    "/api/delete-user",
+    (req, res, next) => checkExpiredToken(req, res, next, "system"),
+    protectAdminToken,
+    deleteUserController
+  ); //type
+  router.get("/api/user_by_role", getUserByRoleController); //other user
 
   router.get("/api/allCode_type", getAllCodeByType);
 
-  router.get("/api/teacher", getTeacherController);
-  router.get("/api/one-teacher", getOneTeacherController);
+  router.get("/api/teacher", getTeacherController); //teacher
+  router.get("/api/one-teacher", getOneTeacherController); //teacher
 
-  router.post("/api/create-markdown", createMarkDownController);
+  router.post(
+    "/api/create-markdown",
+    (req, res, next) => checkExpiredToken(req, res, next, "system"),
+    protectAdminToken,
+    createMarkDownController
+  );
   router.get("/api/get-markdown", getMarkDownController);
 
-  router.post("/api/create-schedule", createScheduleController);
+  router.post(
+    "/api/create-schedule",
+    (req, res, next) => checkExpiredToken(req, res, next, "system"),
+    protectAdminToken,
+    createScheduleController
+  );
   router.get("/api/get-schedule-system", getScheduleSystemController);
-  router.delete("/api/delete-schedule", deleteScheduleController);
+  router.delete(
+    "/api/delete-schedule",
+    (req, res, next) => checkExpiredToken(req, res, next, "system"),
+    protectAdminToken,
+    deleteScheduleController
+  );
 
-  router.post("/api/create-teacher_info", createTeacherInfoController);
-  router.get("/api/get-teacher_info", getTeacherInfoController);
+  // router.post("/api/create-teacher_info", createTeacherInfoController);
+  // router.get("/api/get-teacher_info", getTeacherInfoController);
 
   //home page api
+  router.post("/api/homepage/register", registerHomePage);
   router.post("/api/homepage/login", loginHomePage);
   router.get("/api/homepage/logout", logoutHomePageController);
   router.get("/api/users/verify/emailUrl", verificationEmailController);

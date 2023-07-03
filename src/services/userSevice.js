@@ -22,37 +22,70 @@ const createNewUserService = async (data) => {
     roleId,
     phoneNumber,
     image,
-    position,
+    positionId,
+    facultyId,
+    note,
+    type,
   } = data;
-  const userExist = await db.User.findOne({
-    where: {
-      email,
-    },
-  });
-  if (userExist) {
-    return {
-      codeNumber: 1,
-      message: "Email is existed. Please try other email.",
-    };
-  }
   const hashPs = await hashPassword(password);
+
   return new Promise(async (resolve, reject) => {
     try {
-      await db.User.create({
-        email,
-        password: hashPs,
-        fullName,
-        address,
-        gender: gender || null,
-        roleId,
-        phoneNumber: phoneNumber || null,
-        image: image || null,
-        positionId: position || null,
-      });
-      resolve({
-        codeNumber: 0,
-        message: "Create New User Succeed",
-      });
+      if (type === "teacher") {
+        const teacherExist = await db.Teacher.findOne({
+          where: {
+            email,
+          },
+        });
+        if (teacherExist) {
+          resolve({
+            codeNumber: 1,
+            message: "Email is existed. Please try other email.",
+          });
+        } else {
+          await db.Teacher.create({
+            email,
+            password: hashPs,
+            fullName,
+            address,
+            gender,
+            positionId,
+            phoneNumber,
+            facultyId,
+            note,
+            image: image || null,
+          });
+          resolve({
+            codeNumber: 0,
+            message: "Create Teacher Succeed",
+          });
+        }
+      } else if (type === "otherUser") {
+        const otherUserExist = await db.OtherUser.findOne({
+          where: {
+            email,
+          },
+        });
+        if (otherUserExist) {
+          resolve({
+            codeNumber: 1,
+            message: "Email is existed. Please try other email.",
+          });
+        } else {
+          await db.OtherUser.create({
+            email,
+            password: hashPs,
+            fullName,
+            address,
+            roleId,
+            phoneNumber,
+          });
+          resolve({
+            codeNumber: 0,
+            message: "Create OtherUser Succeed",
+          });
+        }
+      }
     } catch (e) {
       reject(e);
     }
@@ -71,24 +104,43 @@ const hashPassword = async (password) => {
 };
 
 //login
-const checkExists = (email) => {
+const checkExists = (email, type) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const exist = await db.User.findOne({
-        where: {
-          email: email,
-        },
-        raw: true,
-      });
-      if (exist) {
-        resolve({
-          status: true,
-          user: exist,
+      if (type === "student") {
+        const exist = await db.Student.findOne({
+          where: {
+            email: email,
+          },
+          raw: true,
         });
+        if (exist) {
+          resolve({
+            status: true,
+            user: exist,
+          });
+        } else {
+          resolve({
+            status: false,
+          });
+        }
       } else {
-        resolve({
-          status: false,
+        const exist = await db.OtherUser.findOne({
+          where: {
+            email: email,
+          },
+          raw: true,
         });
+        if (exist) {
+          resolve({
+            status: true,
+            user: exist,
+          });
+        } else {
+          resolve({
+            status: false,
+          });
+        }
       }
     } catch (e) {
       reject(e);
@@ -97,39 +149,78 @@ const checkExists = (email) => {
 };
 
 const loginSystemService = async (email, password) => {
-  //check exist
-  const exist = await checkExists(email);
-  console.log(exist);
-  if (!exist?.status) {
-    return {
-      codeNumber: 1,
-      message: "Email isn't exist. Please try a other email.",
-    };
-  } else {
-    return new Promise(async (resolve, reject) => {
-      //check Password
-      try {
-        const user = await db.User.findOne({
+  return new Promise(async (resolve, reject) => {
+    try {
+      const user = await db.Admin.findOne({
+        where: {
+          email: email,
+        },
+        raw: true,
+      });
+      if (user) {
+        const checkPassword = await bcrypt.compare(password, user?.password);
+        if (!checkPassword) {
+          resolve({
+            codeNumber: 1,
+            message: "Password is wrong. Please try again.",
+          });
+        } else {
+          resolve({
+            codeNumber: 0,
+            message: "Login OK",
+            user: {
+              fullName: user?.fullName,
+              email: user?.email,
+              roleId: "R1",
+            },
+          });
+        }
+      } else if (!user) {
+        const otherUser = await db.OtherUser.findOne({
           where: {
             email: email,
           },
           raw: true,
         });
-        console.log(user);
-        if (!user) {
-          resolve({
-            codeNumber: 1,
-            message:
-              "Email isn't exist in the system. Please try a other email.",
+        if (!otherUser) {
+          const teacher = await db.Teacher.findOne({
+            where: {
+              email: email,
+            },
+            raw: true,
           });
-        } else if (user?.roleId === "R3") {
-          resolve({
-            codeNumber: 1,
-            message: "You don't have permission to access this system",
-          });
+          if (!teacher) {
+            resolve({
+              codeNumber: 1,
+              message: "Email isn't exist. Please try a other email.",
+            });
+          } else {
+            const checkPassword = await bcrypt.compare(
+              password,
+              teacher?.password
+            );
+            if (!checkPassword) {
+              resolve({
+                codeNumber: 1,
+                message: "Password is wrong. Please try again.",
+              });
+            } else {
+              resolve({
+                codeNumber: 0,
+                message: "Login OK",
+                user: {
+                  fullName: teacher?.fullName,
+                  email: teacher?.email,
+                  roleId: "R5",
+                },
+              });
+            }
+          }
         } else {
-          const checkPassword = await bcrypt.compare(password, user?.password);
-          console.log(checkPassword);
+          const checkPassword = await bcrypt.compare(
+            password,
+            otherUser?.password
+          );
           if (!checkPassword) {
             resolve({
               codeNumber: 1,
@@ -140,23 +231,24 @@ const loginSystemService = async (email, password) => {
               codeNumber: 0,
               message: "Login OK",
               user: {
-                email: user?.email,
-                roleId: user?.roleId,
+                fullName: otherUser?.fullName,
+                email: otherUser?.email,
+                roleId: otherUser?.roleId,
               },
             });
           }
         }
-      } catch (e) {
-        reject(e);
       }
-    });
-  }
+    } catch (e) {
+      reject(e);
+    }
+  });
 };
 
-const loginHomePageService = async (email, password) => {
+const registerHomePageService = (email, password, fullName, faculty) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const exist = await checkExists(email);
+      const exist = await checkExists(email, "student");
       const hashPs = await hashPassword(password);
 
       if (!exist?.status) {
@@ -165,14 +257,14 @@ const loginHomePageService = async (email, password) => {
           email,
           process.env.SECRET_KEY_STUDENT
         ).toString();
-        console.log(token);
-        await db.User.create({
+        await db.Student.create({
           email,
           password: hashPs,
-          roleId: "R3",
+          fullName,
+          faculty,
           verified: false,
         });
-        const user = await db.User.findOne({
+        const user = await db.Student.findOne({
           where: {
             email,
           },
@@ -187,20 +279,13 @@ const loginHomePageService = async (email, password) => {
         await sendEmail(email, "Verify Email", url);
         resolve({
           codeNumber: 2,
-          message: "An Email sent to your account. Please verify",
+          message: "An Email sent to your account. Please verify.",
         });
       } else if (exist?.status && !exist?.user?.verified) {
-        if (exist?.user?.roleId !== "R3") {
-          resolve({
-            codeNumber: 3,
-            message: "You are not the student",
-          });
-        }
         const checkPassword = await bcrypt.compare(
           password,
           exist.user.password
         );
-        console.log(checkPassword);
         if (!checkPassword) {
           resolve({
             codeNumber: 3,
@@ -211,7 +296,6 @@ const loginHomePageService = async (email, password) => {
             email,
             process.env.SECRET_KEY_STUDENT
           ).toString();
-          console.log(token);
           await db.TokenEmail.update(
             {
               token: token,
@@ -231,32 +315,107 @@ const loginHomePageService = async (email, password) => {
           });
         }
       } else if (exist?.status && exist?.user?.verified) {
-        if (exist?.user?.roleId !== "R3") {
+        const checkPassword = await bcrypt.compare(
+          password,
+          exist?.user?.password
+        );
+        if (!checkPassword) {
           resolve({
             codeNumber: 3,
-            message: "You are not the student",
+            message: "Password is wrong. Please try again.",
           });
         } else {
-          const checkPassword = await bcrypt.compare(
-            password,
-            exist?.user?.password
-          );
-          console.log(checkPassword);
-          if (!checkPassword) {
-            resolve({
-              codeNumber: 3,
-              message: "Password is wrong. Please try again.",
-            });
-          } else {
-            resolve({
-              codeNumber: 0,
-              message: "Login OK",
-              user: {
-                email: exist?.user?.email,
-                roleId: exist?.user?.roleId,
-              },
-            });
-          }
+          resolve({
+            codeNumber: 0,
+            message: "Login OK",
+            user: {
+              fullName: exist?.user?.fullName,
+              email: exist?.user?.email,
+              roleId: "R3",
+            },
+          });
+        }
+      }
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const loginHomePageService = async (email, password) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      // const exist = await checkExists(email);
+      // const hashPs = await hashPassword(password);
+
+      // if (!exist?.status) {
+      // }
+      //   else if (exist?.status && !exist?.user?.verified) {
+      //   if (exist?.user?.roleId !== "R3") {
+      //     resolve({
+      //       codeNumber: 3,
+      //       message: "You are not the student",
+      //     });
+      //   }
+      //   const checkPassword = await bcrypt.compare(
+      //     password,
+      //     exist.user.password
+      //   );
+      //   if (!checkPassword) {
+      //     resolve({
+      //       codeNumber: 3,
+      //     });
+      //   } else {
+      //     let token = crypto.AES.encrypt(
+      //       email,
+      //       process.env.SECRET_KEY_STUDENT
+      //     ).toString();
+      //     await db.TokenEmail.update(
+      //       {
+      //         token: token,
+      //       },
+      //       {
+      //         where: {
+      //           userId: exist.user.id,
+      //         },
+      //       }
+      //     );
+      //     token = encodeURIComponent(token);
+      //     const url = `${process.env.BASE_URL_FRONTEND}/users/${exist.user.id}/verify/${token}`;
+      //     await sendEmail(email, "Verify Email", url);
+      //     resolve({
+      //       codeNumber: 2,
+      //       message: "An Email sent to your account. Please verify",
+      //     });
+      //   }
+      // }
+      const student = await db.Student.findOne({
+        where: {
+          email,
+        },
+      });
+      if (!student || !student?.verified) {
+        resolve({
+          codeNumber: 3,
+          message: "Please register to use system.",
+        });
+      } else {
+        const checkPassword = await bcrypt.compare(password, student?.password);
+        if (!checkPassword) {
+          resolve({
+            codeNumber: 3,
+            message: "Password is wrong. Please try again.",
+          });
+        } else {
+          resolve({
+            codeNumber: 0,
+            message: "Login OK",
+            user: {
+              fullName: student?.fullName,
+              email: student?.email,
+              roleId: "R3",
+            },
+          });
         }
       }
     } catch (e) {
@@ -269,7 +428,7 @@ const verificationEmailService = (req) => {
   return new Promise(async (resolve, reject) => {
     try {
       const token = decodeURIComponent(req.query.token);
-      const user = await db.User.findOne({
+      const user = await db.Student.findOne({
         where: { id: req.query.id },
       });
       if (!user)
@@ -304,7 +463,7 @@ const verificationEmailService = (req) => {
         });
       }
 
-      await db.User.update(
+      await db.Student.update(
         {
           verified: true,
         },
@@ -323,8 +482,9 @@ const verificationEmailService = (req) => {
         codeNumber: 0,
         message: "Email verified successfully",
         user: {
+          fullName: user?.fullName,
           email: user?.email,
-          roleId: user?.roleId,
+          roleId: "R3",
         },
       });
     } catch (e) {
@@ -333,47 +493,29 @@ const verificationEmailService = (req) => {
   });
 };
 
-//getUser
+//getOtherUserById
 const getUserService = (userId) => {
   return new Promise(async (resolve, reject) => {
     try {
-      if (userId === "All") {
-        const allUser = await db.User.findAll({
-          attributes: {
-            exclude: ["password"],
-          },
-          where: {
-            roleId: {
-              [Op.ne]: "R1",
-            },
-          },
-        });
+      const user = await db.OtherUser.findOne({
+        where: {
+          id: userId,
+        },
+        attributes: {
+          exclude: ["password"],
+        },
+      });
+      if (user) {
         resolve({
           codeNumber: 0,
           message: "get user succeed",
-          user: allUser,
+          user,
         });
-      } else if (userId && userId !== "All") {
-        const user = await db.User.findOne({
-          where: {
-            id: userId,
-          },
-          attributes: {
-            exclude: ["password"],
-          },
+      } else {
+        resolve({
+          codeNumber: 1,
+          message: "no find user",
         });
-        if (user) {
-          resolve({
-            codeNumber: 0,
-            message: "get user succeed",
-            user,
-          });
-        } else {
-          resolve({
-            codeNumber: 1,
-            message: "no find user",
-          });
-        }
       }
     } catch (e) {
       reject(e);
@@ -381,11 +523,23 @@ const getUserService = (userId) => {
   });
 };
 
-//get User By Role
+//get User By Role - other user
 const getUserByRoleService = (role) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const allUserByRole = await db.User.findAll({
+      // if (role === "R5") {
+      //   const allTeacherByRole = await db.User.findAll({
+      //     attributes: {
+      //       exclude: ["password"],
+      //     },
+      //     order: [
+      //       ["createdAt", "DESC"],
+      //       ["updatedAt", "DESC"],
+      //     ],
+      //   });
+      //   resolve(allTeacherByRole);
+      // } else {
+      const allOtherUserByRole = await db.OtherUser.findAll({
         where: {
           roleId: role,
         },
@@ -397,7 +551,8 @@ const getUserByRoleService = (role) => {
           ["updatedAt", "DESC"],
         ],
       });
-      resolve(allUserByRole);
+      resolve(allOtherUserByRole);
+      // }
     } catch (e) {
       reject(e);
     }
@@ -406,45 +561,92 @@ const getUserByRoleService = (role) => {
 
 //editUser
 const editUserService = async (data) => {
-  const { id, fullName, address, gender, phoneNumber, image, position } = data;
+  const {
+    id,
+    fullName,
+    address,
+    gender,
+    // roleId,
+    phoneNumber,
+    image,
+    positionId,
+    facultyId,
+    note,
+    type,
+  } = data;
   if (!id) {
     return {
       codeNumber: 1,
       message: "Missing parameter id",
     };
   }
-  const user = await db.User.findOne({
-    where: {
-      id,
-    },
-  });
-  if (!user) {
-    return {
-      codeNumber: 1,
-      message: "User not exist in system",
-    };
-  }
   return new Promise(async (resolve, reject) => {
     try {
-      await db.User.update(
-        {
-          fullName: fullName || user?.fullName,
-          address: address || user?.address,
-          gender: gender || user?.gender,
-          phoneNumber: phoneNumber || user?.phoneNumber,
-          image: image || user?.image,
-          positionId: position || user?.position,
-        },
-        {
+      if (type === "teacher") {
+        const teacher = await db.Teacher.findOne({
           where: {
             id,
           },
+        });
+        if (!teacher) {
+          return {
+            codeNumber: 1,
+            message: "Teacher not exist in system",
+          };
+        } else {
+          await db.Teacher.update(
+            {
+              fullName: fullName || teacher?.fullName,
+              address: address || teacher?.address,
+              gender: gender || teacher?.gender,
+              phoneNumber: phoneNumber || teacher?.phoneNumber,
+              facultyId: facultyId || teacher?.facultyId,
+              image: image || teacher?.image,
+              positionId: positionId || teacher?.position,
+              note: note || teacher?.note,
+            },
+            {
+              where: {
+                id,
+              },
+            }
+          );
+          resolve({
+            codeNumber: 0,
+            message: "Edit Teacher Succeed",
+          });
         }
-      );
-      resolve({
-        codeNumber: 0,
-        message: "Edit User Succeed",
-      });
+      } else if (type === "otherUser") {
+        const OtherUser = await db.OtherUser.findOne({
+          where: {
+            id,
+          },
+        });
+        if (!OtherUser) {
+          return {
+            codeNumber: 1,
+            message: "OtherUser not exist in system",
+          };
+        } else {
+          await db.OtherUser.update(
+            {
+              fullName: fullName || OtherUser?.fullName,
+              address: address || OtherUser?.address,
+              phoneNumber: phoneNumber || OtherUser?.phoneNumber,
+              // roleId: roleId || OtherUser?.roleId,
+            },
+            {
+              where: {
+                id,
+              },
+            }
+          );
+          resolve({
+            codeNumber: 0,
+            message: "Edit OtherUser Succeed",
+          });
+        }
+      }
     } catch (e) {
       reject(e);
     }
@@ -453,35 +655,58 @@ const editUserService = async (data) => {
 
 //deleteUser
 const deleteUserService = async (data) => {
-  const { id } = data;
+  const { id, type } = data;
   if (!id) {
     return {
       codeNumber: 1,
       message: "Missing parameter id",
     };
   }
-  const user = await db.User.findOne({
-    where: {
-      id,
-    },
-  });
-  if (!user) {
-    return {
-      codeNumber: 1,
-      message: "User not exist in system",
-    };
-  }
   return new Promise(async (resolve, reject) => {
     try {
-      await db.User.destroy({
-        where: {
-          id,
-        },
-      });
-      resolve({
-        codeNumber: 0,
-        message: "Delete User Succeed",
-      });
+      if (type === "teacher") {
+        const teacher = await db.Teacher.findOne({
+          where: {
+            id,
+          },
+        });
+        if (!teacher) {
+          return {
+            codeNumber: 1,
+            message: "Teacher not exist in system",
+          };
+        }
+        await db.Teacher.destroy({
+          where: {
+            id,
+          },
+        });
+        resolve({
+          codeNumber: 0,
+          message: "Delete Teacher Succeed",
+        });
+      } else if (type === "otherUser") {
+        const OtherUser = await db.OtherUser.findOne({
+          where: {
+            id,
+          },
+        });
+        if (!OtherUser) {
+          return {
+            codeNumber: 1,
+            message: "OtherUser not exist in system",
+          };
+        }
+        await db.OtherUser.destroy({
+          where: {
+            id,
+          },
+        });
+        resolve({
+          codeNumber: 0,
+          message: "Delete OtherUser Succeed",
+        });
+      }
     } catch (e) {
       reject(e);
     }
@@ -490,6 +715,7 @@ const deleteUserService = async (data) => {
 
 module.exports = {
   loginSystemService,
+  registerHomePageService,
   loginHomePageService,
   verificationEmailService,
   getUserService,

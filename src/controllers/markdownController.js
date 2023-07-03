@@ -4,8 +4,9 @@ const {
 } = require("../services/markdownService");
 
 const createMarkDownController = async (req, res) => {
-  const { markdownHtml, markdownText, description, userId, action } = req.body;
-  if (!markdownHtml || !markdownText || !description || !userId) {
+  const { markdownHtml, markdownText, description, userId, action, type } =
+    req.body;
+  if (!markdownHtml || !markdownText || !description || !userId || !type) {
     res.status(400).json({
       codeNumber: 1,
       message: "Missing data body markdown",
@@ -17,7 +18,8 @@ const createMarkDownController = async (req, res) => {
         markdownText,
         description,
         userId,
-        action
+        action,
+        type
       );
       res.status(200).json(data);
     } catch (e) {
@@ -30,15 +32,15 @@ const createMarkDownController = async (req, res) => {
 };
 
 const getMarkDownController = async (req, res) => {
-  const { id } = req.query;
-  if (!id) {
+  const { id, type } = req.query;
+  if (!id || !type) {
     res.status(400).json({
       codeNumber: 1,
       message: "Missing parameter id",
     });
   } else {
     try {
-      const data = await getMarkDownByIdService(id);
+      const data = await getMarkDownByIdService(id, type);
       res.status(200).json(data);
     } catch (e) {
       res.status(200).json({
