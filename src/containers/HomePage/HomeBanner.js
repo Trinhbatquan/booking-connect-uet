@@ -16,15 +16,14 @@ const HomeBanner = () => {
 
   return (
     <div className="homepage-banner-container">
+      <div class="layer"></div>
       <div className="home-page-banner-up flex flex-col items-center gap-4 pt-20">
-        <div className="content-one text-white font-semibold">
+        <div className="content-one font-semibold">
           {t("banner.contentOne")}
         </div>
-        <div className="content-two text-white font-semibold">
-          {t("banner.contentTwo")}
-        </div>
+        <div className="content-two">{t("banner.contentTwo")}</div>
         <div className="input flex items-center justify-center mt-2">
-          <FaSearch className="text-xl font-semibold mr-6" />
+          <FaSearch className="text-xl mr-6 text-blue-600" />
           <input
             className="border-none bg-transparent outline-none text-blurColor"
             name="input"
@@ -43,6 +42,12 @@ const HomeBanner = () => {
           <BsDatabase className="topic-icon text-gray-600 z-10 cursor-pointer py-3 rounded-full shadow-md backdrop-blur-md border border-blurColor" />
           <span className="topic-content  cursor-pointer text-xl">
             {t("banner.faculty")}
+          </span>
+        </div>
+        <div className="topic flex flex-col justify-start items-center">
+          <BsDatabase className="topic-icon text-gray-600 z-10 cursor-pointer py-3 rounded-full shadow-md backdrop-blur-md border border-blurColor" />
+          <span className="topic-content  cursor-pointer text-xl">
+            {t("banner.teacher")}
           </span>
         </div>
         <div className="topic flex flex-col justify-start items-center">

@@ -9,6 +9,8 @@ import { BsPersonPlusFill } from "react-icons/bs";
 import { useContext } from "react";
 import { ContextScrollTop } from "../RootSystem";
 import { HiOutlinePencilAlt } from "react-icons/hi";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
 
 import { useTranslation } from "react-i18next";
 
@@ -17,12 +19,15 @@ import {
   deleteUserApi,
   getAllCodeApi,
   getUserApi,
+  logOutApi,
   updateUserApi,
 } from "../../../services/userService";
 import { emitter } from "../../../utils/emitter";
 import Loading from "./../../../utils/Loading";
 import DeleteModal from "./../Modal/DeleteModal";
 import convertFileToBase64 from "../../../utils/convertFileToBase64";
+import { ascertain_user, path } from "../../../utils/constant";
+import { logOutUser } from "../../../redux/authSlice";
 
 const HealthStudentManager = () => {
   // const [isCreateUser, setIsCreateUser] = useState(false);
@@ -52,6 +57,8 @@ const HealthStudentManager = () => {
 
   //ref
   const inputFileRef = useRef();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   useEffect(() => {
     setLoading(true);
     // const gender = "GENDER";
@@ -79,7 +86,7 @@ const HealthStudentManager = () => {
       "FullName",
       "PhoneNumber",
       "Address",
-      "Gender",
+      // "Gender",
     ];
     const setStateArr = [
       setEmail,
@@ -184,6 +191,7 @@ const HealthStudentManager = () => {
   };
 
   const handleCreateNewUser = async () => {
+    setLoading(true);
     if (handleCheckValidate()) {
       const body = {
         email,
@@ -192,16 +200,41 @@ const HealthStudentManager = () => {
         phoneNumber,
         roleId: "R6",
         address,
+        type: ascertain_user.other,
         // gender,
         // image: avatar,
       };
       createUserApi.create({}, body).then(async (data) => {
-        if (data?.codeNumber === 1) {
+        if (data?.codeNumber === -1) {
           toast.error(`${t("system.notification.fail")}`, {
             autoClose: 2000,
             position: "bottom-right",
             theme: "colored",
           });
+          setLoading(false);
+        } else if (data?.codeNumber === -2) {
+          toast.error(`${t("system.token.mess")}`, {
+            autoClose: 3000,
+            position: "bottom-right",
+            theme: "colored",
+          });
+          setTimeout(() => {
+            logOutApi.logoutUser({}).then((data) => {
+              if (data?.codeNumber === 0) {
+                dispatch(logOutUser());
+                navigate(
+                  `${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`
+                );
+              }
+            });
+          }, 3000);
+        } else if (data?.codeNumber === 1) {
+          toast.error(data?.message, {
+            autoClose: 2000,
+            position: "bottom-right",
+            theme: "colored",
+          });
+          setLoading(false);
         } else {
           await getUserApi.getUserByRole({ role: "R6" }).then((data) => {
             if (data?.codeNumber === 0) {
@@ -221,6 +254,7 @@ const HealthStudentManager = () => {
           setPassword("");
           setFullName("");
           setPhoneNumber("");
+          setLoading(false);
           setAddress("");
           // setGender("");
           // setAvatar("");
@@ -327,16 +361,41 @@ const HealthStudentManager = () => {
       phoneNumber,
       // gender,
       address,
+      type: ascertain_user.other,
       // image: avatar,
     };
     setTimeout(() => {
       updateUserApi.update({}, body).then(async (data) => {
-        if (data?.codeNumber === 1) {
+        if (data?.codeNumber === -1) {
           toast.error(`${t("system.notification.fail")}`, {
             autoClose: 2000,
             position: "bottom-right",
             theme: "colored",
           });
+          setLoading(false);
+        } else if (data?.codeNumber === -2) {
+          toast.error(`${t("system.token.mess")}`, {
+            autoClose: 3000,
+            position: "bottom-right",
+            theme: "colored",
+          });
+          setTimeout(() => {
+            logOutApi.logoutUser({}).then((data) => {
+              if (data?.codeNumber === 0) {
+                dispatch(logOutUser());
+                navigate(
+                  `${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`
+                );
+              }
+            });
+          }, 3000);
+        } else if (data?.codeNumber === 1) {
+          toast.error(data?.message, {
+            autoClose: 2000,
+            position: "bottom-right",
+            theme: "colored",
+          });
+          setLoading(false);
         } else {
           await getUserApi.getUserByRole({ role: "R6" }).then((data) => {
             if (data?.codeNumber === 0) {
@@ -390,13 +449,37 @@ const HealthStudentManager = () => {
   const deleteUser = async (id) => {
     setLoading(true);
     setTimeout(() => {
-      deleteUserApi.delete({ id }).then((data) => {
-        if (data?.codeNumber === 1) {
+      deleteUserApi.delete({ id, type: ascertain_user.other }).then((data) => {
+        if (data?.codeNumber === -1) {
           toast.error(`${t("system.notification.fail")}`, {
             autoClose: 2000,
             position: "bottom-right",
             theme: "colored",
           });
+          setLoading(false);
+        } else if (data?.codeNumber === -2) {
+          toast.error(`${t("system.token.mess")}`, {
+            autoClose: 3000,
+            position: "bottom-right",
+            theme: "colored",
+          });
+          setTimeout(() => {
+            logOutApi.logoutUser({}).then((data) => {
+              if (data?.codeNumber === 0) {
+                dispatch(logOutUser());
+                navigate(
+                  `${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`
+                );
+              }
+            });
+          }, 3000);
+        } else if (data?.codeNumber === 1) {
+          toast.error(data?.message, {
+            autoClose: 2000,
+            position: "bottom-right",
+            theme: "colored",
+          });
+          setLoading(false);
         } else {
           getUserApi.getUserByRole({ role: "R6" }).then((data) => {
             if (data?.codeNumber === 0) {

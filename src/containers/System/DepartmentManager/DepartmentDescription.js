@@ -6,10 +6,14 @@ import Select from "react-select";
 import { ToastContainer, toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import { HiOutlinePencilAlt } from "react-icons/hi";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
 
 import Loading from "../../../utils/Loading";
-import { getUserApi } from "../../../services/userService";
+import { getUserApi, logOutApi } from "../../../services/userService";
 import { createMarkDown, getMarkDown } from "../../../services/markdownService";
+import { logOutUser } from "../../../redux/authSlice";
+import { markdown, path } from "../../../utils/constant";
 
 const mdParser = new MarkdownIt(/* Markdown-it options */);
 
@@ -25,6 +29,9 @@ const DepartmentDescription = () => {
   const [notifyCheckState, setNotifyCheckState] = useState("");
 
   const { t, i18n } = useTranslation();
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setLoading(true);
@@ -66,7 +73,10 @@ const DepartmentDescription = () => {
   //change select teacher id
   const handleChangeSelect = async (e) => {
     setSelectedOption(e);
-    const data = await getMarkDown.getById({ id: e?.value });
+    const data = await getMarkDown.getById({
+      id: e?.value,
+      type: markdown.other,
+    });
     if (data?.codeNumber === 1) {
       setDescription("");
       setMarkdownHtml("");
@@ -125,6 +135,7 @@ const DepartmentDescription = () => {
         description,
         userId: selectedOption?.value,
         action: isUpdate ? "update" : "create",
+        type: markdown.other,
       };
       // const dataTeacherInfo = {
       //   facultyId: selectedOptionTeacherInfo?.value,
@@ -135,8 +146,31 @@ const DepartmentDescription = () => {
       setTimeout(async () => {
         await createMarkDown.create({}, dataMarkDown).then((res) => {
           // createTeacherInfo.create({}, dataTeacherInfo).then((data) => {
-          if (res?.codeNumber !== 0) {
+          if (res?.codeNumber === -1) {
             toast.error(`${t("system.notification.fail")}`, {
+              autoClose: 2000,
+              position: "bottom-right",
+              theme: "colored",
+            });
+            setLoading(false);
+          } else if (res?.codeNumber === -2) {
+            toast.error(`${t("system.token.mess")}`, {
+              autoClose: 3000,
+              position: "bottom-right",
+              theme: "colored",
+            });
+            setTimeout(() => {
+              logOutApi.logoutUser({}).then((data) => {
+                if (data?.codeNumber === 0) {
+                  dispatch(logOutUser());
+                  navigate(
+                    `${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`
+                  );
+                }
+              });
+            }, 3000);
+          } else if (res?.codeNumber === 1) {
+            toast.error(res?.message, {
               autoClose: 2000,
               position: "bottom-right",
               theme: "colored",

@@ -8,6 +8,7 @@ const authInitialState = authLocalStorage || {
   isLogin: false,
   role: null,
   email: null,
+  fullName: null,
 };
 
 const authSlice = createSlice({
@@ -18,6 +19,7 @@ const authSlice = createSlice({
       state.isLogin = true;
       state.role = action.payload.roleId;
       state.email = action.payload.email;
+      state.fullName = action.payload.fullName;
       localStorage.setItem(
         "auth-bookingCare-UET_system",
         JSON.stringify(state)
@@ -27,12 +29,14 @@ const authSlice = createSlice({
       state.isLogin = false;
       state.role = null;
       state.email = null;
+      state.fullName = null;
       localStorage.removeItem("auth-bookingCare-UET_system");
     },
     logOutUser: (state, action) => {
       state.isLogin = false;
       state.role = null;
       state.email = null;
+      state.fullName = null;
       localStorage.removeItem("auth-bookingCare-UET_system");
     },
   },

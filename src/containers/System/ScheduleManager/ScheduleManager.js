@@ -5,10 +5,16 @@ import moment from "moment";
 import { FiEdit } from "react-icons/fi";
 import { AiOutlineDelete } from "react-icons/ai";
 import { ToastContainer, toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
 
 import Button from "../../../utils/Button";
-import { getAllCodeApi, getUserApi } from "../../../services/userService";
-import { dateFormat } from "../../../utils/constant";
+import {
+  getAllCodeApi,
+  getUserApi,
+  logOutApi,
+} from "../../../services/userService";
+import { dateFormat, path } from "../../../utils/constant";
 import {
   createSchedule,
   deleteScheduleByIdAndDate,
@@ -18,6 +24,8 @@ import {
 import { useTranslation } from "react-i18next";
 import "moment/locale/vi";
 import DeleteModal from "../Modal/DeleteModal";
+import { logOutUser } from "../../../redux/authSlice";
+import { getTeacherHomePageAPI } from "../../../services/teacherService";
 
 const ScheduleManager = () => {
   const [selectedOptionObject, setSelectedOptionObject] = useState({});
@@ -37,6 +45,8 @@ const ScheduleManager = () => {
 
   const { t, i18n } = useTranslation();
   console.log({ timeData });
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchData() {
@@ -80,11 +90,19 @@ const ScheduleManager = () => {
 
   //handle change select
   const handleChangeSelect_general = async (e) => {
-    await getUserApi.getUserByRole({ role: e?.value }).then((data) => {
-      if (data?.codeNumber === 0) {
-        setUserData(data?.user);
-      }
-    });
+    if (e?.value === "R5") {
+      await getTeacherHomePageAPI.getTeacher({}).then((data) => {
+        if (data?.codeNumber === 0) {
+          setUserData(data.teacher);
+        }
+      });
+    } else {
+      await getUserApi.getUserByRole({ role: e?.value }).then((data) => {
+        if (data?.codeNumber === 0) {
+          setUserData(data?.user);
+        }
+      });
+    }
     option_general.forEach((item, index) => {
       if (item?.value === e?.value) {
         setOptionSelected(index);
@@ -279,8 +297,28 @@ const ScheduleManager = () => {
             setTimeUserSelected([]);
           }
         });
-    } else {
+    } else if (data?.codeNumber === -1) {
       toast.error(`${t("system.notification.fail")}`, {
+        autoClose: 2000,
+        position: "bottom-right",
+        theme: "colored",
+      });
+    } else if (data?.codeNumber === -2) {
+      toast.error(`${t("system.token.mess")}`, {
+        autoClose: 3000,
+        position: "bottom-right",
+        theme: "colored",
+      });
+      setTimeout(() => {
+        logOutApi.logoutUser({}).then((data) => {
+          if (data?.codeNumber === 0) {
+            dispatch(logOutUser());
+            navigate(`${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`);
+          }
+        });
+      }, 3000);
+    } else if (data?.codeNumber === 1) {
+      toast.error(data?.message, {
         autoClose: 2000,
         position: "bottom-right",
         theme: "colored",

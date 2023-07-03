@@ -9,7 +9,8 @@ import "./Schedule.scss";
 import Button from "../../../utils/Button_Home";
 import { contact, dateFormat } from "../../../utils/constant";
 
-const Schedule = ({ change, timeData, teacher }) => {
+const Schedule = ({ change, timeData, teacher, handleSchedule }) => {
+  const [date, setDate] = useState("");
   console.log({ timeData });
   const options = [];
   const date_now = new Date();
@@ -40,6 +41,10 @@ const Schedule = ({ change, timeData, teacher }) => {
     });
   }
 
+  // const handleModalSchedule = (text) => {
+  //   console.log(text);
+  // };
+
   return (
     <div className="schedule-container">
       <div className="schedule-date">
@@ -47,7 +52,11 @@ const Schedule = ({ change, timeData, teacher }) => {
           className="text-base"
           name="date"
           id="date"
-          onChange={(e) => change(e.target.value)}
+          value={date}
+          onChange={(e) => {
+            setDate(e.target.value);
+            change(e.target.value);
+          }}
         >
           {options?.length > 0 &&
             options.map((option, index) => {
@@ -70,7 +79,13 @@ const Schedule = ({ change, timeData, teacher }) => {
           <div className="schedule-content-body">
             {timeData && Array.isArray(timeData) && timeData?.length > 0 ? (
               timeData?.map((time, index) => {
-                return <Button key={index} text={time} />;
+                return (
+                  <Button
+                    key={index}
+                    text={time}
+                    click={(time) => handleSchedule(time, date)}
+                  />
+                );
               })
             ) : (
               <span className="text-headingColor ">{timeData}</span>

@@ -15,16 +15,22 @@ import { getScheduleByIdAndDate } from "../../../services/scheduleService";
 import { dateFormat } from "../../../utils/constant";
 import checkRealTime from "../../../utils/checkRealTime";
 import Navigate from "../NavigateCustom";
+import avatar from "../../../assets/image/uet.png";
+import ScheduleModal from "./ScheduleModal";
 
 const TeacherDetail = () => {
   const [loading, setLoading] = useState(false);
   const [teacherId, setTeacherId] = useState({});
   const [timeDataApi, setTimeDataApi] = useState(null);
 
+  const [openModalSchedule, setOpenModalSchedule] = useState(false);
+  const [dataModalSchedule, setDataModalSchedule] = useState({});
+
   const { id } = useParams();
   const date_now = moment(new Date()).format(dateFormat.SEND_TO_SERVER);
 
   const navigate = useSelector((state) => state.navigateReducer.navigate);
+  const currentStudent = useSelector((state) => state.studentReducer);
   console.log({ teacherId });
 
   useEffect(() => {
@@ -84,6 +90,22 @@ const TeacherDetail = () => {
     }
   };
 
+  const handleSchedule = (time, date) => {
+    console.log(time, date);
+    setOpenModalSchedule(true);
+    const data = {
+      currentStudent,
+      time,
+      date,
+    };
+    console.log(data);
+    setDataModalSchedule(data);
+  };
+
+  const closeModalSchedule = () => {
+    setOpenModalSchedule(false);
+  };
+
   // 1685246400000;
   return (
     <>
@@ -99,24 +121,29 @@ const TeacherDetail = () => {
             <div className="detail-teacher">
               <div
                 className="detail-teacher-avatar flex-3"
-                style={{ backgroundImage: `url(${teacherId?.image})` }}
+                style={{
+                  backgroundImage: `url(${
+                    teacherId?.image ? teacherId?.image : avatar
+                  })`,
+                }}
               ></div>
               <div className="detail-teacher-content flex-1">
                 <p className="detail-teacher-content-name">
                   {teacherId?.positionData?.valueVn}, {teacherId?.fullName}
                 </p>
-                <p>{teacherId?.markdownData?.description}</p>
+                <p>{teacherId?.markdownData_teacher?.description}</p>
               </div>
             </div>
             <Schedule
               change={loadTimeOfDate}
               timeData={timeDataApi}
               teacher={teacherId}
+              handleSchedule={handleSchedule}
             />
             <div
               className="description-teacher"
               dangerouslySetInnerHTML={{
-                __html: teacherId?.markdownData?.markdownHtml,
+                __html: teacherId?.markdownData_teacher?.markdownHtml,
               }}
             ></div>
             {/* <div className="comment-teacher w-full h-4 py-2 mb-3 flex items-center justify-center">
@@ -125,6 +152,16 @@ const TeacherDetail = () => {
           </div>
           <HomeFooter />
         </div>
+      )}
+      {openModalSchedule && (
+        <ScheduleModal
+          close={closeModalSchedule}
+          dataModalSchedule={dataModalSchedule}
+        />
+      )}
+
+      {openModalSchedule && (
+        <div className="fixed z-40 top-0 bottom-0 left-0 right-0 w-full max-h-full bg-black bg-opacity-25"></div>
       )}
     </>
   );

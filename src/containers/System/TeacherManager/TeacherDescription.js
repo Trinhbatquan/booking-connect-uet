@@ -6,14 +6,19 @@ import Select from "react-select";
 import { ToastContainer, toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import { HiOutlinePencilAlt } from "react-icons/hi";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
 
 import Loading from "../../../utils/Loading";
-import { getUserApi } from "../../../services/userService";
+import { getUserApi, logOutApi } from "../../../services/userService";
 import { createMarkDown, getMarkDown } from "../../../services/markdownService";
 import {
   createTeacherInfo,
+  getTeacherHomePageAPI,
   getTeacherInfo,
 } from "../../../services/teacherService";
+import { markdown, path } from "../../../utils/constant";
+import { logOutUser } from "../../../redux/authSlice";
 
 const mdParser = new MarkdownIt(/* Markdown-it options */);
 
@@ -25,29 +30,36 @@ const TeacherDescription = () => {
 
   const [selectedOptionTeacherInfo, setSelectedOptionTeacherInfo] =
     useState(null);
-  const [note, setNote] = useState("");
+  // const [note, setNote] = useState("");
 
   const [teachers, setTeachers] = useState([]);
-  const [faculties, setFaculties] = useState([]);
+  // const [faculties, setFaculties] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
   const [notifyCheckState, setNotifyCheckState] = useState("");
 
   const { t, i18n } = useTranslation();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setLoading(true);
     setTimeout(async () => {
-      await getUserApi.getUserByRole({ role: "R5" }).then((data) => {
+      // await getUserApi.getUserByRole({ role: "R5" }).then((data) => {
+      //   if (data?.codeNumber === 0) {
+      //     setTeachers(data.user);
+      //   }
+      // });
+      await getTeacherHomePageAPI.getTeacher({}).then((data) => {
         if (data?.codeNumber === 0) {
-          setTeachers(data.user);
+          setTeachers(data.teacher);
         }
       });
-      await getUserApi.getUserByRole({ role: "R4" }).then((data) => {
-        if (data?.codeNumber === 0) {
-          setFaculties(data.user);
-        }
-      });
+      // await getUserApi.getUserByRole({ role: "R4" }).then((data) => {
+      //   if (data?.codeNumber === 0) {
+      //     setFaculties(data.user);
+      //   }
+      // });
       setLoading(false);
     }, 1000);
   }, []);
@@ -59,12 +71,12 @@ const TeacherDescription = () => {
     });
   }
 
-  let optionsFaculties = [];
-  if (faculties.length > 0) {
-    faculties.forEach((user, index) => {
-      optionsFaculties.push({ value: user?.id, label: user?.fullName });
-    });
-  }
+  // let optionsFaculties = [];
+  // if (faculties.length > 0) {
+  //   faculties.forEach((user, index) => {
+  //     optionsFaculties.push({ value: user?.id, label: user?.fullName });
+  //   });
+  // }
 
   // Finish change markdown
   function handleEditorChange({ html, text }) {
@@ -73,14 +85,17 @@ const TeacherDescription = () => {
   }
 
   //change select teacher info
-  const handleChangeSelectTeacherInfo = (e) => {
-    setSelectedOptionTeacherInfo(e);
-  };
+  // const handleChangeSelectTeacherInfo = (e) => {
+  //   setSelectedOptionTeacherInfo(e);
+  // };
 
   //change select teacher id
   const handleChangeSelect = async (e) => {
     setSelectedOption(e);
-    const data = await getMarkDown.getById({ id: e?.value });
+    const data = await getMarkDown.getById({
+      id: e?.value,
+      type: markdown.teacher,
+    });
     if (data?.codeNumber === 1) {
       setDescription("");
       setMarkdownHtml("");
@@ -93,31 +108,31 @@ const TeacherDescription = () => {
       setMarkdownHtml(markdownHtml);
       setIsUpdate(true);
     }
-    const res = await getTeacherInfo.getById({ id: e?.value });
-    if (res?.codeNumber === 1) {
-      setSelectedOptionTeacherInfo(null);
-      setNote("");
-      setIsUpdate(false);
-    } else {
-      const { faculty_id, note } = res?.teacher_info;
-      let optionFacultySelect = {};
-      for (let i = 0; i < optionsFaculties.length; i++) {
-        if (optionsFaculties[i]?.value === faculty_id) {
-          optionFacultySelect = optionsFaculties[i];
-          break;
-        }
-      }
-      setSelectedOptionTeacherInfo(optionFacultySelect);
-      setNote(note);
-      setIsUpdate(true);
-    }
+    // const res = await getTeacherInfo.getById({ id: e?.value });
+    // if (res?.codeNumber === 1) {
+    //   setSelectedOptionTeacherInfo(null);
+    //   setNote("");
+    //   setIsUpdate(false);
+    // } else {
+    //   const { faculty_id, note } = res?.teacher_info;
+    //   let optionFacultySelect = {};
+    //   for (let i = 0; i < optionsFaculties.length; i++) {
+    //     if (optionsFaculties[i]?.value === faculty_id) {
+    //       optionFacultySelect = optionsFaculties[i];
+    //       break;
+    //     }
+    //   }
+    //   setSelectedOptionTeacherInfo(optionFacultySelect);
+    //   setNote(note);
+    //   setIsUpdate(true);
+    // }
   };
 
   const checkNullData = () => {
     let result = true;
     const dataArr = [
       selectedOption?.value,
-      selectedOptionTeacherInfo?.value,
+      // selectedOptionTeacherInfo?.value,
       description,
       markdownText,
       markdownHtml,
@@ -140,47 +155,71 @@ const TeacherDescription = () => {
         description,
         userId: selectedOption?.value,
         action: isUpdate ? "update" : "create",
+        type: markdown.teacher,
       };
-      const dataTeacherInfo = {
-        facultyId: selectedOptionTeacherInfo?.value,
-        teacherId: selectedOption?.value,
-        note,
-        action: isUpdate ? "update" : "create",
-      };
+      // const dataTeacherInfo = {
+      //   facultyId: selectedOptionTeacherInfo?.value,
+      //   teacherId: selectedOption?.value,
+      //   note,
+      //   action: isUpdate ? "update" : "create",
+      // };
       setTimeout(async () => {
         await createMarkDown.create({}, dataMarkDown).then((res) => {
-          createTeacherInfo.create({}, dataTeacherInfo).then((data) => {
-            if (res?.codeNumber !== 0 || data?.codeNumber !== 0) {
-              toast.error(`${t("system.notification.fail")}`, {
+          // createTeacherInfo.create({}, dataTeacherInfo).then((data) => {
+          if (res?.codeNumber === -1) {
+            toast.error(`${t("system.notification.fail")}`, {
+              autoClose: 2000,
+              position: "bottom-right",
+              theme: "colored",
+            });
+            setLoading(false);
+          } else if (res?.codeNumber === -2) {
+            toast.error(`${t("system.token.mess")}`, {
+              autoClose: 3000,
+              position: "bottom-right",
+              theme: "colored",
+            });
+            setTimeout(() => {
+              logOutApi.logoutUser({}).then((data) => {
+                if (data?.codeNumber === 0) {
+                  dispatch(logOutUser());
+                  navigate(
+                    `${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`
+                  );
+                }
+              });
+            }, 3000);
+          } else if (res?.codeNumber === 1) {
+            toast.error(res?.message, {
+              autoClose: 2000,
+              position: "bottom-right",
+              theme: "colored",
+            });
+            setLoading(false);
+          } else {
+            if (res?.message === "create") {
+              toast.success(`${t("system.notification.create")}`, {
                 autoClose: 2000,
                 position: "bottom-right",
                 theme: "colored",
               });
-              setLoading(false);
             } else {
-              if (res?.message === "create") {
-                toast.success(`${t("system.notification.create")}`, {
-                  autoClose: 2000,
-                  position: "bottom-right",
-                  theme: "colored",
-                });
-              } else {
-                toast.success(`${t("system.notification.update")}`, {
-                  autoClose: 2000,
-                  position: "bottom-right",
-                  theme: "colored",
-                });
-              }
-              setDescription("");
-              setSelectedOption(null);
-              setSelectedOptionTeacherInfo(null);
-              setMarkdownHtml("");
-              setMarkdownText("");
-              setNote("");
-              setLoading(false);
-              setIsUpdate(false);
+              toast.success(`${t("system.notification.update")}`, {
+                autoClose: 2000,
+                position: "bottom-right",
+                theme: "colored",
+              });
             }
-          });
+            setDescription("");
+            setSelectedOption(null);
+            // setSelectedOptionTeacherInfo(null);
+            setMarkdownHtml("");
+            setMarkdownText("");
+            // setNote("");
+            setLoading(false);
+            setIsUpdate(false);
+          }
+          // });
         });
       }, 1000);
     } else {
@@ -261,7 +300,7 @@ const TeacherDescription = () => {
             />
           </div>
         </div>
-        <div className="flex items-start gap-5 mb-4">
+        {/* <div className="flex items-start gap-5 mb-4">
           <div className="flex-1 flex flex-col justify-start items-start">
             <label className="text-lg text-opacity-60 text-black flex items-center gap-1">
               {t("system.teacher.teacher-faculty")} <HiOutlinePencilAlt />
@@ -286,7 +325,7 @@ const TeacherDescription = () => {
               onFocus={() => setNotifyCheckState("")}
             />
           </div>
-        </div>
+        </div> */}
 
         <div className="flex flex-col items-start w-full">
           <label className="text-lg text-opacity-60 text-black flex items-center gap-1">

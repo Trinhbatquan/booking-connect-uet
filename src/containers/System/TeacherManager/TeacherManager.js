@@ -11,18 +11,24 @@ import { useContext } from "react";
 import { ContextScrollTop } from "../RootSystem";
 import { HiOutlinePencilAlt } from "react-icons/hi";
 import { useTranslation } from "react-i18next";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
 
 import {
   createUserApi,
   deleteUserApi,
   getAllCodeApi,
   getUserApi,
+  logOutApi,
   updateUserApi,
 } from "../../../services/userService";
 import { emitter } from "../../../utils/emitter";
 import Loading from "./../../../utils/Loading";
 import DeleteModal from "./../Modal/DeleteModal";
 import convertFileToBase64 from "../../../utils/convertFileToBase64";
+import { getTeacherHomePageAPI } from "../../../services/teacherService";
+import { ascertain_user, path } from "../../../utils/constant";
+import { logOutUser } from "../../../redux/authSlice";
 
 const TeacherManager = () => {
   // const [isCreateUser, setIsCreateUser] = useState(false);
@@ -36,6 +42,7 @@ const TeacherManager = () => {
   const [loading, setLoading] = useState(false);
   const [genderAPI, setGenderAPI] = useState([]);
   const [positionAPI, setPositionAPI] = useState([]);
+  const [facultyAPI, setFacultyAPI] = useState([]);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -45,12 +52,17 @@ const TeacherManager = () => {
   const [address, setAddress] = useState("");
   const [gender, setGender] = useState("");
   const [position, setPosition] = useState("");
+  const [faculty, setFaculty] = useState("");
+  const [note, setNote] = useState("");
   const [notifyCheckState, setNotifyCheckState] = useState("");
   const [previewAvatar, setPreviewAvatar] = useState("");
 
   //scroll top
   const scroll = useContext(ContextScrollTop);
   const { t, i18n } = useTranslation();
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   //ref
   const inputFileRef = useRef();
@@ -71,15 +83,27 @@ const TeacherManager = () => {
         }
       });
 
-      await getUserApi.getUserByRole({ role: "R5" }).then((data) => {
+      await getTeacherHomePageAPI.getTeacher({}).then((data) => {
         if (data?.codeNumber === 0) {
-          setUsers(data.user);
+          setUsers(data.teacher);
+        }
+      });
+      await getUserApi.getUserByRole({ role: "R4" }).then((data) => {
+        if (data?.codeNumber === 0) {
+          setFacultyAPI(data.user);
         }
       });
       setLoading(false);
       scroll?.isScroll();
     }, 1500);
   }, []);
+
+  let optionsFaculties = [];
+  if (facultyAPI.length > 0) {
+    facultyAPI.forEach((user, index) => {
+      optionsFaculties.push({ value: user?.id, label: user?.fullName });
+    });
+  }
 
   const handleChangeEvent = (value, type) => {
     const stateArr = [
@@ -90,6 +114,8 @@ const TeacherManager = () => {
       "Address",
       "Position",
       "Gender",
+      "Faculty",
+      "Note",
     ];
     const setStateArr = [
       setEmail,
@@ -99,6 +125,8 @@ const TeacherManager = () => {
       setAddress,
       setPosition,
       setGender,
+      setFaculty,
+      setNote,
     ];
     for (let i = 0; i < stateArr.length; i++) {
       if (type === stateArr[i]) {
@@ -135,6 +163,7 @@ const TeacherManager = () => {
       address,
       position,
       gender,
+      faculty,
     ];
     const notification_en = [
       "Email",
@@ -144,6 +173,7 @@ const TeacherManager = () => {
       "Address",
       "Position",
       "Gender",
+      "Faculty",
     ];
     const notification_vi = [
       "Trường Email",
@@ -151,7 +181,9 @@ const TeacherManager = () => {
       "Trường tên ",
       "Trường số điện thoại",
       "Trường địa chỉ",
+      "Trường chức vụ",
       "Trường giới tính",
+      "Trường khoa, viện",
     ];
     for (let i = 0; i < stateArr.length; i++) {
       if (!stateArr[i]) {
@@ -210,23 +242,50 @@ const TeacherManager = () => {
         password,
         fullName,
         phoneNumber,
-        roleId: "R5",
+        // roleId: "R5",
         address,
-        position,
+        positionId: position,
         gender,
+        facultyId: faculty,
         image: avatar,
+        note,
+        type: ascertain_user.teacher,
       };
       createUserApi.create({}, body).then(async (data) => {
-        if (data?.codeNumber === 1) {
+        if (data?.codeNumber === -1) {
           toast.error(`${t("system.notification.fail")}`, {
             autoClose: 2000,
             position: "bottom-right",
             theme: "colored",
           });
+          setLoading(false);
+        } else if (data?.codeNumber === -2) {
+          toast.error(`${t("system.token.mess")}`, {
+            autoClose: 3000,
+            position: "bottom-right",
+            theme: "colored",
+          });
+          setTimeout(() => {
+            logOutApi.logoutUser({}).then((data) => {
+              if (data?.codeNumber === 0) {
+                dispatch(logOutUser());
+                navigate(
+                  `${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`
+                );
+              }
+            });
+          }, 3000);
+        } else if (data?.codeNumber === 1) {
+          toast.error(data?.message, {
+            autoClose: 2000,
+            position: "bottom-right",
+            theme: "colored",
+          });
+          setLoading(false);
         } else {
-          await getUserApi.getUserByRole({ role: "R5" }).then((data) => {
+          await getTeacherHomePageAPI.getTeacher({}).then((data) => {
             if (data?.codeNumber === 0) {
-              setUsers(data.user);
+              setUsers(data.teacher);
             }
           });
           //     //clear data modal
@@ -327,12 +386,14 @@ const TeacherManager = () => {
     }
     setTimeout(async () => {
       setEmail(user?.email);
-      setPassword("permitUpdate1@");
+      setPassword("*************");
       setFullName(user?.fullName);
       setPhoneNumber(user?.phoneNumber);
       setAddress(user?.address);
       setPosition(user?.positionId);
       setGender(user?.gender);
+      setFaculty(user?.facultyId);
+      setNote(user?.note);
       setLoading(false);
       setIsUpdateUser(true);
       if (base64File) {
@@ -351,21 +412,48 @@ const TeacherManager = () => {
       phoneNumber,
       gender,
       address,
-      position,
+      positionId: position,
+      facultyId: faculty,
+      note,
       image: avatar,
+      type: ascertain_user.teacher,
     };
     setTimeout(() => {
       updateUserApi.update({}, body).then(async (data) => {
-        if (data?.codeNumber === 1) {
+        if (data?.codeNumber === -1) {
           toast.error(`${t("system.notification.fail")}`, {
             autoClose: 2000,
             position: "bottom-right",
             theme: "colored",
           });
+          setLoading(false);
+        } else if (data?.codeNumber === -2) {
+          toast.error(`${t("system.token.mess")}`, {
+            autoClose: 3000,
+            position: "bottom-right",
+            theme: "colored",
+          });
+          setTimeout(() => {
+            logOutApi.logoutUser({}).then((data) => {
+              if (data?.codeNumber === 0) {
+                dispatch(logOutUser());
+                navigate(
+                  `${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`
+                );
+              }
+            });
+          }, 3000);
+        } else if (data?.codeNumber === 1) {
+          toast.error(data?.message, {
+            autoClose: 2000,
+            position: "bottom-right",
+            theme: "colored",
+          });
+          setLoading(false);
         } else {
-          await getUserApi.getUserByRole({ role: "R5" }).then((data) => {
+          await getTeacherHomePageAPI.getTeacher({}).then((data) => {
             if (data?.codeNumber === 0) {
-              setUsers(data.user);
+              setUsers(data.teacher);
             }
           });
           toast.success(`${t("system.notification.update")}`, {
@@ -382,6 +470,8 @@ const TeacherManager = () => {
           setGender("");
           setIsUpdateUser(false);
           setDataUserUpdate("");
+          setFaculty("");
+          setNote("");
           setPreviewAvatar("");
           inputFileRef.current.value = "";
           setAvatar("");
@@ -400,6 +490,8 @@ const TeacherManager = () => {
     setPosition("");
     setGender("");
     setAvatar("");
+    setFaculty("");
+    setNote("");
     setPreviewAvatar("");
     setIsUpdateUser(false);
     setDataUserUpdate("");
@@ -417,29 +509,58 @@ const TeacherManager = () => {
   const deleteUser = async (id) => {
     setLoading(true);
     setTimeout(() => {
-      deleteUserApi.delete({ id }).then((data) => {
-        if (data?.codeNumber === 1) {
-          toast.error(`${t("system.notification.fail")}`, {
-            autoClose: 2000,
-            position: "bottom-right",
-            theme: "colored",
-          });
-        } else {
-          getUserApi.getUserByRole({ role: "R5" }).then((data) => {
-            if (data?.codeNumber === 0) {
-              setUsers(data.user);
-              setLoading(false);
-              setIsDeleteUser(false);
-              setDataUserDelete("");
-              toast.success(`${t("system.notification.delete")}`, {
-                autoClose: 2000,
-                position: "bottom-right",
-                theme: "colored",
+      deleteUserApi
+        .delete({
+          id,
+          type: ascertain_user.teacher,
+        })
+        .then((data) => {
+          if (data?.codeNumber === -1) {
+            toast.error(`${t("system.notification.fail")}`, {
+              autoClose: 2000,
+              position: "bottom-right",
+              theme: "colored",
+            });
+            setLoading(false);
+          } else if (data?.codeNumber === -2) {
+            toast.error(`${t("system.token.mess")}`, {
+              autoClose: 3000,
+              position: "bottom-right",
+              theme: "colored",
+            });
+            setTimeout(() => {
+              logOutApi.logoutUser({}).then((data) => {
+                if (data?.codeNumber === 0) {
+                  dispatch(logOutUser());
+                  navigate(
+                    `${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`
+                  );
+                }
               });
-            }
-          });
-        }
-      });
+            }, 3000);
+          } else if (data?.codeNumber === 1) {
+            toast.error(data?.message, {
+              autoClose: 2000,
+              position: "bottom-right",
+              theme: "colored",
+            });
+            setLoading(false);
+          } else {
+            getTeacherHomePageAPI.getTeacher({}).then((data) => {
+              if (data?.codeNumber === 0) {
+                setUsers(data.teacher);
+                setLoading(false);
+                setIsDeleteUser(false);
+                setDataUserDelete("");
+                toast.success(`${t("system.notification.delete")}`, {
+                  autoClose: 2000,
+                  position: "bottom-right",
+                  theme: "colored",
+                });
+              }
+            });
+          }
+        });
     }, 1000);
   };
 
@@ -628,6 +749,49 @@ const TeacherManager = () => {
             </div>
 
             <div className="w-full flex items-center justify-center gap-6 mt-3">
+              <div className="flex flex-col justify-center w-1/2">
+                <label className="mb-1 text-headingColor opacity-80 flex items-center gap-1">
+                  {t("system.teacher.teacher-faculty")} <HiOutlinePencilAlt />
+                </label>
+                <select
+                  className=" shadow-sm bg-gray-50 border border-gray-400 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-2 py-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+                  name="faculty"
+                  type="text"
+                  id="faculty"
+                  value={faculty}
+                  onChange={(e) => handleChangeEvent(e.target.value, "Faculty")}
+                  onFocus={() => setNotifyCheckState("")}
+                >
+                  <option name="faculty" value="">
+                    Select---
+                  </option>
+                  {optionsFaculties?.length > 0 &&
+                    optionsFaculties?.map((e, i) => {
+                      return (
+                        <option key={i} name="faculty" value={e?.value}>
+                          {e?.label}
+                        </option>
+                      );
+                    })}
+                </select>
+              </div>
+              <div className="flex flex-col justify-center w-1/2">
+                <label className="mb-1 text-headingColor opacity-80 flex items-center gap-1">
+                  {t("system.teacher.note")}
+                </label>
+                <textarea
+                  id="note"
+                  name="note"
+                  rows="1"
+                  className="shadow-sm bg-gray-50 border border-gray-400 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-2 py-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+                  value={note}
+                  onChange={(e) => setNote(e.target.value, "Note")}
+                  onFocus={() => setNotifyCheckState("")}
+                />
+              </div>
+            </div>
+
+            <div className="w-full flex items-center justify-center gap-6 mt-3">
               <div className="flex-1 flex flex-col justify-center">
                 <label
                   htmlFor="gender"
@@ -735,6 +899,7 @@ const TeacherManager = () => {
             /> */}
         </div>
 
+        {console.log(users)}
         {users?.length === 0 ? null : (
           <table className="mt-20">
             <thead>
@@ -745,6 +910,7 @@ const TeacherManager = () => {
                 <th>{t("system.table.gender")}</th>
                 <th>{t("system.table.phone")}</th>
                 <th>{t("system.table.position")}</th>
+                <th>{t("system.teacher.teacher-faculty")}</th>
                 <th>{t("system.table.action")}</th>
               </tr>
             </thead>
@@ -772,6 +938,7 @@ const TeacherManager = () => {
                         ? "Tiến sĩ"
                         : null}
                     </td>
+                    <td>{user?.facultyData?.fullName}</td>
                     <td>
                       <div className="flex items-center justify-center gap-6">
                         <FiEdit

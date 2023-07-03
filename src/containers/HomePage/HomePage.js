@@ -35,6 +35,28 @@ const HomePage = () => {
     slidesToScroll: 1,
     responsive: [
       {
+        breakpoint: 1536,
+        settings: {
+          slidesToShow: 4,
+          slidesToScroll: 1,
+          infinite: false,
+          dots: false,
+          nextArrow: <NextArrow />,
+          prevArrow: <PrevArrow />,
+        },
+      },
+      {
+        breakpoint: 1280,
+        settings: {
+          slidesToShow: 4,
+          slidesToScroll: 1,
+          infinite: false,
+          dots: false,
+          nextArrow: <NextArrow />,
+          prevArrow: <PrevArrow />,
+        },
+      },
+      {
         breakpoint: 1024,
         settings: {
           slidesToShow: 3,
@@ -46,12 +68,79 @@ const HomePage = () => {
         },
       },
       {
-        breakpoint: 600,
+        breakpoint: 768,
         settings: {
           slidesToShow: 2,
           slidesToScroll: 1,
           infinite: false,
+          dots: false,
+          nextArrow: <NextArrow type="disable" />,
+          prevArrow: <PrevArrow type="disable" />,
+        },
+      },
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+          infinite: false,
           dots: true,
+          nextArrow: <NextArrow type="disable" />,
+          prevArrow: <PrevArrow type="disable" />,
+        },
+      },
+    ],
+    nextArrow: <NextArrow />,
+    prevArrow: <PrevArrow />,
+  };
+
+  const settingReactSlick_faculty = {
+    dots: false,
+    infinite: false,
+    speed: 500,
+    slidesToShow: 6,
+    slidesToScroll: 1,
+    responsive: [
+      {
+        breakpoint: 1536,
+        settings: {
+          slidesToShow: 6,
+          slidesToScroll: 1,
+          infinite: false,
+          dots: false,
+          nextArrow: <NextArrow />,
+          prevArrow: <PrevArrow />,
+        },
+      },
+      {
+        breakpoint: 1280,
+        settings: {
+          slidesToShow: 5,
+          slidesToScroll: 1,
+          infinite: false,
+          dots: false,
+          nextArrow: <NextArrow />,
+          prevArrow: <PrevArrow />,
+        },
+      },
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 1,
+          infinite: false,
+          dots: false,
+          nextArrow: <NextArrow />,
+          prevArrow: <PrevArrow />,
+        },
+      },
+      {
+        breakpoint: 768,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 1,
+          infinite: false,
+          dots: false,
           nextArrow: <NextArrow type="disable" />,
           prevArrow: <PrevArrow type="disable" />,
         },
@@ -126,8 +215,8 @@ const HomePage = () => {
       <div style={{ width: "100vw", height: "100vh", overflow: "scroll" }}>
         <HomeHeader />
         <HomeBanner />
-        <Departments settings={settingReactSlick} />
-        <Faculties settings={settingReactSlick} />
+        <Departments settings={settingReactSlick_faculty} />
+        <Faculties settings={settingReactSlick_faculty} />
         <Teacher settings={settingReactSlick} />
         <Health />
         <Notification settings={notificationSectionSettingSlick} />

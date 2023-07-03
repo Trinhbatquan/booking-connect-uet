@@ -9,7 +9,7 @@ const Notification = ({ settings }) => {
           <div className="section-header-text">Thông báo</div>
           <button
             className="section-header-button outline-none border-none bg-blurColor text-headingColor bg-opacity-30 shadow-sm 
-          backdrop-blur-sm hover:bg-blue-800 hover:text-white"
+          backdrop-blur-sm hover:bg-blue-800 hover:text-white transition-all duration-300"
           >
             XEM THÊM
           </button>

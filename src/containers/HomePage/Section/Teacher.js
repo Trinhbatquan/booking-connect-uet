@@ -25,7 +25,7 @@ const Teacher = ({ settings }) => {
   useEffect(() => {
     setLoading(true);
     setTimeout(() => {
-      getTeacherHomePageAPI.getTenTeacher({ limit: 10 }).then((data) => {
+      getTeacherHomePageAPI.getTeacher({ limit: 10 }).then((data) => {
         if (data?.codeNumber !== 0) {
           alert(data?.message);
           // dispatch(getTopTenTeacherFailed());
@@ -50,8 +50,8 @@ const Teacher = ({ settings }) => {
         <div className="section-header flex items-center justify-between">
           <div className="section-header-text">Liên hệ tới các giảng viên</div>
           <button
-            className="section-header-button outline-none border-none bg-blurColor text-headingColor bg-opacity-30 shadow-sm 
-          backdrop-blur-sm hover:bg-blue-800 hover:text-white"
+            className="section-header-button outline-none border-none bg-blurColor text-headingColor bg-opacity-30 shadow-sm
+          backdrop-blur-sm hover:bg-blue-800 hover:text-white transition-all duration-300"
           >
             XEM THÊM
           </button>
@@ -70,78 +70,24 @@ const Teacher = ({ settings }) => {
                     <div className="section-item-teacher">
                       <div className="section-item-img section-item-img-teacher shadow-sm shadow-cyan-600">
                         <img
-                          src={convertBufferToBase64(teacher?.image?.data)}
+                          src={
+                            teacher?.image?.data
+                              ? convertBufferToBase64(teacher?.image?.data)
+                              : null
+                          }
                           alt="None"
                         />
                       </div>
                       <div className="section-item-text section-item-text-teacher text-headingColor">
                         {teacher?.positionData?.valueVn}, {teacher?.fullName}
-                        <p className="mx-auto mt-1">Khoa Điện Tử Viễn Thông</p>
+                        <p className="mx-auto mt-1">
+                          {teacher?.facultyData?.fullName}
+                        </p>
                       </div>
                     </div>
                   </div>
                 );
               })}
-            {/* <div className="section-item">
-              <div className="section-item-teacher">
-                <div className="section-item-img section-item-img-teacher shadow-sm shadow-cyan-600">
-                  <img src={Banner} alt="None" />
-                </div>
-                <div className="section-item-text section-item-text-teacher text-headingColor">
-                  Thầy Vũ Văn A 1, Phó Giáo Sư Tiến Sĩ, Khoa Điện tử Viễn Thông
-                </div>
-              </div>
-            </div>
-            <div className="section-item">
-              <div className="section-item-teacher">
-                <div className="section-item-img section-item-img-teacher shadow-sm shadow-cyan-600">
-                  <img src={Banner} alt="None" />
-                </div>
-                <div className="section-item-text section-item-text-teacher text-headingColor">
-                  Thầy Vũ Văn A 1, Phó Giáo Sư Tiến Sĩ, Khoa Điện tử Viễn Thông
-                </div>
-              </div>
-            </div>
-            <div className="section-item">
-              <div className="section-item-teacher">
-                <div className="section-item-img section-item-img-teacher shadow-sm shadow-cyan-600">
-                  <img src={Banner} alt="None" />
-                </div>
-                <div className="section-item-text section-item-text-teacher text-headingColor">
-                  Thầy Vũ Văn A 1, Phó Giáo Sư Tiến Sĩ, Khoa Điện tử Viễn Thông
-                </div>
-              </div>
-            </div>
-            <div className="section-item">
-              <div className="section-item-teacher">
-                <div className="section-item-img section-item-img-teacher shadow-sm shadow-cyan-600">
-                  <img src={Banner} alt="None" />
-                </div>
-                <div className="section-item-text section-item-text-teacher text-headingColor">
-                  Thầy Vũ Văn A 1, Phó Giáo Sư Tiến Sĩ, Khoa Điện tử Viễn Thông
-                </div>
-              </div>
-            </div>
-            <div className="section-item">
-              <div className="section-item-teacher">
-                <div className="section-item-img section-item-img-teacher shadow-sm shadow-cyan-600">
-                  <img src={Banner} alt="None" />
-                </div>
-                <div className="section-item-text section-item-text-teacher text-headingColor">
-                  Thầy Vũ Văn A 1, Phó Giáo Sư Tiến Sĩ, Khoa Điện tử Viễn Thông
-                </div>
-              </div>
-            </div>
-            <div className="section-item">
-              <div className="section-item-teacher">
-                <div className="section-item-img section-item-img-teacher shadow-sm shadow-cyan-600">
-                  <img src={Banner} alt="None" />
-                </div>
-                <div className="section-item-text section-item-text-teacher text-headingColor">
-                  Thầy Vũ Văn A 1, Phó Giáo Sư Tiến Sĩ, Khoa Điện tử Viễn Thông
-                </div>
-              </div>
-            </div> */}
           </Slider>
         </div>
       </div>

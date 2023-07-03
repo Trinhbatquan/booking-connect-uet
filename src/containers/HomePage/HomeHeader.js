@@ -1,9 +1,11 @@
 import React, { Fragment, useState } from "react";
 
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { FaBars } from "react-icons/fa";
 import { MdContactSupport } from "react-icons/md";
 import { useTranslation } from "react-i18next";
+import { IoIosArrowDown } from "react-icons/io";
+import { AiFillHome } from "react-icons/ai";
 
 import "./HomeHeader.scss";
 import { path } from "../../utils/constant";
@@ -18,6 +20,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logOutHomePageApi } from "../../services/userService";
 import { logOutUser } from "../../redux/studentSlice";
+import avatar from "../../assets/image/banner.jpg";
 
 export const T_i18n = () => {
   const { t } = useTranslation();
@@ -32,7 +35,6 @@ const HomeHeader = () => {
   const [openModelUser, setOpenModelUser] = useState(false);
 
   const currentUser = useSelector((state) => state.studentReducer);
-  console.log(currentUser);
 
   const handleChangeLanguages = (language) => {
     i18n.changeLanguage(language);
@@ -50,90 +52,194 @@ const HomeHeader = () => {
 
   return (
     <Fragment>
-      <div className="homepage-header-container w-full flex items-center">
+      <div className="homepage-header-container flex items-center">
         <div className="homepage-herder-left">
-          <FaBars className="text-blurColor cursor-pointer text-3xl hover:text-white" />
-          <NavLink to={path.HOMEPAGE}>
+          {/* <FaBars className="text-blurColor cursor-pointer text-3xl hover:text-white" /> */}
+          <Link to={path.UET} target="_blank" rel="noopener noreferrer">
             <div className="logo"></div>
-          </NavLink>
+          </Link>
           <div>
-            <div className="text-white font-semibold text-md">
+            <div className="font-semibold text-md" style={{ color: "#1d5193" }}>
               {t("header.UET")}
             </div>
-            <div className="text-white text-sm">{t("header.VNU")}</div>
+            <div className="text-md" style={{ color: "#1d5193" }}>
+              {t("header.VNU")}
+            </div>
           </div>
         </div>
         <div className="homepage-herder-right">
-          <div className="flex items-center justify-center gap-0 cursor-pointer">
-            <span className="text-md text-blurColor hover:text-white flex items-center justify-center gap-0">
-              <MdContactSupport />
-              {t("header.support")}
-            </span>
-          </div>
-          <div
-            className={`text-md ml-3 cursor-pointer hover:text-white ${
-              i18n.language === "vi" ? "text-white" : "text-blurColor"
-            }`}
-            onClick={() => handleChangeLanguages("vi")}
-          >
-            VI
-          </div>
-          <div
-            className={`text-blurColor text-md ml-3 cursor-pointer hover:text-white ${
-              i18n.language === "vi" ? "text-blurColor" : "text-white"
-            }`}
-            onClick={() => handleChangeLanguages("en")}
-          >
-            EN
-          </div>
-          <div
-            className={`avatar relative text-blurColor text-2xl ml-3 cursor-pointer hover:text-white flex items-center justify-center gap-0`}
-            onClick={() => setOpenModelUser(!openModelUser)}
-          >
-            <BsFillPersonFill className={``} />
-            {openModelUser ? <IoMdArrowDropup /> : <IoMdArrowDropdown />}
-            <AnimatePresence>
-              {openModelUser && (
-                <motion.div
-                  initial={{ opacity: 0, translateY: -50 }}
-                  animate={{ opacity: 1, translateY: 0 }}
-                  exit={{ opacity: 0, translateY: -50 }}
-                  transition={{ duration: 0.5, delay: 0.1 }}
-                  className="avatar-modal absolute top-16 -right-12 z-5 rounded-lg shadow w-60 bg-blue-800 divide-blue-600"
-                >
-                  <div className="px-4 py-3 text-md text-white">
-                    <div className="flex items-center gap-1 cursor-text">
-                      <MdOutlineEmail className="mt-1" />
-                      <span>
-                        {currentUser?.email
-                          ? currentUser.email
-                          : "expamle@vnu.edu.vn"}
-                      </span>
-                    </div>
-                  </div>
-                  <ul className="py-2  text-gray-200 border-t border-b border-slate-400">
-                    <li>
-                      <div className="flex items-center gap-1 px-4 py-2 hover:bg-blue-600 hover:text-white">
-                        <AiFillEdit /> <span> Edit Profile</span>
+          <div className="homepage-herder-right-up">
+            <div className="flex items-start justify-center gap-0 cursor-pointer">
+              <span className="support text-md flex items-center justify-center gap-0 text-black hover:text-blue-700">
+                <MdContactSupport />
+                {t("header.support")}
+              </span>
+            </div>
+            {i18n.language === "vi" ? (
+              <div
+                className={`text-md ml-3 cursor-pointer flex items-center justify-center gap-1 text-black hover:text-blue-700 hover:opacity-100`}
+                onClick={() => handleChangeLanguages("en")}
+              >
+                Tiếng Việt <IoIosArrowDown className="opacity-20" />
+              </div>
+            ) : (
+              <div
+                className={`text-md ml-3 cursor-pointer flex items-center justify-center gap-1 text-black hover:text-blue-700 hover:opacity-100`}
+                onClick={() => handleChangeLanguages("vi")}
+              >
+                Tiếng Anh <IoIosArrowDown className="opacity-20" />
+              </div>
+            )}
+
+            <div
+              className={`avatar relative text-black text-xl ml-3 cursor-pointer hover:text-blue-700 flex items-center justify-center gap-0`}
+              onClick={() => setOpenModelUser(!openModelUser)}
+            >
+              <BsFillPersonFill className={``} />
+              {openModelUser ? <IoMdArrowDropup /> : <IoMdArrowDropdown />}
+              <AnimatePresence>
+                {openModelUser && (
+                  <motion.div
+                    initial={{ opacity: 0, translateY: -50 }}
+                    animate={{ opacity: 1, translateY: 0 }}
+                    exit={{ opacity: 0, translateY: -50 }}
+                    transition={{ duration: 0.5, delay: 0.1 }}
+                    className="avatar-modal absolute top-10 -right-24 z-50 rounded-lg  w-80 bg-white backdrop-blur-sm"
+                    style={{ boxShadow: "0 4px 20px rgba(0,0,0,.25)" }}
+                  >
+                    <div className="text-md text-headingColor">
+                      <div className="h-full w-full flex items-center justify-center cursor-text">
+                        <div
+                          className="relative flex items-center justify-center"
+                          style={{
+                            width: "100px",
+                            height: "100px",
+                          }}
+                        >
+                          <div
+                            className="flex items-center justify-center rounded-full bg-blue-700 text-white
+                          absolute top-0 right-0 bottom-0 left-0 w-full h-full m-auto"
+                            style={{ width: "60px", height: "60px" }}
+                          >
+                            <span className="" style={{ fontSize: "30px" }}>
+                              N
+                            </span>
+                          </div>
+                        </div>
+                        <div className="h-full flex flex-col items-start gap-2">
+                          <span
+                            className="font-semibold"
+                            style={{ fontSize: "16px" }}
+                          >
+                            Bui Van Trinh
+                          </span>
+                          <span>
+                            {" "}
+                            {currentUser?.email
+                              ? currentUser.email
+                              : "expamle@vnu.edu.vn"}
+                          </span>
+                        </div>
                       </div>
-                    </li>
-                    <li>
-                      <div className="flex items-center gap-1 px-4 py-2 hover:bg-blue-600 hover:text-white ">
-                        <AiFillUnlock /> <span>Change Password</span>
-                      </div>
-                    </li>
-                  </ul>
-                  <div className="py-2">
-                    <div
-                      className="flex items-center gap-1 px-4 py-2  hover:bg-blue-600 hover:text-white text-gray-200"
-                      onClick={() => handleLogOutHomePage()}
-                    >
-                      <BiLogOutCircle /> <span>Sign out</span>
                     </div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                    <ul className="py-2 text-headingColor border-t border-b border-slate-200">
+                      <li>
+                        <div className="flex items-center gap-2 px-4 py-2 hover:text-blue-700">
+                          <AiFillEdit /> <span> Edit Profile</span>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="flex items-center gap-2 px-4 py-2 hover:text-blue-700 ">
+                          <AiFillUnlock /> <span>Change Password</span>
+                        </div>
+                      </li>
+                    </ul>
+                    <div className="py-2">
+                      <div
+                        className="flex items-center gap-2 px-4 py-2  hover:text-blue-700 text-headingColor"
+                        onClick={() => handleLogOutHomePage()}
+                      >
+                        <BiLogOutCircle /> <span>Sign out</span>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
+          <div className="homepage-herder-right-down">
+            <NavLink
+              to={path.HOMEPAGE}
+              className="text-blue-700 text-3xl cursor-pointer rounded-full p-1"
+              style={{ backgroundColor: "#edf5ff" }}
+            >
+              <AiFillHome
+                className="text-blue-700 text-3xl cursor-pointer rounded-full p-1"
+                style={{ backgroundColor: "#edf5ff" }}
+              />
+            </NavLink>
+            <NavLink
+              className="text-md uppercase text-black hover:text-blue-700 font-semibold"
+              // style={({ isActive }) =>
+              //   isActive
+              //     ? {
+              //         color: "#1d5193",
+              //       }
+              //     : { color: "#000" }
+              // }
+            >
+              <span>Giới thiệu hệ thống</span>
+            </NavLink>
+            <NavLink
+              className="text-md uppercase text-black hover:text-blue-700 font-semibold"
+              // style={({ isActive }) =>
+              //   isActive
+              //     ? {
+              //         color: "#1d5193",
+              //       }
+              //     : { color: "#000" }
+              // }
+            >
+              <span>Khảo sát ý kiến</span>
+            </NavLink>
+            <NavLink
+              className="text-md uppercase text-black hover:text-blue-700 font-semibold"
+              // style={({ isActive }) =>
+              //   isActive
+              //     ? {
+              //         color: "#1d5193",
+              //       }
+              //     : { color: "#000" }
+              // }
+            >
+              <span>Cẩm nang học tập</span>
+            </NavLink>
+            <NavLink
+              className="text-md uppercase text-black hover:text-blue-700 font-semibold"
+              // style={({ isActive }) =>
+              //   isActive
+              //     ? {
+              //         color: "#1d5193",
+              //       }
+              //     : { color: "#000" }
+              // }
+            >
+              <span>Liên hệ</span>
+            </NavLink>
+            <NavLink
+              className="text-md uppercase text-black hover:text-blue-700 hover:opacity-100 font-semibold"
+              // style={({ isActive }) =>
+              //   isActive
+              //     ? {
+              //         color: "#1d5193",
+              //       }
+              //     : { color: "#000" }
+              // }
+            >
+              <span className="flex items-center justify-center gap-1">
+                Hoạt động <IoIosArrowDown className="opacity-20" />
+              </span>
+            </NavLink>
           </div>
         </div>
       </div>

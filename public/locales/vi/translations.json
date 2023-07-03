@@ -43,6 +43,9 @@
 
 
      "system": {
+        "token": {
+            "mess": "Token hết hạn. Vui lòng đăng nhập lại trong 3s nữa."
+        },
  
         "header": {
             "admin": "Quản trị viên",
@@ -177,20 +180,27 @@
 
 
     "header": {
-        "UET": "TRƯỜNG ĐẠI HỌC CÔNG NGHỆ",
-        "VNU": "ĐẠI HỌC QUỐC GIA HÀ NỘI",
-        "support": "HỖ TRỢ"
+        "UET": "Trường Đại học Công nghệ",
+        "VNU": "Đại học Quốc gia Hà Nội",
+        "support": "Hỗ trợ"
     },
     "banner": {
-        "contentOne": "HỆ THỐNG ĐẶT LỊCH TRỰC TUYẾN",
-        "contentTwo": "KẾT NỐI SINH VIÊN VỚI NHÀ TRƯỜNG",
+        "contentOne": "Hệ thống đặt lịch đối thoại",
+        "contentTwo": "Hỗ trợ giải đáp thắc mắc cho người học",
         "search": "Tìm phòng ban, khoa, viện,...",
         "department": "Các phòng ban",
         "faculty": "Các khoa, viện",
         "health": "Sức khoẻ thể chất",
-        "mental": "Tư vấn tâm lý"
+        "mental": "Tư vấn tâm lý",
+        "teacher": "Các giảng viên"
+
     },
     "navigate": {
         "teacher": "Giảng viên"
+    },
+       "teacher": {
+        "schedule": {
+            "create": "Create a new schedule"
+        }
     }
 }

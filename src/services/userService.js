@@ -21,6 +21,10 @@ const loginHomePageApi = {
     const url = "/api/homepage/login";
     return axiosClient.post(url, data, { params });
   },
+  registerUser: (params, data) => {
+    const url = "/api/homepage/register";
+    return axiosClient.post(url, data, { params });
+  },
   verifyEmailUrl: (params) => {
     const url = "/api/users/verify/emailUrl";
     return axiosClient.get(url, { params });

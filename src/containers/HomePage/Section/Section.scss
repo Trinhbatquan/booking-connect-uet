@@ -27,7 +27,7 @@
       padding-bottom: 30px;
       &-text {
         font-weight: bold;
-        color: black;
+        color: rgb(43, 40, 40);
         opacity: 0.9;
         font-size: 24px;
       }
@@ -37,7 +37,22 @@
         font-size: 14px;
         cursor: pointer;
       }
+      &-text {
+        padding: 10px 0;
+        position: relative;
+      }
+      &-text::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        // transform: translateX(-100%);
+        width: 90px;
+        height: 3px;
+        background-color: rgb(29, 81, 147);
+      }
     }
+
     .section-body {
       margin: 0 auto;
       .healthy-body {
@@ -81,6 +96,7 @@
             border-radius: 50%;
           }
         }
+
         &-text {
           padding-top: 5px;
           margin: 0 auto;
@@ -137,39 +153,49 @@
 
 .slick-prev,
 .slick-next {
-  width: 35px !important;
-  height: 30px !important;
-  background-color: rgb(76, 76, 150) !important;
-  color: white !important;
+  width: 42px !important;
+  height: 42px !important;
+  border-radius: 50% !important;
+  background-color: transparent !important;
   transform: translateY(-100%) !important;
   z-index: 10000 !important;
-  border-radius: 4px !important;
+  transition: all 0.3s ease-in-out;
 }
 
 .slick-prev {
-  left: -10px !important;
+  left: -35px !important;
 }
 
 .slick-next {
-  right: -1px !important;
+  right: -35px !important;
 }
 
 .slick-prev::before,
 .slick-next::before {
-  font-size: 24px !important;
+  font-size: 27px !important;
   line-height: 1 !important;
-  opacity: 0.45 !important;
-  color: white !important;
+  color: rgb(29, 81, 147) !important;
   -webkit-font-smoothing: antialiased !important;
   -moz-osx-font-smoothing: grayscale !important;
   text-align: center !important;
   position: absolute !important;
-  left: 5px !important;
-  bottom: 4px !important;
-  font-family: inherit !important
+  left: 8px !important;
+  bottom: 10px !important;
+  font-family: inherit !important;
+  opacity: 0.8 !important;
+  transition: all 0.3s ease-in-out;
+}
+
+.slick-prev:hover,
+.slick-next:hover {
+  border-color: #1d5193 !important;
+  background-color: #1d5193 !important;
+  background-image: #fff !important;
+  color: #fff !important;
 }
 
 .slick-prev:hover::before,
 .slick-next:hover::before {
   opacity: 1 !important;
+  color: #fff !important;
 }

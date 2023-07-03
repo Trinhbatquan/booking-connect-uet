@@ -8,6 +8,7 @@ const studentInitialState = studentLocalStorage || {
   isLogin: false,
   role: null,
   email: null,
+  fullName: null,
 };
 
 const studentSlice = createSlice({
@@ -17,6 +18,7 @@ const studentSlice = createSlice({
     loginUserSucceed: (state, action) => {
       state.isLogin = true;
       state.role = action.payload.roleId;
+      state.fullName = action.payload.fullName;
       state.email = action.payload.email;
       localStorage.setItem(
         "auth-bookingCare-UET_student",
@@ -26,12 +28,14 @@ const studentSlice = createSlice({
     loginUserFailed: (state, action) => {
       state.isLogin = false;
       state.role = null;
+      state.fullName = null;
       state.email = null;
       localStorage.removeItem("auth-bookingCare-UET_student");
     },
     logOutUser: (state, action) => {
       state.isLogin = false;
       state.role = null;
+      state.fullName = null;
       state.email = null;
       localStorage.removeItem("auth-bookingCare-UET_student");
     },

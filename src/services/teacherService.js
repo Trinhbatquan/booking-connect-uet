@@ -2,7 +2,7 @@ import axiosClient from "../axios";
 
 //getTenTeacher
 const getTeacherHomePageAPI = {
-  getTenTeacher: (params) => {
+  getTeacher: (params) => {
     const url = "/api/teacher";
     return axiosClient.get(url, { params });
   },

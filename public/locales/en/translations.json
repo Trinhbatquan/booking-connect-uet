@@ -43,6 +43,9 @@
 
 
     "system": {
+         "token": {
+            "mess": "Token is expired. Please login again after 3 seconds."
+        },
  
         "header": {
             "admin": "Administrator",
@@ -176,23 +179,28 @@
 
   
     "header": {
-        "UET": "UNIVERSITY OF ENGINEERING AND TECHNOLOGY",
-        "VNU": "VIETNAM NATIONAL UNIVERSITY",
-        "support": "SUPPORT"
+        "UET": "University of engineering and technology",
+        "VNU": "Vietnam national university",
+        "support": "Support"
     },
     "banner": {
-        "contentOne": "ONLINE DATE SCHEDULE SYSTEM",
-        "contentTwo": "CONNECTING STUDENTS WITH SCHOOL",
+        "contentOne": "Dialogue scheduling system",
+        "contentTwo": "Support answer questions for learners",
         "search": "Find departments, faculties, institutes...",
         "department": "Departments",
         "faculty": "Faculties and institutes",
         "health": "Physical health",
-        "mental": "Mental health"
+        "mental": "Mental health",
+        "teacher": "Teachers"
     }, 
      "navigate": {
         "teacher": "Teacher"
+    },
+    "teacher": {
+        "schedule": {
+            "create": "Create a new schedule"
+        }
     }
-
 
 
 
