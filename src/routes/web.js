@@ -29,7 +29,11 @@ const {
   getScheduleSystemController,
   deleteScheduleController,
 } = require("../controllers/scheduleController");
-
+const {
+  createBookingScheduleController,
+  getBookingScheduleController,
+} = require("../controllers/bookingController");
+const { updateStudentController } = require("../controllers/studentController");
 const {
   checkExpiredToken,
   protectAdminToken,
@@ -101,6 +105,19 @@ const initWebRoutes = (app) => {
   router.get("/api/homepage/logout", logoutHomePageController);
   router.get("/api/users/verify/emailUrl", verificationEmailController);
   router.get("/api/get-schedule", getScheduleByIdAndDateController);
+  router.post(
+    "/api/create-booking-schedule",
+    (req, res, next) => checkExpiredToken(req, res, next, "student"),
+    (req, res, next) => protectUserToken(req, res, next, "student"),
+    createBookingScheduleController
+  );
+  router.put(
+    "/api/update-student",
+    (req, res, next) => checkExpiredToken(req, res, next, "student"),
+    (req, res, next) => protectUserToken(req, res, next, "student"),
+    updateStudentController
+  );
+  router.get("/api/get-booking-schedule", getBookingScheduleController);
 
   return app.use("/", router);
 };

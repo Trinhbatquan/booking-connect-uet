@@ -5,10 +5,13 @@ const checkExpiredToken = async (req, res, next, action) => {
   console.log("test");
   try {
     let token;
+    let decode;
     if (action === "system") {
       token = await req.cookies.access_token_booking_UET_system;
-    } else {
-      token = await req.cookies.access_token_booking_UET_student;
+      decode = await jwt.verify(token, process.env.SECRET_KEY);
+    } else if (action === "student") {
+      token = await req.cookies.access_token_booking_UET_homepage;
+      decode = await jwt.verify(token, process.env.SECRET_KEY_STUDENT);
     }
     if (!token) {
       return res.status(401).json({
@@ -16,8 +19,7 @@ const checkExpiredToken = async (req, res, next, action) => {
         message: "No token found or cookie session expired.",
       });
     }
-    const decode = await jwt.verify(token, process.env.SECRET_KEY);
-    console.log(decode);
+    // console.log(decode);
 
     const { exp } = decode;
     if (Date.now() >= exp * 1000) {
@@ -63,7 +65,14 @@ const protectAdminToken = async (req, res, next) => {
 
 const protectUserToken = async (req, res, next, action) => {
   try {
-    const email = req.decodeToken;
+    if (!req.body.email) {
+      return res.status(401).json({
+        codeNumber: -1,
+        message: "Missing parameter email",
+      });
+    }
+    const { email } = req.decodeToken;
+    console.log(email);
     if (action === "student") {
       const student = await db.Student.findOne({
         where: {
@@ -73,7 +82,7 @@ const protectUserToken = async (req, res, next, action) => {
           exclude: ["password"],
         },
       });
-      if (!student) {
+      if (!student || email !== req.body.email) {
         return res.status(401).json({
           codeNumber: -2,
           message: "Current User is not student",
@@ -103,7 +112,7 @@ const protectUserToken = async (req, res, next, action) => {
             exclude: ["password"],
           },
         });
-        if (!data) {
+        if (!data || email !== req.body.email) {
           return res.status(501).json({
             message: -2,
             message: "Current User is student",

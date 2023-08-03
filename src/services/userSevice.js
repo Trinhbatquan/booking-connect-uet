@@ -329,6 +329,7 @@ const registerHomePageService = (email, password, fullName, faculty) => {
             codeNumber: 0,
             message: "Login OK",
             user: {
+              id: exist?.user?.id,
               fullName: exist?.user?.fullName,
               email: exist?.user?.email,
               roleId: "R3",
@@ -411,6 +412,7 @@ const loginHomePageService = async (email, password) => {
             codeNumber: 0,
             message: "Login OK",
             user: {
+              id: student?.id,
               fullName: student?.fullName,
               email: student?.email,
               roleId: "R3",
@@ -482,6 +484,7 @@ const verificationEmailService = (req) => {
         codeNumber: 0,
         message: "Email verified successfully",
         user: {
+          id: user?.id,
           fullName: user?.fullName,
           email: user?.email,
           roleId: "R3",
