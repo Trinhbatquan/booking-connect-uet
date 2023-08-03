@@ -4,10 +4,14 @@ import { RiDeleteBack2Fill } from "react-icons/ri";
 import { HiOutlinePencilAlt } from "react-icons/hi";
 import { useTranslation } from "react-i18next";
 
+import avatar from "../../../assets/image/uet.png";
+
+import "./Detail.scss";
+
 import { emitter } from "../../../utils/emitter";
 import { getAllCodeApi } from "../../../services/userService";
 
-const ScheduleModal = ({ close, dataModalSchedule }) => {
+const BookingModal = ({ close, dataModalSchedule, teacherId, create }) => {
   console.log(dataModalSchedule);
   const [email, setEmail] = useState(
     dataModalSchedule?.currentStudent?.email
@@ -27,33 +31,33 @@ const ScheduleModal = ({ close, dataModalSchedule }) => {
       return "";
     }
   });
-  const [address, setAddress] = useState("");
+  // const [address, setAddress] = useState("");
   const [reason, setReason] = useState("");
-  const [gender, setGender] = useState("");
+  // const [gender, setGender] = useState("");
   const [notifyCheckState, setNotifyCheckState] = useState("");
 
-  const [genderAPI, setGenderAPI] = useState([]);
+  // const [genderAPI, setGenderAPI] = useState([]);
 
   const { t, i18n } = useTranslation();
 
   const handleChangeEvent = (value, type) => {
     const stateArr = [
-      "Email",
-      "FullName",
+      // "Email",
+      // "FullName",
       "PhoneNumber",
-      "Mssv",
-      "Address",
+      // "Mssv",
+      // "Address",
       "Reason",
-      "Gender",
+      // "Gender",
     ];
     const setStateArr = [
-      setEmail,
-      setFullName,
+      // setEmail,
+      // setFullName,
       setPhoneNumber,
-      setMssv,
-      setAddress,
+      // setMssv,
+      // setAddress,
       setReason,
-      setGender,
+      // setGender,
     ];
     for (let i = 0; i < stateArr.length; i++) {
       if (type === stateArr[i]) {
@@ -64,12 +68,12 @@ const ScheduleModal = ({ close, dataModalSchedule }) => {
   };
 
   useEffect(() => {
-    const gender = "Gender";
-    getAllCodeApi.getByType({ type: gender }).then((data) => {
-      if (data?.codeNumber === 0) {
-        setGenderAPI(data.allCode);
-      }
-    });
+    // const gender = "Gender";
+    // getAllCodeApi.getByType({ type: gender }).then((data) => {
+    //   if (data?.codeNumber === 0) {
+    //     setGenderAPI(data.allCode);
+    //   }
+    // });
   }, []);
 
   //clear data modal with emitter
@@ -80,50 +84,53 @@ const ScheduleModal = ({ close, dataModalSchedule }) => {
   //     setPhoneNumber("");
   //   });
 
-  //   const handleCheckNullState = () => {
-  //     let result = true;
-  //     const stateArr = [email, password, fullName, phoneNumber];
-  //     const notification = ["Email", "Password", "FullName", "PhoneNumber"];
-  //     for (let i = 0; i < stateArr.length; i++) {
-  //       console.log(stateArr[i]);
-  //       if (!stateArr[i]) {
-  //         setNotifyCheckState(`${notification[i]} is required`);
-  //         result = false;
-  //         break;
-  //       } else {
-  //         setNotifyCheckState("");
-  //       }
-  //     }
-  //     return result;
-  //   };
+  const handleCheckNullState = () => {
+    let result = true;
+    const stateArr = [phoneNumber, reason];
+    const notification = ["PhoneNumber", "Reason"];
+    for (let i = 0; i < stateArr.length; i++) {
+      if (!stateArr[i]) {
+        setNotifyCheckState(`${notification[i]} is required`);
+        result = false;
+        break;
+      } else {
+        setNotifyCheckState("");
+      }
+    }
+    return result;
+  };
 
-  //   const handleCheckValidate = () => {
-  //     let result = true;
-  //     const checkNullState = handleCheckNullState();
-  //     console.log(checkNullState);
-  //     if (checkNullState) {
-  //       const regexEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-  //       console.log(regexEmail.test(email));
-  //       if (!regexEmail.test(email)) {
-  //         setNotifyCheckState("Please enter correct format of email");
-  //         result = false;
-  //       }
-  //     } else {
-  //       result = false;
-  //     }
-  //     return result;
-  //   };
+  const handleCheckValidate = () => {
+    let result = true;
+    const checkNullState = handleCheckNullState();
+    if (checkNullState) {
+      const rejexPhoneNumber = /\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/;
+      // const regexEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+      // console.log(regexEmail.test(email));
+      if (!rejexPhoneNumber.test(phoneNumber)) {
+        setNotifyCheckState("Please enter correct format of phone");
+        result = false;
+      }
+    } else {
+      result = false;
+    }
+    return result;
+  };
 
-  //   const handleCreateNewUser = () => {
-  //     if (handleCheckValidate()) {
-  //       createNewUser({
-  //         email,
-  //         password,
-  //         fullName,
-  //         phoneNumber,
-  //       });
-  //     }
-  //   };
+  const handleCreateBookingSchedule = () => {
+    if (handleCheckValidate()) {
+      create({
+        email,
+        managerId: teacherId?.id,
+        roleManager: "R5",
+        studentId: dataModalSchedule?.currentStudent?.id,
+        date: dataModalSchedule.date,
+        timeType: dataModalSchedule.timeType,
+        phoneNumber,
+        reason,
+      });
+    }
+  };
 
   return (
     <AnimatePresence>
@@ -132,17 +139,35 @@ const ScheduleModal = ({ close, dataModalSchedule }) => {
         animate={{ opacity: 1, translateY: 0 }}
         exit={{ opacity: 0, translateY: -50 }}
         transition={{ duration: 0.4, delay: 0.1 }}
-        className=" z-50 fixed top-0 w-3/4 max-w-[3/4] flex overflow-hidden flex-col h-auto bg-white rounded-lg shadow backdrop-blur-md mx-auto mt-16"
+        className="modal-schedule-container pb-4 fixed top-8 w-3/4 max-w-[3/4] flex overflow-y-scroll flex-col bg-white rounded-lg shadow backdrop-blur-md mx-auto mt-16"
         style={{ left: "12.25%" }}
       >
-        {/* Header ScheduleModal */}
-        <div className="bg-blue-600 px-3 py-2 w-full">
-          <span className="text-white font-semibold">
-            Create a new schedule
-          </span>
+        {/* Header BookingModal */}
+        <div className="bg-blue-600 px-6 py-2 w-full pt-4 flex items-center">
+          <span className="text-white font-semibold">Create a new booking</span>
+        </div>
+        <div className="detail-teacher">
+          <div
+            className="detail-teacher-avatar flex-3"
+            style={{
+              backgroundImage: `url(${avatar})`,
+            }}
+          ></div>
+          <div className="detail-teacher-content flex-1">
+            <p className="detail-teacher-content-name">
+              {teacherId?.positionData?.valueVn}, {teacherId?.fullName}
+            </p>
+            <p>
+              Ngày hẹn: {dataModalSchedule?.date ? dataModalSchedule.date : ""}
+            </p>
+            <p>
+              Giờ hẹn:{" "}
+              {dataModalSchedule?.valueTime ? dataModalSchedule.valueTime : ""}
+            </p>
+          </div>
         </div>
 
-        <div className="pt-1 pb-4 px-3 flex flex-col justify-center-center w-full">
+        <div className="pt-1 pb-4 px-6 flex flex-col w-full">
           <span
             className="mx-auto text-red-500 mb-1"
             style={notifyCheckState ? { opacity: "1" } : { opacity: "0" }}
@@ -156,12 +181,13 @@ const ScheduleModal = ({ close, dataModalSchedule }) => {
                 <HiOutlinePencilAlt />
               </label>
               <input
-                className=" rounded-sm w-full focus:ring-0 focus:border focus:border-solid focus:border-gray-500 border border-solid border-gray-500 outline-none py-1 px-2 text-md"
+                className=" rounded-sm w-full focus:ring-0 focus:border focus:border-solid focus:border-gray-500 border border-solid bg-gray-200 outline-none py-1 px-2 text-md"
                 name="email"
                 type="email"
                 value={email}
                 onChange={(e) => handleChangeEvent(e.target.value, "Email")}
                 onFocus={() => setNotifyCheckState("")}
+                disabled
               />
             </div>
             <div className="flex-1 flex flex-col justify-center">
@@ -170,12 +196,13 @@ const ScheduleModal = ({ close, dataModalSchedule }) => {
                 <HiOutlinePencilAlt />
               </label>
               <input
-                className=" rounded-sm w-full focus:ring-0 focus:border focus:border-solid focus:border-gray-500 border border-solid border-gray-500 outline-none py-1 px-2 text-md"
+                className=" rounded-sm w-full focus:ring-0 focus:border focus:border-solid focus:border-gray-500 border border-solid bg-gray-200 outline-none py-1 px-2 text-md"
                 name="fullName"
                 type="text"
                 value={fullName}
                 onChange={(e) => handleChangeEvent(e.target.value, "FullName")}
                 onFocus={() => setNotifyCheckState("")}
+                disabled
               />
             </div>
           </div>
@@ -202,17 +229,18 @@ const ScheduleModal = ({ close, dataModalSchedule }) => {
                 Mssv <HiOutlinePencilAlt />
               </label>
               <input
-                className=" rounded-sm w-full focus:ring-0 focus:border focus:border-solid focus:border-gray-500 border border-solid border-gray-500 outline-none py-1 px-2 text-md"
+                className=" rounded-sm w-full focus:ring-0 focus:border focus:border-solid focus:border-gray-500 border border-solid bg-gray-200 outline-none py-1 px-2 text-md"
                 name="mssv"
                 type="text"
                 value={mssv}
                 onChange={(e) => handleChangeEvent(e.target.value, "Mssv")}
                 onFocus={() => setNotifyCheckState("")}
+                disabled
               />
             </div>
           </div>
 
-          <div className="w-full flex items-center justify-center gap-6 mt-3">
+          {/* <div className="w-full flex items-center justify-center gap-6 mt-3">
             <div className="flex flex-col justify-center flex-1">
               <label className="mb-1 text-headingColor flex items-center gap-1">
                 Address <HiOutlinePencilAlt />
@@ -225,7 +253,7 @@ const ScheduleModal = ({ close, dataModalSchedule }) => {
                 onFocus={() => setNotifyCheckState("")}
               />
             </div>
-          </div>
+          </div> */}
 
           <div className="w-full flex items-center justify-center gap-6 mt-3">
             <div className="flex flex-col justify-center flex-1">
@@ -236,13 +264,13 @@ const ScheduleModal = ({ close, dataModalSchedule }) => {
                 className=" rounded-sm w-full focus:ring-0 focus:border focus:border-solid focus:border-gray-500 border border-solid border-gray-500 outline-none py-1 px-2 text-md"
                 name="reason"
                 type="text"
-                onChange={(e) => setAddress(e.target.value, "Reason")}
+                onChange={(e) => setReason(e.target.value, "Reason")}
                 onFocus={() => setNotifyCheckState("")}
               />
             </div>
           </div>
 
-          <div className="w-full flex flex-col item-start justify-center mt-3">
+          {/* <div className="w-full flex flex-col item-start justify-center mt-3">
             <label className="mb-1 text-headingColor flex items-center gap-1">
               Gender <HiOutlinePencilAlt />
             </label>
@@ -267,7 +295,7 @@ const ScheduleModal = ({ close, dataModalSchedule }) => {
                   );
                 })}
             </select>
-          </div>
+          </div> */}
 
           <div className="w-full flex item-center justify-start mt-3">
             <span className="text-red-500 font-semibold flex-1 flex items-center gap-1">
@@ -280,7 +308,7 @@ const ScheduleModal = ({ close, dataModalSchedule }) => {
             <button
               className="bg-blue-600 text-white mt-6 py-2 px-1 font-semibold rounded-md shadow backdrop-blur-md bg-opacity-80 hover:bg-opacity-100 "
               style={{ maxWidth: "15%", width: "15%" }}
-              //   onClick={() => handleCreateNewUser()}
+              onClick={() => handleCreateBookingSchedule()}
             >
               Add New
             </button>
@@ -295,7 +323,7 @@ const ScheduleModal = ({ close, dataModalSchedule }) => {
         </div>
 
         <RiDeleteBack2Fill
-          className="absolute top-2 right-2 text-white text-xl cursor-pointer"
+          className="absolute top-4 right-4 text-white text-xl cursor-pointer"
           onClick={() => close()}
         />
 
@@ -308,4 +336,4 @@ const ScheduleModal = ({ close, dataModalSchedule }) => {
   );
 };
 
-export default ScheduleModal;
+export default BookingModal;

@@ -24,7 +24,7 @@
       background-repeat: no-repeat;
       background-size: cover;
       width: 120px;
-      height: 120px;
+      height: 120px !important;
       border-radius: 50%;
     }
     &-content {
@@ -43,4 +43,36 @@
 
 img {
   object-fit: cover;
+}
+
+.modal-schedule-overplay {
+  z-index: 10000 !important;
+}
+.modal-schedule-container {
+  z-index: 1000000 !important;
+  height: 530px;
+  max-height: 530px;
+}
+
+.detail-teacher {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 25px;
+  padding: 10px 2%;
+
+  &-avatar {
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 120px;
+    height: 120px !important;
+    border-radius: 50%;
+  }
+  &-content {
+    &-name {
+      font-size: 20px;
+      font-weight: bold;
+    }
+  }
 }

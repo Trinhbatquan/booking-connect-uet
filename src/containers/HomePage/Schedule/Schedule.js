@@ -41,18 +41,16 @@ const Schedule = ({ change, timeData, teacher, handleSchedule }) => {
     });
   }
 
-  // const handleModalSchedule = (text) => {
-  //   console.log(text);
-  // };
-
   return (
     <div className="schedule-container">
+      {console.log(options[0].value)}
       <div className="schedule-date">
         <select
           className="text-base"
           name="date"
           id="date"
           value={date}
+          defaultValue={options[0]?.value}
           onChange={(e) => {
             setDate(e.target.value);
             change(e.target.value);
@@ -82,8 +80,17 @@ const Schedule = ({ change, timeData, teacher, handleSchedule }) => {
                 return (
                   <Button
                     key={index}
-                    text={time}
-                    click={(time) => handleSchedule(time, date)}
+                    text={time?.valueTime}
+                    date={date || options[0].value}
+                    click={(text, date) =>
+                      handleSchedule(
+                        {
+                          timeType: time?.timeType,
+                          valueTime: time?.valueTime,
+                        },
+                        date
+                      )
+                    }
                   />
                 );
               })

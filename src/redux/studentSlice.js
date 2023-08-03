@@ -9,6 +9,7 @@ const studentInitialState = studentLocalStorage || {
   role: null,
   email: null,
   fullName: null,
+  id: null,
 };
 
 const studentSlice = createSlice({
@@ -20,23 +21,24 @@ const studentSlice = createSlice({
       state.role = action.payload.roleId;
       state.fullName = action.payload.fullName;
       state.email = action.payload.email;
+      state.id = action.payload.id;
       localStorage.setItem(
         "auth-bookingCare-UET_student",
         JSON.stringify(state)
       );
     },
     loginUserFailed: (state, action) => {
-      state.isLogin = false;
-      state.role = null;
-      state.fullName = null;
-      state.email = null;
+      // state.isLogin = false;
+      // state.role = null;
+      // state.fullName = null;
+      // state.email = null;
       localStorage.removeItem("auth-bookingCare-UET_student");
     },
     logOutUser: (state, action) => {
-      state.isLogin = false;
-      state.role = null;
-      state.fullName = null;
-      state.email = null;
+      // state.isLogin = false;
+      // state.role = null;
+      // state.fullName = null;
+      // state.email = null;
       localStorage.removeItem("auth-bookingCare-UET_student");
     },
   },
