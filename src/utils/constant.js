@@ -42,8 +42,10 @@ export const manageActions = {
 export const dateFormat = {
   SEND_TO_SERVER: "DD-MM-YYYY",
   LABEL_SCHEDULE: "dddd - DD/MM",
-  TODAY_SCHEDULE: "[Hôm nay] - DD/MM",
-  FORMAT_HOURS: "HH-mm",
+  TOMORROW_SCHEDULE: "[Ngày mai] - DD/MM",
+  TOMORROW_SCHEDULE_EN: "[Tomorrow] - DD/MM",
+  FORMAT_HOURS: "H-mm",
+  FORMAT_HOURS_12H: "LT",
 };
 
 export const YesNoObj = {

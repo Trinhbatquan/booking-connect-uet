@@ -59,7 +59,10 @@ const HomeHeader = () => {
             <div className="logo"></div>
           </Link>
           <div>
-            <div className="font-semibold text-md" style={{ color: "#1d5193" }}>
+            <div
+              className=""
+              style={{ color: "#1d5193", fontSize: "15px", fontWeight: "700" }}
+            >
               {t("header.UET")}
             </div>
             <div className="text-md" style={{ color: "#1d5193" }}>
@@ -104,9 +107,21 @@ const HomeHeader = () => {
                     animate={{ opacity: 1, translateY: 0 }}
                     exit={{ opacity: 0, translateY: -50 }}
                     transition={{ duration: 0.5, delay: 0.1 }}
-                    className="avatar-modal absolute top-10 -right-24 z-50 rounded-lg  w-80 bg-white backdrop-blur-sm"
+                    className="avatar-modal absolute right-0 top-9 z-50 rounded-lg  w-80 bg-white backdrop-blur-sm"
                     style={{ boxShadow: "0 4px 20px rgba(0,0,0,.25)" }}
                   >
+                    <div
+                      className=""
+                      style={{
+                        position: "absolute",
+                        top: "-5px",
+                        right: "4px",
+                        transform: "rotate(45deg)",
+                        width: "18px",
+                        height: "18px",
+                        backgroundColor: "#fff",
+                      }}
+                    ></div>
                     <div className="text-md text-headingColor">
                       <div className="h-full w-full flex items-center justify-center cursor-text">
                         <div

@@ -35,12 +35,12 @@ const HeaderUser = () => {
   };
 
   return (
-    <div className="system-header-container shadow-md backdrop-blur-md shadow-blurColor z-30">
-      <div className="system-header-item relative flex items-center justify-start">
+    <div className="system-header-container shadow-md backdrop-blur-md shadow-blurColor z-30 flex items-center justify-between">
+      <div className="px-4 system-header-item relative">
         <NavLink
           to={path.scheduleManager}
-          className="system-header-text text-blurColor font-semibold text-lg w-1/6 h-full flex items-center
-        border-r-2 justify-center border-blurColor"
+          className="system-header-text text-blurColor font-semibold text-lg w-full h-full flex items-center
+        "
           style={({ isActive }) =>
             isActive
               ? {

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { FaCalendarAlt } from "react-icons/fa";
+import { BsCircleFill } from "react-icons/bs";
 import { BsHandIndexThumb } from "react-icons/bs";
+import { useTranslation } from "react-i18next";
 
 import moment from "moment";
 import "moment/locale/vi";
@@ -11,25 +13,46 @@ import { contact, dateFormat } from "../../../utils/constant";
 
 const Schedule = ({ change, timeData, teacher, handleSchedule }) => {
   const [date, setDate] = useState("");
+
+  const { t, i18n } = useTranslation();
+
   console.log({ timeData });
   const options = [];
   const date_now = new Date();
-  for (let i = 0; i < 7; i++) {
+  for (let i = 1; i < 8; i++) {
     let labelDate;
-    if (i === 0) {
-      labelDate = moment(date_now)
-        .add(i, "days")
-        // .locale("en")
-        .format(dateFormat.TODAY_SCHEDULE);
-      //config error first letter
-      labelDate = labelDate.charAt(0).toUpperCase() + labelDate.slice(1);
+    if (i18n.language === "en") {
+      if (i === 1) {
+        labelDate = moment(date_now)
+          .add(i, "days")
+          .locale("en")
+          .format(dateFormat.TOMORROW_SCHEDULE_EN);
+        //config error first letter
+        // labelDate = labelDate.charAt(0).toUpperCase() + labelDate.slice(1);
+      } else {
+        labelDate = moment(date_now)
+          .add(i, "days")
+          .locale("en")
+          .format(dateFormat.LABEL_SCHEDULE);
+        //config error first letter
+        // labelDate = labelDate.charAt(0).toUpperCase() + labelDate.slice(1);
+      }
     } else {
-      labelDate = moment(date_now)
-        .add(i, "days")
-        // .locale("en")
-        .format(dateFormat.LABEL_SCHEDULE);
-      //config error first letter
-      labelDate = labelDate.charAt(0).toUpperCase() + labelDate.slice(1);
+      if (i === 1) {
+        labelDate = moment(date_now)
+          .add(i, "days")
+          // .locale("en")
+          .format(dateFormat.TOMORROW_SCHEDULE);
+        //config error first letter
+        labelDate = labelDate.charAt(0).toUpperCase() + labelDate.slice(1);
+      } else {
+        labelDate = moment(date_now)
+          .add(i, "days")
+          // .locale("en")
+          .format(dateFormat.LABEL_SCHEDULE);
+        //config error first letter
+        labelDate = labelDate.charAt(0).toUpperCase() + labelDate.slice(1);
+      }
     }
     const valueDate = moment(date_now)
       .add(i, "days")
@@ -43,7 +66,7 @@ const Schedule = ({ change, timeData, teacher, handleSchedule }) => {
 
   return (
     <div className="schedule-container">
-      {console.log(options[0].value)}
+      {/* {console.log(i18n.language)} */}
       <div className="schedule-date">
         <select
           className="text-base"
@@ -79,14 +102,22 @@ const Schedule = ({ change, timeData, teacher, handleSchedule }) => {
               timeData?.map((time, index) => {
                 return (
                   <Button
+                    selected={time?.isSelected}
                     key={index}
-                    text={time?.valueTime}
+                    text={
+                      i18n.language === "en"
+                        ? time?.valueTimeEn
+                        : time?.valueTimeVn
+                    }
                     date={date || options[0].value}
                     click={(text, date) =>
                       handleSchedule(
                         {
                           timeType: time?.timeType,
-                          valueTime: time?.valueTime,
+                          valueTime:
+                            i18n.language === "en"
+                              ? time?.valueTimeEn
+                              : time?.valueTimeVn,
                         },
                         date
                       )
@@ -99,9 +130,21 @@ const Schedule = ({ change, timeData, teacher, handleSchedule }) => {
             )}
           </div>
           {timeData && Array.isArray(timeData) && timeData?.length > 0 && (
-            <span className="schedule-content-note text-headingColor text-md flex items-center justify-start gap-1">
-              Chọn <BsHandIndexThumb /> và đặt lịch
-            </span>
+            <div className="w-full flex items-center justify-start gap-6">
+              <span className="schedule-content-note text-headingColor text-md flex items-center justify-start gap-1">
+                Chọn <BsHandIndexThumb /> và đặt lịch
+              </span>
+              {/* <span className="schedule-content-note text-headingColor text-md flex items-center justify-start gap-1">
+                <BsCircleFill className="text-2xl text-slate-500" /> Lịch quá
+                hạn
+              </span> */}
+              <span className="schedule-content-note text-headingColor text-md flex items-center justify-start gap-1">
+                <BsCircleFill className="text-2xl text-gray-500" /> Lịch đã chọn
+              </span>
+              <span className="schedule-content-note text-headingColor text-md flex items-center justify-start gap-1">
+                <BsCircleFill className="text-2xl text-yellow-300" /> Lịch trống
+              </span>
+            </div>
           )}
         </div>
         <div className="schedule-content-contact">

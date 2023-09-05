@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import moment from "moment";
+import "moment/locale/vi";
 import { useParams } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
@@ -14,7 +15,6 @@ import convertBufferToBase64 from "../../../utils/convertBufferToBase64";
 import Schedule from "../Schedule/Schedule";
 import { getScheduleByIdAndDate } from "../../../services/scheduleService";
 import { dateFormat, path } from "../../../utils/constant";
-import checkRealTime from "../../../utils/checkRealTime";
 import Navigate from "../NavigateCustom";
 import avatar from "../../../assets/image/uet.png";
 import BookingModal from "./BookingModal";
@@ -38,11 +38,14 @@ const TeacherDetail = () => {
   const [dataModalSchedule, setDataModalSchedule] = useState({});
 
   const { id } = useParams();
-  const date_now = moment(new Date()).format(dateFormat.SEND_TO_SERVER);
+  const date_tomorrow = moment(new Date())
+    .add(1, "days")
+    .format(dateFormat.SEND_TO_SERVER);
+  console.log(date_tomorrow);
 
   const navigate = useSelector((state) => state.navigateReducer.navigate);
   const currentStudent = useSelector((state) => state.studentReducer);
-  console.log({ timeDataApi });
+  // console.log({ timeDataApi });
 
   const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
@@ -68,13 +71,36 @@ const TeacherDetail = () => {
       console.log(bookingSelected.bookingSchedule);
       if (bookingSelected?.bookingSchedule?.length > 0) {
         bookingSelected.bookingSchedule.forEach((item) => {
-          bookingScheduleData.push(item?.timeDataBooking?.valueVn);
+          bookingScheduleData.push(item?.timeType);
         });
         getTime = checkBookedSchedule(getTime, bookingScheduleData);
       }
     }
     return getTime;
   };
+
+  // const checkRealTime = (data, type) => {
+  //   console.log(type);
+  //   const real_time =
+  //     i18n.language === "en"
+  //       ? moment(new Date()).locale("en").format(dateFormat.FORMAT_HOURS_12H)
+  //       : moment(new Date()).format(dateFormat.FORMAT_HOURS);
+  //   console.log(real_time);
+  //   // if (data && Array.isArray(data) && data?.length > 0) {
+  //   //   data = data.filter((time, index) => {
+  //   //     const splitArr = time?.valueTime?.split("-");
+  //   //     const firstLetterSplitArr = [
+  //   //       splitArr[0].split(":")[0],
+  //   //       splitArr[1].split(":")[0],
+  //   //     ];
+  //   //     return +real_time.split("-")[0] < +firstLetterSplitArr[0];
+  //   //   });
+
+  //   //   return data;
+  //   // }
+  // };
+
+  // checkRealTime(123, i18n.language);
 
   useEffect(() => {
     setLoading(true);
@@ -92,7 +118,7 @@ const TeacherDetail = () => {
       }
       const data = await getScheduleByIdAndDate.get({
         userId: +id,
-        date: date_now,
+        date: date_tomorrow,
       });
       if (data?.codeNumber === 0) {
         if (data?.schedule?.length === 0) {
@@ -101,13 +127,17 @@ const TeacherDetail = () => {
           );
         } else {
           let getTime = [];
+          // console.log(data.schedule);
+
           data?.schedule.forEach((item) => {
             getTime.push({
               timeType: item?.timeType,
-              valueTime: item?.timeData?.valueVn,
+              valueTimeVn: item?.timeData?.valueVn,
+              valueTimeEn: item?.timeData?.valueEn,
             });
           });
-          getTime = checkRealTime(getTime);
+          // console.log(getTime);
+          // checkRealTime(getTime);
           // let bookingScheduleData = [];
           // const bookingSelected = await getBookingSchedule.get({
           //   departmentId,
@@ -123,12 +153,12 @@ const TeacherDetail = () => {
           //     getTime = checkBookedSchedule(getTime, bookingScheduleData);
           //   }
           // }
-          getTime = getBookingScheduleNotSelected(
+          getTime = await getBookingScheduleNotSelected(
             getTime,
             managerId,
             "R5",
             currentStudent?.id,
-            date_now,
+            date_tomorrow,
             "A1"
           );
 
@@ -138,7 +168,7 @@ const TeacherDetail = () => {
 
       setLoading(false);
     }, 1000);
-  }, []);
+  }, [i18n.language]);
 
   const loadTimeOfDate = async (value) => {
     const userId = +id;
@@ -150,7 +180,7 @@ const TeacherDetail = () => {
           "Giảng viên không có lịch ngày hôm nay, vui lòng chọn thời gian khác."
         );
       } else {
-        console.log("check res\n" + JSON.stringify(data));
+        // console.log("check res\n" + JSON.stringify(data));
 
         let getTime = [];
         data?.schedule.forEach((item) => {
@@ -159,9 +189,10 @@ const TeacherDetail = () => {
             valueTime: item?.timeData?.valueVn,
           });
         });
-        if (date === date_now) {
-          getTime = checkRealTime(getTime);
-        }
+        // if (date === date_now) {
+        //   checkRealTime(getTime); //error
+        // }
+        console.log(getTime);
         // let bookingScheduleData = [];
         // const bookingSelected = await getBookingSchedule.get({
         //   departmentId: teacherId?.id,
@@ -176,7 +207,7 @@ const TeacherDetail = () => {
         //     getTime = checkBookedSchedule(getTime, bookingScheduleData);
         //   }
         // }
-        getTime = getBookingScheduleNotSelected(
+        getTime = await getBookingScheduleNotSelected(
           getTime,
           teacherId?.id,
           "R5",
@@ -184,6 +215,7 @@ const TeacherDetail = () => {
           date,
           "A1"
         );
+        // console.log(test);
 
         setTimeDataApi(getTime);
       }
@@ -310,7 +342,7 @@ const TeacherDetail = () => {
                 //   }
                 // }
 
-                filterSchedule = getBookingScheduleNotSelected(
+                filterSchedule = await getBookingScheduleNotSelected(
                   timeDataApi,
                   managerId,
                   "R5",

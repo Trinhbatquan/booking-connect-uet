@@ -1,6 +1,11 @@
 const checkBookedSchedule = (getTime, bookingScheduleData) => {
-  getTime = getTime.filter((item, index) => {
-    return !bookingScheduleData.includes(item.valueTime);
+  console.log(getTime, bookingScheduleData);
+  getTime.forEach((time, index) => {
+    if (bookingScheduleData.includes(time?.timeType)) {
+      time.isSelected = true;
+    } else {
+      time.isSelected = false;
+    }
   });
   return getTime;
 };
