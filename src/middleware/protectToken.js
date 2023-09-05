@@ -8,10 +8,14 @@ const checkExpiredToken = async (req, res, next, action) => {
     let decode;
     if (action === "system") {
       token = await req.cookies.access_token_booking_UET_system;
-      decode = await jwt.verify(token, process.env.SECRET_KEY);
+      if (token) {
+        decode = await jwt.verify(token, process.env.SECRET_KEY);
+      }
     } else if (action === "student") {
       token = await req.cookies.access_token_booking_UET_homepage;
-      decode = await jwt.verify(token, process.env.SECRET_KEY_STUDENT);
+      if (token) {
+        decode = await jwt.verify(token, process.env.SECRET_KEY_STUDENT);
+      }
     }
     if (!token) {
       return res.status(401).json({

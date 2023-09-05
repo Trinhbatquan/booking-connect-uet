@@ -7,7 +7,14 @@ const createBookingScheduleController = async (req, res) => {
   try {
     const { studentId, managerId, roleManager, date, timeType, reason } =
       req.body;
-    if (!studentId || !departmentId || !date || !timeType || !reason) {
+    if (
+      !studentId ||
+      !managerId ||
+      !roleManager ||
+      !date ||
+      !timeType ||
+      !reason
+    ) {
       return res.status(501).json({
         codeNumber: 1,
         message: "Missing parameters",
