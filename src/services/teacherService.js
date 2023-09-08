@@ -25,8 +25,8 @@ const getTeacherService = (limit) => {
           },
         ],
         order: [
-          ["createdAt", "DESC"],
-          ["updatedAt", "DESC"],
+          ["createdAt", "ASC"],
+          ["updatedAt", "ASC"],
         ],
         limit: limit ? +limit : null,
         raw: true,

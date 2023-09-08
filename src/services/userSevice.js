@@ -550,8 +550,8 @@ const getUserByRoleService = (role) => {
           exclude: ["password"],
         },
         order: [
-          ["createdAt", "DESC"],
-          ["updatedAt", "DESC"],
+          ["createdAt", "ASC"],
+          ["updatedAt", "ASC"],
         ],
       });
       resolve(allOtherUserByRole);
