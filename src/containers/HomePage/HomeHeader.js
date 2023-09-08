@@ -203,7 +203,7 @@ const HomeHeader = () => {
               //     : { color: "#000" }
               // }
             >
-              <span>Giới thiệu hệ thống</span>
+              <span>{t("header.inform")}</span>
             </NavLink>
             <NavLink
               className="text-md uppercase text-black hover:text-blue-700 font-semibold"
@@ -215,7 +215,7 @@ const HomeHeader = () => {
               //     : { color: "#000" }
               // }
             >
-              <span>Khảo sát ý kiến</span>
+              <span>{t("header.survey")}</span>
             </NavLink>
             <NavLink
               className="text-md uppercase text-black hover:text-blue-700 font-semibold"
@@ -227,7 +227,7 @@ const HomeHeader = () => {
               //     : { color: "#000" }
               // }
             >
-              <span>Cẩm nang học tập</span>
+              <span>{t("header.handbook")}</span>
             </NavLink>
             <NavLink
               className="text-md uppercase text-black hover:text-blue-700 font-semibold"
@@ -239,7 +239,7 @@ const HomeHeader = () => {
               //     : { color: "#000" }
               // }
             >
-              <span>Liên hệ</span>
+              <span>{t("header.contact")}</span>
             </NavLink>
             <NavLink
               className="text-md uppercase text-black hover:text-blue-700 hover:opacity-100 font-semibold"
@@ -252,7 +252,7 @@ const HomeHeader = () => {
               // }
             >
               <span className="flex items-center justify-center gap-1">
-                Hoạt động <IoIosArrowDown className="opacity-20" />
+                {t("header.Action")} <IoIosArrowDown className="opacity-20" />
               </span>
             </NavLink>
           </div>

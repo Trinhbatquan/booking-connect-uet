@@ -7,7 +7,7 @@ import { AiOutlineDelete } from "react-icons/ai";
 import { ToastContainer, toast } from "react-toastify";
 import { BsPersonPlusFill } from "react-icons/bs";
 import { useContext } from "react";
-import { ContextScrollTop } from "../RootSystem";
+// import { ContextScrollTop } from "../RootSystem";
 import { HiOutlinePencilAlt } from "react-icons/hi";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
@@ -52,7 +52,7 @@ const FacultyManager = () => {
   // const [previewAvatar, setPreviewAvatar] = useState("");
 
   //scroll top
-  const scroll = useContext(ContextScrollTop);
+  // const scroll = useContext(ContextScrollTop);
   const { t, i18n } = useTranslation();
 
   const dispatch = useDispatch();
@@ -76,7 +76,7 @@ const FacultyManager = () => {
         }
       });
       setLoading(false);
-      scroll?.isScroll();
+      // scroll?.isScroll();
     }, 1500);
   }, []);
 

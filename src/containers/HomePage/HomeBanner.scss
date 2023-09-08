@@ -25,17 +25,18 @@
     max-height: 70%;
     .content-one {
       z-index: 100;
-      font-size: 26px;
+      font-size: 27px;
       color: #1d5193;
-      font-weight: normal;
-      // text-shadow: 1px 1px 1px #333;
-      font-weight: 500 !important;
+      font-weight: 500;
+      // line-height: 0.95;
+      text-shadow: 0px 0.5px 0px #a672e5;
     }
     .content-two {
       z-index: 100;
-      font-size: 26px;
+      font-size: 27px;
       color: #1d5193;
-      font-weight: 500 !important;
+      font-weight: 500;
+      // line-height: 0.95;
       text-shadow: 0px 0.5px 0px #a672e5;
     }
     .input {

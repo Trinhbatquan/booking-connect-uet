@@ -52,7 +52,7 @@ const HealthStudentManager = () => {
   // const [previewAvatar, setPreviewAvatar] = useState("");
 
   //scroll top
-  const scroll = useContext(ContextScrollTop);
+  // const scroll = useContext(ContextScrollTop);
   const { t, i18n } = useTranslation();
 
   //ref
@@ -75,7 +75,7 @@ const HealthStudentManager = () => {
         }
       });
       setLoading(false);
-      scroll?.isScroll();
+      // scroll?.isScroll();
     }, 1500);
   }, []);
 

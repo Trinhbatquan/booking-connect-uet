@@ -58,7 +58,7 @@ const TeacherManager = () => {
   const [previewAvatar, setPreviewAvatar] = useState("");
 
   //scroll top
-  const scroll = useContext(ContextScrollTop);
+  // const scroll = useContext(ContextScrollTop);
   const { t, i18n } = useTranslation();
 
   const dispatch = useDispatch();
@@ -94,7 +94,7 @@ const TeacherManager = () => {
         }
       });
       setLoading(false);
-      scroll?.isScroll();
+      // scroll?.isScroll();
     }, 1500);
   }, []);
 
@@ -213,7 +213,7 @@ const TeacherManager = () => {
       const regexPassword =
         /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
       const rejexPhoneNumber = /\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/;
-      const regexName = /^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$/;
+      // const regexName = /^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$/;
       if (!regexEmail.test(email)) {
         setNotifyCheckState(`${t("system.notification.email")}`);
         return false;
@@ -222,10 +222,10 @@ const TeacherManager = () => {
         setNotifyCheckState(`${t("system.notification.password")}`);
         return false;
       }
-      if (!regexName.test(fullName)) {
-        setNotifyCheckState(`${t("system.notification.name")}`);
-        return false;
-      }
+      // if (!regexName.test(fullName)) {
+      //   setNotifyCheckState(`${t("system.notification.name")}`);
+      //   return false;
+      // }
       if (!rejexPhoneNumber.test(phoneNumber)) {
         setNotifyCheckState(`${t("system.notification.phone")}`);
         return false;

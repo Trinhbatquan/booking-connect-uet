@@ -8,7 +8,7 @@ import { path } from "../../utils/constant";
 
 import "./RootSystem.scss";
 
-export const ContextScrollTop = createContext();
+// export const ContextScrollTop = createContext();
 const RootSystem = () => {
   console.log(`${path.SYSTEM}${path.LOGIN_SYSTEM}`);
   const navigate = useNavigate();
@@ -20,22 +20,22 @@ const RootSystem = () => {
   }, []);
 
   //scroll to Top
-  const scrollToTop = () => {
-    document.body.scrollTop = 0;
-    document.documentElement.scrollTop = 0;
-  };
+  // const scrollToTop = () => {
+  //   document.body.scrollTop = 0;
+  //   document.documentElement.scrollTop = 0;
+  // };
 
   return (
-    <ContextScrollTop.Provider value={{ isScroll: scrollToTop }}>
-      <div
-        className="overflow-y-scroll"
-        style={{ width: "100vw", height: "100vh" }}
-      >
-        <Header />
-        <div className="w-full" style={{ height: "110px" }}></div>
-        <Outlet />
-      </div>
-    </ContextScrollTop.Provider>
+    // <ContextScrollTop.Provider value={{ isScroll: scrollToTop }}>
+    <div
+    // className="overflow-y-scroll"
+    // style={{ width: "100vw", height: "100vh" }}
+    >
+      <Header />
+      <div className="w-full" style={{ height: "110px" }}></div>
+      <Outlet />
+    </div>
+    // </ContextScrollTop.Provider>
   );
 };
 

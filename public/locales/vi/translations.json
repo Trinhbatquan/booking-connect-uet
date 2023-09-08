@@ -182,7 +182,18 @@
     "header": {
         "UET": "Trường Đại học Công nghệ",
         "VNU": "Đại học Quốc gia Hà Nội",
-        "support": "Hỗ trợ"
+        "support": "Hỗ trợ",
+         "inform": "Giới thiệu hệ thống",
+        "survey": "Khảo sát ý kiến",
+        "handbook": "Cẩm nang học tập",
+        "contact": "Liên hệ",
+        "Action": "Hoạt động",
+        "contact-department": "Liên hệ các phòng ban",
+        "contact-faculty": "Liên hệ các khoa, viện",
+        "contact-teacher": "Liên hệ các giảng viên",
+        "health-student": "Về sức khoẻ sinh viên",
+        "notification": "Thông báo",
+        "see-all": "XEM THÊM"
     },
     "banner": {
         "contentOne": "HỆ THỐNG ĐẶT LỊCH ĐỐI THOẠI",

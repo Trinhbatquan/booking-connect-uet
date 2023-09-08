@@ -212,10 +212,12 @@ const HomePage = () => {
 
   return (
     <Suspense fallback={<Loading type="start" />}>
-      <div style={{ width: "100vw", height: "100vh", overflow: "scroll" }}>
+      <div
+      // style={{ width: "100vw",height: "100vh",overflow: "scroll" }}
+      >
         <HomeHeader />
         <HomeBanner />
-        <Departments settings={settingReactSlick_faculty} />
+        <Departments settings={settingReactSlick} />
         <Faculties settings={settingReactSlick_faculty} />
         <Teacher settings={settingReactSlick} />
         <Health />

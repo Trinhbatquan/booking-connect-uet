@@ -18,9 +18,7 @@ const HomeBanner = () => {
     <div className="homepage-banner-container">
       <div class="layer"></div>
       <div className="home-page-banner-up flex flex-col items-center gap-4 pt-16">
-        <div className="content-one font-semibold">
-          {t("banner.contentOne")}
-        </div>
+        <div className="content-one">{t("banner.contentOne")}</div>
         <div className="content-two">{t("banner.contentTwo")}</div>
         <div className="input flex items-center justify-center mt-8">
           <FaSearch className="text-xl mr-6 text-blue-600" />

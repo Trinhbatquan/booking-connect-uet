@@ -55,9 +55,6 @@
 
     .section-body {
       margin: 0 auto;
-      .healthy-body {
-        gap: 20px;
-      }
       .section-item {
         margin: 0 auto;
         cursor: pointer;
@@ -74,7 +71,7 @@
           border-radius: 4px;
         }
         &-img {
-          background-image: url("../../../assets/image/banner.jpeg");
+          // background-image: url("../../../assets/image/banner.jpeg");
           width: 92%;
           background-position: center center;
           background-repeat: no-repeat;
@@ -108,27 +105,27 @@
             text-align: center;
           }
         }
-        &.health-item {
-          cursor: pointer;
-          width: 49%;
-          max-width: 49%;
-          display: flex;
-          align-items: start;
-          justify-content: center;
-          gap: 10px;
-          &:first-child {
-            padding: 0 8px;
-          }
-          & .section-item-img {
-            width: 60%;
-            height: 80%;
-          }
-          & .section-item-text {
-            font-weight: 600;
-            font-size: 15px;
-            width: 40%;
-          }
-        }
+        // &.health-item {
+        //   cursor: pointer;
+        //   width: 30%;
+        //   max-width: 30%;
+        //   display: flex;
+        //   align-items: start;
+        //   justify-content: center;
+        //   gap: 10px;
+        //   &:first-child {
+        //     padding: 0 8px;
+        //   }
+        //   & .section-item-img {
+        //     width: 60%;
+        //     height: 80%;
+        //   }
+        //   & .section-item-text {
+        //     font-weight: 600;
+        //     font-size: 15px;
+        //     width: 40%;
+        //   }
+        // }
         &.notification-item {
           cursor: pointer;
           display: flex;

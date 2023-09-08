@@ -15,24 +15,25 @@
   border-radius: 15px;
   padding: 17px 10px 15px;
   background-color: #fff;
-  overflow: hidden;
+  // overflow: hidden;
   text-align: center;
   position: relative;
 
   .section-item-img-faculty {
     background-image: none;
-    max-width: 100px;
-    max-height: 100px;
+    width: 90%;
+    height: 60%;
     margin: 0 auto;
-    overflow: hidden;
+    // overflow: hidden;
     display: flex;
     justify-content: center;
+    align-items: center;
     .img {
-      width: 80px;
-      height: 80px;
+      width: 71%;
+      height: 85%;
       background-position: center center;
       background-repeat: no-repeat;
-      background-size: cover;
+      background-size: contain;
     }
   }
 

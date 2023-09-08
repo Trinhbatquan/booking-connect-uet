@@ -13,9 +13,13 @@ import convertBufferToBase64 from "../../../utils/convertBufferToBase64";
 import { path } from "../../../utils/constant";
 import { setNavigate } from "../../../redux/navigateSlice";
 
+import { useTranslation } from "react-i18next";
+
 const Teacher = ({ settings }) => {
   const [loading, setLoading] = useState(false);
   const [topTeacher, setTopTeacher] = useState([]);
+
+  const { t } = useTranslation();
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -48,12 +52,14 @@ const Teacher = ({ settings }) => {
     <div className="section-container teacher-container w-full h-auto">
       <div className="section-content">
         <div className="section-header flex items-center justify-between">
-          <div className="section-header-text">Liên hệ tới các giảng viên</div>
+          <div className="section-header-text">
+            {t("header.contact-teacher")}
+          </div>
           <button
             className="section-header-button outline-none border-none bg-blurColor text-headingColor bg-opacity-30 shadow-sm
           backdrop-blur-sm hover:bg-blue-800 hover:text-white transition-all duration-300"
           >
-            XEM THÊM
+            {t("header.see-all")}
           </button>
         </div>
         <div className="section-body">

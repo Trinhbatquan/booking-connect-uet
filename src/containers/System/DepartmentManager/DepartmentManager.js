@@ -8,7 +8,7 @@ import { AiOutlineDelete } from "react-icons/ai";
 import { ToastContainer, toast } from "react-toastify";
 import { BsPersonPlusFill } from "react-icons/bs";
 import { useContext } from "react";
-import { ContextScrollTop } from "../RootSystem";
+// import { ContextScrollTop } from "../RootSystem";
 import { HiOutlinePencilAlt } from "react-icons/hi";
 
 import { useTranslation } from "react-i18next";
@@ -53,7 +53,7 @@ const DepartmentManager = () => {
   // const [previewAvatar, setPreviewAvatar] = useState("");
 
   //scroll top
-  const scroll = useContext(ContextScrollTop);
+  // const scroll = useContext(ContextScrollTop);
   const { t, i18n } = useTranslation();
 
   const dispatch = useDispatch();
@@ -76,7 +76,7 @@ const DepartmentManager = () => {
         }
       });
       setLoading(false);
-      scroll?.isScroll();
+      // scroll?.isScroll();
     }, 1500);
   }, []);
 

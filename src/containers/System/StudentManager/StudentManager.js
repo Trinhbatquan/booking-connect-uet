@@ -1,6 +1,6 @@
 import "./StudentManager.scss";
 import React, { Fragment, useEffect, useState, useRef } from "react";
-import {Buffer} from 'buffer'
+import { Buffer } from "buffer";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBack2Fill } from "react-icons/ri";
 import { BsEyeSlash } from "react-icons/bs";
@@ -10,7 +10,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { BsPersonPlusFill } from "react-icons/bs";
 import { useContext } from "react";
 import { ContextScrollTop } from "../RootSystem";
-import {HiOutlinePencilAlt} from 'react-icons/hi'
+import { HiOutlinePencilAlt } from "react-icons/hi";
 
 import {
   createUserApi,
@@ -23,7 +23,7 @@ import { emitter } from "../../../utils/emitter";
 import Loading from "./../../../utils/Loading";
 import DeleteModal from "./../Modal/DeleteModal";
 import convertFileToBase64 from "../../../utils/convertFileToBase64";
-import convertBufferToBase64 from '../../../utils/convertBufferToBase64';
+import convertBufferToBase64 from "../../../utils/convertBufferToBase64";
 
 const StudentManager = () => {
   // const [isCreateUser, setIsCreateUser] = useState(false);
@@ -48,7 +48,7 @@ const StudentManager = () => {
   const [previewAvatar, setPreviewAvatar] = useState("");
 
   //scroll top
-  const scroll = useContext(ContextScrollTop);
+  // const scroll = useContext(ContextScrollTop);
   //ref
   const inputFileRef = useRef();
   useEffect(() => {
@@ -67,7 +67,7 @@ const StudentManager = () => {
         }
       });
       setLoading(false);
-      scroll?.isScroll();
+      // scroll?.isScroll();
     }, 1500);
   }, []);
 
@@ -115,14 +115,7 @@ const StudentManager = () => {
 
   const handleCheckNullState = () => {
     let result = true;
-    const stateArr = [
-      email,
-      password,
-      fullName,
-      phoneNumber,
-      address,
-      gender,
-    ];
+    const stateArr = [email, password, fullName, phoneNumber, address, gender];
     const notification = [
       "Email",
       "Password",
@@ -282,7 +275,7 @@ const StudentManager = () => {
     setDataUserUpdate(user);
     let base64File = "";
     if (user?.image?.data) {
-       base64File = new Buffer(user.image.data, 'base64').toString('binary');
+      base64File = new Buffer(user.image.data, "base64").toString("binary");
     }
     setTimeout(async () => {
       setEmail(user?.email);
@@ -309,38 +302,38 @@ const StudentManager = () => {
       phoneNumber,
       gender,
       address,
-      image: avatar
+      image: avatar,
     };
     setTimeout(() => {
-        updateUserApi.update({}, body).then(async (data) => {
-          if (data?.codeNumber === 1) {
-            toast.error(data?.message, {
-              autoClose: 2000,
-            });
-          } else {
-            await getUserApi.getUserByRole({ role: "R3" }).then((data) => {
-              if (data?.codeNumber === 0) {
-                setUsers(data.user);
-              }
-            });
-            toast.success("Update user succeed", {
-              autoClose: 2000,
-            });
-            setEmail("");
-            setPassword("");
-            setFullName("");
-            setPhoneNumber("");
-            setAddress("");
-            setGender("");
-            setIsUpdateUser(false);
-            setDataUserUpdate("");
-            setPreviewAvatar("");
-            inputFileRef.current.value = "";
-            setAvatar("");
-            setLoading(false)
-          }
-        });
-    }, 2000)
+      updateUserApi.update({}, body).then(async (data) => {
+        if (data?.codeNumber === 1) {
+          toast.error(data?.message, {
+            autoClose: 2000,
+          });
+        } else {
+          await getUserApi.getUserByRole({ role: "R3" }).then((data) => {
+            if (data?.codeNumber === 0) {
+              setUsers(data.user);
+            }
+          });
+          toast.success("Update user succeed", {
+            autoClose: 2000,
+          });
+          setEmail("");
+          setPassword("");
+          setFullName("");
+          setPhoneNumber("");
+          setAddress("");
+          setGender("");
+          setIsUpdateUser(false);
+          setDataUserUpdate("");
+          setPreviewAvatar("");
+          inputFileRef.current.value = "";
+          setAvatar("");
+          setLoading(false);
+        }
+      });
+    }, 2000);
   };
 
   const handleCloseUpdateUser = () => {
@@ -355,7 +348,7 @@ const StudentManager = () => {
     setIsUpdateUser(false);
     setDataUserUpdate("");
     inputFileRef.current.value = "";
-  }
+  };
 
   //delete user
   const isCloseDeleteUserModal = () => {
@@ -378,7 +371,7 @@ const StudentManager = () => {
             if (data?.codeNumber === 0) {
               setUsers(data.user);
               setLoading(false);
-              setDataUserDelete("")
+              setDataUserDelete("");
               setIsDeleteUser(false);
               toast.success("Delete user succeed", {
                 autoClose: 2000,
@@ -427,7 +420,12 @@ const StudentManager = () => {
             </span>
             <div className="w-full flex items-center justify-center gap-6">
               <div className="flex-1 flex flex-col justify-center">
-                <label htmlFor="email" className="mb-1 text-headingColor opacity-80 flex items-center gap-1">Email <HiOutlinePencilAlt /></label>
+                <label
+                  htmlFor="email"
+                  className="mb-1 text-headingColor opacity-80 flex items-center gap-1"
+                >
+                  Email <HiOutlinePencilAlt />
+                </label>
                 <input
                   className={`shadow-sm bg-gray-50 border border-gray-400 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-2 py-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light 
                   ${isUpdateUser ? "bg-blurColor opacity-30" : ""}`}
@@ -442,7 +440,12 @@ const StudentManager = () => {
                 />
               </div>
               <div className="flex-1 flex flex-col justify-center relative">
-                <label htmlFor="password" className="mb-1 text-headingColor opacity-80 flex items-center gap-1">Password <HiOutlinePencilAlt /></label>
+                <label
+                  htmlFor="password"
+                  className="mb-1 text-headingColor opacity-80 flex items-center gap-1"
+                >
+                  Password <HiOutlinePencilAlt />
+                </label>
                 <input
                   className={`shadow-sm bg-gray-50 border border-gray-400 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-2 py-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light 
                   ${isUpdateUser ? "bg-blurColor opacity-30" : ""}`}
@@ -472,7 +475,12 @@ const StudentManager = () => {
 
             <div className="w-full flex items-center justify-center gap-6 mt-3">
               <div className="flex-1 flex flex-col justify-center">
-                <label htmlFor="name" className="mb-1 text-headingColor opacity-80 flex items-center gap-1">FullName <HiOutlinePencilAlt /></label>
+                <label
+                  htmlFor="name"
+                  className="mb-1 text-headingColor opacity-80 flex items-center gap-1"
+                >
+                  FullName <HiOutlinePencilAlt />
+                </label>
                 <input
                   className="shadow-sm bg-gray-50 border border-gray-400 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-2 py-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
                   name="name"
@@ -486,7 +494,10 @@ const StudentManager = () => {
                 />
               </div>
               <div className="flex-1 flex flex-col justify-center">
-                <label htmlFor="phone" className="mb-1 text-headingColor opacity-80 flex items-center gap-1">
+                <label
+                  htmlFor="phone"
+                  className="mb-1 text-headingColor opacity-80 flex items-center gap-1"
+                >
                   PhoneNumber <HiOutlinePencilAlt />
                 </label>
                 <input
@@ -505,7 +516,12 @@ const StudentManager = () => {
 
             <div className="w-full flex items-center justify-center gap-6 mt-3">
               <div className="flex flex-col justify-center flex-1">
-                <label htmlFor="address" className="mb-1 text-headingColor opacity-80 flex items-center gap-1">Address <HiOutlinePencilAlt /></label>
+                <label
+                  htmlFor="address"
+                  className="mb-1 text-headingColor opacity-80 flex items-center gap-1"
+                >
+                  Address <HiOutlinePencilAlt />
+                </label>
                 <input
                   className=" shadow-sm bg-gray-50 border border-gray-400 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-2 py-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
                   name="address"
@@ -520,7 +536,12 @@ const StudentManager = () => {
 
             <div className="w-full flex items-center justify-center gap-6 mt-3">
               <div className="flex-1 flex flex-col justify-center">
-                <label htmlFor="gender" className="mb-1 text-headingColor opacity-80 flex items-center gap-1">Gender <HiOutlinePencilAlt /></label>
+                <label
+                  htmlFor="gender"
+                  className="mb-1 text-headingColor opacity-80 flex items-center gap-1"
+                >
+                  Gender <HiOutlinePencilAlt />
+                </label>
                 <select
                   className=" shadow-sm bg-gray-50 border border-gray-400 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-2 py-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
                   name="gender"
@@ -544,7 +565,10 @@ const StudentManager = () => {
                 </select>
               </div>
               <div className="flex-1 flex-col justify-center flex">
-                <label className="mb-1 text-headingColor opacity-80 flex items-center gap-1" htmlFor="file_input">
+                <label
+                  className="mb-1 text-headingColor opacity-80 flex items-center gap-1"
+                  htmlFor="file_input"
+                >
                   Avatar
                 </label>
                 <input
@@ -592,23 +616,21 @@ const StudentManager = () => {
               >
                 {isUpdateUser ? "Save Changes" : "Add new"}
               </button>
-             {
-              isUpdateUser && (
+              {isUpdateUser && (
                 <button
-                className={` text-white mt-6 py-2 px-1 font-semibold rounded-md shadow backdrop-blur-md bg-opacity-80 hover:bg-opacity-100 bg-blue-600`}
-                style={{ maxWidth: "10%", width: "10%" }}
-                onClick={() => handleCloseUpdateUser()}
-              >
-                Close
-              </button>
-              )
-             }
+                  className={` text-white mt-6 py-2 px-1 font-semibold rounded-md shadow backdrop-blur-md bg-opacity-80 hover:bg-opacity-100 bg-blue-600`}
+                  style={{ maxWidth: "10%", width: "10%" }}
+                  onClick={() => handleCloseUpdateUser()}
+                >
+                  Close
+                </button>
+              )}
             </div>
           </div>
 
           {/* <RiDeleteBack2Fill
             className="absolute top-2 right-2 text-white text-xl cursor-pointer" */}
-            {/* // onClick={() => isClose()} */}
+          {/* // onClick={() => isClose()} */}
           {/* /> */}
 
           {/* <AiOutlineClose

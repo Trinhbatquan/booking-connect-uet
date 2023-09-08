@@ -10,6 +10,10 @@ import HomePage from "./HomePage/HomePage";
 import TeacherDetail from "./HomePage/Detail/TeacherDetail";
 import LoginHomePage from "./HomePage/Login/Login";
 
+import { BsArrowUpCircleFill } from "react-icons/bs";
+
+import "../styles/styles.scss";
+
 import {
   RootSystem,
   ScheduleManager,
@@ -26,10 +30,46 @@ import {
 import EmailVerify from "./HomePage/EmailVerify/EmailVerify";
 
 function App() {
-  return (
-    <Fragment>
-      {/*  */}
+  const [appearScrollTop, setAppearScrollTop] = useState(false);
+  console.log(appearScrollTop);
 
+  const handleScroll = (state) => {
+    if (
+      document.body?.scrollTop > 500 ||
+      document.documentElement?.scrollTop > 500
+    ) {
+      if (!state) {
+        setAppearScrollTop(true);
+      }
+    } else {
+      if (state) {
+        setAppearScrollTop(false);
+      }
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener(
+      "scroll",
+      () => handleScroll(appearScrollTop),
+      true
+    );
+
+    // Remove the event listener
+    return () => {
+      window.removeEventListener("scroll", handleScroll, true);
+    };
+  }, [appearScrollTop]);
+
+  const handleScrollTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
+    // setAppearScrollTop(false);
+  };
+
+  return (
+    <div className="" style={{ width: "100%", height: "100%" }}>
+      {/* để 100vh là toang, nó chỉ tính phần dc hiển thị thôi */}
       <Routes>
         {/* homepage */}
         <Route path="/" element={<Navigate to={path.HOMEPAGE} replace />} />
@@ -87,14 +127,15 @@ function App() {
           <Route path={path.student} element={<StudentManager />} />
         </Route>
       </Routes>
-    </Fragment>
+      {appearScrollTop && (
+        <BsArrowUpCircleFill
+          className="fixed bottom-6 right-3 text-5xl cursor-pointer
+        text-blue-700 z-50 opacity-30 hover:opacity-100 transition-all duration-500"
+          onClick={handleScrollTop}
+        ></BsArrowUpCircleFill>
+      )}
+    </div>
   );
 }
 
-export default function WrappedApp() {
-  return (
-    <Suspense fallback="...is loading">
-      <App />
-    </Suspense>
-  );
-}
+export default App;

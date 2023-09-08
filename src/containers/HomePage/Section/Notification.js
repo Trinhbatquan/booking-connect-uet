@@ -1,17 +1,18 @@
 import React from "react";
 import Slider from "react-slick";
-
+import { useTranslation } from "react-i18next";
 const Notification = ({ settings }) => {
+  const { t } = useTranslation();
   return (
     <div className="section-container notification-container w-full h-auto">
       <div className="section-content">
         <div className="section-header flex items-center justify-between">
-          <div className="section-header-text">Thông báo</div>
+          <div className="section-header-text">{t("header.notification")}</div>
           <button
             className="section-header-button outline-none border-none bg-blurColor text-headingColor bg-opacity-30 shadow-sm 
           backdrop-blur-sm hover:bg-blue-800 hover:text-white transition-all duration-300"
           >
-            XEM THÊM
+            {t("header.see-all")}
           </button>
         </div>
         <div className="section-body">
