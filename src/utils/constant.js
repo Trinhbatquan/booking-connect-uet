@@ -4,6 +4,7 @@ export const path = {
   SYSTEM: "/system",
 
   scheduleManager: "scheduleManager",
+  studentManager: "studentManager",
 
   adminManager: "adminManager",
 
@@ -41,9 +42,9 @@ export const manageActions = {
 
 export const dateFormat = {
   SEND_TO_SERVER: "DD-MM-YYYY",
-  LABEL_SCHEDULE: "dddd - DD/MM",
-  TOMORROW_SCHEDULE: "[Ngày mai] - DD/MM",
-  TOMORROW_SCHEDULE_EN: "[Tomorrow] - DD/MM",
+  LABEL_SCHEDULE: "dddd - DD/MM/YYYY",
+  TOMORROW_SCHEDULE: "[Ngày mai] - DD/MM/YYYY",
+  TOMORROW_SCHEDULE_EN: "[Tomorrow] - DD/MM/YYYY",
   FORMAT_HOURS: "H-mm",
   FORMAT_HOURS_12H: "LT",
 };

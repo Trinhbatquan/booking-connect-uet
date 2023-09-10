@@ -21,13 +21,13 @@ import {
   FacultyManager,
   TeacherManager,
   HealthStudentManager,
-  StudentManager,
   TeacherDescription,
   DepartmentDescription,
   FacultyDescription,
   HealthStudentDescription,
 } from "./System";
 import EmailVerify from "./HomePage/EmailVerify/EmailVerify";
+import ScheduleAndQuestion from "./System/ScheduleAndQuestionManager/ScheduleAndQuestion";
 
 function App() {
   const [appearScrollTop, setAppearScrollTop] = useState(false);
@@ -93,6 +93,7 @@ function App() {
 
         <Route path={path.SYSTEM} element={<RootSystem />}>
           <Route path={path.scheduleManager} element={<ScheduleManager />} />
+          <Route path={path.studentManager} element={<ScheduleAndQuestion />} />
 
           <Route
             path={path.departmentManager}
@@ -123,8 +124,6 @@ function App() {
             path={path.healthStudentDescription}
             element={<HealthStudentDescription />}
           />
-
-          <Route path={path.student} element={<StudentManager />} />
         </Route>
       </Routes>
       {appearScrollTop && (

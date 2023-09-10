@@ -1,8 +1,16 @@
 import axiosClient from "../axios";
 
+//homepage
 const createBookingScheduleService = {
   create: (params, data) => {
     const url = "/api/create-booking-schedule";
+    return axiosClient.post(url, data, { params });
+  },
+};
+
+const createQuestionService = {
+  create: (params, data) => {
+    const url = "/api/create-question";
     return axiosClient.post(url, data, { params });
   },
 };
@@ -14,4 +22,17 @@ const getBookingSchedule = {
   },
 };
 
-export { createBookingScheduleService, getBookingSchedule };
+//system
+const getAllBooking = {
+  getByManagerAndAction: (params) => {
+    const url = "/api/get-all-booking-system";
+    return axiosClient.get(url, { params });
+  },
+};
+
+export {
+  createBookingScheduleService,
+  getBookingSchedule,
+  createQuestionService,
+  getAllBooking,
+};

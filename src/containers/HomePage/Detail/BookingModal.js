@@ -240,62 +240,21 @@ const BookingModal = ({ close, dataModalSchedule, teacherId, create }) => {
             </div>
           </div>
 
-          {/* <div className="w-full flex items-center justify-center gap-6 mt-3">
-            <div className="flex flex-col justify-center flex-1">
-              <label className="mb-1 text-headingColor flex items-center gap-1">
-                Address <HiOutlinePencilAlt />
-              </label>
-              <input
-                className=" rounded-sm w-full focus:ring-0 focus:border focus:border-solid focus:border-gray-500 border border-solid border-gray-500 outline-none py-1 px-2 text-md"
-                name="address"
-                type="text"
-                onChange={(e) => setAddress(e.target.value, "Address")}
-                onFocus={() => setNotifyCheckState("")}
-              />
-            </div>
-          </div> */}
-
           <div className="w-full flex items-center justify-center gap-6 mt-3">
             <div className="flex flex-col justify-center flex-1">
               <label className="mb-1 text-headingColor flex items-center gap-1">
                 Reason <HiOutlinePencilAlt />
               </label>
-              <input
+              <textarea
                 className=" rounded-sm w-full focus:ring-0 focus:border focus:border-solid focus:border-gray-500 border border-solid border-gray-500 outline-none py-1 px-2 text-md"
                 name="reason"
                 type="text"
+                rows="4"
                 onChange={(e) => setReason(e.target.value, "Reason")}
                 onFocus={() => setNotifyCheckState("")}
               />
             </div>
           </div>
-
-          {/* <div className="w-full flex flex-col item-start justify-center mt-3">
-            <label className="mb-1 text-headingColor flex items-center gap-1">
-              Gender <HiOutlinePencilAlt />
-            </label>
-            <select
-              className=" shadow-sm bg-gray-50 border border-gray-400 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-2 py-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
-              name="gender"
-              type="text"
-              id="gender"
-              value={gender}
-              onChange={(e) => handleChangeEvent(e.target.value, "Gender")}
-              onFocus={() => setNotifyCheckState("")}
-            >
-              <option name="gender" value="">
-                Select---
-              </option>
-              {genderAPI?.length > 0 &&
-                genderAPI?.map((e, i) => {
-                  return (
-                    <option key={i} name="role" value={e?.keyMap}>
-                      {i18n.language === "vi" ? e?.valueVn : e?.valueEn}
-                    </option>
-                  );
-                })}
-            </select>
-          </div> */}
 
           <div className="w-full flex item-center justify-start mt-3">
             <span className="text-red-500 font-semibold flex-1 flex items-center gap-1">
@@ -326,11 +285,6 @@ const BookingModal = ({ close, dataModalSchedule, teacherId, create }) => {
           className="absolute top-4 right-4 text-white text-xl cursor-pointer"
           onClick={() => close()}
         />
-
-        {/* <AiOutlineClose
-              className="absolute top-1 right-2 text-lg text-gray-300 font-semibold cursor-pointer w-8 h-8 p-2 hover:rounded-full hover:bg-white hover:bg-opacity-30"
-              onClick={() => isClose()}
-            /> */}
       </motion.div>
     </AnimatePresence>
   );

@@ -25,9 +25,12 @@ import { logOutHomePageApi } from "../../../services/userService";
 import { logOutUser } from "../../../redux/studentSlice";
 import {
   createBookingScheduleService,
+  createQuestionService,
   getBookingSchedule,
 } from "../../../services/bookingService";
 import checkBookedSchedule from "../../../utils/checkBookedSchedule";
+import QuestionForm from "../QuestionForm/QuestionForm";
+import { emitter } from "../../../utils/emitter";
 
 const TeacherDetail = () => {
   const [loading, setLoading] = useState(false);
@@ -37,6 +40,8 @@ const TeacherDetail = () => {
   const [openModalSchedule, setOpenModalSchedule] = useState(false);
   const [dataModalSchedule, setDataModalSchedule] = useState({});
 
+  const [action, setAction] = useState("");
+
   const { id } = useParams();
   const date_tomorrow = moment(new Date())
     .add(1, "days")
@@ -45,11 +50,9 @@ const TeacherDetail = () => {
 
   const navigate = useSelector((state) => state.navigateReducer.navigate);
   const currentStudent = useSelector((state) => state.studentReducer);
-  // console.log({ timeDataApi });
-
+  const navigateHome = useNavigate();
   const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
-  const navigateHomePage = useNavigate();
 
   const getBookingScheduleNotSelected = async (
     getTime,
@@ -69,38 +72,15 @@ const TeacherDetail = () => {
     });
     if (bookingSelected.codeNumber === 0) {
       console.log(bookingSelected.bookingSchedule);
-      if (bookingSelected?.bookingSchedule?.length > 0) {
-        bookingSelected.bookingSchedule.forEach((item) => {
-          bookingScheduleData.push(item?.timeType);
-        });
-        getTime = checkBookedSchedule(getTime, bookingScheduleData);
-      }
+      // if (bookingSelected?.bookingSchedule?.length > 0) {
+      bookingSelected.bookingSchedule.forEach((item) => {
+        bookingScheduleData.push(item?.timeType);
+      });
+      getTime = checkBookedSchedule(getTime, bookingScheduleData);
+      // }
     }
     return getTime;
   };
-
-  // const checkRealTime = (data, type) => {
-  //   console.log(type);
-  //   const real_time =
-  //     i18n.language === "en"
-  //       ? moment(new Date()).locale("en").format(dateFormat.FORMAT_HOURS_12H)
-  //       : moment(new Date()).format(dateFormat.FORMAT_HOURS);
-  //   console.log(real_time);
-  //   // if (data && Array.isArray(data) && data?.length > 0) {
-  //   //   data = data.filter((time, index) => {
-  //   //     const splitArr = time?.valueTime?.split("-");
-  //   //     const firstLetterSplitArr = [
-  //   //       splitArr[0].split(":")[0],
-  //   //       splitArr[1].split(":")[0],
-  //   //     ];
-  //   //     return +real_time.split("-")[0] < +firstLetterSplitArr[0];
-  //   //   });
-
-  //   //   return data;
-  //   // }
-  // };
-
-  // checkRealTime(123, i18n.language);
 
   useEffect(() => {
     setLoading(true);
@@ -117,8 +97,9 @@ const TeacherDetail = () => {
         setTeacherId(data);
       }
       const data = await getScheduleByIdAndDate.get({
-        userId: +id,
+        managerId: +id,
         date: date_tomorrow,
+        roleManager: "R5",
       });
       if (data?.codeNumber === 0) {
         if (data?.schedule?.length === 0) {
@@ -127,7 +108,6 @@ const TeacherDetail = () => {
           );
         } else {
           let getTime = [];
-          // console.log(data.schedule);
 
           data?.schedule.forEach((item) => {
             getTime.push({
@@ -136,23 +116,6 @@ const TeacherDetail = () => {
               valueTimeEn: item?.timeData?.valueEn,
             });
           });
-          // console.log(getTime);
-          // checkRealTime(getTime);
-          // let bookingScheduleData = [];
-          // const bookingSelected = await getBookingSchedule.get({
-          //   departmentId,
-          //   studentId: currentStudent?.id,
-          //   date: date_now,
-          // });
-          // if (bookingSelected.codeNumber === 0) {
-          //   console.log(bookingSelected.bookingSchedule);
-          //   if (bookingSelected?.bookingSchedule?.length > 0) {
-          //     bookingSelected.bookingSchedule.forEach((item) => {
-          //       bookingScheduleData.push(item?.timeDataBooking?.valueVn);
-          //     });
-          //     getTime = checkBookedSchedule(getTime, bookingScheduleData);
-          //   }
-          // }
           getTime = await getBookingScheduleNotSelected(
             getTime,
             managerId,
@@ -162,6 +125,7 @@ const TeacherDetail = () => {
             "A1"
           );
 
+          console.log(getTime);
           setTimeDataApi(getTime);
         }
       }
@@ -171,42 +135,30 @@ const TeacherDetail = () => {
   }, [i18n.language]);
 
   const loadTimeOfDate = async (value) => {
-    const userId = +id;
+    console.log(value);
+    const managerId = +id;
     const date = value;
-    const data = await getScheduleByIdAndDate.get({ userId, date });
+    const roleManager = "R5";
+    const data = await getScheduleByIdAndDate.get({
+      managerId,
+      date,
+      roleManager,
+    });
     if (data?.codeNumber === 0) {
       if (data?.schedule?.length === 0) {
         setTimeDataApi(
           "Giảng viên không có lịch ngày hôm nay, vui lòng chọn thời gian khác."
         );
       } else {
-        // console.log("check res\n" + JSON.stringify(data));
-
         let getTime = [];
         data?.schedule.forEach((item) => {
           getTime.push({
             timeType: item?.timeType,
-            valueTime: item?.timeData?.valueVn,
+            valueTimeVn: item?.timeData?.valueVn,
+            valueTimeEn: item?.timeData?.valueEn,
           });
         });
-        // if (date === date_now) {
-        //   checkRealTime(getTime); //error
-        // }
         console.log(getTime);
-        // let bookingScheduleData = [];
-        // const bookingSelected = await getBookingSchedule.get({
-        //   departmentId: teacherId?.id,
-        //   studentId: currentStudent?.id,
-        //   date,
-        // });
-        // if (bookingSelected.codeNumber === 0) {
-        //   if (bookingSelected?.bookingSchedule?.length > 0) {
-        //     bookingSelected.bookingSchedule.forEach((item) => {
-        //       bookingScheduleData.push(item?.timeDataBooking?.valueVn);
-        //     });
-        //     getTime = checkBookedSchedule(getTime, bookingScheduleData);
-        //   }
-        // }
         getTime = await getBookingScheduleNotSelected(
           getTime,
           teacherId?.id,
@@ -215,7 +167,6 @@ const TeacherDetail = () => {
           date,
           "A1"
         );
-        // console.log(test);
 
         setTimeDataApi(getTime);
       }
@@ -260,7 +211,6 @@ const TeacherDetail = () => {
         }
       )
       .then((data) => {
-        console.log(data);
         if (data?.codeNumber === -1) {
           toast.error(`${t("system.notification.fail")}`, {
             autoClose: 2000,
@@ -274,11 +224,11 @@ const TeacherDetail = () => {
             position: "bottom-right",
             theme: "colored",
           });
-          setTimeout(() => {
+          setTimeout(async () => {
             logOutHomePageApi.logoutUser({}).then((data) => {
               if (data?.codeNumber === 0) {
                 dispatch(logOutUser());
-                navigateHomePage(
+                navigateHome(
                   `${path.HOMEPAGE}/${path.login_homepage}?redirect=/homepage`
                 );
               } else {
@@ -293,8 +243,8 @@ const TeacherDetail = () => {
           });
           setLoading(false);
         } else {
-          createBookingScheduleService
-            .create(
+          const handleSomething = async () => {
+            const res = await createBookingScheduleService.create(
               {},
               {
                 email,
@@ -305,82 +255,84 @@ const TeacherDetail = () => {
                 timeType,
                 reason,
               }
-            )
-            .then(async (res) => {
-              if (res?.codeNumber === 0) {
-                setOpenModalSchedule(false);
-                if (res?.type === "create") {
-                  toast.success(res?.message, {
-                    autoClose: 2000,
-                    position: "bottom-right",
-                    theme: "colored",
-                  });
-                } else {
-                  toast.error(res?.message, {
-                    autoClose: 2000,
-                    position: "bottom-right",
-                    theme: "colored",
-                  });
-                }
-
-                let filterSchedule = [];
-                // let bookingScheduleData = [];
-                // const bookingSelected = await getBookingSchedule.get({
-                //   managerId,
-                //   studentId: currentStudent?.id,
-                //   date,
-                // });
-                // if (bookingSelected.codeNumber === 0) {
-                //   if (bookingSelected?.bookingSchedule?.length > 0) {
-                //     bookingSelected.bookingSchedule.forEach((item) => {
-                //       bookingScheduleData.push(item?.timeDataBooking?.valueVn);
-                //     });
-                //     filterSchedule = checkBookedSchedule(
-                //       timeDataApi,
-                //       bookingScheduleData
-                //     );
-                //   }
-                // }
-
-                filterSchedule = await getBookingScheduleNotSelected(
-                  timeDataApi,
-                  managerId,
-                  "R5",
-                  currentStudent?.id,
-                  date,
-                  "A1"
-                );
-
-                setTimeDataApi(filterSchedule);
-                setLoading(false);
-              } else if (res?.codeNumber === 1) {
+            );
+            if (res?.codeNumber === 0) {
+              setOpenModalSchedule(false);
+              if (res?.type === "create") {
+                toast.success(res?.message, {
+                  autoClose: 2000,
+                  position: "bottom-right",
+                  theme: "colored",
+                });
+              } else {
                 toast.error(res?.message, {
                   autoClose: 2000,
                   position: "bottom-right",
                   theme: "colored",
                 });
-                setLoading(false);
-
-                //  getUserApi.getUserByRole({ role: "R2" }).then((data) => {
-                //    if (data?.codeNumber === 0) {
-                //      setUsers(data.user);
-                //      setLoading(false);
-                //      setDataUserDelete("");
-                //      setIsDeleteUser(false);
-                //      toast.success(`${t("system.notification.delete")}`, {
-                //        autoClose: 2000,
-                //        position: "bottom-right",
-                //        theme: "colored",
-                //      });
-                //    }
-                //  });
               }
-            });
+              loadTimeOfDate(date);
+
+              // console.log(timeDataApi);
+              // let filterSchedule = [];
+              // filterSchedule = await getBookingScheduleNotSelected(
+              //   timeDataApi,
+              //   managerId,
+              //   "R5",
+              //   currentStudent?.id,
+              //   date,
+              //   "A1"
+              // );
+
+              // console.log(filterSchedule);
+
+              // setTimeDataApi(filterSchedule);
+              // setLoading(false);
+              // console.log("update");
+            } else if (res?.codeNumber === 1) {
+              toast.error(res?.message, {
+                autoClose: 2000,
+                position: "bottom-right",
+                theme: "colored",
+              });
+              setLoading(false);
+            }
+          };
+          handleSomething();
         }
       });
   };
 
-  // 1685246400000;
+  //questions
+  const createBooking = async (data) => {
+    const body = {
+      email: currentStudent?.email,
+      studentId: currentStudent?.id,
+      managerId: +id,
+      roleManager: "R5",
+      action: "A2",
+      ...data,
+    };
+    await createQuestionService.create({}, body).then((res) => {
+      if (res?.type === "create") {
+        toast.success(res?.message, {
+          autoClose: 2000,
+          position: "bottom-right",
+          theme: "colored",
+        });
+      } else {
+        toast.error(res?.message, {
+          autoClose: 2000,
+          position: "bottom-right",
+          theme: "colored",
+        });
+
+        //emitter clear data component child
+        emitter.emit("EVENT_CLEAR_DATA");
+      }
+    });
+  };
+
   return (
     <>
       {loading ? (
@@ -409,12 +361,42 @@ const TeacherDetail = () => {
                 <p>{teacherId?.markdownData_teacher?.description}</p>
               </div>
             </div>
-            <Schedule
-              change={loadTimeOfDate}
-              timeData={timeDataApi}
-              teacher={teacherId}
-              handleSchedule={handleSchedule}
-            />
+            <div className="action-select">
+              <button
+                type="button"
+                class={`hover:bg-blue-800 hover:text-white rounded-lg focus:ring-4 focus:ring-blue-300 font-medium  text-md px-5 py-2.5 mr-2 mb-2 focus:outline-none
+                ${
+                  action === "schedule"
+                    ? "text-white bg-blue-800"
+                    : "text-gray-400 bg-white border border-gray-600"
+                }`}
+                onClick={() => setAction("schedule")}
+              >
+                {t("teacher.schedule.name")}
+              </button>
+              <button
+                type="button"
+                class={`hover:bg-blue-800 hover:text-white  focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-md px-5 py-2.5 mr-2 mb-2 focus:outline-none
+                ${
+                  action === "question"
+                    ? "text-white bg-blue-800"
+                    : "text-gray-400 bg-white border border-gray-600"
+                }`}
+                onClick={() => setAction("question")}
+              >
+                {t("teacher.question.name")}
+              </button>
+            </div>
+
+            {action === "schedule" && (
+              <Schedule
+                change={loadTimeOfDate}
+                timeData={timeDataApi}
+                teacher={teacherId}
+                handleSchedule={handleSchedule}
+              />
+            )}
+            {action === "question" && <QuestionForm create={createBooking} />}
             <div
               className="description-teacher"
               dangerouslySetInnerHTML={{

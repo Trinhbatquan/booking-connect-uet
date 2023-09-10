@@ -64,6 +64,11 @@ const Schedule = ({ change, timeData, teacher, handleSchedule }) => {
     });
   }
 
+  const handleChangeSchedule = async (e) => {
+    change(e.target.value);
+    setDate(e.target.value);
+  };
+
   return (
     <div className="schedule-container">
       {/* {console.log(i18n.language)} */}
@@ -75,8 +80,7 @@ const Schedule = ({ change, timeData, teacher, handleSchedule }) => {
           value={date}
           defaultValue={options[0]?.value}
           onChange={(e) => {
-            setDate(e.target.value);
-            change(e.target.value);
+            handleChangeSchedule(e);
           }}
         >
           {options?.length > 0 &&
@@ -134,10 +138,6 @@ const Schedule = ({ change, timeData, teacher, handleSchedule }) => {
               <span className="schedule-content-note text-headingColor text-md flex items-center justify-start gap-1">
                 Chọn <BsHandIndexThumb /> và đặt lịch
               </span>
-              {/* <span className="schedule-content-note text-headingColor text-md flex items-center justify-start gap-1">
-                <BsCircleFill className="text-2xl text-slate-500" /> Lịch quá
-                hạn
-              </span> */}
               <span className="schedule-content-note text-headingColor text-md flex items-center justify-start gap-1">
                 <BsCircleFill className="text-2xl text-gray-500" /> Lịch đã chọn
               </span>

@@ -15,8 +15,9 @@ const DeleteModal = ({ dataUserDelete, isClose, deleteUser }) => {
         deleteUser(dataUserDelete?.id);
       } else {
         deleteUser(
-          dataUserDelete[0]?.userId,
-          moment(dataUserDelete[0]?.date).format(dateFormat.SEND_TO_SERVER)
+          dataUserDelete[0]?.managerId,
+          moment(dataUserDelete[0]?.date).format(dateFormat.SEND_TO_SERVER),
+          dataUserDelete[0]?.roleManager
         );
       }
     }

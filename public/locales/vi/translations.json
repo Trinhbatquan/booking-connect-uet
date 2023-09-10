@@ -211,7 +211,11 @@
     },
        "teacher": {
         "schedule": {
-            "create": "Create a new schedule"
+            "name": "Đặt lịch hẹn",
+            "create": "Đặt một lịch hẹn mới"
+        },
+        "question": {
+            "name": "Đặt câu hỏi"
         }
     }
 }

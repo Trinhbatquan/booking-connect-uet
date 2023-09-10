@@ -1,8 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 // import { T_i18n } from "../containers/HomePage/HomeHeader";
 
+const navigateLocal = JSON.parse(localStorage.getItem("navigate-booking-care"));
 const navigateInitialState = {
-  navigate: [],
+  navigate: navigateLocal || [],
 };
 
 const navigateSlice = createSlice({
@@ -12,6 +13,7 @@ const navigateSlice = createSlice({
     setNavigate: (state, action) => {
       const arr = [action.payload];
       state.navigate = arr;
+      localStorage.setItem("navigate-booking-care", JSON.stringify(arr));
     },
   },
 });

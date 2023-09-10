@@ -54,9 +54,6 @@ const ScheduleManager = () => {
         if (data?.codeNumber === 0) {
           let { allCode } = data;
           if (allCode.length > 0) {
-            // allCode.forEach((time, index) => {
-            //   time.isSelected = false;
-            // });
             allCode = allCode.map((time, index) => ({
               ...time,
               isSelected: false,
@@ -120,35 +117,44 @@ const ScheduleManager = () => {
   };
 
   const handleChangeSelect_detail = async (e) => {
-    await getScheduleSystem.get({ userId: e?.value }).then((data) => {
-      if (data?.codeNumber === 0 && data?.schedule_user?.length > 0) {
-        //sort by id
-        data.schedule_user.sort((a, b) => a.id - b.id);
-        let timeScheduleData = [];
-        while (data.schedule_user.length > 1) {
-          const arr = data.schedule_user;
-          let filterArr = [];
-          let indexArr = [];
-          for (let i = 0; i < arr.length; i++) {
-            if (arr[i].date === arr[0].date) {
-              filterArr.push(arr[i]);
-              indexArr.push(i);
+    console.log(selectedOptionObject);
+    await getScheduleSystem
+      .get({ managerId: e?.value, roleManager: selectedOptionObject?.value })
+      .then((data) => {
+        if (data?.codeNumber === 0 && data?.schedule_user?.length > 0) {
+          //sort by id
+          data.schedule_user.sort((a, b) => a.id - b.id);
+          let timeScheduleData = [];
+          while (data.schedule_user.length > 1) {
+            const arr = data.schedule_user;
+            let filterArr = [];
+            let indexArr = [];
+            for (let i = 0; i < arr.length; i++) {
+              if (arr[i].date === arr[0].date) {
+                filterArr.push(arr[i]);
+                indexArr.push(i);
+              }
             }
+            data.schedule_user = data.schedule_user.filter((item, index) => {
+              return !indexArr.includes(index);
+            });
+            timeScheduleData.push(filterArr);
           }
-          data.schedule_user = data.schedule_user.filter((item, index) => {
-            return !indexArr.includes(index);
-          });
-          timeScheduleData.push(filterArr);
+          if (data.schedule_user.length === 1) {
+            timeScheduleData.push([data.schedule_user[0]]);
+          }
+          timeScheduleData.sort((a, b) =>
+            moment(a[0].date)
+              .format(dateFormat.SEND_TO_SERVER)
+              .localeCompare(
+                moment(b[0].date).format(dateFormat.SEND_TO_SERVER)
+              )
+          );
+          setTimeUserSelected(timeScheduleData);
+        } else {
+          setTimeUserSelected([]);
         }
-        if (data.schedule_user.length === 1) {
-          timeScheduleData.push([data.schedule_user[0]]);
-        }
-        console.log(timeScheduleData);
-        setTimeUserSelected(timeScheduleData);
-      } else {
-        setTimeUserSelected([]);
-      }
-    });
+      });
     setStartDate(new Date().setDate(new Date().getDate() + 1));
     timeData.forEach((time) => {
       time.isSelected = false;
@@ -160,7 +166,41 @@ const ScheduleManager = () => {
 
   //handle change date picker
   const handleChangeDatePicker = (date) => {
+    let arrDateSelected = [];
+    const currentDate = moment(date).format(dateFormat.SEND_TO_SERVER);
     setStartDate(date);
+    if (timeUserSelected && timeUserSelected?.length > 0) {
+      for (let i = 0; i < timeUserSelected.length; i++) {
+        if (
+          moment(timeUserSelected[i][0]?.date).format(
+            dateFormat.SEND_TO_SERVER
+          ) === currentDate
+        ) {
+          arrDateSelected = timeUserSelected[i];
+          break;
+        }
+      }
+      if (arrDateSelected?.length > 0) {
+        let dataDate = [];
+        arrDateSelected.forEach((item) => {
+          dataDate.push(item?.timeType);
+        });
+        setIsUpdate(true);
+        timeData.forEach((item) => {
+          if (dataDate.includes(item.keyMap)) {
+            item.isSelected = true;
+          } else {
+            item.isSelected = false;
+          }
+        });
+      } else {
+        setIsUpdate(false);
+        timeData.forEach((item) => {
+          item.isSelected = false;
+        });
+      }
+      setTimeData(timeData);
+    }
   };
 
   //handle click schedule button
@@ -207,7 +247,8 @@ const ScheduleManager = () => {
     }
     selectedTimeArr.forEach((selectedTime, index) => {
       output.push({
-        userId: selectedOption?.value,
+        managerId: selectedOption?.value,
+        roleManager: selectedOptionObject?.value,
         date: moment(startDate).format(dateFormat.SEND_TO_SERVER),
         timeType: selectedTime?.keyMap,
       });
@@ -267,10 +308,14 @@ const ScheduleManager = () => {
       });
       setTimeData(timeData);
       await getScheduleSystem
-        .get({ userId: body.scheduleData[0].userId })
+        .get({
+          managerId: body.scheduleData[0].managerId,
+          roleManager: body.scheduleData[0].roleManager,
+        })
         .then((data) => {
           if (data?.codeNumber === 0 && data?.schedule_user?.length > 0) {
             //sort by id
+            console.log(data.schedule_user);
             data.schedule_user.sort((a, b) => a.id - b.id);
             let timeScheduleData = [];
             while (data.schedule_user.length > 1) {
@@ -292,6 +337,13 @@ const ScheduleManager = () => {
               timeScheduleData.push([data.schedule_user[0]]);
             }
             console.log(timeScheduleData);
+            timeScheduleData.sort((a, b) =>
+              moment(a[0].date)
+                .format(dateFormat.SEND_TO_SERVER)
+                .localeCompare(
+                  moment(b[0].date).format(dateFormat.SEND_TO_SERVER)
+                )
+            );
             setTimeUserSelected(timeScheduleData);
           } else {
             setTimeUserSelected([]);
@@ -343,49 +395,59 @@ const ScheduleManager = () => {
   const isCloseDeleteUserModal = () => {
     setIsDelete(false);
   };
-  const deleteSchedule = async (userId, date) => {
-    deleteScheduleByIdAndDate.delete({ userId, date }).then((res) => {
-      if (res?.codeNumber === 0) {
-        setIsDelete(false);
-        setIsUpdate(false);
-        setStartDate(new Date().setDate(new Date().getDate() + 1));
-        timeData.forEach((time) => {
-          time.isSelected = false;
-        });
-        setTimeData(timeData);
+  const deleteSchedule = async (managerId, date, roleManager) => {
+    deleteScheduleByIdAndDate
+      .delete({ managerId, date, roleManager })
+      .then((res) => {
+        if (res?.codeNumber === 0) {
+          setIsDelete(false);
+          setIsUpdate(false);
+          setStartDate(new Date().setDate(new Date().getDate() + 1));
+          timeData.forEach((time) => {
+            time.isSelected = false;
+          });
+          setTimeData(timeData);
 
-        //load data
-        getScheduleSystem.get({ userId }).then((data) => {
-          if (data?.codeNumber === 0 && data?.schedule_user?.length > 0) {
-            //sort by id
-            data.schedule_user.sort((a, b) => a.id - b.id);
-            let timeScheduleData = [];
-            while (data.schedule_user.length > 1) {
-              const arr = data.schedule_user;
-              let filterArr = [];
-              let indexArr = [];
-              for (let i = 0; i < arr.length; i++) {
-                if (arr[i].date === arr[0].date) {
-                  filterArr.push(arr[i]);
-                  indexArr.push(i);
+          //load data
+          getScheduleSystem.get({ managerId, roleManager }).then((data) => {
+            if (data?.codeNumber === 0 && data?.schedule_user?.length > 0) {
+              //sort by id
+              data.schedule_user.sort((a, b) => a.id - b.id);
+              let timeScheduleData = [];
+              while (data.schedule_user.length > 1) {
+                const arr = data.schedule_user;
+                let filterArr = [];
+                let indexArr = [];
+                for (let i = 0; i < arr.length; i++) {
+                  if (arr[i].date === arr[0].date) {
+                    filterArr.push(arr[i]);
+                    indexArr.push(i);
+                  }
                 }
+                data.schedule_user = data.schedule_user.filter(
+                  (item, index) => {
+                    return !indexArr.includes(index);
+                  }
+                );
+                timeScheduleData.push(filterArr);
               }
-              data.schedule_user = data.schedule_user.filter((item, index) => {
-                return !indexArr.includes(index);
-              });
-              timeScheduleData.push(filterArr);
+              if (data.schedule_user.length === 1) {
+                timeScheduleData.push([data.schedule_user[0]]);
+              }
+              timeScheduleData.sort((a, b) =>
+                moment(a[0].date)
+                  .format(dateFormat.SEND_TO_SERVER)
+                  .localeCompare(
+                    moment(b[0].date).format(dateFormat.SEND_TO_SERVER)
+                  )
+              );
+              setTimeUserSelected(timeScheduleData);
+            } else {
+              setTimeUserSelected([]);
             }
-            if (data.schedule_user.length === 1) {
-              timeScheduleData.push([data.schedule_user[0]]);
-            }
-            console.log(timeScheduleData);
-            setTimeUserSelected(timeScheduleData);
-          } else {
-            setTimeUserSelected([]);
-          }
-        });
-      }
-    });
+          });
+        }
+      });
   };
 
   return (

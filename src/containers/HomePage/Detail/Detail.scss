@@ -10,7 +10,7 @@
   flex-direction: column;
   padding: 5px 0;
   justify-content: center;
-  align-items: self-start;
+  align-items: flex-start;
   .detail-teacher {
     width: 100%;
     display: flex;
@@ -35,8 +35,14 @@
     }
   }
   .description-teacher {
-    padding: 10px 15%;
-    margin: 5px 0;
+    padding: 10px 0;
+    margin: 5px 15%;
+    width: 100%;
+    border-top: 1px solid #e3d7d7;
+  }
+  .action-select {
+    padding: 10px 15% 5px;
+    // margin: 5px 0;
     width: 100%;
   }
 }
