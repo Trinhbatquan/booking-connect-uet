@@ -30,8 +30,14 @@ module.exports = {
       reason: {
         type: Sequelize.TEXT("long"),
       },
+      subject: {
+        type: Sequelize.STRING,
+      },
       question: {
         type: Sequelize.TEXT("long"),
+      },
+      others: {
+        type: Sequelize.STRING,
       },
       statusId: {
         type: Sequelize.STRING,

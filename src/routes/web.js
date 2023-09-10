@@ -32,6 +32,8 @@ const {
 const {
   createBookingScheduleController,
   getBookingScheduleController,
+  getAllBookingByManagerAndAction,
+  createQuestionController,
 } = require("../controllers/bookingController");
 const { updateStudentController } = require("../controllers/studentController");
 const {
@@ -96,8 +98,7 @@ const initWebRoutes = (app) => {
     deleteScheduleController
   );
 
-  // router.post("/api/create-teacher_info", createTeacherInfoController);
-  // router.get("/api/get-teacher_info", getTeacherInfoController);
+  router.get("/api/get-all-booking-system", getAllBookingByManagerAndAction);
 
   //home page api
   router.post("/api/homepage/register", registerHomePage);
@@ -118,6 +119,12 @@ const initWebRoutes = (app) => {
     updateStudentController
   );
   router.get("/api/get-booking-schedule", getBookingScheduleController);
+  router.post(
+    "/api/create-question",
+    (req, res, next) => checkExpiredToken(req, res, next, "student"),
+    (req, res, next) => protectUserToken(req, res, next, "student"),
+    createQuestionController
+  );
 
   return app.use("/", router);
 };

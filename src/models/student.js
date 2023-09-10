@@ -18,11 +18,11 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "gender",
         targetKey: "keyMap",
         as: "genderData",
-      });
-      // Student.hasOne(models.MarkDown, {
-      //   foreignKey: "userId",
-      //   as: "markdownData",
-      // });
+      }),
+        Student.hasMany(models.Booking, {
+          foreignKey: "studentId",
+          as: "studentData",
+        });
     }
   }
   Student.init(

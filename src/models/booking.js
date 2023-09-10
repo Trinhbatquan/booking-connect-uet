@@ -13,7 +13,12 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "timeType",
         targetKey: "keyMap",
         as: "timeDataBooking",
-      });
+      }),
+        Booking.belongsTo(models.Student, {
+          foreignKey: "studentId",
+          targetKey: "id",
+          as: "studentData",
+        });
     }
   }
   Booking.init(
@@ -24,7 +29,9 @@ module.exports = (sequelize, DataTypes) => {
       date: DataTypes.DATE,
       timeType: DataTypes.STRING,
       reason: DataTypes.TEXT("long"),
+      subject: DataTypes.STRING,
       question: DataTypes.TEXT("long"),
+      others: DataTypes.STRING,
       actionId: DataTypes.STRING,
       statusId: DataTypes.STRING,
     },

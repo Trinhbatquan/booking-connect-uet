@@ -13,9 +13,10 @@ const createScheduleController = async (req, res) => {
   if (scheduleData?.length > 0) {
     for (let i = 0; i < scheduleData.length; i++) {
       if (
-        !scheduleData[i]?.userId ||
+        !scheduleData[i]?.managerId ||
         !scheduleData[i]?.date ||
-        !scheduleData[i]?.timeType
+        !scheduleData[i]?.timeType ||
+        !scheduleData[i]?.roleManager
       ) {
         check = false;
         break;
@@ -33,6 +34,7 @@ const createScheduleController = async (req, res) => {
         const data = await createScheduleService(scheduleData, action);
         return res.status(200).json(data);
       } catch (e) {
+        console.log(e);
         return res.status(200).json({
           codeNumber: -1,
           message: "Not Create Schedule",
@@ -42,15 +44,15 @@ const createScheduleController = async (req, res) => {
   }
 };
 const getScheduleSystemController = async (req, res) => {
-  const { userId } = req.query;
-  if (!userId) {
+  const { managerId, roleManager } = req.query;
+  if (!managerId || !roleManager) {
     return res.status(404).json({
       codeNumber: 1,
       message: "Missing parameters",
     });
   } else {
     try {
-      const data = await getScheduleSystemService(userId);
+      const data = await getScheduleSystemService(managerId, roleManager);
       return res.status(200).json({
         codeNumber: 0,
         message: "Get Schedule Succeed",
@@ -67,15 +69,15 @@ const getScheduleSystemController = async (req, res) => {
 };
 
 const deleteScheduleController = async (req, res) => {
-  const { userId, date } = req.query;
-  if (!userId || !date) {
+  const { managerId, date, roleManager } = req.query;
+  if (!managerId || !date || !roleManager) {
     return res.status(404).json({
       codeNumber: 1,
       message: "Missing parameters",
     });
   } else {
     try {
-      const data = await deleteScheduleService(userId, date);
+      await deleteScheduleService(managerId, date, roleManager);
       return res.status(200).json({
         codeNumber: 0,
         message: "Delete Successfully",
@@ -91,15 +93,19 @@ const deleteScheduleController = async (req, res) => {
 
 //homepage
 const getScheduleByIdAndDateController = async (req, res) => {
-  const { userId, date } = req.query;
-  if (!userId || !date) {
+  const { managerId, date, roleManager } = req.query;
+  if (!managerId || !date || !roleManager) {
     return res.status(404).json({
       codeNumber: 1,
       message: "Missing parameters",
     });
   } else {
     try {
-      const data = await getScheduleByIdAndDateService(userId, date);
+      const data = await getScheduleByIdAndDateService(
+        managerId,
+        date,
+        roleManager
+      );
       return res.status(200).json({
         codeNumber: 0,
         message: "Get Schedule Succeed",

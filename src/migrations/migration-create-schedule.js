@@ -9,26 +9,17 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      currentSchedule: {
-        type: Sequelize.INTEGER,
-      },
-      maxSchedule: {
-        type: Sequelize.INTEGER,
-      },
       date: {
         type: Sequelize.DATE,
       },
       timeType: {
         type: Sequelize.STRING,
       },
-      userId: {
+      managerId: {
         type: Sequelize.INTEGER,
       },
-      currentQuestion: {
-        type: Sequelize.INTEGER,
-      },
-      maxQuestion: {
-        type: Sequelize.INTEGER,
+      roleManager: {
+        type: Sequelize.STRING,
       },
       actionId: {
         type: Sequelize.STRING,
