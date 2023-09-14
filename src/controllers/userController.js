@@ -10,6 +10,8 @@ const {
   editUserService,
   deleteUserService,
   getUserByRoleService,
+  sendEmailToUpdatePassHomePageService,
+  verifyAndUpdatePassHomePageService,
 } = require("../services/userSevice");
 
 const createTokenRandom = require("../middleware/createTokenRandom");
@@ -64,8 +66,16 @@ const logoutSystemController = async (req, res) => {
 };
 
 const registerHomePage = async (req, res) => {
-  const { email, password, fullName, faculty } = req.body;
-  if (!email || !password || !fullName || !faculty) {
+  const { email, password, fullName, faculty, classroom, phoneNumber } =
+    req.body;
+  if (
+    !email ||
+    !password ||
+    !fullName ||
+    !faculty ||
+    !classroom ||
+    !phoneNumber
+  ) {
     return res.status(400).send({
       codeNumber: 1,
       message: "Missing parameters.",
@@ -78,7 +88,9 @@ const registerHomePage = async (req, res) => {
           email,
           password,
           fullName,
-          faculty
+          faculty,
+          classroom,
+          phoneNumber
         );
         if (data?.codeNumber === 0) {
           const { email, roleId } = data?.user;
@@ -212,6 +224,51 @@ const verificationEmailController = async (req, res) => {
   }
 };
 
+const sendEmailToUpdatePassHomePageController = async (req, res) => {
+  try {
+    const { email } = req.query;
+    if (!email) {
+      return res.status(200).json({
+        codeNumber: 1,
+        message: "Missing Parameters",
+      });
+    }
+
+    const data = await sendEmailToUpdatePassHomePageService(email);
+    return res.status(200).json(data);
+  } catch (e) {
+    return res.status(200).json({
+      codeNumber: -1,
+      message: "Don't send email to update pass",
+    });
+  }
+};
+
+const verifyAndUpdatePasswordHomePageController = async (req, res) => {
+  try {
+    const { email, token, password } = req.body;
+    if (!email || !token || !password) {
+      return res.status(200).json({
+        codeNumber: 1,
+        mess: "Error. Contact with admin page.",
+      });
+    }
+
+    const data = await verifyAndUpdatePassHomePageService(
+      email,
+      token,
+      password
+    );
+    return res.status(200).json(data);
+  } catch (e) {
+    console.log(e);
+    return res.status(200).json({
+      codeNumber: -1,
+      mess: "Error. Contact with admin page.",
+    });
+  }
+};
+
 const getUserController = async (req, res) => {
   const userId = req.query.id;
   if (!userId) {
@@ -301,4 +358,6 @@ module.exports = {
   editUserController,
   deleteUserController,
   getUserByRoleController,
+  sendEmailToUpdatePassHomePageController,
+  verifyAndUpdatePasswordHomePageController,
 };

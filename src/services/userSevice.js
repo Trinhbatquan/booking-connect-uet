@@ -245,7 +245,14 @@ const loginSystemService = async (email, password) => {
   });
 };
 
-const registerHomePageService = (email, password, fullName, faculty) => {
+const registerHomePageService = (
+  email,
+  password,
+  fullName,
+  faculty,
+  classroom,
+  phoneNumber
+) => {
   return new Promise(async (resolve, reject) => {
     try {
       const exist = await checkExists(email, "student");
@@ -262,6 +269,8 @@ const registerHomePageService = (email, password, fullName, faculty) => {
           password: hashPs,
           fullName,
           faculty,
+          classroom,
+          phoneNumber,
           verified: false,
         });
         const user = await db.Student.findOne({
@@ -272,11 +281,18 @@ const registerHomePageService = (email, password, fullName, faculty) => {
         await db.TokenEmail.create({
           userId: user?.id,
           token: token,
+          action: "verifyEmail",
         });
         //decode token
         token = encodeURIComponent(token);
         const url = `${process.env.BASE_URL_FRONTEND}/users/${user.id}/verify/${token}`;
-        await sendEmail(email, "Verify Email", url);
+        await sendEmail(
+          email,
+          user,
+          "Xác thực đăng ký tài khoản.",
+          url,
+          "verifyEmail"
+        );
         resolve({
           codeNumber: 2,
           message: "An Email sent to your account. Please verify.",
@@ -303,12 +319,19 @@ const registerHomePageService = (email, password, fullName, faculty) => {
             {
               where: {
                 userId: exist.user.id,
+                action: "verifyEmail",
               },
             }
           );
           token = encodeURIComponent(token);
           const url = `${process.env.BASE_URL_FRONTEND}/users/${exist.user.id}/verify/${token}`;
-          await sendEmail(email, "Verify Email", url);
+          await sendEmail(
+            email,
+            exist.user,
+            "Xác thực đăng ký tài khoản",
+            url,
+            "verifyEmail"
+          );
           resolve({
             codeNumber: 2,
             message: "An Email sent to your account. Please verify",
@@ -346,50 +369,6 @@ const registerHomePageService = (email, password, fullName, faculty) => {
 const loginHomePageService = async (email, password) => {
   return new Promise(async (resolve, reject) => {
     try {
-      // const exist = await checkExists(email);
-      // const hashPs = await hashPassword(password);
-
-      // if (!exist?.status) {
-      // }
-      //   else if (exist?.status && !exist?.user?.verified) {
-      //   if (exist?.user?.roleId !== "R3") {
-      //     resolve({
-      //       codeNumber: 3,
-      //       message: "You are not the student",
-      //     });
-      //   }
-      //   const checkPassword = await bcrypt.compare(
-      //     password,
-      //     exist.user.password
-      //   );
-      //   if (!checkPassword) {
-      //     resolve({
-      //       codeNumber: 3,
-      //     });
-      //   } else {
-      //     let token = crypto.AES.encrypt(
-      //       email,
-      //       process.env.SECRET_KEY_STUDENT
-      //     ).toString();
-      //     await db.TokenEmail.update(
-      //       {
-      //         token: token,
-      //       },
-      //       {
-      //         where: {
-      //           userId: exist.user.id,
-      //         },
-      //       }
-      //     );
-      //     token = encodeURIComponent(token);
-      //     const url = `${process.env.BASE_URL_FRONTEND}/users/${exist.user.id}/verify/${token}`;
-      //     await sendEmail(email, "Verify Email", url);
-      //     resolve({
-      //       codeNumber: 2,
-      //       message: "An Email sent to your account. Please verify",
-      //     });
-      //   }
-      // }
       const student = await db.Student.findOne({
         where: {
           email,
@@ -443,6 +422,7 @@ const verificationEmailService = (req) => {
         where: {
           userId: user.id,
           token,
+          action: "verifyEmail",
         },
       });
       if (!checkToken)
@@ -478,6 +458,7 @@ const verificationEmailService = (req) => {
       await db.TokenEmail.destroy({
         where: {
           userId: user.id,
+          action: "verifyEmail",
         },
       });
       resolve({
@@ -489,6 +470,166 @@ const verificationEmailService = (req) => {
           email: user?.email,
           roleId: "R3",
         },
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const sendEmailToUpdatePassHomePageService = (email) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let token = crypto.AES.encrypt(
+        email,
+        process.env.SECRET_KEY_STUDENT
+      ).toString();
+      const user = await db.Student.findOne({
+        where: { email },
+      });
+      if (!user) {
+        resolve({
+          codeNumber: 1,
+          message: "This Account is not exist. Please sign up.",
+        });
+      } else if (user && !user.verified) {
+        resolve({
+          codeNumber: 1,
+          message: "This Account is verified yet. Please sign up to verify.",
+        });
+      }
+      const checkToken = await db.TokenEmail.findOne({
+        where: {
+          userId: user.id,
+          action: "forgotPass",
+        },
+      });
+      console.log(checkToken);
+      if (checkToken) {
+        await db.TokenEmail.update(
+          {
+            token,
+          },
+          {
+            where: {
+              userId: user.id,
+              action: "forgotPass",
+            },
+          }
+        );
+        //decode token
+        token = encodeURIComponent(token);
+        const url = `${process.env.BASE_URL_FRONTEND}/updatePass/${email}/verify/${token}`;
+        await sendEmail(
+          email,
+          user,
+          "Cập nhật mật khẩu tài khoản của bạn.",
+          url,
+          "forgotPass"
+        );
+        resolve({
+          codeNumber: 2,
+          message: "An Email sent to your account. Please check to continue.",
+        });
+      } else {
+        await db.TokenEmail.create({
+          userId: user?.id,
+          token: token,
+          action: "forgotPass",
+        });
+        //decode token
+        token = encodeURIComponent(token);
+        const url = `${process.env.BASE_URL_FRONTEND}/updatePass/${email}/verify/${token}`;
+        await sendEmail(
+          email,
+          user,
+          "Cập nhật mật khẩu tài khoản của bạn.",
+          url,
+          "forgotPass"
+        );
+        resolve({
+          codeNumber: 2,
+          message: "An Email sent to your account. Please check to continue.",
+        });
+      }
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const verifyAndUpdatePassHomePageService = (email, token, password) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const tokenEnCode = decodeURIComponent(token);
+
+      const user = await db.Student.findOne({
+        where: { email },
+      });
+      if (!user) {
+        resolve({
+          code: 1,
+          message: "Invalid Link 1",
+        });
+      }
+
+      console.log("tokenUser " + tokenEnCode);
+      const checkToken = await db.TokenEmail.findOne({
+        where: {
+          userId: user.id,
+          token: tokenEnCode,
+          action: "forgotPass",
+        },
+      });
+      console.log(checkToken?.token);
+      // console.log(checkToken?.token + "\n" + token);
+      if (!checkToken)
+        resolve({
+          codeNumber: 1,
+          message: "Invalid Link 2",
+        });
+      //check expires of token email (crypto aes encrypt)
+      // allow exist into 5 minutes
+      // console.log(checkToken.updatedAt + 7 * 60 * 60);
+      // console.log(addHours(checkToken.updatedAt, 7));
+      const updateTime = new Date(checkToken.updatedAt).getTime();
+      console.log("update " + updateTime);
+      // console.log(new Date(Date.now()));
+      // console.log(new Date());
+      const date_now = new Date(Date.now()).getTime();
+      console.log("now " + date_now);
+
+      console.log(
+        "time " + Math.abs(Math.floor((date_now - updateTime) / 1000))
+      );
+      if (Math.abs(Math.floor((date_now - updateTime) / 1000)) > 5 * 60) {
+        resolve({
+          codeNumber: 3,
+          message: "Token is expired. Please click into Send new link.",
+        });
+      }
+
+      //  const filter = { email };
+      const updatePass = bcrypt.hashSync(password, 10);
+      await db.Student.update(
+        {
+          password: updatePass,
+        },
+        {
+          where: {
+            id: user.id,
+          },
+        }
+      );
+      await db.TokenEmail.destroy({
+        where: {
+          userId: user.id,
+          action: "forgotPass",
+        },
+      });
+      resolve({
+        codeNumber: 2,
+        message: "Update password successfully. Please log in again.",
       });
     } catch (e) {
       reject(e);
@@ -726,4 +867,6 @@ module.exports = {
   editUserService,
   deleteUserService,
   getUserByRoleService,
+  sendEmailToUpdatePassHomePageService,
+  verifyAndUpdatePassHomePageService,
 };

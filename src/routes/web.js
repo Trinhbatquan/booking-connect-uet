@@ -11,6 +11,8 @@ const {
   loginHomePage,
   logoutHomePageController,
   verificationEmailController,
+  sendEmailToUpdatePassHomePageController,
+  verifyAndUpdatePasswordHomePageController,
 } = require("../controllers/userController");
 const { getAllCodeByType } = require("../controllers/allCodeController");
 const {
@@ -124,6 +126,16 @@ const initWebRoutes = (app) => {
     (req, res, next) => checkExpiredToken(req, res, next, "student"),
     (req, res, next) => protectUserToken(req, res, next, "student"),
     createQuestionController
+  );
+
+  //forgotEmail
+  router.get(
+    "/api/homepage/forgot-pass",
+    sendEmailToUpdatePassHomePageController
+  );
+  router.post(
+    "/api/homepage/update-pass-forgot",
+    verifyAndUpdatePasswordHomePageController
   );
 
   return app.use("/", router);
