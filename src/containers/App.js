@@ -28,6 +28,8 @@ import {
 } from "./System";
 import EmailVerify from "./HomePage/EmailVerify/EmailVerify";
 import ScheduleAndQuestion from "./System/ScheduleAndQuestionManager/ScheduleAndQuestion";
+import ForgotPassword from "./HomePage/Login/ForgotPassword";
+import UpdatePassword from "./HomePage/Login/UpdatePassword";
 
 function App() {
   const [appearScrollTop, setAppearScrollTop] = useState(false);
@@ -63,8 +65,6 @@ function App() {
 
   const handleScrollTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
-
-    // setAppearScrollTop(false);
   };
 
   return (
@@ -84,6 +84,11 @@ function App() {
           element={<LoginHomePage />}
         />
         <Route path="/users/:id/verify/:token" element={<EmailVerify />} />
+        <Route path="/forgot-pass" element={<ForgotPassword />} />
+        <Route
+          path="/updatePass/:email/verify/:token"
+          element={<UpdatePassword />}
+        />
 
         {/* system */}
         <Route

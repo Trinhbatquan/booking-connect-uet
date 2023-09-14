@@ -35,10 +35,10 @@ const studentSlice = createSlice({
       localStorage.removeItem("auth-bookingCare-UET_student");
     },
     logOutUser: (state, action) => {
-      // state.isLogin = false;
-      // state.role = null;
-      // state.fullName = null;
-      // state.email = null;
+      state.isLogin = false;
+      state.role = null;
+      state.fullName = null;
+      state.email = null;
       localStorage.removeItem("auth-bookingCare-UET_student");
     },
   },

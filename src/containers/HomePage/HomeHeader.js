@@ -35,6 +35,7 @@ const HomeHeader = () => {
   const [openModelUser, setOpenModelUser] = useState(false);
 
   const currentUser = useSelector((state) => state.studentReducer);
+  console.log(currentUser);
 
   const handleChangeLanguages = (language) => {
     i18n.changeLanguage(language);
@@ -73,114 +74,158 @@ const HomeHeader = () => {
         <div className="homepage-herder-right">
           <div className="homepage-herder-right-up">
             <div className="flex items-start justify-center gap-0 cursor-pointer">
-              <span className="support text-md flex items-center justify-center gap-0 text-black hover:text-blue-700">
+              <span className="support text-sm flex items-center justify-center gap-0 text-black hover:text-blue-700">
                 <MdContactSupport />
                 {t("header.support")}
               </span>
             </div>
             {i18n.language === "vi" ? (
               <div
-                className={`text-md ml-3 cursor-pointer flex items-center justify-center gap-1 text-black hover:text-blue-700 hover:opacity-100`}
+                className={`text-sm ml-3 cursor-pointer flex items-center justify-center gap-1 text-black hover:text-blue-700 hover:opacity-100`}
                 onClick={() => handleChangeLanguages("en")}
               >
                 Tiếng Việt <IoIosArrowDown className="opacity-20" />
               </div>
             ) : (
               <div
-                className={`text-md ml-3 cursor-pointer flex items-center justify-center gap-1 text-black hover:text-blue-700 hover:opacity-100`}
+                className={`text-sm ml-3 cursor-pointer flex items-center justify-center gap-1 text-black hover:text-blue-700 hover:opacity-100`}
                 onClick={() => handleChangeLanguages("vi")}
               >
                 Tiếng Anh <IoIosArrowDown className="opacity-20" />
               </div>
             )}
 
-            <div
-              className={`avatar relative text-black text-xl ml-3 cursor-pointer hover:text-blue-700 flex items-center justify-center gap-0`}
-              onClick={() => setOpenModelUser(!openModelUser)}
-            >
-              <BsFillPersonFill className={``} />
-              {openModelUser ? <IoMdArrowDropup /> : <IoMdArrowDropdown />}
-              <AnimatePresence>
-                {openModelUser && (
-                  <motion.div
-                    initial={{ opacity: 0, translateY: -50 }}
-                    animate={{ opacity: 1, translateY: 0 }}
-                    exit={{ opacity: 0, translateY: -50 }}
-                    transition={{ duration: 0.5, delay: 0.1 }}
-                    className="avatar-modal absolute right-0 top-9 z-50 rounded-lg  w-80 bg-white backdrop-blur-sm"
-                    style={{ boxShadow: "0 4px 20px rgba(0,0,0,.25)" }}
+            {currentUser?.isLogin && currentUser?.role === "R3" && (
+              <div
+                className={`avatar relative text-black text-xl ml-3 cursor-pointer hover:text-blue-700 flex items-center justify-center gap-0`}
+                onClick={() => setOpenModelUser(!openModelUser)}
+              >
+                {/* <BsFillPersonFill className={``} /> */}
+                <div className="flex items-center justify-center gap-3 ml-3">
+                  <div
+                    className="flex items-center justify-center rounded-full bg-blue-700 text-white
+                            "
+                    style={{ width: "30px", height: "30px" }}
                   >
-                    <div
-                      className=""
-                      style={{
-                        position: "absolute",
-                        top: "-5px",
-                        right: "4px",
-                        transform: "rotate(45deg)",
-                        width: "18px",
-                        height: "18px",
-                        backgroundColor: "#fff",
-                      }}
-                    ></div>
-                    <div className="text-md text-headingColor">
-                      <div className="h-full w-full flex items-center justify-center cursor-text">
-                        <div
-                          className="relative flex items-center justify-center"
-                          style={{
-                            width: "100px",
-                            height: "100px",
-                          }}
-                        >
+                    <span className="" style={{ fontSize: "15px" }}>
+                      {currentUser?.fullName.slice(0, 1)}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-start gap-0.5">
+                    <span
+                      className=" text-black"
+                      style={{ fontSize: "13px" }}
+                    >{`${currentUser?.fullName} - #${
+                      currentUser?.email.split("@")[0]
+                    }`}</span>
+                    {openModelUser ? (
+                      <IoMdArrowDropup />
+                    ) : (
+                      <IoMdArrowDropdown />
+                    )}
+                  </div>
+                </div>
+                <AnimatePresence>
+                  {openModelUser && (
+                    <motion.div
+                      initial={{ opacity: 0, translateY: -50 }}
+                      animate={{ opacity: 1, translateY: 0 }}
+                      exit={{ opacity: 0, translateY: -50 }}
+                      transition={{ duration: 0.5, delay: 0.1 }}
+                      className="avatar-modal absolute right-0 top-11 z-50 rounded-lg  w-80 bg-white backdrop-blur-sm"
+                      style={{ boxShadow: "0 4px 20px rgba(0,0,0,.25)" }}
+                    >
+                      <div
+                        className=""
+                        style={{
+                          position: "absolute",
+                          top: "-5px",
+                          right: "4px",
+                          transform: "rotate(45deg)",
+                          width: "18px",
+                          height: "18px",
+                          backgroundColor: "#fff",
+                        }}
+                      ></div>
+                      <div className="text-sm text-headingColor">
+                        <div className="h-full w-full flex items-center justify-center cursor-text">
                           <div
-                            className="flex items-center justify-center rounded-full bg-blue-700 text-white
-                          absolute top-0 right-0 bottom-0 left-0 w-full h-full m-auto"
-                            style={{ width: "60px", height: "60px" }}
+                            className="relative flex items-center justify-center"
+                            style={{
+                              width: "100px",
+                              height: "100px",
+                            }}
                           >
-                            <span className="" style={{ fontSize: "30px" }}>
-                              N
+                            <div
+                              className="flex items-center justify-center rounded-full bg-blue-700 text-white
+                            absolute top-0 right-0 bottom-0 left-0 w-full h-full m-auto"
+                              style={{ width: "60px", height: "60px" }}
+                            >
+                              <span className="" style={{ fontSize: "30px" }}>
+                                {currentUser?.fullName.slice(0, 1)}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="h-full flex flex-col items-start gap-2">
+                            <span
+                              className="font-semibold"
+                              style={{ fontSize: "16px" }}
+                            >
+                              {currentUser?.fullName}
                             </span>
+                            <span>{currentUser?.email}</span>
                           </div>
                         </div>
-                        <div className="h-full flex flex-col items-start gap-2">
-                          <span
-                            className="font-semibold"
-                            style={{ fontSize: "16px" }}
-                          >
-                            Bui Van Trinh
-                          </span>
-                          <span>
-                            {" "}
-                            {currentUser?.email
-                              ? currentUser.email
-                              : "expamle@vnu.edu.vn"}
-                          </span>
+                      </div>
+                      <ul className="py-2 text-headingColor border-t border-b border-slate-200">
+                        <li>
+                          <div className="flex items-center gap-2 px-4 py-2 hover:text-blue-700">
+                            <AiFillEdit /> <span> Edit Profile</span>
+                          </div>
+                        </li>
+                        <li>
+                          <div className="flex items-center gap-2 px-4 py-2 hover:text-blue-700 ">
+                            <AiFillUnlock /> <span>Change Password</span>
+                          </div>
+                        </li>
+                      </ul>
+                      <div className="py-2">
+                        <div
+                          className="flex items-center gap-2 px-4 py-2  hover:text-blue-700 text-headingColor"
+                          onClick={() => handleLogOutHomePage()}
+                        >
+                          <BiLogOutCircle /> <span>Sign out</span>
                         </div>
                       </div>
-                    </div>
-                    <ul className="py-2 text-headingColor border-t border-b border-slate-200">
-                      <li>
-                        <div className="flex items-center gap-2 px-4 py-2 hover:text-blue-700">
-                          <AiFillEdit /> <span> Edit Profile</span>
-                        </div>
-                      </li>
-                      <li>
-                        <div className="flex items-center gap-2 px-4 py-2 hover:text-blue-700 ">
-                          <AiFillUnlock /> <span>Change Password</span>
-                        </div>
-                      </li>
-                    </ul>
-                    <div className="py-2">
-                      <div
-                        className="flex items-center gap-2 px-4 py-2  hover:text-blue-700 text-headingColor"
-                        onClick={() => handleLogOutHomePage()}
-                      >
-                        <BiLogOutCircle /> <span>Sign out</span>
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            )}
+            {!currentUser?.isLogin && !currentUser?.role && (
+              <div className="flex items-center justify-center gap-3 ml-3">
+                <button
+                  class="px-5 py-1.5 flex transition-all ease-in duration-150 items-center justify-center overflow-hidden text-sm font-semibold border border-blue-500 text-white  rounded-md bg-blue-500 hover:text-blue-500 hover:bg-white"
+                  onClick={() =>
+                    navigate(`${path.HOMEPAGE}/${path.login_homepage}`)
+                  }
+                >
+                  <span class="">
+                    {i18n.language === "en" ? "Login" : "Đăng nhập"}
+                  </span>
+                </button>
+                <button
+                  class="px-5 py-1.5 flex transition-all ease-in duration-150 items-center justify-center overflow-hidden text-sm font-semibold border border-red-500 text-white  rounded-md bg-red-500 hover:text-red-500 hover:bg-white"
+                  onClick={() =>
+                    navigate(`${path.HOMEPAGE}/${path.login_homepage}`)
+                  }
+                >
+                  <span class="">
+                    {i18n.language === "en" ? "Register" : "Đăng ký"}
+                  </span>
+                </button>
+              </div>
+            )}
           </div>
           <div className="homepage-herder-right-down">
             <NavLink

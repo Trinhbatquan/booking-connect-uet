@@ -29,6 +29,14 @@ const loginHomePageApi = {
     const url = "/api/users/verify/emailUrl";
     return axiosClient.get(url, { params });
   },
+  forgot: (params) => {
+    const url = "/api/homepage/forgot-pass";
+    return axiosClient.get(url, { params });
+  },
+  updatePass_forgot: (params, data) => {
+    const url = "/api/homepage/update-pass-forgot";
+    return axiosClient.post(url, data, { params });
+  },
 };
 
 const logOutHomePageApi = {

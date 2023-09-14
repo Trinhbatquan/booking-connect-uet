@@ -12,6 +12,10 @@ import { loginUserFailed, loginUserSucceed } from "../../../redux/studentSlice";
 import Loading from "./../../../utils/Loading";
 import { select_faculty } from "../../../utils/constant";
 
+import { FaPencilAlt } from "react-icons/fa";
+import { NavLink } from "react-router-dom";
+import HomeHeader from "../HomeHeader";
+
 const Login = () => {
   //login
   const [focusEmail_login, setFocusEmail_login] = useState(false);
@@ -30,6 +34,8 @@ const Login = () => {
   const [focusConformPassword_register, setFocusConformPassword_register] =
     useState(false);
   const [focusFaculty, setFocusFaculty] = useState(false);
+  const [focusClassroom, setFocusClassroom] = useState(false);
+  const [focusPhone, setFocusPhone] = useState(false);
   const [eye_register, setEye_register] = useState(false);
   const [fullName, setFullName] = useState("");
   const [email_register, setEmail_register] = useState("");
@@ -37,6 +43,8 @@ const Login = () => {
   const [confirmPs, setConfirmPs] = useState("");
   const [faculty, setFaculty] = useState("");
   const [messageRegister, setMessageRegister] = useState({});
+  const [classroom, setClassroom] = useState("");
+  const [phone, setPhone] = useState("");
 
   const [loading, setLoading] = useState(false);
 
@@ -115,13 +123,83 @@ const Login = () => {
     setFocusFaculty(true);
     setMessageRegister({});
   };
+  const handleFocusClassroom_register = () => {
+    setFocusClassroom(true);
+    setMessageRegister({});
+  };
+  const handleFocusPhone_register = () => {
+    setFocusPhone(true);
+    setMessageRegister({});
+  };
+
+  //check null state
+  const handleCheckNullState_Register = () => {
+    let result = true;
+    const stateArr = [
+      fullName,
+      email_register,
+      password_register,
+      faculty,
+      classroom,
+      phone,
+    ];
+    const notification_en = [
+      "FullName",
+      "Email",
+      "Password",
+      "Faculty",
+      "Classroom",
+      "PhoneNumber",
+    ];
+    for (let i = 0; i < stateArr.length; i++) {
+      if (!stateArr[i]) {
+        setMessageRegister(`${notification_en[i]} is required.`);
+        result = false;
+        break;
+      } else {
+        setMessageRegister("");
+      }
+    }
+    return result;
+  };
+  const handleCheckValidate_Register = () => {
+    let result = true;
+    const checkNullState = handleCheckNullState_Register();
+    if (checkNullState) {
+      const regexEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+      const regexPassword =
+        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+      const rejexPhoneNumber = /\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/;
+      if (!regexEmail.test(email_register)) {
+        setMessageRegister(`Please enter the correct email format.`);
+        return false;
+      }
+      if (!regexPassword.test(password_register)) {
+        setMessageRegister(
+          `Password must have the least 8 letters, 1 number and 1 special character.`
+        );
+        return false;
+      }
+      if (!rejexPhoneNumber.test(phone)) {
+        setMessageRegister(`Please enter the correct phone format.`);
+        return false;
+      }
+
+      return result;
+    }
+  };
 
   const handleRegister = () => {
     console.log("register");
     console.log(password_register, confirmPs);
-    if (password_register && confirmPs && password_register === confirmPs) {
+    if (
+      password_register &&
+      confirmPs &&
+      password_register === confirmPs &&
+      handleCheckValidate_Register()
+    ) {
       setLoading(true);
-      setMessageLogin({});
+      setMessageRegister({});
       loginHomePageApi
         .registerUser(
           {},
@@ -130,6 +208,8 @@ const Login = () => {
             password: password_register,
             fullName,
             faculty,
+            classroom,
+            phoneNumber: phone,
           }
         )
         .then((data) => {
@@ -157,6 +237,7 @@ const Login = () => {
 
   return (
     <div className="login-register-homepage-container">
+      <HomeHeader />
       <div className={`${active ? "active" : ""} container`} ref={containerRef}>
         <div className="box">
           <div className="form login">
@@ -181,9 +262,12 @@ const Login = () => {
               {loading && <Loading />}
             </div>
             <div className="login-form w-2/3 flex flex-col items-start justify-center pb-4 mt-2">
-              <label className="opacity-70 pb-1 pl-1" htmlFor="email">
-                Email
-              </label>
+              <div className="flex items-center justify-start gap-0.5 pb-1 pl-1">
+                <FaPencilAlt className="text-sm opacity-70" />
+                <label className="opacity-70" htmlFor="email">
+                  Email
+                </label>
+              </div>
               <input
                 autoComplete="false"
                 onFocus={() => handleFocusEmail_login()}
@@ -240,11 +324,11 @@ const Login = () => {
             <div className="w-1/4 mt-4 " onClick={() => handleLogin()}>
               <button className="w-full btn-form rounded-lg">Log in</button>
             </div>
-            <div className="mt-2 w-full">
+            <NavLink to="/forgot-pass" className="mt-2 w-full">
               <span className="login-forgot pl-1 cursor-pointer">
                 Forgot your password?
               </span>
-            </div>
+            </NavLink>
           </div>
 
           <div className="form register">
@@ -271,9 +355,12 @@ const Login = () => {
               {loading && <Loading />}
             </div>
             <div className="register-form w-2/3 flex flex-col items-start justify-center pb-4 mt-2">
-              <label className="opacity-70 pb-1 pl-1" htmlFor="email">
-                FullName
-              </label>
+              <div className="flex items-center justify-start pl-1 pb-1 gap-0.5">
+                <FaPencilAlt className="text-sm opacity-70" />
+                <label className="opacity-70" htmlFor="name_register">
+                  FullName
+                </label>
+              </div>
               <input
                 autoComplete="false"
                 onFocus={() => handleFocusFullName_register()}
@@ -286,15 +373,15 @@ const Login = () => {
                                   }
                                   `}
                 value={fullName}
-                id="email"
-                type="email"
-                name="email"
-                placeholder="Enter your email"
+                id="name_register"
+                type="text"
+                name="name_register"
+                placeholder="VD: Vũ Văn A"
                 onChange={(e) => setFullName(e.target.value)}
               />
             </div>
             <div className="register-form w-2/3 flex flex-col items-start justify-center pb-4 mt-2">
-              <label className="opacity-70 pb-1 pl-1" htmlFor="email">
+              <label className="opacity-70 pb-1 pl-1" htmlFor="email_re">
                 Email
               </label>
               <input
@@ -312,12 +399,12 @@ const Login = () => {
                 id="email_re"
                 type="email"
                 name="email_re"
-                placeholder="Enter your email"
+                placeholder="VD: 19020641@vnu.edu.vn"
                 onChange={(e) => setEmail_register(e.target.value)}
               />
             </div>
             <div className="register-form w-2/3 flex flex-col items-start justify-center pb-4 mt-2 relative">
-              <label className="opacity-70 pb-1 pl-1" htmlFor="email">
+              <label className="opacity-70 pb-1 pl-1" htmlFor="pass_re">
                 Password
               </label>
               <input
@@ -335,7 +422,7 @@ const Login = () => {
                 id="pass_re"
                 type={`${eye_register ? "text" : "password"}`}
                 name="pass_re"
-                placeholder="Enter your email"
+                placeholder="Enter your password"
                 onChange={(e) => setPassword_register(e.target.value)}
               />
               {eye_register ? (
@@ -372,40 +459,11 @@ const Login = () => {
                 placeholder="Enter your password"
                 onChange={(e) => setConfirmPs(e.target.value)}
               />
-              {eye_register ? (
-                <IoMdEye
-                  className="absolute right-6 bottom-7 cursor-pointer"
-                  onClick={() => setEye_register(false)}
-                />
-              ) : (
-                <BsEyeSlash
-                  className="absolute right-6 bottom-7 cursor-pointer"
-                  onClick={() => setEye_register(true)}
-                />
-              )}
             </div>
             <div className="register-form w-2/3 flex flex-col items-start justify-center pb-4 mt-2">
-              <label className="opacity-70 pb-1 pl-1" htmlFor="email">
+              <label className="opacity-70 pb-1 pl-1" htmlFor="faculties">
                 Khoa
               </label>
-              {/* <input
-                autoComplete="false"
-                onFocus={() => handleFocusFaculty_register()}
-                onBlur={() => setFocusFaculty(false)}
-                className={`w-full py-2 px-3 rounded-md placeholder:text-slate-400 outline-none
-                                  ${
-                                    focusFaculty
-                                      ? "bg-white duration-200 transition-all"
-                                      : "bg-slate-200 duration-200 transition-all"
-                                  }
-                                  `}
-                value={faculty}
-                id="email"
-                type="email"
-                name="email"
-                placeholder="Enter your email"
-                onChange={(e) => setFaculty(e.target.value)}
-              /> */}
               <select
                 className={`w-full py-2 px-3 rounded-md placeholder:text-slate-400 outline-none
                                   ${
@@ -433,6 +491,52 @@ const Login = () => {
                     );
                   })}
               </select>
+            </div>
+            <div className="register-form w-2/3 flex flex-col items-start justify-center pb-4 mt-2">
+              <label className="opacity-70 pb-1 pl-1" htmlFor="classroom">
+                Classroom
+              </label>
+              <input
+                autoComplete="false"
+                onFocus={() => handleFocusClassroom_register()}
+                onBlur={() => setFocusClassroom(false)}
+                className={`w-full py-2 px-3 rounded-md placeholder:text-slate-400 outline-none
+                                  ${
+                                    focusClassroom
+                                      ? "bg-white duration-200 transition-all"
+                                      : "bg-slate-200 duration-200 transition-all"
+                                  }
+                                  `}
+                value={classroom}
+                id="classroom"
+                type="text"
+                name="classroom"
+                placeholder="VD: K64K1"
+                onChange={(e) => setClassroom(e.target.value)}
+              />
+            </div>
+            <div className="register-form w-2/3 flex flex-col items-start justify-center pb-4 mt-2">
+              <label className="opacity-70 pb-1 pl-1" htmlFor="phone">
+                PhoneNumber
+              </label>
+              <input
+                autoComplete="false"
+                onFocus={() => handleFocusPhone_register()}
+                onBlur={() => setFocusPhone(false)}
+                className={`w-full py-2 px-3 rounded-md placeholder:text-slate-400 outline-none
+                                  ${
+                                    focusPhone
+                                      ? "bg-white duration-200 transition-all"
+                                      : "bg-slate-200 duration-200 transition-all"
+                                  }
+                                  `}
+                value={phone}
+                id="phone"
+                type="text"
+                name="phone"
+                placeholder="Enter your phoneNumber"
+                onChange={(e) => setPhone(e.target.value)}
+              />
             </div>
             <div className="w-1/3 mt-4" onClick={() => handleRegister()}>
               <button className="w-full btn-form rounded-lg py-1">

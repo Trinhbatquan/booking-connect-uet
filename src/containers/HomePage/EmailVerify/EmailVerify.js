@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 
 import success from "../../../assets/image/success.png";
 import { loginHomePageApi } from "../../../services/userService";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import Loading from "./../../../utils/Loading";
 import Button from "../../../utils/Button_Home";
 import { NavLink } from "react-router-dom";
@@ -11,10 +11,11 @@ import { path } from "./../../../utils/constant";
 import { loginUserFailed, loginUserSucceed } from "../../../redux/studentSlice";
 
 const EmailVerify = () => {
-  const [validUrl, setValidUrl] = useState(false);
+  const [validUrl, setValidUrl] = useState(true);
   const [loading, setLoading] = useState(true);
   const param = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setTimeout(() => {
@@ -25,12 +26,13 @@ const EmailVerify = () => {
             if (data?.codeNumber === 0) {
               setValidUrl(true);
               dispatch(loginUserSucceed(data?.user));
+              navigate(path.HOMEPAGE);
             } else {
               setValidUrl(false);
               dispatch(loginUserFailed());
             }
+            setLoading(false);
           });
-        setLoading(false);
       } catch (e) {
         console.log("verify email uel error /n" + e);
       }
@@ -45,16 +47,7 @@ const EmailVerify = () => {
       {loading ? (
         <Loading />
       ) : validUrl ? (
-        <div className="flex flex-col items-center justify-center gap-2">
-          <img
-            src={success}
-            alt="None"
-            style={{ width: "20%", height: "20%" }}
-          />
-          <NavLink to={path.HOMEPAGE}>
-            <Button text="Home" />
-          </NavLink>
-        </div>
+        ""
       ) : (
         <div className="flex flex-col items-center justify-center gap-2">
           <p className="text-black font-semibold text-2xl">Oh oh...</p>
