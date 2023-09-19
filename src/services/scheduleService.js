@@ -16,9 +16,9 @@ const getScheduleSystem = {
 };
 
 const deleteScheduleByIdAndDate = {
-  delete: (params) => {
+  delete: (params, data) => {
     const url = "/api/delete-schedule";
-    return axiosClient.delete(url, { params });
+    return axiosClient.post(url, data, { params });
   },
 };
 

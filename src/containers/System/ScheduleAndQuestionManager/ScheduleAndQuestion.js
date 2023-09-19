@@ -459,14 +459,14 @@ const ScheduleManager = () => {
     <Fragment>
       <ToastContainer />
       <div
-        className="mt-3 flex flex-col mx-auto pb-10"
+        className="mt-3 flex flex-col items-start mx-auto pb-5 gap-8"
         style={{ maxWidth: "80%", width: "80%" }}
       >
         <p className="mx-auto text-2xl text-blue-600 font-semibold">
-          Student Manager
+          Manager Student's Schedule Booking and Question
         </p>
 
-        <div className="flex items-start justify-center gap-5 my-5">
+        <div className="flex items-start justify-between w-full gap-10">
           <div className="flex-1 flex flex-col justify-center gap-1">
             <label className="text-lg text-opacity-60 text-black">
               {t("system.schedule.choose")}
@@ -478,33 +478,32 @@ const ScheduleManager = () => {
               className="w-full"
             />
           </div>
+          {selectedOptionObject?.value && (
+            <>
+              <div className="w-[50%] flex items-start justify-center gap-5">
+                <div className="flex-1 flex flex-col justify-center gap-1">
+                  <label className="text-lg text-opacity-60 text-black">
+                    {`${t("system.schedule.mess")} ${
+                      option_general[optionSelected]?.label
+                    }`}
+                  </label>
+                  <Select
+                    value={selectedOption}
+                    onChange={(e) => handleChangeSelect_detail(e)}
+                    options={options_detail}
+                    className="w-full"
+                  />
+                </div>
+              </div>
+            </>
+          )}
         </div>
 
-        {selectedOptionObject?.value && (
-          <>
-            <div className="flex items-start justify-center gap-5 my-5">
-              <div className="flex-1 flex flex-col justify-center gap-1">
-                <label className="text-lg text-opacity-60 text-black">
-                  {`${t("system.schedule.mess")} ${
-                    option_general[optionSelected]?.label
-                  }`}
-                </label>
-                <Select
-                  value={selectedOption}
-                  onChange={(e) => handleChangeSelect_detail(e)}
-                  options={options_detail}
-                  className="w-full"
-                />
-              </div>
-            </div>
-          </>
-        )}
-
         {selectedOption?.value && (
-          <div className="flex items-center justify-center gap-10">
+          <div className="flex items-center justify-between gap-10 w-full">
             <button
               type="button"
-              class={`hover:bg-blue-800 transition-all duration-500 flex-1 hover:text-white rounded-lg focus:ring-4 focus:ring-blue-300 font-medium  text-md px-5 py-2.5 mr-2 mb-2 focus:outline-none
+              class={` hover:bg-blue-800 transition-all duration-500 flex-1 hover:text-white rounded-lg focus:ring-4 focus:ring-blue-300 font-medium  text-md px-5 py-2.5  mb-2 focus:outline-none
                 ${
                   action === "schedule"
                     ? "text-white bg-blue-800"
@@ -512,11 +511,11 @@ const ScheduleManager = () => {
                 }`}
               onClick={() => setAction("schedule")}
             >
-              Student's Schedule
+              Student's Schedule Booking
             </button>
             <button
               type="button"
-              class={`hover:bg-blue-800 transition-all duration-500 flex-1 hover:text-white  focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-md px-5 py-2.5 mr-2 mb-2 focus:outline-none
+              class={`w-[50%] hover:bg-blue-800 transition-all duration-500  hover:text-white  focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-md px-5 py-2.5  mb-2 focus:outline-none
                 ${
                   action === "question"
                     ? "text-white bg-blue-800"

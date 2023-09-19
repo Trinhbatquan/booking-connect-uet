@@ -47,3 +47,35 @@
     }
   }
 }
+
+.bell {
+  animation: shake-animation 3s ease infinite;
+  transform-origin: 50% 50%;
+}
+
+@keyframes shake-animation {
+  0% {
+    transform: rotate(0);
+  }
+  1% {
+    transform: rotate(20deg);
+  }
+  3% {
+    transform: rotate(-20deg);
+  }
+  5% {
+    transform: rotate(16deg);
+  }
+  7% {
+    transform: rotate(-16deg);
+  }
+  8% {
+    transform: rotate(14deg);
+  }
+  10% {
+    transform: rotate(-14deg);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}

@@ -30,6 +30,10 @@ import EmailVerify from "./HomePage/EmailVerify/EmailVerify";
 import ScheduleAndQuestion from "./System/ScheduleAndQuestionManager/ScheduleAndQuestion";
 import ForgotPassword from "./HomePage/Login/ForgotPassword";
 import UpdatePassword from "./HomePage/Login/UpdatePassword";
+import RootManager from "./Manager/RootManager";
+import Schedule from "./Manager/Schedule/Schedule";
+import Student from "./Manager/Student/Student";
+import Notification from "./Manager/Notification/Notification";
 
 function App() {
   const [appearScrollTop, setAppearScrollTop] = useState(false);
@@ -129,6 +133,13 @@ function App() {
             path={path.healthStudentDescription}
             element={<HealthStudentDescription />}
           />
+        </Route>
+
+        {/* manager */}
+        <Route path={path.MANAGER} element={<RootManager />}>
+          <Route path={path.schedule} element={<Schedule />} />
+          <Route path={path.student} element={<Student />} />
+          <Route path={path.notification} element={<Notification />} />
         </Route>
       </Routes>
       {appearScrollTop && (

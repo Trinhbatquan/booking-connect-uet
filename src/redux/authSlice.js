@@ -9,6 +9,7 @@ const authInitialState = authLocalStorage || {
   role: null,
   email: null,
   fullName: null,
+  id: null,
 };
 
 const authSlice = createSlice({
@@ -16,6 +17,7 @@ const authSlice = createSlice({
   initialState: authInitialState,
   reducers: {
     loginUserSucceed: (state, action) => {
+      state.id = action.payload.id;
       state.isLogin = true;
       state.role = action.payload.roleId;
       state.email = action.payload.email;
@@ -30,6 +32,8 @@ const authSlice = createSlice({
       state.role = null;
       state.email = null;
       state.fullName = null;
+      state.id = null;
+
       localStorage.removeItem("auth-bookingCare-UET_system");
     },
     logOutUser: (state, action) => {
@@ -37,6 +41,8 @@ const authSlice = createSlice({
       state.role = null;
       state.email = null;
       state.fullName = null;
+      state.id = null;
+
       localStorage.removeItem("auth-bookingCare-UET_system");
     },
   },

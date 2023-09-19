@@ -4,21 +4,45 @@ import { motion, AnimatePresence } from "framer-motion";
 import { RiDeleteBack2Fill } from "react-icons/ri";
 import moment from "moment";
 import { dateFormat } from "../../../utils/constant";
+import { useTranslation } from "react-i18next";
 
-const DeleteModal = ({ dataUserDelete, isClose, deleteUser }) => {
+const DeleteModal = ({ dataUserDelete, isClose, deleteUser, type }) => {
   console.log(dataUserDelete);
-  const handleDeleteUser = (type) => {
-    if (type === "cancel") {
+  const { i18n } = useTranslation();
+  const handleDeleteUser = (action) => {
+    if (action === "cancel") {
       isClose();
-    } else if (type === "delete") {
-      if (dataUserDelete?.fullName) {
-        deleteUser(dataUserDelete?.id);
-      } else {
-        deleteUser(
-          dataUserDelete[0]?.managerId,
-          moment(dataUserDelete[0]?.date).format(dateFormat.SEND_TO_SERVER),
-          dataUserDelete[0]?.roleManager
-        );
+    } else if (action === "delete") {
+      if (type === "user") {
+        if (dataUserDelete?.length > 0) {
+          let idManyData = [];
+          dataUserDelete.forEach((item) => {
+            idManyData.push(item.id);
+          });
+          deleteUser(idManyData);
+        } else {
+          deleteUser(dataUserDelete?.id);
+        }
+      } else if (type === "schedule") {
+        if (dataUserDelete[0]?.date) {
+          deleteUser(
+            dataUserDelete[0]?.managerId,
+            moment(dataUserDelete[0]?.date).format(dateFormat.SEND_TO_SERVER),
+            dataUserDelete[0]?.roleManager
+          );
+        } else {
+          let dateData = [];
+          dataUserDelete.forEach((item) => {
+            dateData.push(
+              moment(item[0]?.date).format(dateFormat.SEND_TO_SERVER)
+            );
+          });
+          deleteUser(
+            dataUserDelete[0][0]?.managerId,
+            dateData,
+            dataUserDelete[0][0]?.roleManager
+          );
+        }
       }
     }
   };
@@ -30,29 +54,27 @@ const DeleteModal = ({ dataUserDelete, isClose, deleteUser }) => {
         animate={{ opacity: 1, translateY: 0 }}
         exit={{ opacity: 0, translateY: -50 }}
         transition={{ duration: 0.4, delay: 0.1 }}
-        className="z-50 fixed top-6 w-1/5 max-w-[1/5] flex flex-col h-auto bg-white rounded-lg shadow backdrop-blur-md mx-auto mt-16 pb-3 overflow-hidden"
+        className="z-50 fixed top-6 w-fit flex flex-col h-auto bg-white rounded-lg shadow backdrop-blur-md mx-auto mt-16 pb-3 overflow-hidden"
         style={{ left: "40%" }}
       >
         <div className="bg-blue-600 px-3 py-2 w-full">
           <span className="text-white font-semibold">Delete user</span>
         </div>
         <div className="pt-1 pb-4 px-3 flex flex-col justify-center items-center w-full">
-          <span>{`Do you want to delete ${
-            dataUserDelete?.fullName
-              ? dataUserDelete?.fullName
-              : moment(dataUserDelete[0]?.date).format(
-                  dateFormat.SEND_TO_SERVER
-                )
-          }?`}</span>
+          <span>{`${
+            i18n.language === "en"
+              ? "Are you sure to delete? Be careful!"
+              : "Bạn có chắc chắn về hành động xoá này không?"
+          }`}</span>
           <div className="mx-auto flex items-center justify-center gap-10 mt-4">
             <button
-              className="outline-none py-1 px-3 w-1/2 flex items-center justify-center focus:outline-none border-none bg-red-500 text-white rounded-lg overflow-hidden shadow-sm backdrop-blur-sm"
+              className="outline-none py-1 px-5 w-fit  flex items-center justify-center focus:outline-none border-none bg-red-500 text-white rounded-lg overflow-hidden shadow-sm backdrop-blur-sm"
               onClick={() => handleDeleteUser("delete")}
             >
               Yes
             </button>
             <button
-              className="outline-none py-1 px-3 w-1/2 flex items-center justify-center focus:outline-none border-none bg-blue-500 text-white rounded-lg overflow-hidden shadow-sm backdrop-blur-sm"
+              className="outline-none py-1  w-fit px-5 flex items-center justify-center focus:outline-none border-none bg-blue-500 text-white rounded-lg overflow-hidden shadow-sm backdrop-blur-sm"
               onClick={() => handleDeleteUser("cancel")}
             >
               Cancel

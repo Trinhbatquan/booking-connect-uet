@@ -29,6 +29,14 @@ import DeleteModal from "./../Modal/DeleteModal";
 import convertFileToBase64 from "../../../utils/convertFileToBase64";
 import { ascertain_user, path } from "../../../utils/constant";
 import { logOutUser } from "../../../redux/authSlice";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
+import { Button } from "primereact/button";
+import { InputText } from "primereact/inputtext";
+import { FilterMatchMode, FilterOperator } from "primereact/api";
+import { Ripple } from "primereact/ripple";
+import { Dropdown } from "primereact/dropdown";
+import { classNames } from "primereact/utils";
 
 const DepartmentManager = () => {
   // const [isCreateUser, setIsCreateUser] = useState(false);
@@ -60,6 +68,223 @@ const DepartmentManager = () => {
   const navigate = useNavigate();
   //ref
   const inputFileRef = useRef();
+
+  //dataTable
+  const [filters1, setFilters1] = useState(null);
+  const [globalFilterValue1, setGlobalFilterValue1] = useState("");
+  const [selectedProducts8, setSelectedProducts8] = useState(null);
+  const [allRowSelected, setAllRowSelected] = useState(false);
+  // const [currentPage, setCurrentPage] = useState();
+  const [first1, setFirst1] = useState(0);
+  const [rows1, setRows1] = useState(4);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageInputTooltip, setPageInputTooltip] = useState(
+    "Press 'Enter' key to go to this page."
+  );
+
+  //pagination
+  const paginatorLeft = (
+    <Button type="button" icon="pi pi-refresh" className="p-button-text" />
+  );
+  const paginatorRight = (
+    <Button type="button" icon="pi pi-cloud" className="p-button-text" />
+  );
+  const onCustomPage1 = (event) => {
+    setFirst1(event.first);
+    setRows1(event.rows);
+    setCurrentPage(event.page + 1);
+  };
+  const onPageInputChange = (event) => {
+    setCurrentPage(event.target.value);
+  };
+  const onPageInputKeyDown = (event, options) => {
+    if (event.key === "Enter") {
+      const page = parseInt(currentPage);
+      if (page < 1 || page > options.totalPages) {
+        setPageInputTooltip(
+          `Value must be between 1 and ${options.totalPages}.`
+        );
+      } else {
+        const first = currentPage ? options.rows * (page - 1) : 0;
+
+        setFirst1(first);
+        setPageInputTooltip("Press 'Enter' key to go to this page.");
+      }
+    }
+  };
+  const template1 = {
+    layout:
+      "PrevPageLink PageLinks NextPageLink RowsPerPageDropdown CurrentPageReport",
+    PrevPageLink: (options) => {
+      return (
+        <button
+          type="button"
+          className={options.className}
+          onClick={options.onClick}
+          disabled={options.disabled}
+        >
+          <span className="p-3">Previous</span>
+          <Ripple />
+        </button>
+      );
+    },
+    NextPageLink: (options) => {
+      return (
+        <button
+          type="button"
+          className={options.className}
+          onClick={options.onClick}
+          disabled={options.disabled}
+        >
+          <span className="p-3">Next</span>
+          <Ripple />
+        </button>
+      );
+    },
+    PageLinks: (options) => {
+      if (
+        (options.view.startPage === options.page &&
+          options.view.startPage !== 0) ||
+        (options.view.endPage === options.page &&
+          options.page + 1 !== options.totalPages)
+      ) {
+        const className = classNames(options.className, { "p-disabled": true });
+
+        return (
+          <span className={className} style={{ userSelect: "none" }}>
+            ...
+          </span>
+        );
+      }
+
+      return (
+        <button
+          type="button"
+          className={options.className}
+          onClick={options.onClick}
+        >
+          {options.page + 1}
+          <Ripple />
+        </button>
+      );
+    },
+    RowsPerPageDropdown: (options) => {
+      const dropdownOptions = [
+        { label: 4, value: 4 },
+        { label: 8, value: 8 },
+        { label: 12, value: 12 },
+        { label: "All", value: options.totalRecords },
+      ];
+
+      return (
+        <Dropdown
+          value={options.value}
+          options={dropdownOptions}
+          onChange={options.onChange}
+        />
+      );
+    },
+    CurrentPageReport: (options) => {
+      return (
+        <span
+          className="mx-3"
+          style={{ color: "var(--text-color)", userSelect: "none" }}
+        >
+          Go to{" "}
+          <InputText
+            size="2"
+            className="ml-1"
+            value={currentPage}
+            tooltip={pageInputTooltip}
+            onKeyDown={(e) => onPageInputKeyDown(e, options)}
+            onChange={onPageInputChange}
+          />
+        </span>
+      );
+    },
+  };
+
+  //filter
+  const initFilters1 = () => {
+    setFilters1({
+      global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+      fullName: {
+        operator: FilterOperator.AND,
+        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+      },
+    });
+    setGlobalFilterValue1("");
+  };
+  const clearFilter1 = () => {
+    initFilters1();
+  };
+  const onGlobalFilterChange1 = (e) => {
+    const value = e.target.value;
+    let _filters1 = { ...filters1 };
+    _filters1["global"].value = value;
+
+    setFilters1(_filters1);
+    setGlobalFilterValue1(value);
+  };
+
+  const renderHeader1 = () => {
+    return (
+      <div className="flex justify-between">
+        <div className="flex items-center justify-start gap-8">
+          <Button
+            type="button"
+            icon="pi pi-filter-slash"
+            label="Clear"
+            className="p-button-outlined"
+            onClick={() => {
+              clearFilter1();
+              setSelectedProducts8([]);
+            }}
+          />
+          {selectedProducts8?.length > 1 && (
+            <Button
+              type="button"
+              // icon="pi pi-filter-slash"
+              label="Delete"
+              className={`p-button-outlined ${
+                selectedProducts8?.length >= 1 ? "" : "disabled"
+              }`}
+              onClick={() => handleDeleteManyData()}
+            />
+          )}
+        </div>
+        <span className="p-input-icon-left">
+          <i className="pi pi-search" />
+          <InputText
+            value={globalFilterValue1}
+            onChange={onGlobalFilterChange1}
+            placeholder="Search By Name..."
+          />
+        </span>
+      </div>
+    );
+  };
+  const header1 = renderHeader1();
+  const actionTemplate = (rowData) => {
+    // console.log(rowData);
+    return (
+      <div className="flex items-center justify-center gap-6">
+        {rowData?.fullName === selectedProducts8[0]?.fullName && (
+          <>
+            <FiEdit
+              className="cursor-pointer text-inputColor"
+              onClick={() => isOpenUpdateUser(rowData)}
+            />
+            <AiOutlineDelete
+              className="cursor-pointer text-blue-600"
+              onClick={() => isOpenModalDeleteUser(rowData)}
+            />
+          </>
+        )}
+      </div>
+    );
+  };
+
   useEffect(() => {
     setLoading(true);
     // const gender = "GENDER";
@@ -76,7 +301,7 @@ const DepartmentManager = () => {
         }
       });
       setLoading(false);
-      // scroll?.isScroll();
+      initFilters1();
     }, 1500);
   }, []);
 
@@ -447,57 +672,76 @@ const DepartmentManager = () => {
     setIsDeleteUser(true);
     setDataUserDelete(user);
   };
-  const deleteUser = async (id) => {
+  const deleteUser = async (idData) => {
     setLoading(true);
+    console.log(idData);
     setTimeout(() => {
-      deleteUserApi.delete({ id, type: ascertain_user.other }).then((data) => {
-        if (data?.codeNumber === -1) {
-          toast.error(`${t("system.notification.fail")}`, {
-            autoClose: 2000,
-            position: "bottom-right",
-            theme: "colored",
-          });
-          setLoading(false);
-        } else if (data?.codeNumber === -2) {
-          toast.error(`${t("system.token.mess")}`, {
-            autoClose: 3000,
-            position: "bottom-right",
-            theme: "colored",
-          });
-          setTimeout(() => {
-            logOutApi.logoutUser({}).then((data) => {
+      deleteUserApi
+        .delete({ id: idData, type: ascertain_user.other })
+        .then((data) => {
+          if (data?.codeNumber === -1) {
+            toast.error(`${t("system.notification.fail")}`, {
+              autoClose: 2000,
+              position: "bottom-right",
+              theme: "colored",
+            });
+            setLoading(false);
+          } else if (data?.codeNumber === -2) {
+            toast.error(`${t("system.token.mess")}`, {
+              autoClose: 3000,
+              position: "bottom-right",
+              theme: "colored",
+            });
+            setTimeout(() => {
+              logOutApi.logoutUser({}).then((data) => {
+                if (data?.codeNumber === 0) {
+                  dispatch(logOutUser());
+                  navigate(
+                    `${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`
+                  );
+                }
+              });
+            }, 3000);
+          } else if (data?.codeNumber === 1) {
+            toast.error(data?.message, {
+              autoClose: 2000,
+              position: "bottom-right",
+              theme: "colored",
+            });
+            setLoading(false);
+          } else {
+            getUserApi.getUserByRole({ role: "R2" }).then((data) => {
               if (data?.codeNumber === 0) {
-                dispatch(logOutUser());
-                navigate(
-                  `${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`
-                );
+                setUsers(data.user);
+                setLoading(false);
+                setDataUserDelete("");
+                setIsDeleteUser(false);
+                setSelectedProducts8([]);
+                toast.success(`${t("system.notification.delete")}`, {
+                  autoClose: 2000,
+                  position: "bottom-right",
+                  theme: "colored",
+                });
+                setSelectedProducts8([]);
               }
             });
-          }, 3000);
-        } else if (data?.codeNumber === 1) {
-          toast.error(data?.message, {
-            autoClose: 2000,
-            position: "bottom-right",
-            theme: "colored",
-          });
-          setLoading(false);
-        } else {
-          getUserApi.getUserByRole({ role: "R2" }).then((data) => {
-            if (data?.codeNumber === 0) {
-              setUsers(data.user);
-              setLoading(false);
-              setDataUserDelete("");
-              setIsDeleteUser(false);
-              toast.success(`${t("system.notification.delete")}`, {
-                autoClose: 2000,
-                position: "bottom-right",
-                theme: "colored",
-              });
-            }
-          });
-        }
-      });
+          }
+        });
     }, 1000);
+  };
+  const handleDeleteManyData = () => {
+    console.log(selectedProducts8);
+    let data = [];
+    if (allRowSelected) {
+      data = selectedProducts8?.slice(
+        (currentPage - 1) * rows1,
+        currentPage * rows1
+      );
+    } else {
+      data = selectedProducts8;
+    }
+    setIsDeleteUser(true);
+    setDataUserDelete(data);
   };
 
   return (
@@ -765,49 +1009,58 @@ const DepartmentManager = () => {
         </div>
 
         {users?.length === 0 ? null : (
-          <table className="mt-20">
-            <thead>
-              <tr>
-                <th>{t("system.table.name")}</th>
-                <th>{t("system.table.email")}</th>
-                <th>{t("system.table.address")}</th>
-                {/* <th>{t("system.table.gender")}</th> */}
-                <th>{t("system.table.phone")}</th>
-                <th>{t("system.table.action")}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users?.map((user, index) => {
-                return (
-                  <tr key={index}>
-                    <td>{user?.fullName}</td>
-                    <td>{user?.email}</td>
-                    <td>{user?.address}</td>
-                    {/* <td>
-                      {user?.gender === "M"
-                        ? "Male"
-                        : user?.gender === "F"
-                        ? "Female"
-                        : "Other"}
-                    </td> */}
-                    <td>{user?.phoneNumber}</td>
-                    <td>
-                      <div className="flex items-center justify-center gap-6">
-                        <FiEdit
-                          className="cursor-pointer text-inputColor"
-                          onClick={() => isOpenUpdateUser(user)}
-                        />
-                        <AiOutlineDelete
-                          className="cursor-pointer text-blue-600"
-                          onClick={() => isOpenModalDeleteUser(user)}
-                        />
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          <div className="w-full mt-8">
+            <DataTable
+              value={users}
+              paginator
+              responsiveLayout="scroll"
+              paginatorTemplate={template1}
+              first={first1}
+              rows={rows1}
+              onPage={onCustomPage1}
+              rowsPerPageOptions={[4, 8, 12]}
+              paginatorLeft={paginatorLeft}
+              paginatorRight={paginatorRight}
+              filters={filters1}
+              filterDisplay="menu"
+              globalFilterFields={["fullName"]}
+              header={header1}
+              emptyMessage="No customers found."
+              selectionMode="checkbox"
+              selection={selectedProducts8}
+              onSelectionChange={(e) => setSelectedProducts8(e.value)}
+              resizableColumns
+              columnResizeMode="fit"
+              showGridlines
+              onAllRowsSelect={(e) => setAllRowSelected(e)}
+              onAllRowsUnselect={() => setAllRowSelected(false)}
+              // dataKey="id"
+            >
+              <Column
+                selectionMode="multiple"
+                headerStyle={{ width: "3em" }}
+              ></Column>
+              <Column header={t("system.table.name")} field="fullName"></Column>
+              <Column header={t("system.table.email")} field="email"></Column>
+              <Column
+                // sortable
+                field="address"
+                header={t("system.table.address")}
+              ></Column>
+              <Column
+                header={t("system.table.phone")}
+                field="phoneNumber"
+                // body={statusQuantityTemplate}
+                style={{ width: "20%" }}
+              ></Column>
+              {selectedProducts8 && selectedProducts8?.length === 1 && (
+                <Column
+                  body={actionTemplate}
+                  header={t("system.table.action")}
+                ></Column>
+              )}
+            </DataTable>
+          </div>
         )}
       </div>
 
@@ -823,6 +1076,7 @@ const DepartmentManager = () => {
           dataUserDelete={dataUserDelete}
           isClose={isCloseDeleteUserModal}
           deleteUser={deleteUser}
+          type="user"
         />
       )}
       {/* {

@@ -2,6 +2,7 @@ export const path = {
   LOGIN_SYSTEM: "login",
   LOG_OUT: "logout?",
   SYSTEM: "/system",
+  MANAGER: "/manager",
 
   scheduleManager: "scheduleManager",
   studentManager: "studentManager",
@@ -20,6 +21,12 @@ export const path = {
   healthStudentManager: "healthStudentManager",
   healthStudentDescription: "healthStudentDescription",
 
+  // student: "student",
+
+  //manager
+  dashboard: "dashboardManager",
+  notification: "notification",
+  schedule: "schedule",
   student: "student",
 
   //homepage

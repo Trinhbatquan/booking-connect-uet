@@ -11,6 +11,11 @@ import { AiFillEdit, AiFillUnlock } from "react-icons/ai";
 import { BiLogOutCircle } from "react-icons/bi";
 import { motion, AnimatePresence } from "framer-motion";
 
+import { MdDashboard } from "react-icons/md";
+import { BsPencilSquare } from "react-icons/bs";
+import { IoNotificationsOutline } from "react-icons/io5";
+import { BsRecordFill } from "react-icons/bs";
+
 import "./Header.scss";
 import { logOutUser } from "../../../redux/authSlice";
 import { path } from "../../../utils/constant";
@@ -21,6 +26,19 @@ const HeaderUser = () => {
   const { t, i18n } = useTranslation();
   const [openModelUser, setOpenModelUser] = useState(false);
   const currentUser = useSelector((state) => state.authReducer);
+  const notify = useSelector((state) => state.notificationReducer.notify);
+
+  let count = 0;
+  if (notify?.length > 0) {
+    notify.forEach((item) => {
+      for (let i = 0; i < notify.length; i++) {
+        if (notify[i]?.status === "NR") {
+          count++;
+          break;
+        }
+      }
+    });
+  }
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -44,7 +62,15 @@ const HeaderUser = () => {
           className="system-header-text relative text-blurColor font-semibold text-lg w-1/5 h-full flex items-center gap-1
        justify-center cursor-pointer pl-3 hover:text-white transition-all duration-200"
         >
-          <span>Manager</span>
+          <MdDashboard className="text-lg" />
+          <span>Tổng quan</span>
+        </div>
+        <div
+          className="system-header-text relative text-blurColor font-semibold text-lg w-1/5 h-full flex items-center gap-1
+       justify-center cursor-pointer pl-3 hover:text-white transition-all duration-200"
+        >
+          <BsPencilSquare className="text-lg" />
+          <span>Quản lý</span>
           <IoIosArrowDown className="text-lg relative" style={{ top: "1px" }} />
           <ul
             className="absolute left-0 list-none flex flex-col justify-center w-300"
@@ -56,7 +82,7 @@ const HeaderUser = () => {
             }}
           >
             <NavLink
-              to={path.scheduleManager}
+              to={path.schedule}
               className="system-header-option text-lg"
               style={({ isActive }) =>
                 isActive
@@ -74,7 +100,7 @@ const HeaderUser = () => {
               <li>{t("system.header.manager-schedule")}</li>
             </NavLink>
             <NavLink
-              to={path.studentManager}
+              to={path.student}
               className="system-header-option text-lg"
               style={({ isActive }) =>
                 isActive
@@ -89,10 +115,28 @@ const HeaderUser = () => {
                   : {}
               }
             >
-              <li>Student Manager</li>
+              <li>Quản lý sinh viên</li>
             </NavLink>
           </ul>
         </div>
+        <NavLink
+          to={path.notification}
+          className="system-header-text relative font-semibold text-lg w-1/5 h-full flex items-center gap-1
+       justify-center cursor-pointer pl-3 hover:text-white transition-all duration-200"
+          style={({ isActive }) => ({
+            color: isActive ? "#fff" : "rgb(195, 181, 181)",
+          })}
+        >
+          <div className="flex items-center justify-center">
+            {count > 0 && (
+              <BsRecordFill className="text-xs relative -top-2 text-red-700" />
+            )}
+            <IoNotificationsOutline
+              className={`text-xl ${count > 0 ? "bell" : ""}`}
+            />
+          </div>
+          <span>Thông báo</span>
+        </NavLink>
       </div>
       <div className="system-header-item-right flex items-center justify-items-end gap-8">
         <span
@@ -241,7 +285,7 @@ const HeaderAdmin = () => {
                   : {}
               }
             >
-              <li>Student Manager</li>
+              <li>Quản lý sinh viên</li>
             </NavLink>
           </ul>
         </div>

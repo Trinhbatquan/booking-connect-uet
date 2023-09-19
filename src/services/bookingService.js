@@ -29,10 +29,17 @@ const getAllBooking = {
     return axiosClient.get(url, { params });
   },
 };
+const updateStatusBookingSchedule = {
+  update: (params, data) => {
+    const url = "/api/update-status-booking-schedule";
+    return axiosClient.put(url, data, { params });
+  },
+};
 
 export {
   createBookingScheduleService,
   getBookingSchedule,
   createQuestionService,
   getAllBooking,
+  updateStatusBookingSchedule,
 };

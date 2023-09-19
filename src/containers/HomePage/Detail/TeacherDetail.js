@@ -17,7 +17,6 @@ import { getScheduleByIdAndDate } from "../../../services/scheduleService";
 import { dateFormat, path } from "../../../utils/constant";
 import Navigate from "../NavigateCustom";
 import avatar from "../../../assets/image/uet.png";
-import BookingModal from "./BookingModal";
 import { updateStudent } from "../../../services/studentService";
 import { ToastContainer, toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
@@ -31,6 +30,7 @@ import {
 import checkBookedSchedule from "../../../utils/checkBookedSchedule";
 import QuestionForm from "../QuestionForm/QuestionForm";
 import { emitter } from "../../../utils/emitter";
+import BookingModal from "../BookingForm/BookingModal";
 
 const TeacherDetail = () => {
   const [loading, setLoading] = useState(false);
@@ -66,7 +66,7 @@ const TeacherDetail = () => {
     const bookingSelected = await getBookingSchedule.get({
       managerId,
       roleManager,
-      studentId,
+      // studentId,
       date,
       actionId,
     });

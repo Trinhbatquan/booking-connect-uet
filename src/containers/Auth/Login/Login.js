@@ -37,7 +37,12 @@ const Login = () => {
       if (data?.codeNumber === 0) {
         //success
         dispatch(loginUserSucceed(data?.user));
-        navigate(`${path.SYSTEM}`);
+        console.log(data?.user);
+        if (data?.user?.roleId === "R1") {
+          navigate(`${path.SYSTEM}`);
+        } else {
+          navigate(`${path.MANAGER}`);
+        }
       } else {
         //false
         setMessageLogin(data?.message);
@@ -49,7 +54,11 @@ const Login = () => {
   useEffect(() => {
     const userInfo = JSON.parse(localStorage.getItem("auth-bookingCare-UET"));
     if (userInfo && userInfo?.isLogin === true && userInfo?.role !== "R3") {
-      navigate(`${path.SYSTEM}`);
+      if (userInfo?.role === "R1") {
+        navigate(`${path.SYSTEM}`);
+      } else {
+        navigate(`${path.MANAGER}`);
+      }
     }
   }, []);
 

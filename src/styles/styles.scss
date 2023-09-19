@@ -24,6 +24,10 @@
 //date picker
 @import "react-datepicker/dist/react-datepicker.css";
 
+@import "primereact/resources/themes/lara-light-indigo/theme.css"; //theme
+@import "primereact/resources/primereact.min.css"; //core css
+@import "primeicons/primeicons.css"; //icons
+
 html {
   scroll-behavior: smooth;
   height: 100vh;
