@@ -3,6 +3,7 @@ const {
   getBookingScheduleService,
   getAllBookingByManagerAndActionService,
   createQuestionService,
+  updateStatusBookingByManagerService,
 } = require("../services/bookingService");
 
 //homepage
@@ -45,9 +46,9 @@ const createBookingScheduleController = async (req, res) => {
 };
 
 const getBookingScheduleController = async (req, res) => {
+  const { managerId, roleManager, date, actionId } = req.query;
   try {
-    const { managerId, roleManager, studentId, date, actionId } = req.query;
-    if (!managerId || !roleManager || !studentId || !date || !actionId) {
+    if (!managerId || !roleManager || !date || !actionId) {
       return res.status(501).json({
         codeNumber: 1,
         message: "Missing parameters",
@@ -56,7 +57,6 @@ const getBookingScheduleController = async (req, res) => {
       const data = await getBookingScheduleService(
         managerId,
         roleManager,
-        studentId,
         date,
         actionId
       );
@@ -133,9 +133,46 @@ const getAllBookingByManagerAndAction = async (req, res) => {
   }
 };
 
+const updateStatusBookingScheduleByManagerController = async (req, res) => {
+  try {
+    const {
+      managerId,
+      roleManager,
+      studentId,
+      actionId,
+      date,
+      timeType,
+      time,
+      type,
+      reasonCancel,
+      answer,
+    } = req.body;
+    const data = await updateStatusBookingByManagerService({
+      managerId,
+      roleManager,
+      studentId,
+      actionId,
+      date,
+      timeType,
+      time,
+      type,
+      reasonCancel,
+      answer,
+    });
+    return res.status(200).json(data);
+  } catch (e) {
+    console.log(e);
+    res.status(501).json({
+      codeNumber: -1,
+      message: "Not update status schedule booking by manager",
+    });
+  }
+};
+
 module.exports = {
   createBookingScheduleController,
   getBookingScheduleController,
   getAllBookingByManagerAndAction,
   createQuestionController,
+  updateStatusBookingScheduleByManagerController,
 };

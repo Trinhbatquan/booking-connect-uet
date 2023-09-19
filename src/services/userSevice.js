@@ -169,6 +169,7 @@ const loginSystemService = async (email, password) => {
             codeNumber: 0,
             message: "Login OK",
             user: {
+              id: user?.id,
               fullName: user?.fullName,
               email: user?.email,
               roleId: "R1",
@@ -209,6 +210,7 @@ const loginSystemService = async (email, password) => {
                 codeNumber: 0,
                 message: "Login OK",
                 user: {
+                  id: teacher?.id,
                   fullName: teacher?.fullName,
                   email: teacher?.email,
                   roleId: "R5",
@@ -231,6 +233,7 @@ const loginSystemService = async (email, password) => {
               codeNumber: 0,
               message: "Login OK",
               user: {
+                id: otherUser?.id,
                 fullName: otherUser?.fullName,
                 email: otherUser?.email,
                 roleId: otherUser?.roleId,
@@ -286,13 +289,13 @@ const registerHomePageService = (
         //decode token
         token = encodeURIComponent(token);
         const url = `${process.env.BASE_URL_FRONTEND}/users/${user.id}/verify/${token}`;
-        await sendEmail(
+        await sendEmail({
           email,
-          user,
-          "Xác thực đăng ký tài khoản.",
-          url,
-          "verifyEmail"
-        );
+          studentData: user,
+          subject: "Xác thực đăng ký tài khoản.",
+          link: url,
+          type: "verifyEmail",
+        });
         resolve({
           codeNumber: 2,
           message: "An Email sent to your account. Please verify.",
@@ -325,13 +328,13 @@ const registerHomePageService = (
           );
           token = encodeURIComponent(token);
           const url = `${process.env.BASE_URL_FRONTEND}/users/${exist.user.id}/verify/${token}`;
-          await sendEmail(
+          await sendEmail({
             email,
-            exist.user,
-            "Xác thực đăng ký tài khoản",
-            url,
-            "verifyEmail"
-          );
+            studentData: exist.user,
+            subject: "Xác thực đăng ký tài khoản",
+            link: url,
+            type: "verifyEmail",
+          });
           resolve({
             codeNumber: 2,
             message: "An Email sent to your account. Please verify",
@@ -520,13 +523,13 @@ const sendEmailToUpdatePassHomePageService = (email) => {
         //decode token
         token = encodeURIComponent(token);
         const url = `${process.env.BASE_URL_FRONTEND}/updatePass/${email}/verify/${token}`;
-        await sendEmail(
+        await sendEmail({
           email,
-          user,
-          "Cập nhật mật khẩu tài khoản của bạn.",
-          url,
-          "forgotPass"
-        );
+          studentData: user,
+          subject: "Cập nhật mật khẩu tài khoản của bạn.",
+          link: url,
+          type: "forgotPass",
+        });
         resolve({
           codeNumber: 2,
           message: "An Email sent to your account. Please check to continue.",
@@ -540,13 +543,13 @@ const sendEmailToUpdatePassHomePageService = (email) => {
         //decode token
         token = encodeURIComponent(token);
         const url = `${process.env.BASE_URL_FRONTEND}/updatePass/${email}/verify/${token}`;
-        await sendEmail(
+        await sendEmail({
           email,
-          user,
-          "Cập nhật mật khẩu tài khoản của bạn.",
-          url,
-          "forgotPass"
-        );
+          studentData: user,
+          subject: "Cập nhật mật khẩu tài khoản của bạn.",
+          link: url,
+          type: "forgotPass",
+        });
         resolve({
           codeNumber: 2,
           message: "An Email sent to your account. Please check to continue.",

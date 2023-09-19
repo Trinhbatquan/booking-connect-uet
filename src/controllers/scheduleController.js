@@ -83,6 +83,7 @@ const deleteScheduleController = async (req, res) => {
         message: "Delete Successfully",
       });
     } catch (e) {
+      console.log(e);
       return res.status(200).json({
         codeNumber: -1,
         message: "Not Get Schedule",

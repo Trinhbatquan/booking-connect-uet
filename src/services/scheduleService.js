@@ -90,7 +90,14 @@ const getScheduleSystemService = (managerId, roleManager) => {
 };
 
 const deleteScheduleService = (managerId, date, roleManager) => {
-  const dateFormat = convertTimeStamp(date);
+  let dateFormat = [];
+  if (Array.isArray(date)) {
+    date.forEach((item) => {
+      dateFormat.push(convertTimeStamp(item));
+    });
+  } else {
+    dateFormat = convertTimeStamp(date);
+  }
   return new Promise(async (resolve, reject) => {
     try {
       const data = await db.Schedule.destroy({

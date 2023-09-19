@@ -36,6 +36,7 @@ const {
   getBookingScheduleController,
   getAllBookingByManagerAndAction,
   createQuestionController,
+  updateStatusBookingScheduleByManagerController,
 } = require("../controllers/bookingController");
 const { updateStudentController } = require("../controllers/studentController");
 const {
@@ -43,6 +44,8 @@ const {
   protectAdminToken,
   protectUserToken,
 } = require("../middleware/protectToken");
+
+const { getNotificationController } = require("../controllers/notification");
 
 let router = express.Router();
 
@@ -89,18 +92,27 @@ const initWebRoutes = (app) => {
   router.post(
     "/api/create-schedule",
     (req, res, next) => checkExpiredToken(req, res, next, "system"),
-    protectAdminToken,
+    (req, res, next) => protectUserToken(req, res, next, "otherUser"),
     createScheduleController
   );
   router.get("/api/get-schedule-system", getScheduleSystemController);
-  router.delete(
+  router.post(
     "/api/delete-schedule",
     (req, res, next) => checkExpiredToken(req, res, next, "system"),
-    protectAdminToken,
+    (req, res, next) => protectUserToken(req, res, next, "otherUser"),
     deleteScheduleController
   );
 
   router.get("/api/get-all-booking-system", getAllBookingByManagerAndAction);
+  router.put(
+    "/api/update-status-booking-schedule",
+    (req, res, next) => checkExpiredToken(req, res, next, "system"),
+    (req, res, next) => protectUserToken(req, res, next, "otherUser"),
+    updateStatusBookingScheduleByManagerController
+  );
+
+  //manager api
+  router.get("/api/notification", getNotificationController);
 
   //home page api
   router.post("/api/homepage/register", registerHomePage);

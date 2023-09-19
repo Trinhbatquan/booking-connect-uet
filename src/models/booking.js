@@ -18,6 +18,14 @@ module.exports = (sequelize, DataTypes) => {
           foreignKey: "studentId",
           targetKey: "id",
           as: "studentData",
+        }),
+        Booking.hasOne(models.Answer, {
+          foreignKey: "questionId",
+          as: "answerData",
+        }),
+        Booking.hasOne(models.Notification, {
+          foreignKey: "bookingId",
+          as: "bookingData",
         });
     }
   }

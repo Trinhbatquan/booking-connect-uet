@@ -69,15 +69,15 @@ const protectAdminToken = async (req, res, next) => {
 
 const protectUserToken = async (req, res, next, action) => {
   try {
-    if (!req.body.email) {
-      return res.status(401).json({
-        codeNumber: -1,
-        message: "Missing parameter email",
-      });
-    }
     const { email } = req.decodeToken;
     console.log(email);
     if (action === "student") {
+      if (!req.body.email) {
+        return res.status(401).json({
+          codeNumber: -1,
+          message: "Missing parameter email",
+        });
+      }
       const student = await db.Student.findOne({
         where: {
           email,
@@ -91,12 +91,13 @@ const protectUserToken = async (req, res, next, action) => {
           codeNumber: -2,
           message: "Current User is not student",
         });
-      } else {
+      }
+      {
         req.user = student;
         next();
       }
     } else if (action === "otherUser") {
-      const user = await db.Teacher.findOne({
+      const data = await db.Admin.findOne({
         where: {
           email,
         },
@@ -104,11 +105,17 @@ const protectUserToken = async (req, res, next, action) => {
           exclude: ["password"],
         },
       });
-      if (user) {
-        req.user = user;
+      if (data) {
+        req.admin = data;
         next();
       } else {
-        const data = await db.OtherUser.findOne({
+        if (!req.body.email) {
+          return res.status(401).json({
+            codeNumber: -1,
+            message: "Missing parameter email",
+          });
+        }
+        const user = await db.Teacher.findOne({
           where: {
             email,
           },
@@ -116,14 +123,27 @@ const protectUserToken = async (req, res, next, action) => {
             exclude: ["password"],
           },
         });
-        if (!data || email !== req.body.email) {
-          return res.status(501).json({
-            message: -2,
-            message: "Current User is student",
-          });
-        } else {
-          req.user = data;
+        if (user && email === req.body.email) {
+          req.user = user;
           next();
+        } else {
+          const data = await db.OtherUser.findOne({
+            where: {
+              email,
+            },
+            attributes: {
+              exclude: ["password"],
+            },
+          });
+          if (!data || email !== req.body.email) {
+            return res.status(501).json({
+              message: -2,
+              message: "Current User is student",
+            });
+          } else {
+            req.user = data;
+            next();
+          }
         }
       }
     }

@@ -6,7 +6,10 @@ require("dotenv/config");
 const cors = require("cors");
 const configViewEngine = require("./config/viewEngine");
 const { initWebRoutes } = require("./routes/web");
-
+const db = require("./models");
+const moment = require("moment");
+const { convertTimeStamp } = require("./utils/convertTimeStamp");
+const sendEmail = require("./utils/sendEmail");
 const app = express();
 
 // middleware
@@ -43,6 +46,130 @@ const connectDatabase = async () => {
   }
 };
 connectDatabase();
+
+//check booking once a day
+
+const checkingBooking = async () => {
+  const compareDay = moment(new Date()).add(1, "days").format("DD-MM-YYYY");
+
+  const data = await db.Booking.findAll({
+    where: {
+      actionId: "A1",
+      statusId: "S2",
+      date: convertTimeStamp(compareDay),
+    },
+    include: [
+      {
+        model: db.AllCode,
+        as: "timeDataBooking",
+        attributes: ["valueEn", "valueVn"],
+      },
+    ],
+    raw: true,
+    nest: true,
+  });
+  console.log(data);
+
+  if (data?.length > 0) {
+    //send email and add notification
+    data.forEach(async (item) => {
+      //add
+      await db.Notification.create({
+        managerId: item.managerId,
+        roleManager: item.roleManager,
+        type_notification: "S",
+        bookingId: item.id,
+        title: "system_checking",
+        status: "NR",
+      });
+
+      //get data
+      let managerData = [];
+      if (item.roleManager === "R5") {
+        managerData = await db.Teacher.findOne({
+          where: {
+            id: item.managerId,
+          },
+          attributes: {
+            exclude: [
+              "password",
+              "gender",
+              "positionId",
+              "phoneNumber",
+              "facultyId",
+              "note",
+              "image",
+            ],
+          },
+        });
+      } else {
+        managerData = await db.OtherUser.findOne({
+          where: {
+            id: item.managerId,
+            roleId: item.roleManager,
+          },
+          attributes: {
+            exclude: ["password", "roleId", "phoneNumber"],
+          },
+        });
+      }
+
+      const studentData = await db.Student.findOne({
+        where: {
+          id: item?.studentId,
+        },
+        attributes: {
+          exclude: [
+            "password",
+            "roleId",
+            "password",
+            "phoneNumber",
+            "image",
+            "verified",
+            "classroom",
+            "faculty",
+            "gender",
+          ],
+        },
+      });
+
+      //send email to manager
+      await sendEmail({
+        email: managerData.email,
+        studentData,
+        subject: "Thông báo về lịch hẹn của bạn.",
+        type: "notify-checking-manager",
+        managerData,
+        bookingData: {
+          role: item.roleManager,
+          reason: item?.reason,
+          date: moment(item?.date).format("dddd - DD/MM/YYYY"),
+          timeType: item?.timeDataBooking.valueVn,
+          address: managerData.address,
+        },
+      });
+
+      //send email to student
+      await sendEmail({
+        email: studentData.email,
+        studentData,
+        subject: "Thông báo về lịch hẹn của bạn.",
+        type: "notify-checking-student",
+        managerData,
+        bookingData: {
+          role: item.roleManager,
+          reason: item?.reason,
+          date: moment(item?.date).format("dddd - DD/MM/YYYY"),
+          timeType: item?.timeDataBooking.valueVn,
+          address: managerData.address,
+        },
+      });
+    });
+  }
+};
+
+checkingBooking();
+setInterval(checkingBooking, 24 * 60 * 60 * 1000);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
