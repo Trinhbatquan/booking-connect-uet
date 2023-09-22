@@ -69,6 +69,7 @@ module.exports = {
         inputColor: "#008000",
         blurColor: "#c3b5b5",
         backColor: "rgb(28, 184, 3)",
+        blurThemeColor: "rgb(72, 72, 237)",
       },
     },
   },

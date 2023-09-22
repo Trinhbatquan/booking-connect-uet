@@ -34,6 +34,8 @@ import RootManager from "./Manager/RootManager";
 import Schedule from "./Manager/Schedule/Schedule";
 import Student from "./Manager/Student/Student";
 import Notification from "./Manager/Notification/Notification";
+import Dashboard from "./Manager/Dashboard/Dashboard";
+import DashboardSystem from "./System/DashboardSystem/DashboardSystem";
 
 function App() {
   const [appearScrollTop, setAppearScrollTop] = useState(false);
@@ -133,6 +135,7 @@ function App() {
             path={path.healthStudentDescription}
             element={<HealthStudentDescription />}
           />
+          <Route path={path.dashboardManager} element={<DashboardSystem />} />
         </Route>
 
         {/* manager */}
@@ -140,6 +143,7 @@ function App() {
           <Route path={path.schedule} element={<Schedule />} />
           <Route path={path.student} element={<Student />} />
           <Route path={path.notification} element={<Notification />} />
+          <Route path={path.dashboard} element={<Dashboard />} />
         </Route>
       </Routes>
       {appearScrollTop && (

@@ -58,13 +58,17 @@ const HeaderUser = () => {
   return (
     <div className="system-header-container fixed top-0 left-0 right-0 flex items-center justify-between shadow-md backdrop-blur-md shadow-blurColor">
       <div className="system-header-item-left flex items-center justify-start">
-        <div
+        <NavLink
+          to={path.dashboard}
           className="system-header-text relative text-blurColor font-semibold text-lg w-1/5 h-full flex items-center gap-1
        justify-center cursor-pointer pl-3 hover:text-white transition-all duration-200"
+          style={({ isActive }) => ({
+            color: isActive ? "#fff" : "rgb(195, 181, 181)",
+          })}
         >
           <MdDashboard className="text-lg" />
           <span>Tổng quan</span>
-        </div>
+        </NavLink>
         <div
           className="system-header-text relative text-blurColor font-semibold text-lg w-1/5 h-full flex items-center gap-1
        justify-center cursor-pointer pl-3 hover:text-white transition-all duration-200"
@@ -236,6 +240,17 @@ const HeaderAdmin = () => {
   return (
     <div className="system-header-container fixed top-0 left-0 right-0 flex items-center justify-between shadow-md backdrop-blur-md shadow-blurColor">
       <div className="system-header-item-left flex items-center justify-start">
+        <NavLink
+          to={path.dashboardManager}
+          className="system-header-text relative text-blurColor font-semibold text-lg w-1/5 h-full flex items-center gap-1
+       justify-center cursor-pointer pl-3 hover:text-white transition-all duration-200"
+          style={({ isActive }) => ({
+            color: isActive ? "#fff" : "rgb(195, 181, 181)",
+          })}
+        >
+          <MdDashboard className="text-lg" />
+          <span>Tổng quan</span>
+        </NavLink>
         <div
           className="system-header-text relative text-blurColor font-semibold text-lg w-1/5 h-full flex items-center gap-1
        justify-center cursor-pointer pl-3 hover:text-white transition-all duration-200"

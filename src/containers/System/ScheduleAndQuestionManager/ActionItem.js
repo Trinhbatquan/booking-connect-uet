@@ -694,6 +694,7 @@ const ActionItem = ({ action, managerId, roleManager }) => {
         time: rowData?.timeDataBooking?.valueVn,
         type,
       };
+      console.log(body);
       await updateStatusBookingSchedule.update({}, body).then((res) => {
         if (res?.codeNumber === -1) {
           setLoadingFull(false);

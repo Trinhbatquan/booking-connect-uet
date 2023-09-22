@@ -17,7 +17,12 @@ const RootManager = () => {
   const currentUser = useSelector((state) => state.authReducer);
 
   useEffect(() => {
-    if (!JSON.parse(localStorage.getItem("auth-bookingCare-UET_system"))) {
+    if (
+      !currentUser ||
+      !currentUser?.isLogin ||
+      currentUser?.role === "R3" ||
+      currentUser.role === "R1"
+    ) {
       navigate(`${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`);
     }
 

@@ -20,11 +20,12 @@ export const path = {
 
   healthStudentManager: "healthStudentManager",
   healthStudentDescription: "healthStudentDescription",
+  dashboardManager: "dashboardManager",
 
   // student: "student",
 
   //manager
-  dashboard: "dashboardManager",
+  dashboard: "dashboard",
   notification: "notification",
   schedule: "schedule",
   student: "student",

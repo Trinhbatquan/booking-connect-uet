@@ -13,17 +13,15 @@ const RootSystem = () => {
   console.log(`${path.SYSTEM}${path.LOGIN_SYSTEM}`);
   const navigate = useNavigate();
 
+  const currentUser = JSON.parse(
+    localStorage.getItem("auth-bookingCare-UET_system")
+  );
+
   useEffect(() => {
-    if (!JSON.parse(localStorage.getItem("auth-bookingCare-UET_system"))) {
+    if (!currentUser?.isLogin || currentUser?.role !== "R1") {
       navigate(`${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`);
     }
   }, []);
-
-  //scroll to Top
-  // const scrollToTop = () => {
-  //   document.body.scrollTop = 0;
-  //   document.documentElement.scrollTop = 0;
-  // };
 
   return (
     // <ContextScrollTop.Provider value={{ isScroll: scrollToTop }}>
@@ -32,7 +30,7 @@ const RootSystem = () => {
     // style={{ width: "100vw", height: "100vh" }}
     >
       <Header />
-      <div className="w-full" style={{ height: "110px" }}></div>
+      {/* <div className="w-full" style={{ height: "110px" }}></div> */}
       <Outlet />
     </div>
     // </ContextScrollTop.Provider>

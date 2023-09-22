@@ -89,6 +89,7 @@ const TeacherDetail = () => {
       let managerId;
       if (res?.codeNumber === 0) {
         const { data } = res;
+        console.log(data);
         managerId = data?.id;
         const image = data?.image?.data;
         if (image) {
