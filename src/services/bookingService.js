@@ -335,11 +335,12 @@ const updateStatusBookingByManagerService = ({
             });
           }
         }
+        resolve({
+          codeNumber: 0,
+        });
+      } else {
+        resolve({ codeNumber: 1, message: "Error" });
       }
-
-      resolve({
-        codeNumber: 0,
-      });
     } catch (e) {
       reject(e);
     }
