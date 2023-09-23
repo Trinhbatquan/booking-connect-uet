@@ -2,7 +2,7 @@ const { Op } = require("sequelize");
 const db = require("../models");
 const moment = require("moment");
 
-const getDashboardBookingDataService = (roleManager, time) => {
+const getDashboardBookingDataService = (managerId, roleManager, time) => {
   return new Promise(async (resolve, reject) => {
     try {
       const currentMonth = new Date().getMonth();
@@ -109,6 +109,7 @@ const getDashboardBookingDataService = (roleManager, time) => {
         //get data
         dataSchedule = await db.Booking.findAll({
           where: {
+            managerId: managerId ? managerId : "",
             roleManager: !roleManager ? ["R2", "R4", "R5", "R6"] : roleManager,
             actionId: "A1",
           },
@@ -127,6 +128,7 @@ const getDashboardBookingDataService = (roleManager, time) => {
         });
         dataQuestion = await db.Booking.findAll({
           where: {
+            managerId: managerId ? managerId : "",
             roleManager: !roleManager ? ["R2", "R4", "R5", "R6"] : roleManager,
             actionId: "A2",
           },
@@ -187,7 +189,7 @@ const getDashboardBookingDataService = (roleManager, time) => {
   });
 };
 
-const getDashboardBookingDataByMonthsService = (roleManager) => {
+const getDashboardBookingDataByMonthsService = (managerId, roleManager) => {
   return new Promise(async (resolve, reject) => {
     try {
       let currentMonth = new Date().getMonth();
@@ -206,59 +208,131 @@ const getDashboardBookingDataByMonthsService = (roleManager) => {
       }
 
       //get Data
-      let dataSchedule = await db.Booking.findAll({
-        where: {
-          roleManager: !roleManager ? ["R2", "R4", "R5", "R6"] : roleManager,
-          actionId: "A1",
-          createdAt: {
-            [Op.between]: [
-              new Date(`${months[7]}-01`),
-              new Date(
-                `${currentMonth === 1 ? `${months[0]}-28` : `${months[0]}-30`}`
-              ),
-            ],
-          },
-        },
-        attributes: {
-          exclude: [
-            "managerId",
-            "date",
-            "timeType",
-            "reason",
-            "subject",
-            "question",
-            "others",
-            "studentId",
-          ],
-        },
-      });
+      let dataSchedule = managerId
+        ? await db.Booking.findAll({
+            where: {
+              managerId: managerId,
+              roleManager: !roleManager
+                ? ["R2", "R4", "R5", "R6"]
+                : roleManager,
+              actionId: "A1",
+              createdAt: {
+                [Op.between]: [
+                  new Date(`${months[7]}-01`),
+                  new Date(
+                    `${
+                      currentMonth === 1 ? `${months[0]}-28` : `${months[0]}-30`
+                    }`
+                  ),
+                ],
+              },
+            },
+            attributes: {
+              exclude: [
+                "managerId",
+                "date",
+                "timeType",
+                "reason",
+                "subject",
+                "question",
+                "others",
+                "studentId",
+              ],
+            },
+          })
+        : await db.Booking.findAll({
+            where: {
+              roleManager: !roleManager
+                ? ["R2", "R4", "R5", "R6"]
+                : roleManager,
+              actionId: "A1",
+              createdAt: {
+                [Op.between]: [
+                  new Date(`${months[7]}-01`),
+                  new Date(
+                    `${
+                      currentMonth === 1 ? `${months[0]}-28` : `${months[0]}-30`
+                    }`
+                  ),
+                ],
+              },
+            },
+            attributes: {
+              exclude: [
+                "managerId",
+                "date",
+                "timeType",
+                "reason",
+                "subject",
+                "question",
+                "others",
+                "studentId",
+              ],
+            },
+          });
 
-      let dataQuestions = await db.Booking.findAll({
-        where: {
-          roleManager: !roleManager ? ["R2", "R4", "R5", "R6"] : roleManager,
-          actionId: "A2",
-          createdAt: {
-            [Op.between]: [
-              new Date(`${months[7]}-01`),
-              new Date(
-                `${currentMonth === 1 ? `${months[0]}-28` : `${months[0]}-30`}`
-              ),
-            ],
-          },
-        },
-        attributes: {
-          exclude: [
-            "managerId",
-            "date",
-            "timeType",
-            "reason",
-            "subject",
-            "question",
-            "others",
-            "studentId",
-          ],
-        },
-      });
+      let dataQuestions = managerId
+        ? await db.Booking.findAll({
+            where: {
+              managerId: managerId,
+              roleManager: !roleManager
+                ? ["R2", "R4", "R5", "R6"]
+                : roleManager,
+              actionId: "A2",
+              createdAt: {
+                [Op.between]: [
+                  new Date(`${months[7]}-01`),
+                  new Date(
+                    `${
+                      currentMonth === 1 ? `${months[0]}-28` : `${months[0]}-30`
+                    }`
+                  ),
+                ],
+              },
+            },
+            attributes: {
+              exclude: [
+                "managerId",
+                "date",
+                "timeType",
+                "reason",
+                "subject",
+                "question",
+                "others",
+                "studentId",
+              ],
+            },
+          })
+        : await db.Booking.findAll({
+            where: {
+              roleManager: !roleManager
+                ? ["R2", "R4", "R5", "R6"]
+                : roleManager,
+              actionId: "A2",
+              createdAt: {
+                [Op.between]: [
+                  new Date(`${months[7]}-01`),
+                  new Date(
+                    `${
+                      currentMonth === 1 ? `${months[0]}-28` : `${months[0]}-30`
+                    }`
+                  ),
+                ],
+              },
+            },
+            attributes: {
+              exclude: [
+                "managerId",
+                "date",
+                "timeType",
+                "reason",
+                "subject",
+                "question",
+                "others",
+                "studentId",
+              ],
+            },
+          });
 
       //customData
       const customScheduleMonths = {

@@ -5,8 +5,12 @@ const {
 
 const getDashboardBookingDataController = async (req, res) => {
   try {
-    const { roleManager, time } = req.query;
-    const data = await getDashboardBookingDataService(roleManager, time);
+    const { managerId, roleManager, time } = req.query;
+    const data = await getDashboardBookingDataService(
+      managerId,
+      roleManager,
+      time
+    );
     return res.status(200).send(data);
   } catch (e) {
     console.log(e);
@@ -19,8 +23,11 @@ const getDashboardBookingDataController = async (req, res) => {
 
 const getDashboardBookingDataByMonthsController = async (req, res) => {
   try {
-    const { roleManager } = req.query;
-    const data = await getDashboardBookingDataByMonthsService(roleManager);
+    const { managerId, roleManager } = req.query;
+    const data = await getDashboardBookingDataByMonthsService(
+      managerId,
+      roleManager
+    );
     return res.status(200).send(data);
   } catch (e) {
     console.log(e);

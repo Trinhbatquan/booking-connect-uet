@@ -1,30 +1,174 @@
-# BOOKING - CONNECT - UET
+# Booking Care UET
 
-### MVC
+This is the project I am working on for my graduation thesis defense next December.
 
-User --- (click, action,...) ---> Controller --- (manipulates) ---> (Model)
---- (updates) ---> View --- (sees) ---> User
+Its basic function is to support students in making schedules and questions for teachers, departments, and faculty members, and to support student health monitoring.
 
-The Model contains only the pure application data, it contains no logic describing how to present the data to a user. (Its just a data that is shipped across the application like for example from back-end server view and from front-end view to the database. In java programming, Model can be represented by the use of POJO (Plain-old-java-object) which is a simple java class.
+## Demo
 
-The View presents the model’s data to the user. The view knows how to access the model’s data, but it does not know what this data means or what the user can do to manipulate it. View just represent, displays the application’s data on screen. View page are generally in the format of .html or .jsp in java programming (which is flexible).
+Now, this project has not deployed yet.
 
-The View presents the model’s data to the user. The view knows how to access the model’s data, but it does not know what this data means or what the user can do to manipulate it. View just represent, displays the application’s data on screen. View page are generally in the format of .html or .jsp in java programming (which is flexible).
+## Features
 
-The Controller exists between the view and the model. It is where the actual business logic is written. It listens to events triggered by the view (or another external source) and executes the appropriate reaction to these events. In most cases, the reaction is to call a method on the model. Since the view and the model are connected through a notification mechanism, the result of this action is then automatically reflected in the view
+- Login, register, secured by token and cookies
+- Support student to make schedule and question
+- Supports management page, statistics on appointment schedules, questions as well as list of teachers, departments, faculties,...
+- Some other features.
 
-NodeJS ====> (Model + Migration + Seeder) + Router + Controller(owner) + Service(staff) + View(Html files)
+## Tech Stack
 
-### ejs: quản lý view trong nodejs - giúp viết logic trong HTML
+**Client:** React, ReduxToolkit, TailwindCSS.
 
-### DB - MySQL - XAMPP
+**Server:** Node, Express.
 
-### Sequelize - connect database: một ORM cho MySQL, MariaDB, SQLite,... giúp thao tác với CSDL một cách dễ dàng
+**Database:** SQL with sequelize ORM.
 
-#### Datatype Date trong Sequelize lưu theo định dạng new Date (example: 2022-05-25 10:00:00)
+## Structure project
 
-### ORM: là một kĩ thuật lập trình giúp ánh xạ các record dữ liệu sang dạng object
+**a. For backend project structure:**
 
-#### Luồng: models/index.js (connect database) ---> check migrations tạo table trên xampp dựa theo models.
+```
+ src
+│   ├── config
+│   │   ├── config.json
+│   │   ├── connectDB.js
+│   │   └── viewEngine.js
+│   ├── controllers
+│   │   ├── allCodeController.js
+│   │   ├── bookingController.js
+│   │   ├── dashboardController.js
+│   │   ├── homeController.js
+│   │   ├── markdownController.js
+│   │   ├── notification.js
+│   │   ├── scheduleController.js
+│   │   ├── studentController.js
+│   │   ├── teacherController.js
+│   │   └── userController.js
+│   ├── middleware
+│   │   ├── createTokenRandom.js
+│   │   └── protectToken.js
+│   ├── migrations
+│   │   ├── migration-addColumn-user.js
+│   │   ├── migration-changeColumn-user.js
+│   │   ├── migration-create-addcode.js
+│   │   ├── migration-create-answer.js
+│   │   ├── migration-create-booking.js
+│   │   ├── migration-create-history.js
+│   │   ├── migration-create-markdown.js
+│   │   ├── migration-create-notification.js
+│   │   ├── migration-create-otherUser.js
+│   │   ├── migration-create-schedule.js
+│   │   ├── migration-create-student.js
+│   │   ├── migration-create-teacher.js
+│   │   ├── migration-create-tokenEmail.js
+│   │   └── migration-create-user.js
+│   ├── models
+│   │   ├── admin.js
+│   │   ├── allcode.js
+│   │   ├── answer.js
+│   │   ├── booking.js
+│   │   ├── history.js
+│   │   ├── index.js
+│   │   ├── markdown.js
+│   │   ├── notification.js
+│   │   ├── other_user.js
+│   │   ├── schedule.js
+│   │   ├── student.js
+│   │   ├── teacher.js
+│   │   └── tokenEmail.js
+│   ├── public
+│   ├── routes
+│   │   ├── dashboard.js
+│   │   └── web.js
+│   ├── services
+│   │   ├── allCodeService.js
+│   │   ├── bookingService.js
+│   │   ├── dashboardService.js
+│   │   ├── markdownService.js
+│   │   ├── notificationService.js
+│   │   ├── scheduleService.js
+│   │   ├── studentService.js
+│   │   ├── teacherService.js
+│   │   └── userSevice.js
+│   ├── utils
+│   │   ├── addHoursDate.js
+│   │   ├── checkDifferentArray.js
+│   │   ├── contants.js
+│   │   ├── convertTimeStamp.js
+│   │   └── sendEmail.js
+│   └── index.js
+├── README.MD
+├── package-lock.json
+└── package.json
+```
 
-#### TÊN DATABASE TRONG MIGRATIONS PHẢI CÓ "S"
+**b. For frontend project structure:**
+
+```
+public
+│   ├── locales
+│   │   ├── en
+│   │   │   └── translations.json
+│   │   └── vi
+│   │       └── translations.json
+├── src
+│   ├── containers
+│   │   ├── Auth
+│   │   ├── HomePage
+│   │   │   ├── Detail
+│   │   │   ├── EmailVerify
+│   │   │   ├── Login
+│   │   │   ├── QuestionForm
+│   │   │   ├── Schedule
+│   │   │   ├── Section
+│   │   │   ├── HomeBanner.js
+│   │   │   ├── HomeBanner.scss
+│   │   │   ├── HomeFooter.js
+│   │   │   ├── HomeFooter.scss
+│   │   │   ├── HomeHeader.js
+│   │   │   ├── HomeHeader.scss
+│   │   │   ├── HomePage.js
+│   │   │   └── NavigateCustom.js
+│   │   ├── Manager
+│   │   │   ├── Dashboard
+│   │   │   ├── Notification
+│   │   │   ├── Schedule
+│   │   │   ├── Student
+│   │   │   └── RootManager.js
+│   │   ├── System
+│   │   │   ├── DashboardSystem
+│   │   │   ├── DepartmentManager
+│   │   │   ├── FacultyManager
+│   │   │   ├── Header
+│   │   │   ├── HealthStudentManager
+│   │   │   ├── Modal
+│   │   │   ├── ScheduleAndQuestionManager
+│   │   │   ├── ScheduleManager
+│   │   │   ├── TeacherManager
+│   │   │   ├── RootSystem.js
+│   │   │   ├── RootSystem.scss
+│   │   │   └── index.js
+│   │   └── App.js
+│   ├── redux
+│   ├── services
+│   ├── styles
+│   ├── utils
+│   ├── axios.js
+│   ├── i18n.js
+│   ├── index.js
+│   └── store.js
+├── package-lock.json
+├── package.json
+└── tailwind.config.js
+```
+
+## Feedback
+
+If you have any feedback, please reach out to us at
+
+- Email: trinhbv09022001@gmail.com
+- Linkedin: https://www.linkedin.com/in/trinhbatquan/
+
+## Thanks
+
+Thanks a lot for your attention.
