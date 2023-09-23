@@ -748,6 +748,8 @@ const HealthStudentManager = () => {
         className="mt-3 flex flex-col mx-auto pb-10"
         style={{ maxWidth: "80%", width: "80%" }}
       >
+        <div className="w-full" style={{ height: "100px" }}></div>
+
         <ToastContainer />
 
         <p className="mx-auto text-2xl text-blue-500 font-semibold">

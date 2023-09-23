@@ -41,18 +41,9 @@ const Pie = ({ data, type }) => {
                   data.cancel.length,
                 ]
               : [data.new.length, data.done.length],
-          backgroundColor:
-            type === "schedule"
-              ? ["red", "blue", "yellow", "green"]
-              : ["red", "blue"],
-          label:
-            type === "schedule"
-              ? i18n.language === "en"
-                ? "Structure Table of schedule"
-                : "Bảng cơ cấu lịch hẹn"
-              : i18n.language === "en"
-              ? "Structure Table of question"
-              : "Bảng cơ cấu câu hỏi",
+          backgroundColor: ["orange", "blue", "red", "purple", "green"],
+          hoverBackgroundColor: ["orange", "blue", "red", "purple", "green"],
+          borderColor: ["orange", "blue", "red", "purple", "green"],
         },
       ],
       labels:
@@ -76,7 +67,18 @@ const Pie = ({ data, type }) => {
     };
   };
 
-  return <PieChart data={genPieData()} />;
+  return (
+    <div className="flex flex-col items-center justify-start gap-2 w-full">
+      <h3 className="" style={{ color: "rgb(123, 128, 154)" }}>
+        {type === "schedule"
+          ? "Bảng cơ cấu về lịch hẹn của sinh viên"
+          : "Bảng cơ cấu về câu hỏi của sinh viên"}
+      </h3>
+      <div className="px-4 flex items-center justify-center w-[70%]">
+        <PieChart data={genPieData()} style={{ fontSize: "20px" }} />
+      </div>
+    </div>
+  );
 };
 
 export default Pie;

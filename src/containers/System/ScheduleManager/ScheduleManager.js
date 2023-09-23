@@ -740,6 +740,8 @@ const ScheduleManager = () => {
 
   return (
     <Fragment>
+      <div className="w-full" style={{ height: "100px" }}></div>
+
       <ToastContainer />
       <div
         className="mt-3 flex flex-col items-start mx-auto pb-5 gap-8"

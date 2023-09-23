@@ -15,21 +15,21 @@ const Cart = ({
       className="cart-container flex flex-col items-start"
       style={{
         backgroundColor: "white",
-        border: "1px solid rgba(0,0,0,.125)",
-        borderRadius: ".375rem",
+        border: "1px solid #a0a0d4",
+        borderRadius: "1.375rem",
         padding: "1rem 1.5rem",
-        boxShadow:
-          "rgba(0, 0, 0, 0.1) 0rem 0.25rem 0.375rem -0.0625rem, rgba(0, 0, 0, 0.06) 0rem 0.125rem 0.25rem -0.0625rem",
+        // boxShadow:
+        //   "rgba(0, 0, 0, 0.1) 0rem 0.25rem 0.375rem -0.0625rem, rgba(0, 0, 0, 0.06) 0rem 0.125rem 0.25rem -0.0625rem",
       }}
     >
       <div className="w-full flex flex-wrap items-start justify-around gap-1">
         <div className="flex-1 max-w-full">
-          <h5
+          <h3
             className="uppercase font-semibold"
             style={{ color: "rgb(123, 128, 154)" }}
           >
             {title}
-          </h5>
+          </h3>
           <span
             className="text-3xl font-semibold"
             style={{ color: "rgb(52, 71, 103)" }}

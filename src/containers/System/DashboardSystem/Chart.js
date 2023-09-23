@@ -11,6 +11,7 @@ import {
   Legend,
   Tooltip,
   scales,
+  BarElement,
 } from "chart.js";
 
 ChartJS.register(
@@ -20,7 +21,8 @@ ChartJS.register(
   PointElement,
   Legend,
   Tooltip,
-  scales
+  scales,
+  BarElement
 );
 
 const Chart = ({ data, type }) => {
@@ -85,19 +87,24 @@ const Chart = ({ data, type }) => {
                 ? "Total of question"
                 : "Tổng số câu hỏi",
             fill: true,
-            backgroundColor: type === "schedule" ? "blue" : "green",
-            borderColor: type === "schedule" ? "#1f8ef1" : "#dc9922",
+            // backgroundColor: type === "schedule" ? "blue" : "green",
+            // borderColor: type === "schedule" ? "#1f8ef1" : "#dc9922",
+            // borderWidth: 2,
+            // borderDash: [],
+            // borderDashOffset: 0.0,
+            // pointBackgroundColor: type === "schedule" ? "#1f8ef1" : "#dc9922",
+            // pointBorderColor: "rgba(255,255,255,0)",
+            // pointHoverBackgroundColor:
+            //   type === "schedule" ? "#1f8ef1" : "#dc9922",
+            // pointBorderWidth: 20,
+            // pointHoverRadius: 4,
+            // pointHoverBorderWidth: 15,
+            // pointRadius: 4,
+            backgroundColor: "rgba(255,99,132,0.2)",
+            borderColor: "rgba(255,99,132,1)",
             borderWidth: 2,
-            borderDash: [],
-            borderDashOffset: 0.0,
-            pointBackgroundColor: type === "schedule" ? "#1f8ef1" : "#dc9922",
-            pointBorderColor: "rgba(255,255,255,0)",
-            pointHoverBackgroundColor:
-              type === "schedule" ? "#1f8ef1" : "#dc9922",
-            pointBorderWidth: 20,
-            pointHoverRadius: 4,
-            pointHoverBorderWidth: 15,
-            pointRadius: 4,
+            hoverBackgroundColor: "rgba(255,99,132,0.4)",
+            hoverBorderColor: "rgba(255,99,132,1)",
             data: valueChart,
           },
         ],
@@ -118,36 +125,42 @@ const Chart = ({ data, type }) => {
         intersect: 0,
         position: "nearest",
       },
-      //   scales: {
-      //     yAxes: {
-      //       gridLines: {
-      //         drawBorder: false,
-      //         color: "rgba(225,78,202,0.1)",
-      //         zeroLineColor: "transparent",
-      //       },
-      //       ticks: {
-      //         suggestedMin: 60,
-      //         suggestedMax: 120,
-      //         padding: 20,
-      //         fontColor: "#9e9e9e",
-      //       },
-      //     },
-      //     xAxes: {
-      //       gridLines: {
-      //         drawBorder: false,
-      //         color: "rgba(225,78,202,0.1)",
-      //         zeroLineColor: "transparent",
-      //       },
-      //       ticks: {
-      //         padding: 20,
-      //         fontColor: "#9e9e9e",
-      //       },
-      //     },
-      //   },
+      scales: {
+        yAxes: [
+          {
+            stacked: true,
+            gridLines: {
+              display: true,
+              color: "rgba(255,99,132,0.2)",
+            },
+          },
+        ],
+        xAxes: [
+          {
+            gridLines: {
+              display: true,
+              color: "rgba(255,99,132,0.2)",
+            },
+          },
+        ],
+      },
+      elements: {
+        line: {
+          tension: 0.1, // bezier curves
+        },
+      },
     },
   };
 
-  return <Line data={chartData.data()} />;
+  return (
+    <>
+      {type === "schedule" ? (
+        <Line data={chartData.data()} />
+      ) : (
+        <Bar data={chartData.data()} />
+      )}
+    </>
+  );
 };
 
 export default Chart;

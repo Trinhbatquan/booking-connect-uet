@@ -89,24 +89,26 @@ const DashboardSystem = () => {
   useEffect(() => {
     setLoading(true);
     //call api
-    getDashboardByUserAndTime
-      .get({
-        roleManager: dbUser === "total" ? "" : dbUser,
-        time: dbTime,
-      })
-      .then((res) => {
-        if (res?.codeNumber === 0) {
-          setDataDashboardByUserAndTime(res?.dashboard);
-          getDashboardByMonths
-            .get({ roleManager: dbUser === "total" ? "" : dbUser })
-            .then((data) => {
-              if (data?.codeNumber === 0) {
-                setDataDashBoardByMonth(data?.dashboardMonths);
-                setLoading(false);
-              }
-            });
-        }
-      });
+    setTimeout(() => {
+      getDashboardByUserAndTime
+        .get({
+          roleManager: dbUser === "total" ? "" : dbUser,
+          time: dbTime,
+        })
+        .then((res) => {
+          if (res?.codeNumber === 0) {
+            setDataDashboardByUserAndTime(res?.dashboard);
+            getDashboardByMonths
+              .get({ roleManager: dbUser === "total" ? "" : dbUser })
+              .then((data) => {
+                if (data?.codeNumber === 0) {
+                  setDataDashBoardByMonth(data?.dashboardMonths);
+                  setLoading(false);
+                }
+              });
+          }
+        });
+    }, 1500);
   }, [dbUser, dbTime]);
 
   //import system
@@ -125,13 +127,13 @@ const DashboardSystem = () => {
       <div className="w-full h-[60px]"></div>
 
       <div
-        className="overflow-y-auto flex flex-col z-50 fixed top-0 outline-0 mx-2 mb-1 mt-[80px] translate-x-0"
+        className="overflow-y-auto pb-6 flex flex-col z-50 fixed top-0 outline-0 mx-2 mb-1 mt-[80px] translate-x-0"
         style={{
           height: "calc(-8rem + 100vh)",
           borderRadius: "0.75rem",
           background: "rgb(72, 72, 237)",
           boxShadow: "rgba(0, 0, 0, 0.05) 0rem 1.25rem 1.6875rem 0rem",
-          width: "250px",
+          width: "220px",
         }}
       >
         <div
@@ -144,7 +146,7 @@ const DashboardSystem = () => {
           </div>
           <hr
             style={{
-              // borderWidth: "0 0 medium",
+              borderWidth: "0 0 medium",
               borderStyle: "solid solid none",
               height: "0.063rem",
               margin: "1rem 0",
@@ -158,22 +160,20 @@ const DashboardSystem = () => {
         <ul className="list-none">
           <div className="my-1 mx-6">
             <div
-              className="flex items-center justify-start gap-3 hover:bg-gray-500"
+              className="flex items-center justify-start gap-3 hover:opacity-100"
               style={
                 dbUser === "total"
                   ? {
-                      borderRadius: "0.375rem",
                       cursor: "pointer",
                       color: "#fff",
                       padding: "0.75rem 1rem",
-                      background: "rgb(47, 47, 51)",
+                      opacity: 1,
                     }
                   : {
-                      borderRadius: "0.375rem",
                       cursor: "pointer",
                       color: "#fff",
                       padding: "0.75rem 1rem",
-                      // background: "rgb(47, 47, 51)",
+                      opacity: 0.5,
                     }
               }
               onClick={() => setDbUser("total")}
@@ -185,22 +185,20 @@ const DashboardSystem = () => {
 
           <div className="my-1 mx-6">
             <div
-              className="flex items-center justify-start gap-3 hover:bg-gray-500"
+              className="flex items-center justify-start gap-3 hover:opacity-100"
               style={
                 dbUser === "R2"
                   ? {
-                      borderRadius: "0.375rem",
                       cursor: "pointer",
                       color: "#fff",
                       padding: "0.75rem 1rem",
-                      background: "rgb(47, 47, 51)",
+                      opacity: 1,
                     }
                   : {
-                      borderRadius: "0.375rem",
                       cursor: "pointer",
                       color: "#fff",
                       padding: "0.75rem 1rem",
-                      // background: "rgb(47, 47, 51)",
+                      opacity: 0.5,
                     }
               }
               onClick={() => setDbUser("R2")}
@@ -212,22 +210,20 @@ const DashboardSystem = () => {
 
           <div className="my-1 mx-6">
             <div
-              className="flex items-center justify-start gap-3 hover:bg-gray-500"
+              className="flex items-center justify-start gap-3 hover:opacity-100"
               style={
                 dbUser === "R4"
                   ? {
-                      borderRadius: "0.375rem",
                       cursor: "pointer",
                       color: "#fff",
                       padding: "0.75rem 1rem",
-                      background: "rgb(47, 47, 51)",
+                      opacity: 1,
                     }
                   : {
-                      borderRadius: "0.375rem",
                       cursor: "pointer",
                       color: "#fff",
                       padding: "0.75rem 1rem",
-                      // background: "rgb(47, 47, 51)",
+                      opacity: 0.5,
                     }
               }
               onClick={() => setDbUser("R4")}
@@ -239,22 +235,20 @@ const DashboardSystem = () => {
 
           <div className="my-1 mx-6">
             <div
-              className="flex items-center justify-start gap-3 hover:bg-gray-500"
+              className="flex items-center justify-start gap-3 hover:opacity-100"
               style={
                 dbUser === "R5"
                   ? {
-                      borderRadius: "0.375rem",
                       cursor: "pointer",
                       color: "#fff",
                       padding: "0.75rem 1rem",
-                      background: "rgb(47, 47, 51)",
+                      opacity: 1,
                     }
                   : {
-                      borderRadius: "0.375rem",
                       cursor: "pointer",
                       color: "#fff",
                       padding: "0.75rem 1rem",
-                      // background: "rgb(47, 47, 51)",
+                      opacity: 0.5,
                     }
               }
               onClick={() => setDbUser("R5")}
@@ -266,22 +260,20 @@ const DashboardSystem = () => {
 
           <div className="my-1 mx-6">
             <div
-              className="flex items-center justify-start gap-3 hover:bg-gray-500"
+              className="flex items-center justify-start gap-3 hover:opacity-100"
               style={
                 dbUser === "R6"
                   ? {
-                      borderRadius: "0.375rem",
                       cursor: "pointer",
                       color: "#fff",
                       padding: "0.75rem 1rem",
-                      background: "rgb(47, 47, 51)",
+                      opacity: 1,
                     }
                   : {
-                      borderRadius: "0.375rem",
                       cursor: "pointer",
                       color: "#fff",
                       padding: "0.75rem 1rem",
-                      // background: "rgb(47, 47, 51)",
+                      opacity: 0.5,
                     }
               }
               onClick={() => setDbUser("R6")}
@@ -317,13 +309,12 @@ const DashboardSystem = () => {
         <ul className="list-none">
           <div className="my-1 mx-6">
             <div
-              className="flex items-center justify-start gap-3 hover:bg-green-700"
+              className="flex items-center justify-start gap-3"
               style={{
-                borderRadius: "0.375rem",
                 cursor: "pointer",
                 color: "#fff",
                 padding: "0.75rem 1rem",
-                background: `${dbTime === "month" ? "green" : ""}`,
+                opacity: `${dbTime === "month" ? 1 : 0.5}`,
               }}
               onClick={() => setDbTime("month")}
             >
@@ -334,13 +325,12 @@ const DashboardSystem = () => {
 
           <div className="my-1 mx-6">
             <div
-              className="flex items-center justify-start gap-3 hover:bg-green-700"
+              className="flex items-center justify-start gap-3"
               style={{
-                borderRadius: "0.375rem",
                 cursor: "pointer",
                 color: "#fff",
                 padding: "0.75rem 1rem",
-                background: `${dbTime === "week" ? "green" : ""}`,
+                opacity: `${dbTime === "week" ? 1 : 0.5}`,
               }}
               onClick={() => setDbTime("week")}
             >
@@ -351,13 +341,12 @@ const DashboardSystem = () => {
 
           <div className="my-1 mx-6">
             <div
-              className="flex items-center justify-start gap-3 hover:bg-green-700"
+              className="flex items-center justify-start gap-3"
               style={{
-                borderRadius: "0.375rem",
                 cursor: "pointer",
                 color: "#fff",
                 padding: "0.75rem 1rem",
-                background: `${dbTime === "3month" ? "green" : ""}`,
+                opacity: `${dbTime === "3month" ? 1 : 0.5}`,
               }}
               onClick={() => setDbTime("3month")}
             >
@@ -368,13 +357,12 @@ const DashboardSystem = () => {
 
           <div className="my-1 mx-6">
             <div
-              className="flex items-center justify-start gap-3 hover:bg-green-700"
+              className="flex items-center justify-start gap-3"
               style={{
-                borderRadius: "0.375rem",
                 cursor: "pointer",
                 color: "#fff",
                 padding: "0.75rem 1rem",
-                background: `${dbTime === "3week" ? "green" : ""}`,
+                opacity: `${dbTime === "3week" ? 1 : 0.5}`,
               }}
               onClick={() => setDbTime("3week")}
             >
@@ -397,9 +385,9 @@ const DashboardSystem = () => {
           <p className="text-xl font-semibold uppercase">
             Trang thống kê lịch hẹn và câu hỏi của sinh viên
           </p>
-          <p className="text-lg">
+          {/* <p className="text-lg">
             {` Đối tượng: ${userSelected} ---- Thời gian: ${timeSelected}`}
-          </p>
+          </p> */}
         </div>
         {loading ? (
           <Loading />
@@ -412,7 +400,7 @@ const DashboardSystem = () => {
                   Theo các thành phần
                 </p>
               </div>
-              <div className="cart w-full grid grid-cols-3 gap-4">
+              <div className="cart w-full grid grid-cols-4 gap-3">
                 <Cart
                   title="Lịch hẹn"
                   number={customDataSchedule.new?.length}
@@ -519,9 +507,7 @@ const DashboardSystem = () => {
                     border: "1px solid rgb(207, 201, 219)",
                   }}
                 >
-                  <div className="w-[50%]">
-                    <Pie data={customDataSchedule} type="schedule" />
-                  </div>
+                  <Pie data={customDataSchedule} type="schedule" />
                 </div>
                 <div
                   className="flex items-center justify-center py-3"
@@ -529,9 +515,7 @@ const DashboardSystem = () => {
                     border: "1px solid rgb(207, 201, 219)",
                   }}
                 >
-                  <div className="w-[50%]">
-                    <Pie data={customDataQuestion} type="question" />
-                  </div>
+                  <Pie data={customDataQuestion} type="question" />
                 </div>
               </div>
             </div>

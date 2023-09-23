@@ -830,6 +830,8 @@ const TeacherManager = () => {
 
   return (
     <Fragment>
+      <div className="w-full" style={{ height: "100px" }}></div>
+
       <ToastContainer />
       <div
         className="mt-3 flex flex-col mx-auto pb-10"

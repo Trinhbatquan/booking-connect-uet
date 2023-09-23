@@ -39,9 +39,9 @@ const Login = () => {
         dispatch(loginUserSucceed(data?.user));
         console.log(data?.user);
         if (data?.user?.roleId === "R1") {
-          navigate(`${path.SYSTEM}`);
+          navigate(`${path.SYSTEM}/${path.dashboardManager}`);
         } else {
-          navigate(`${path.MANAGER}`);
+          navigate(`${path.MANAGER}/${path.dashboard}`);
         }
       } else {
         //false
@@ -55,9 +55,9 @@ const Login = () => {
     const userInfo = JSON.parse(localStorage.getItem("auth-bookingCare-UET"));
     if (userInfo && userInfo?.isLogin === true && userInfo?.role !== "R3") {
       if (userInfo?.role === "R1") {
-        navigate(`${path.SYSTEM}`);
+        navigate(`${path.SYSTEM}/${path.dashboardManager}`);
       } else {
-        navigate(`${path.MANAGER}`);
+        navigate(`${path.MANAGER}/${path.dashboard}`);
       }
     }
   }, []);
