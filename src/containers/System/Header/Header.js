@@ -13,8 +13,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 import { MdDashboard } from "react-icons/md";
 import { BsPencilSquare } from "react-icons/bs";
-import { IoNotificationsOutline } from "react-icons/io5";
-import { BsRecordFill } from "react-icons/bs";
+import { TbBellRinging } from "react-icons/tb";
 
 import "./Header.scss";
 import { logOutUser } from "../../../redux/authSlice";
@@ -22,11 +21,18 @@ import { path } from "../../../utils/constant";
 import { NavLink } from "react-router-dom";
 import { logOutApi } from "../../../services/userService";
 
+import { socket } from "../../../index";
+import { toast, ToastContainer } from "react-toastify";
+import { getNotiFy } from "../../../services/notificationService";
+import { getAllNotify } from "../../../redux/notificationSlice";
+
 const HeaderUser = () => {
   const { t, i18n } = useTranslation();
   const [openModelUser, setOpenModelUser] = useState(false);
   const currentUser = useSelector((state) => state.authReducer);
+  const [socketNotify, setSocketNotify] = useState(false);
   const notify = useSelector((state) => state.notificationReducer.notify);
+  const dispatch = useDispatch();
 
   let count = 0;
   if (notify?.length > 0) {
@@ -40,7 +46,112 @@ const HeaderUser = () => {
     });
   }
 
-  const dispatch = useDispatch();
+  useEffect(() => {
+    console.log("000000");
+
+    const listenNotifyFromBackend = (data) => {
+      const { managerId, roleManager, action } = data;
+      if (managerId === currentUser?.id && roleManager === currentUser?.role) {
+        if (action === "A1") {
+          console.log("11111");
+          toast.info(
+            i18n.language === "en"
+              ? "You recently had a new appointment from student."
+              : "Bạn vừa có một lịch hẹn mới từ sinh viên.",
+            {
+              autoClose: false,
+              theme: "colored",
+              position: "bottom-right",
+            }
+          );
+        } else {
+          console.log("22222");
+          toast.info(
+            i18n.language === "en"
+              ? "You recently had a new question from student."
+              : "Bạn vừa có một câu hỏi mới từ sinh viên.",
+            {
+              autoClose: false,
+              theme: "colored",
+              position: "bottom-right",
+            }
+          );
+        }
+
+        //update notify api
+        getNotiFy
+          .get({ managerId: currentUser?.id, roleManager: currentUser?.role })
+          .then((res) => {
+            console.log(res);
+            if (res?.codeNUmber === 0) {
+              dispatch(getAllNotify(res?.notify));
+            }
+          });
+        setSocketNotify(true);
+      }
+    };
+    socket.on("new_booking", (data) => listenNotifyFromBackend(data));
+
+    return () => {
+      socket.off("new_booking", listenNotifyFromBackend);
+    };
+  }, []);
+
+  // useEffect(() => {
+  //   console.log("000000");
+
+  //   const listenNotifyFromBackend = (data) => {
+  //     const { managerId, roleManager, action } = data;
+  //     if (managerId === currentUser?.id && roleManager === currentUser?.role) {
+  //       if (action === "A1") {
+  //         console.log("11111");
+  //         toast.info(
+  //           i18n.language === "en"
+  //             ? "You recently had a new appointment from student."
+  //             : "Bạn vừa có một lịch hẹn mới từ sinh viên.",
+  //           {
+  //             autoClose: false,
+  //             theme: "colored",
+  //             position: "bottom-right",
+  //           }
+  //         );
+  //       } else {
+  //         console.log("22222");
+  //         toast.info(
+  //           i18n.language === "en"
+  //             ? "You recently had a new question from student."
+  //             : "Bạn vừa có một câu hỏi mới từ sinh viên.",
+  //           {
+  //             autoClose: false,
+  //             theme: "colored",
+  //             position: "bottom-right",
+  //           }
+  //         );
+  //       }
+
+  //       //update notify api
+  //       getNotiFy
+  //         .get({ managerId: currentUser?.id, roleManager: currentUser?.role })
+  //         .then((res) => {
+  //           console.log(res);
+  //           if (res?.codeNUmber === 0) {
+  //             dispatch(getAllNotify(res?.notify));
+  //           }
+  //         });
+  //       setSocketNotify(true);
+  //     }
+  //   };
+
+  //   if (socket) {
+  //     socket.on("new_booking", (data) => listenNotifyFromBackend(data));
+  //   }
+
+  //   return () => {
+  //     if (socket) {
+  //       socket.off("new_booking", listenNotifyFromBackend);
+  //     }
+  //   };
+  // }, [socket]);
   const navigate = useNavigate();
   const handleLogOutSystem = () => {
     logOutApi.logoutUser({}).then((data) => {
@@ -125,19 +236,18 @@ const HeaderUser = () => {
         </div>
         <NavLink
           to={path.notification}
-          className="system-header-text relative font-semibold text-lg w-1/5 h-full flex items-center gap-1
-       justify-center cursor-pointer pl-3 hover:text-white transition-all duration-200"
+          className={`system-header-text relative font-semibold text-lg w-1/5 h-full flex items-center gap-1
+       justify-center cursor-pointer pl-3 transition-all duration-200`}
           style={({ isActive }) => ({
             color: isActive ? "#fff" : "rgb(195, 181, 181)",
           })}
+          onClick={() => setSocketNotify(false)}
         >
-          <div className="flex items-center justify-center">
-            {count > 0 && (
-              <BsRecordFill className="text-xs relative -top-2 text-red-700" />
-            )}
-            <IoNotificationsOutline
-              className={`text-xl ${count > 0 ? "bell" : ""}`}
+          <div className="flex items-center justify-center gap-0.5">
+            <TbBellRinging
+              className={`text-xl ${socketNotify ? "bell" : ""}`}
             />
+            <span className="text-sm">{`(${count})`}</span>
           </div>
           <span>Thông báo</span>
         </NavLink>
@@ -602,20 +712,22 @@ const Header = () => {
   // console.log(
   //   JSON.parse(localStorage.getItem("auth-bookingCare-UET")).userInfo
   // );
-  const [currentUser, setCurrentUser] = useState("");
+  console.log("render");
+  const currentUser = useSelector((state) => state.authReducer);
+  // const [currentUser, setCurrentUser] = useState("");
 
-  useEffect(() => {
-    if (
-      localStorage.getItem("auth-bookingCare-UET_system") &&
-      JSON.parse(localStorage.getItem("auth-bookingCare-UET_system"))?.role
-    ) {
-      setCurrentUser(
-        JSON.parse(localStorage.getItem("auth-bookingCare-UET_system"))?.role
-      );
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (
+  //     localStorage.getItem("auth-bookingCare-UET_system") &&
+  //     JSON.parse(localStorage.getItem("auth-bookingCare-UET_system"))?.role
+  //   ) {
+  //     setCurrentUser(
+  //       JSON.parse(localStorage.getItem("auth-bookingCare-UET_system"))?.role
+  //     );
+  //   }
+  // }, []);
 
-  return <>{currentUser === "R1" ? <HeaderAdmin /> : <HeaderUser />}</>;
+  return <>{currentUser?.role === "R1" ? <HeaderAdmin /> : <HeaderUser />}</>;
 };
 
 export default Header;

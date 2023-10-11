@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import "./QuestionForm.scss";
 
 import { useTranslation } from "react-i18next";
 import { emitter } from "../../../utils/emitter";
 
-const QuestionForm = ({ create }) => {
+const QuestionForm = ({ type, create }) => {
   const [subject, setSubject] = useState("");
   const [question, setQuestion] = useState("");
   const [others, setOthers] = useState("");
@@ -70,7 +69,11 @@ const QuestionForm = ({ create }) => {
   };
 
   return (
-    <div className="question-form-container">
+    <div
+      className={`${
+        type ? "question-form-faculty-container" : "question-form-container"
+      }`}
+    >
       <span
         className="mx-auto text-red-500 text-lg"
         style={notifyCheckState ? { opacity: "1" } : { opacity: "0" }}

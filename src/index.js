@@ -7,6 +7,9 @@ import { BrowserRouter } from "react-router-dom";
 
 // import Cookies from "universal-cookie";
 
+//socket
+import { io } from "socket.io-client";
+
 //sass
 import "./styles/styles.scss";
 
@@ -30,3 +33,10 @@ reportWebVitals();
 
 // const cookies = new Cookies();
 // console.log(cookies.get("access_token_booking_UET"));
+
+//connect_socket_backend
+const socket = io(process.env.REACT_APP_URL_API);
+socket.on("connected", () => {
+  console.log("client connected");
+});
+export { socket };

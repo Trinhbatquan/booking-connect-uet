@@ -8,11 +8,16 @@ import { useState, useEffect } from "react";
 import { getUserApi } from "../../../services/userService";
 
 import "./Department.scss";
+import { path } from "../../../utils/constant";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
+import { setNavigate } from "../../../redux/navigateSlice";
 
 const Departments = ({ settings }) => {
   const [departmentData, setDepartmentData] = useState([]);
-
+  const dispatch = useDispatch();
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     getUserApi.getUserByRole({ role: "R2" }).then((data) => {
@@ -21,6 +26,10 @@ const Departments = ({ settings }) => {
       }
     });
   }, []);
+  const handleDepartmentDetail = (id) => {
+    navigate(`${path.detail_id}/${id}/role/R2`);
+    dispatch(setNavigate("detail"));
+  };
   return (
     <div className="section-container department-container w-full h-auto">
       <div className="section-content">
@@ -40,7 +49,11 @@ const Departments = ({ settings }) => {
             {departmentData?.length > 0 &&
               departmentData.map((item, index) => {
                 return (
-                  <div key={index} className="section-item-department">
+                  <div
+                    key={index}
+                    className="section-item-department"
+                    onClick={() => handleDepartmentDetail(item?.id, index)}
+                  >
                     <div className="section-item-img-department">
                       <div
                         className="img"

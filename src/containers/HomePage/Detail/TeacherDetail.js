@@ -4,6 +4,7 @@ import "moment/locale/vi";
 import { useParams } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
+import { dataDepartments } from "../../../assets/image/index";
 
 import "./Detail.scss";
 import HomeHeader from "../HomeHeader";
@@ -20,7 +21,7 @@ import avatar from "../../../assets/image/uet.png";
 import { updateStudent } from "../../../services/studentService";
 import { ToastContainer, toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
-import { logOutHomePageApi } from "../../../services/userService";
+import { getUserApi, logOutHomePageApi } from "../../../services/userService";
 import { logOutUser } from "../../../redux/studentSlice";
 import {
   createBookingScheduleService,
@@ -31,18 +32,26 @@ import checkBookedSchedule from "../../../utils/checkBookedSchedule";
 import QuestionForm from "../QuestionForm/QuestionForm";
 import { emitter } from "../../../utils/emitter";
 import BookingModal from "../BookingForm/BookingModal";
+import DetailSkeleton from "./DetailSkeleton";
 
-const TeacherDetail = () => {
+//socket
+import { emit_create_booking } from "../../../utils/socket_client";
+
+const TeacherDetail = ({ idTeacher, roleTeacher, type }) => {
   const [loading, setLoading] = useState(false);
-  const [teacherId, setTeacherId] = useState({});
+  const [userData, setUserData] = useState({});
   const [timeDataApi, setTimeDataApi] = useState(null);
 
   const [openModalSchedule, setOpenModalSchedule] = useState(false);
   const [dataModalSchedule, setDataModalSchedule] = useState({});
 
-  const [action, setAction] = useState("");
+  const [action, setAction] = useState(type ? "schedule" : "");
 
-  const { id } = useParams();
+  const idParam = useParams()?.id;
+  const roleParam = useParams()?.roleId;
+  const id = idTeacher || idParam;
+  const roleId = roleTeacher || roleParam;
+
   const date_tomorrow = moment(new Date())
     .add(1, "days")
     .format(dateFormat.SEND_TO_SERVER);
@@ -85,7 +94,12 @@ const TeacherDetail = () => {
   useEffect(() => {
     setLoading(true);
     setTimeout(async () => {
-      const res = await getTeacherHomePageAPI.getTeacherById({ id: +id });
+      let res;
+      if (roleId === "R5") {
+        res = await getTeacherHomePageAPI.getTeacherById({ id: +id });
+      } else {
+        res = await getUserApi.getUser({ id: +id });
+      }
       let managerId;
       if (res?.codeNumber === 0) {
         const { data } = res;
@@ -95,12 +109,12 @@ const TeacherDetail = () => {
         if (image) {
           data.image = convertBufferToBase64(data?.image?.data);
         }
-        setTeacherId(data);
+        setUserData(data);
       }
       const data = await getScheduleByIdAndDate.get({
         managerId: +id,
         date: date_tomorrow,
-        roleManager: "R5",
+        roleManager: roleId,
       });
       if (data?.codeNumber === 0) {
         if (data?.schedule?.length === 0) {
@@ -120,7 +134,7 @@ const TeacherDetail = () => {
           getTime = await getBookingScheduleNotSelected(
             getTime,
             managerId,
-            "R5",
+            roleId,
             currentStudent?.id,
             date_tomorrow,
             "A1"
@@ -139,7 +153,7 @@ const TeacherDetail = () => {
     console.log(value);
     const managerId = +id;
     const date = value;
-    const roleManager = "R5";
+    const roleManager = roleId;
     const data = await getScheduleByIdAndDate.get({
       managerId,
       date,
@@ -162,8 +176,8 @@ const TeacherDetail = () => {
         console.log(getTime);
         getTime = await getBookingScheduleNotSelected(
           getTime,
-          teacherId?.id,
-          "R5",
+          userData?.id,
+          roleId,
           currentStudent?.id,
           date,
           "A1"
@@ -300,6 +314,9 @@ const TeacherDetail = () => {
             }
           };
           handleSomething();
+
+          //socket_emit_booking_create
+          emit_create_booking(managerId, roleManager, "A1");
         }
       });
   };
@@ -310,7 +327,7 @@ const TeacherDetail = () => {
       email: currentStudent?.email,
       studentId: currentStudent?.id,
       managerId: +id,
-      roleManager: "R5",
+      roleManager: roleId,
       action: "A2",
       ...data,
     };
@@ -321,6 +338,9 @@ const TeacherDetail = () => {
           position: "bottom-right",
           theme: "colored",
         });
+        emitter.emit("EVENT_CLEAR_DATA");
+        //socket_emit_booking_create
+        emit_create_booking(+id, roleId, "A2");
       } else {
         toast.error(res?.message, {
           autoClose: 2000,
@@ -329,93 +349,137 @@ const TeacherDetail = () => {
         });
 
         //emitter clear data component child
-        emitter.emit("EVENT_CLEAR_DATA");
       }
     });
   };
 
   return (
     <>
-      {loading ? (
-        <Loading type="loading-schedule" />
-      ) : (
-        <div style={{ width: "100vw", height: "100vh", overflow: "scroll" }}>
-          <HomeHeader />
-          <ToastContainer />
-          <div className="detail-container detail-teacher-container">
-            <div className="detail-navbar w-full">
-              <Navigate texts={navigate} />
-            </div>
-            <div className="detail-teacher">
-              <div
-                className="detail-teacher-avatar flex-3"
-                style={{
-                  backgroundImage: `url(${
-                    teacherId?.image ? teacherId?.image : avatar
-                  })`,
-                }}
-              ></div>
-              <div className="detail-teacher-content flex-1">
-                <p className="detail-teacher-content-name">
-                  {teacherId?.positionData?.valueVn}, {teacherId?.fullName}
-                </p>
-                <p>{teacherId?.markdownData_teacher?.description}</p>
+      <div style={{ width: "100%" }}>
+        {!type && <HomeHeader />}
+        <ToastContainer />
+        {loading ? (
+          !type ? (
+            <div className="fixed z-50 top-0 bottom-0 flex items-center justify-center mx-auto left-0 right-0 w-full max-h-full bg-black bg-opacity-25">
+              <div className="absolute">
+                <Loading />
               </div>
             </div>
-            <div className="action-select">
-              <button
-                type="button"
-                class={`hover:bg-blue-800 hover:text-white rounded-lg focus:ring-4 focus:ring-blue-300 font-medium  text-md px-5 py-2.5 mr-2 mb-2 focus:outline-none
-                ${
-                  action === "schedule"
-                    ? "text-white bg-blue-800"
-                    : "text-gray-400 bg-white border border-gray-600"
-                }`}
-                onClick={() => setAction("schedule")}
-              >
-                {t("teacher.schedule.name")}
-              </button>
-              <button
-                type="button"
-                class={`hover:bg-blue-800 hover:text-white  focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-md px-5 py-2.5 mr-2 mb-2 focus:outline-none
-                ${
-                  action === "question"
-                    ? "text-white bg-blue-800"
-                    : "text-gray-400 bg-white border border-gray-600"
-                }`}
-                onClick={() => setAction("question")}
-              >
-                {t("teacher.question.name")}
-              </button>
-            </div>
-
-            {action === "schedule" && (
-              <Schedule
-                change={loadTimeOfDate}
-                timeData={timeDataApi}
-                teacher={teacherId}
-                handleSchedule={handleSchedule}
-              />
-            )}
-            {action === "question" && <QuestionForm create={createBooking} />}
+          ) : (
+            <DetailSkeleton />
+          )
+        ) : (
+          <>
+            {" "}
             <div
-              className="description-teacher"
-              dangerouslySetInnerHTML={{
-                __html: teacherId?.markdownData_teacher?.markdownHtml,
-              }}
-            ></div>
-            {/* <div className="comment-teacher w-full h-4 py-2 mb-3 flex items-center justify-center">
-              Comment
-            </div> */}
-          </div>
-          <HomeFooter />
-        </div>
-      )}
+              className={`${
+                type
+                  ? "detail-teacher-faculty-container"
+                  : "detail-teacher-container"
+              }`}
+            >
+              {!type && (
+                <div className="detail-navbar w-full">
+                  <Navigate texts={navigate} />
+                </div>
+              )}
+              <div className="detail-teacher">
+                <div
+                  className="detail-teacher-avatar flex-3"
+                  style={{
+                    backgroundImage: `url(${
+                      roleId === "R5"
+                        ? userData?.image
+                          ? userData?.image
+                          : avatar
+                        : avatar
+                    })`,
+                  }}
+                ></div>
+                <div className="detail-teacher-content flex-1">
+                  <p className="detail-teacher-content-name">
+                    {`${
+                      roleId === "R5"
+                        ? `${userData?.positionData?.valueVn}
+                          ,
+                          ${userData?.fullName}
+                        `
+                        : userData?.fullName
+                    }`}
+                  </p>
+                  <p>
+                    {roleId === "R5"
+                      ? userData?.markdownData_teacher?.description
+                      : userData?.markdownData_other?.description}
+                  </p>
+                </div>
+              </div>
+              <div className="action-teacher">
+                <div className="action-select">
+                  <button
+                    type="button"
+                    class={`hover:bg-blue-800 hover:text-white rounded-lg focus:ring-4 focus:ring-blue-300 font-medium  text-md px-5 py-2.5 mr-2 mb-2 focus:outline-none
+                  ${
+                    action === "schedule"
+                      ? "text-white bg-blue-800"
+                      : "text-gray-400 bg-white border border-gray-600"
+                  }`}
+                    onClick={() => setAction("schedule")}
+                  >
+                    {t("teacher.schedule.name")}
+                  </button>
+                  <button
+                    type="button"
+                    class={`hover:bg-blue-800 hover:text-white  focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-md px-5 py-2.5 mr-2 mb-2 focus:outline-none
+                  ${
+                    action === "question"
+                      ? "text-white bg-blue-800"
+                      : "text-gray-400 bg-white border border-gray-600"
+                  }`}
+                    onClick={() => setAction("question")}
+                  >
+                    {t("teacher.question.name")}
+                  </button>
+                </div>
+                {action === "schedule" && (
+                  <Schedule
+                    type={type}
+                    change={loadTimeOfDate}
+                    timeData={timeDataApi}
+                    teacher={userData}
+                    handleSchedule={handleSchedule}
+                  />
+                )}
+                {action === "question" && (
+                  <QuestionForm type={type} create={createBooking} />
+                )}
+                {!type && (
+                  <div
+                    className="description-teacher"
+                    dangerouslySetInnerHTML={
+                      roleId === "R5"
+                        ? {
+                            __html:
+                              userData?.markdownData_teacher?.markdownHtml,
+                          }
+                        : {
+                            __html: userData?.markdownData_other?.markdownHtml,
+                          }
+                    }
+                  ></div>
+                )}
+              </div>
+            </div>
+            {!type && <HomeFooter />}
+          </>
+        )}
+      </div>
       {openModalSchedule && (
         <BookingModal
           close={closeModalSchedule}
           dataModalSchedule={dataModalSchedule}
-          teacherId={teacherId}
+          userData={userData}
+          roleManager={roleId}
           create={createBookingSchedule}
         />
       )}

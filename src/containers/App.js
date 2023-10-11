@@ -36,6 +36,7 @@ import Student from "./Manager/Student/Student";
 import Notification from "./Manager/Notification/Notification";
 import Dashboard from "./Manager/Dashboard/Dashboard";
 import DashboardSystem from "./System/DashboardSystem/DashboardSystem";
+import FacultyDetail from "./HomePage/Detail/FacultyDetail";
 
 function App() {
   const [appearScrollTop, setAppearScrollTop] = useState(false);
@@ -74,7 +75,7 @@ function App() {
   };
 
   return (
-    <div className="" style={{ width: "100%", height: "100%" }}>
+    <div className="">
       {/* để 100vh là toang, nó chỉ tính phần dc hiển thị thôi */}
       <Routes>
         {/* homepage */}
@@ -82,8 +83,12 @@ function App() {
 
         <Route path={path.HOMEPAGE} element={<HomePage />} />
         <Route
-          path={`${path.HOMEPAGE}/${path.detail_teacher_id}/:id`}
+          path={`${path.HOMEPAGE}/${path.detail_id}/:id/role/:roleId`}
           element={<TeacherDetail />}
+        />
+        <Route
+          path={`${path.HOMEPAGE}/${path.detail_mul_id}/:id/role/:roleId`}
+          element={<FacultyDetail />}
         />
         <Route
           path={`${path.HOMEPAGE}/${path.login_homepage}`}

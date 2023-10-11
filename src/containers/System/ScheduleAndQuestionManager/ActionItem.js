@@ -1368,7 +1368,7 @@ const ActionItem = ({ action, managerId, roleManager }) => {
 
       {loadingFull && (
         <div className="fixed z-50 top-0 bottom-0 flex items-center justify-center mx-auto left-0 right-0 w-full max-h-full bg-black bg-opacity-25">
-          <div className="absolute top-[50%] left-[50%]">
+          <div className="absolute">
             <Loading />
           </div>
         </div>

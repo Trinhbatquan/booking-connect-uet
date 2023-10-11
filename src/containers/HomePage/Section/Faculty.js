@@ -6,8 +6,15 @@ import { useState, useEffect } from "react";
 import { getUserApi } from "../../../services/userService";
 
 import "./Faculty.scss";
+import { useDispatch } from "react-redux";
+import { path } from "../../../utils/constant";
+import { useNavigate } from "react-router";
+import { setNavigate } from "../../../redux/navigateSlice";
 
 const Faculties = ({ settings }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const imageData = [
     "https://i-vn.joboko.com/okoimg/vieclam.uet.vnu.edu.vn/xurl/images/cate-6.svg",
     "https://i-vn.joboko.com/okoimg/vieclam.uet.vnu.edu.vn/xurl/images/cate-5.svg",
@@ -29,8 +36,13 @@ const Faculties = ({ settings }) => {
     });
   }, []);
 
+  const handleFacultyClick = (id) => {
+    navigate(`${path.detail_mul_id}/${id}/role/R4`);
+    dispatch(setNavigate("detail"));
+  };
+
   return (
-    <div className="section-container faculty-container w-full h-auto">
+    <div className="section-container faculty-container w-full">
       <div className="section-content">
         <div className="section-header flex items-center justify-between">
           <div className="section-header-text">
@@ -49,7 +61,11 @@ const Faculties = ({ settings }) => {
             {facultyData?.length > 0 &&
               facultyData.map((faculty, index) => {
                 return (
-                  <div key={index} className="section-item-faculty">
+                  <div
+                    key={index}
+                    className="section-item-faculty"
+                    onClick={() => handleFacultyClick(faculty.id)}
+                  >
                     <div className="section-item-img-faculty">
                       <div
                         className="img"

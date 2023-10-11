@@ -33,7 +33,8 @@ export const path = {
   //homepage
   UET: "https://uet.vnu.edu.vn",
   HOMEPAGE: "/homePage",
-  detail_teacher_id: "detail-teacher",
+  detail_id: "detail",
+  detail_mul_id: "faculty_detail",
   login_homepage: "login?",
 };
 

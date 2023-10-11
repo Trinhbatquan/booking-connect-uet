@@ -15,6 +15,7 @@ import { NextArrow, PrevArrow } from "./Section/ArrowCustom";
 
 import Loading from "./../../utils/Loading";
 import { path } from "../../utils/constant";
+import Skeleton from "../../utils/Skeleton";
 
 const HomeHeader = lazy(() => import("./HomeHeader"));
 const HomeBanner = lazy(() => import("./HomeBanner"));
@@ -216,7 +217,9 @@ const HomePage = () => {
       // style={{ width: "100vw",height: "100vh",overflow: "scroll" }}
       >
         <HomeHeader />
+
         <HomeBanner />
+
         <Departments settings={settingReactSlick} />
         <Faculties settings={settingReactSlick_faculty} />
         <Teacher settings={settingReactSlick} />

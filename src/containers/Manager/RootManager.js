@@ -45,9 +45,15 @@ const RootManager = () => {
 
   return (
     <div>
-      <Header />
-      <div className="w-full" style={{ height: "110px" }}></div>
-      <Outlet />
+      {currentUser?.role &&
+        currentUser?.role !== "R1" &&
+        currentUser?.role !== "R3" && (
+          <>
+            <Header />
+            <div className="w-full" style={{ height: "110px" }}></div>
+            <Outlet />
+          </>
+        )}
     </div>
   );
 };

@@ -44,8 +44,8 @@ const Teacher = ({ settings }) => {
   }, []);
 
   const handleDetailTeacher = (id) => {
-    navigate(`${path.detail_teacher_id}/${id}`);
-    dispatch(setNavigate("navigate.teacher"));
+    navigate(`${path.detail_id}/${id}/role/R5`);
+    dispatch(setNavigate("detail"));
   };
 
   return (

@@ -29,4 +29,16 @@ const getTeacherInfo = {
   },
 };
 
-export { getTeacherHomePageAPI, createTeacherInfo, getTeacherInfo };
+const getTeacherFaculty = {
+  get: (params) => {
+    const url = "/api/teacher/by-faculty";
+    return axiosClient.get(url, { params });
+  },
+};
+
+export {
+  getTeacherHomePageAPI,
+  createTeacherInfo,
+  getTeacherInfo,
+  getTeacherFaculty,
+};

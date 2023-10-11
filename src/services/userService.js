@@ -48,7 +48,7 @@ const logOutHomePageApi = {
 
 //getAllUsers
 const getUserApi = {
-  getAllUsers: (params) => {
+  getUser: (params) => {
     const url = "/api/user";
     return axiosClient.get(url, { params });
   },

@@ -7,11 +7,10 @@ import { useTranslation } from "react-i18next";
 import moment from "moment";
 import "moment/locale/vi";
 
-import "./Schedule.scss";
 import Button from "../../../utils/Button_Home";
 import { contact, dateFormat } from "../../../utils/constant";
 
-const Schedule = ({ change, timeData, teacher, handleSchedule }) => {
+const Schedule = ({ type, change, timeData, teacher, handleSchedule }) => {
   const [date, setDate] = useState("");
 
   const { t, i18n } = useTranslation();
@@ -70,7 +69,11 @@ const Schedule = ({ change, timeData, teacher, handleSchedule }) => {
   };
 
   return (
-    <div className="schedule-container">
+    <div
+      className={`${
+        type ? "schedule-faculty-container" : "schedule-container"
+      }`}
+    >
       {/* {console.log(i18n.language)} */}
       <div className="schedule-date">
         <select
@@ -148,15 +151,11 @@ const Schedule = ({ change, timeData, teacher, handleSchedule }) => {
           )}
         </div>
         <div className="schedule-content-contact">
-          <p className="text-base font-semibold uppercase text-purple-500 py-1">
+          <p className="text-base font-semibold uppercase text-pink-600">
             Địa chỉ
           </p>
-          <p className="text-base font-semibold text-black py-1">
-            {teacher?.address}
-          </p>
-          <p className="text-base text-headingColor py-1">
-            {contact.university}
-          </p>
+          <p className="text-base text-headingColor">{teacher?.address}</p>
+          <p className="text-base text-headingColor">{contact.university}</p>
         </div>
       </div>
     </div>

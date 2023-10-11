@@ -49,33 +49,38 @@
 }
 
 .bell {
-  animation: shake-animation 3s ease infinite;
-  transform-origin: 50% 50%;
+  animation-name: shake-animation;
+  animation-duration: 0.5s;
+  animation-iteration-count: infinite;
+  animation-delay: 5s; /* Đặt khoảng cách 1 giây giữa các lần lặp */
 }
 
 @keyframes shake-animation {
   0% {
     transform: rotate(0);
   }
-  1% {
-    transform: rotate(20deg);
+  15% {
+    transform: rotate(5deg);
   }
-  3% {
-    transform: rotate(-20deg);
+  30% {
+    transform: rotate(-5deg);
   }
-  5% {
-    transform: rotate(16deg);
+  45% {
+    transform: rotate(4deg);
   }
-  7% {
-    transform: rotate(-16deg);
+  60% {
+    transform: rotate(-4deg);
   }
-  8% {
-    transform: rotate(14deg);
+  75% {
+    transform: rotate(2deg);
   }
-  10% {
-    transform: rotate(-14deg);
+  85% {
+    transform: rotate(-2deg);
+  }
+  92% {
+    transform: rotate(1deg);
   }
   100% {
-    transform: translate(0, 0);
+    transform: rotate(0);
   }
 }

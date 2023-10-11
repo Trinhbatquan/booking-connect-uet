@@ -11,7 +11,13 @@ import "../Detail/Detail.scss";
 import { emitter } from "../../../utils/emitter";
 import { getAllCodeApi } from "../../../services/userService";
 
-const BookingModal = ({ close, dataModalSchedule, teacherId, create }) => {
+const BookingModal = ({
+  close,
+  dataModalSchedule,
+  userData,
+  create,
+  roleManager,
+}) => {
   console.log(dataModalSchedule);
   const [email, setEmail] = useState(
     dataModalSchedule?.currentStudent?.email
@@ -121,8 +127,8 @@ const BookingModal = ({ close, dataModalSchedule, teacherId, create }) => {
     if (handleCheckValidate()) {
       create({
         email,
-        managerId: teacherId?.id,
-        roleManager: "R5",
+        managerId: userData?.id,
+        roleManager,
         studentId: dataModalSchedule?.currentStudent?.id,
         date: dataModalSchedule.date,
         timeType: dataModalSchedule.timeType,
@@ -155,7 +161,7 @@ const BookingModal = ({ close, dataModalSchedule, teacherId, create }) => {
           ></div>
           <div className="detail-teacher-content flex-1">
             <p className="detail-teacher-content-name">
-              {teacherId?.positionData?.valueVn}, {teacherId?.fullName}
+              {userData?.positionData?.valueVn}, {userData?.fullName}
             </p>
             <p>
               Ngày hẹn: {dataModalSchedule?.date ? dataModalSchedule.date : ""}
