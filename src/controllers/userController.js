@@ -28,6 +28,8 @@ const loginSystem = async (req, res) => {
     } else {
       const data = await loginSystemService(email, password);
       if (data?.codeNumber === 0) {
+        //connect socket
+
         const { email, roleId, fullName } = data?.user;
         const token = await createTokenRandom(email, roleId, "system");
         return res

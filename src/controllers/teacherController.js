@@ -3,6 +3,7 @@ const {
   getOneTeacherService,
   createTeacherInfoService,
   getTeacherInfoByIdService,
+  getTeacherByFacultyService,
 } = require("../services/teacherService");
 
 const getTeacherController = async (req, res) => {
@@ -96,9 +97,31 @@ const getTeacherInfoController = async (req, res) => {
   }
 };
 
+const getOneTeacherByFacultyController = async (req, res) => {
+  try {
+    const { facultyId } = req.query;
+    if (!facultyId) {
+      res.status(400).json({
+        codeNumber: 1,
+        message: "Missing parameter faculty",
+      });
+    } else {
+      const data = await getTeacherByFacultyService(facultyId);
+      return res.status(200).json(data);
+    }
+  } catch (e) {
+    console.log(e);
+    res.status(200).json({
+      codeNumber: -1,
+      message: "Can not get teacher by faculty",
+    });
+  }
+};
+
 module.exports = {
   getTeacherController,
   getOneTeacherController,
   createTeacherInfoController,
   getTeacherInfoController,
+  getOneTeacherByFacultyController,
 };

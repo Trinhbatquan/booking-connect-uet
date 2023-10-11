@@ -651,12 +651,38 @@ const getUserService = (userId) => {
         attributes: {
           exclude: ["password"],
         },
+        // include: [
+        //   {
+        //     model: db.MarkDown,
+        //     as: "markdownData_other",
+        //     attributes: ["markdownHtml", "markdownText", "description"],
+        //     where: {
+        //       type: "other",
+        //     },
+        //   },
+        // ],
+        // raw: true,
+        // nest: true,
       });
       if (user) {
+        const markdownData = await db.MarkDown.findOne({
+          where: {
+            userId: user.id,
+            type: "other",
+          },
+          attributes: {
+            exclude: ["id", "userId", "type", "createdAt", "updatedAt"],
+          },
+        });
         resolve({
           codeNumber: 0,
           message: "get user succeed",
-          user,
+          data: {
+            ...user,
+            markdownData_other: {
+              ...markdownData,
+            },
+          },
         });
       } else {
         resolve({

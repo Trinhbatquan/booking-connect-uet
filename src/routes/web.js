@@ -20,6 +20,7 @@ const {
   getOneTeacherController,
   createTeacherInfoController,
   getTeacherInfoController,
+  getOneTeacherByFacultyController,
 } = require("../controllers/teacherController");
 const {
   createMarkDownController,
@@ -80,6 +81,7 @@ const initWebRoutes = (app) => {
 
   router.get("/api/teacher", getTeacherController); //teacher
   router.get("/api/one-teacher", getOneTeacherController); //teacher
+  router.get("/api/teacher/by-faculty", getOneTeacherByFacultyController); //teacher
 
   router.post(
     "/api/create-markdown",

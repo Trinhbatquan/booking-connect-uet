@@ -5,6 +5,8 @@ const sendEmail = require("../utils/sendEmail");
 const moment = require("moment");
 require("moment/locale/vi");
 
+//socket
+
 const createBookingScheduleService = (
   studentId,
   managerId,
@@ -61,6 +63,10 @@ const createBookingScheduleService = (
           title: "new_schedule",
           status: "NR",
         });
+
+        //socket
+        // emitBooking();
+
         resolve({
           codeNumber: 0,
           type: "create",

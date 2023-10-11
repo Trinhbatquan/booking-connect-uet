@@ -57,14 +57,14 @@ const getOneTeacherService = (id) => {
             as: "genderData",
             attributes: ["valueEn", "valueVn"],
           },
-          {
-            model: db.MarkDown,
-            as: "markdownData_teacher",
-            attributes: ["markdownHtml", "markdownText", "description"],
-            where: {
-              type: "teacher",
-            },
-          },
+          // {
+          //   model: db.MarkDown,
+          //   as: "markdownData_teacher",
+          //   attributes: ["markdownHtml", "markdownText", "description"],
+          //   where: {
+          //     type: "teacher",
+          //   },
+          // },
         ],
         where: {
           id,
@@ -78,10 +78,24 @@ const getOneTeacherService = (id) => {
           message: "Teacher doesn't exist in the database",
         });
       }
+      const markdownData = await db.MarkDown.findOne({
+        where: {
+          userId: data.id,
+          type: "teacher",
+        },
+        attributes: {
+          exclude: ["id", "userId", "type", "createdAt", "updatedAt"],
+        },
+      });
       resolve({
         codeNumber: 0,
         message: "Get Teacher By Id Succeed",
-        data,
+        data: {
+          ...data,
+          markdownData_teacher: {
+            ...markdownData,
+          },
+        },
       });
     } catch (e) {
       reject(e);
@@ -151,9 +165,73 @@ const getTeacherInfoByIdService = async (id) => {
   });
 };
 
+const getTeacherByFacultyService = (facultyId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const data = await db.Teacher.findAll({
+        where: {
+          facultyId,
+        },
+        attributes: {
+          exclude: ["password"],
+        },
+        include: [
+          {
+            model: db.AllCode,
+            as: "positionData",
+            attributes: ["valueEn", "valueVn"],
+          },
+          {
+            model: db.AllCode,
+            as: "genderData",
+            attributes: ["valueEn", "valueVn"],
+          },
+          // {
+          //   model: db.MarkDown,
+          //   as: "markdownData_teacher",
+          //   attributes: ["markdownHtml", "markdownText", "description"],
+          //   where: {
+          //     type: "teacher",
+          //   },
+          // },
+        ],
+        raw: true,
+        nest: true, //fix result.get is not a function
+      });
+      let markDownTeacher = [];
+      const saveMarkDown = async () => {
+        if (data?.length > 0) {
+          let count = data.length;
+          while (count > 0) {
+            await db.MarkDown.findOne({
+              where: {
+                userId: data[data.length - count].id,
+                type: "teacher",
+              },
+            }).then(async (main) => {
+              console.log(main);
+              markDownTeacher.push(main?.description ? main.description : "");
+              count--;
+            });
+          }
+        }
+      };
+      await saveMarkDown();
+      resolve({
+        codeNumber: 0,
+        teacherByFaculty: data,
+        markDownTeacher,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
   getTeacherService,
   getOneTeacherService,
   createTeacherInfoService,
   getTeacherInfoByIdService,
+  getTeacherByFacultyService,
 };

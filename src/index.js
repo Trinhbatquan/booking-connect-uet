@@ -13,6 +13,28 @@ const { convertTimeStamp } = require("./utils/convertTimeStamp");
 const sendEmail = require("./utils/sendEmail");
 const app = express();
 
+//socket
+const http = require("http");
+const server = http.createServer(app);
+const { Server } = require("socket.io");
+const { connectSocket } = require("./utils/socket");
+//use
+
+const io = new Server(server, {
+  cors: {
+    origin: true,
+    credentials: true,
+    //fix cross blocked
+    //response header return access-control-allow-credential: true ==> Oke
+  },
+});
+// io.on("connection", (socket) => {
+//   console.log("new client " + socket.id);
+//   console.log("new client " + socket.data);
+
+//   socket.emit("connected", null);
+// });
+
 // middleware
 /* dữ liệu client gửi lên thường là JSON (vd: axios tự động convert từ oj sang json) 
    hay urlencoded khi người dùng nhập form html, vì vậy cần 2 packages để nodejs hiểu các
@@ -173,10 +195,11 @@ connectDatabase();
 // setInterval(checkingBooking, 24 * 60 * 60 * 1000);
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log("App running on port" + " " + PORT);
 });
 
 //api
 initWebRoutes(app);
 dashboardApi(app);
+connectSocket(io);
