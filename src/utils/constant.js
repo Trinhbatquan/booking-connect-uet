@@ -21,6 +21,7 @@ export const path = {
   healthStudentManager: "healthStudentManager",
   healthStudentDescription: "healthStudentDescription",
   dashboardManager: "dashboardManager",
+  notificationManager: "notificationManager",
 
   // student: "student",
 
@@ -28,7 +29,7 @@ export const path = {
   dashboard: "dashboard",
   notification: "notification",
   schedule: "schedule",
-  student: "student",
+  student: "student?",
 
   //homepage
   UET: "https://uet.vnu.edu.vn",

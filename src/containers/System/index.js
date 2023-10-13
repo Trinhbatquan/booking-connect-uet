@@ -13,3 +13,4 @@ export { default as TeacherDescription } from "./TeacherManager/TeacherDescripti
 
 export { default as HealthStudentManager } from "./HealthStudentManager/HealthStudentManager";
 export { default as HealthStudentDescription } from "./HealthStudentManager/HealthStudentDescription";
+export { default as NotificationManager } from "./NotificationManager/NotificationManager";

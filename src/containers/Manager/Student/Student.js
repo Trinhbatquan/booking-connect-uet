@@ -2,7 +2,7 @@ import React, { useState, useEffect, Fragment } from "react";
 
 import { ToastContainer, toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 
 import { useTranslation } from "react-i18next";
 import "moment/locale/vi";
@@ -10,14 +10,20 @@ import "moment/locale/vi";
 import ActionItem from "../../System/ScheduleAndQuestionManager/ActionItem";
 
 const ScheduleManager = () => {
-  const [action, setAction] = useState("");
-
   const { t, i18n } = useTranslation();
 
-  console.log(action);
+  const location = useLocation();
+  const reviewFromNotify = location?.search.split("?")[1];
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const currentUser = useSelector((state) => state.authReducer);
+  const [action, setAction] = useState(
+    reviewFromNotify
+      ? reviewFromNotify === "new_ques"
+        ? "question"
+        : "schedule"
+      : ""
+  );
 
   useEffect(() => {}, []);
 
@@ -61,6 +67,7 @@ const ScheduleManager = () => {
 
         {action && (
           <ActionItem
+            reviewNotify={reviewFromNotify}
             action={action}
             roleManager={currentUser?.role}
             managerId={currentUser?.id}

@@ -3,6 +3,8 @@ import { current } from "@reduxjs/toolkit";
 
 const notificationInit = {
   notify: [],
+  pageCurrent: 0,
+  pageTotal: 0,
 };
 
 const notificationSlice = createSlice({
@@ -12,7 +14,9 @@ const notificationSlice = createSlice({
     getAllNotify: (state, action) => {
       return {
         ...current(state),
-        notify: action.payload,
+        notify: action.payload.notify,
+        pageCurrent: action.payload.pageCurrent,
+        pageTotal: action.payload.pageTotal,
       };
     },
   },

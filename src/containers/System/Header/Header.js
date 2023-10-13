@@ -6,7 +6,11 @@ import { useTranslation } from "react-i18next";
 import { BsFillPersonFill } from "react-icons/bs";
 import { IoIosArrowDown } from "react-icons/io";
 import { IoMdArrowDropdown, IoMdArrowDropup } from "react-icons/io";
-import { MdOutlineEmail } from "react-icons/md";
+import {
+  MdOutlineEmail,
+  MdOutlineNotificationAdd,
+  MdNotificationsNone,
+} from "react-icons/md";
 import { AiFillEdit, AiFillUnlock } from "react-icons/ai";
 import { BiLogOutCircle } from "react-icons/bi";
 import { motion, AnimatePresence } from "framer-motion";
@@ -77,16 +81,6 @@ const HeaderUser = () => {
             }
           );
         }
-
-        //update notify api
-        getNotiFy
-          .get({ managerId: currentUser?.id, roleManager: currentUser?.role })
-          .then((res) => {
-            console.log(res);
-            if (res?.codeNUmber === 0) {
-              dispatch(getAllNotify(res?.notify));
-            }
-          });
         setSocketNotify(true);
       }
     };
@@ -97,61 +91,6 @@ const HeaderUser = () => {
     };
   }, []);
 
-  // useEffect(() => {
-  //   console.log("000000");
-
-  //   const listenNotifyFromBackend = (data) => {
-  //     const { managerId, roleManager, action } = data;
-  //     if (managerId === currentUser?.id && roleManager === currentUser?.role) {
-  //       if (action === "A1") {
-  //         console.log("11111");
-  //         toast.info(
-  //           i18n.language === "en"
-  //             ? "You recently had a new appointment from student."
-  //             : "Bạn vừa có một lịch hẹn mới từ sinh viên.",
-  //           {
-  //             autoClose: false,
-  //             theme: "colored",
-  //             position: "bottom-right",
-  //           }
-  //         );
-  //       } else {
-  //         console.log("22222");
-  //         toast.info(
-  //           i18n.language === "en"
-  //             ? "You recently had a new question from student."
-  //             : "Bạn vừa có một câu hỏi mới từ sinh viên.",
-  //           {
-  //             autoClose: false,
-  //             theme: "colored",
-  //             position: "bottom-right",
-  //           }
-  //         );
-  //       }
-
-  //       //update notify api
-  //       getNotiFy
-  //         .get({ managerId: currentUser?.id, roleManager: currentUser?.role })
-  //         .then((res) => {
-  //           console.log(res);
-  //           if (res?.codeNUmber === 0) {
-  //             dispatch(getAllNotify(res?.notify));
-  //           }
-  //         });
-  //       setSocketNotify(true);
-  //     }
-  //   };
-
-  //   if (socket) {
-  //     socket.on("new_booking", (data) => listenNotifyFromBackend(data));
-  //   }
-
-  //   return () => {
-  //     if (socket) {
-  //       socket.off("new_booking", listenNotifyFromBackend);
-  //     }
-  //   };
-  // }, [socket]);
   const navigate = useNavigate();
   const handleLogOutSystem = () => {
     logOutApi.logoutUser({}).then((data) => {
@@ -244,10 +183,10 @@ const HeaderUser = () => {
           onClick={() => setSocketNotify(false)}
         >
           <div className="flex items-center justify-center gap-0.5">
-            <TbBellRinging
-              className={`text-xl ${socketNotify ? "bell" : ""}`}
-            />
-            <span className="text-sm">{`(${count})`}</span>
+            {socketNotify && (
+              <TbBellRinging className={`text-xl bell text-white`} />
+            )}
+            {!socketNotify && <MdNotificationsNone className="text-xl" />}
           </div>
           <span>Thông báo</span>
         </NavLink>
@@ -630,6 +569,18 @@ const HeaderAdmin = () => {
             </NavLink>
           </ul>
         </div>
+
+        <NavLink
+          to={path.notificationManager}
+          className="system-header-text relative text-blurColor font-semibold text-lg w-1/5 h-full flex items-center gap-1
+       justify-center cursor-pointer pl-3 hover:text-white transition-all duration-200"
+          style={({ isActive }) => ({
+            color: isActive ? "#fff" : "rgb(195, 181, 181)",
+          })}
+        >
+          <MdOutlineNotificationAdd className="text-lg" />
+          <span>Quản lý thông báo</span>
+        </NavLink>
       </div>
 
       <div className="system-header-item-right flex items-center justify-items-end gap-8">

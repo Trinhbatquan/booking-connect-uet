@@ -25,22 +25,6 @@ const RootManager = () => {
     ) {
       navigate(`${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`);
     }
-
-    if (
-      currentUser?.isLogin &&
-      currentUser?.role !== "R1" &&
-      currentUser?.role !== "R3"
-    ) {
-      getNotiFy
-        .get({ managerId: currentUser?.id, roleManager: currentUser?.role })
-        .then((res) => {
-          console.log(res);
-
-          if (res?.codeNUmber === 0) {
-            dispatch(getAllNotify(res?.notify));
-          }
-        });
-    }
   }, []);
 
   return (

@@ -38,13 +38,19 @@ import { useNavigate } from "react-router";
 import GetCancelReason from "./GetCancelReason";
 import ConfirmAnswer from "./ConfirmAnswer";
 
-const ActionItem = ({ action, managerId, roleManager }) => {
+const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
   const [loading, setLoading] = useState(false);
   const [loadingFull, setLoadingFull] = useState(false);
   const [dataBookingFilter, setDataBookingFilter] = useState([]);
   const [dataBookingTotal, setDataBookingTotal] = useState([]);
 
-  const [status, setStatus] = useState("total");
+  const [status, setStatus] = useState(
+    reviewNotify
+      ? reviewNotify === "check_event"
+        ? "process"
+        : "new"
+      : "total"
+  );
 
   const [detail, setDetail] = useState(false);
   const [dataBookingSelect, setDataBookingSelect] = useState([]);
