@@ -100,10 +100,8 @@ connectDatabase();
 //       await db.Notification.create({
 //         managerId: item.managerId,
 //         roleManager: item.roleManager,
-//         type_notification: "S",
+//         type_notification: "check_event",
 //         bookingId: item.id,
-//         title: "system_checking",
-//         status: "NR",
 //       });
 
 //       //get data

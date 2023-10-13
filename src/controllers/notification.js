@@ -2,8 +2,8 @@ const { getNotificationService } = require("../services/notificationService");
 
 const getNotificationController = async (req, res) => {
   try {
-    const { managerId, roleManager } = req.query;
-    const data = await getNotificationService(managerId, roleManager);
+    const { managerId, roleManager, page } = req.query;
+    const data = await getNotificationService(managerId, roleManager, page);
     return res.status(200).json(data);
   } catch (e) {
     console.log(e);

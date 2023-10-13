@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       bookingId: DataTypes.INTEGER,
       title: DataTypes.STRING,
       content: DataTypes.TEXT("long"),
-      status: DataTypes.STRING,
+      image: DataTypes.BLOB("long"),
     },
     {
       sequelize,

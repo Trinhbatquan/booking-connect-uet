@@ -58,15 +58,9 @@ const createBookingScheduleService = (
         await db.Notification.create({
           managerId,
           roleManager,
-          type_notification: "N",
+          type_notification: "new_book",
           bookingId: bookingData?.id,
-          title: "new_schedule",
-          status: "NR",
         });
-
-        //socket
-        // emitBooking();
-
         resolve({
           codeNumber: 0,
           type: "create",
@@ -161,10 +155,8 @@ const createQuestionService = (
         await db.Notification.create({
           managerId,
           roleManager,
-          type_notification: "N",
+          type_notification: "new_ques",
           bookingId: bookingData?.id,
-          title: "new_question",
-          status: "NR",
         });
         resolve({
           codeNumber: 0,
