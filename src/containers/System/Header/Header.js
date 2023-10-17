@@ -27,8 +27,8 @@ import { logOutApi } from "../../../services/userService";
 
 import { socket } from "../../../index";
 import { toast, ToastContainer } from "react-toastify";
-import { getNotiFy } from "../../../services/notificationService";
-import { getAllNotify } from "../../../redux/notificationSlice";
+// import { getNotiFy } from "../../../services/notificationService";
+// import { getAllNotify } from "../../../redux/notificationSlice";
 
 const HeaderUser = () => {
   const { t, i18n } = useTranslation();

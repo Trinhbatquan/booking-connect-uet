@@ -113,4 +113,16 @@ html {
     font-size: 10.72px;
     font-weight: bold;
   }
+  ol,
+  ul {
+    list-style: inside;
+  }
+
+  a {
+    color: blueviolet;
+  }
+
+  .-space-x-px {
+    list-style: none;
+  }
 }

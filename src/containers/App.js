@@ -25,7 +25,7 @@ import {
   DepartmentDescription,
   FacultyDescription,
   HealthStudentDescription,
-  NotificationManager,
+  NotificationSystem,
 } from "./System";
 import EmailVerify from "./HomePage/EmailVerify/EmailVerify";
 import ScheduleAndQuestion from "./System/ScheduleAndQuestionManager/ScheduleAndQuestion";
@@ -144,7 +144,7 @@ function App() {
           <Route path={path.dashboardManager} element={<DashboardSystem />} />
           <Route
             path={path.notificationManager}
-            element={<NotificationManager />}
+            element={<NotificationSystem />}
           />
         </Route>
 

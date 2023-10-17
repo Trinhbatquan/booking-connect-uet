@@ -5,7 +5,7 @@ import Loading from "../../../utils/Loading";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { getNotiFy } from "../../../services/notificationService";
-import { getAllNotify } from "../../../redux/notificationSlice";
+import { getAllNotify } from "../../../redux/notificationManagerSlice";
 import Pagination from "../../../utils/Pagination";
 
 import moment from "moment";

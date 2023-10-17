@@ -7,8 +7,8 @@ const notificationInit = {
   pageTotal: 0,
 };
 
-const notificationSlice = createSlice({
-  name: "notificationSlice",
+const notificationManagerSlice = createSlice({
+  name: "notificationManagerSlice",
   initialState: notificationInit,
   reducers: {
     getAllNotify: (state, action) => {
@@ -22,6 +22,6 @@ const notificationSlice = createSlice({
   },
 });
 
-const { actions, reducer } = notificationSlice;
+const { actions, reducer } = notificationManagerSlice;
 export const { getAllNotify } = actions;
 export default reducer;

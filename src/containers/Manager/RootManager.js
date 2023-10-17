@@ -6,8 +6,8 @@ import { createContext } from "react";
 import Header from "../System/Header/Header";
 import { path } from "../../utils/constant";
 import { useDispatch, useSelector } from "react-redux";
-import { getNotiFy } from "../../services/notificationService";
-import { getAllNotify } from "../../redux/notificationSlice";
+// import { getNotiFy } from "../../services/notificationService";
+// import { getAllNotify } from "../../redux/notificationSlice";
 
 const RootManager = () => {
   console.log(`${path.SYSTEM}${path.LOGIN_SYSTEM}`);
