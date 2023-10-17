@@ -24,6 +24,9 @@ module.exports = {
       title: {
         type: Sequelize.STRING,
       },
+      contentHtml: {
+        type: Sequelize.TEXT("long"),
+      },
       content: {
         type: Sequelize.TEXT("long"),
       },

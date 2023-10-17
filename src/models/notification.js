@@ -21,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       type_notification: DataTypes.STRING,
       bookingId: DataTypes.INTEGER,
       title: DataTypes.STRING,
+      contentHtml: DataTypes.TEXT("long"),
       content: DataTypes.TEXT("long"),
       image: DataTypes.BLOB("long"),
     },

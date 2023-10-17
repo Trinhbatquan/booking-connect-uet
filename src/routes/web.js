@@ -46,7 +46,13 @@ const {
   protectUserToken,
 } = require("../middleware/protectToken");
 
-const { getNotificationController } = require("../controllers/notification");
+const {
+  getNotificationController,
+  getAllNotifyByTypeController,
+  createNotifySystemController,
+  updateNotifySystemController,
+  deleteNotifySystemController,
+} = require("../controllers/notification");
 
 let router = express.Router();
 
@@ -111,6 +117,25 @@ const initWebRoutes = (app) => {
     (req, res, next) => checkExpiredToken(req, res, next, "system"),
     (req, res, next) => protectUserToken(req, res, next, "otherUser"),
     updateStatusBookingScheduleByManagerController
+  );
+  router.get("/api/all_notify_by_type", getAllNotifyByTypeController);
+  router.post(
+    "/api/create_notify_system",
+    (req, res, next) => checkExpiredToken(req, res, next, "system"),
+    protectAdminToken,
+    createNotifySystemController
+  );
+  router.put(
+    "/api/update_notify_system",
+    (req, res, next) => checkExpiredToken(req, res, next, "system"),
+    protectAdminToken,
+    updateNotifySystemController
+  );
+  router.delete(
+    "/api/delete_notify_system",
+    (req, res, next) => checkExpiredToken(req, res, next, "system"),
+    protectAdminToken,
+    deleteNotifySystemController
   );
 
   //manager api
