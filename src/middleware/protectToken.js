@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const db = require("../models");
+require("dotenv/config");
 
 const checkExpiredToken = async (req, res, next, action) => {
   console.log("test");
@@ -82,9 +83,9 @@ const protectUserToken = async (req, res, next, action) => {
         where: {
           email,
         },
-        attributes: {
-          exclude: ["password"],
-        },
+        // attributes: {
+        //   exclude: ["password"],
+        // },
       });
       if (!student || email !== req.body.email) {
         return res.status(401).json({
@@ -137,7 +138,7 @@ const protectUserToken = async (req, res, next, action) => {
           });
           if (!data || email !== req.body.email) {
             return res.status(501).json({
-              message: -2,
+              codeNumber: -2,
               message: "Current User is student",
             });
           } else {

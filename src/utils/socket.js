@@ -14,6 +14,15 @@ const connectSocket = (io) => {
       });
       console.log("noti2");
     });
+
+    //new notification from system
+    socket.on("new_notify_from_system", ({ data }) => {
+      //notify the booking for user
+      console.log(data);
+      socket.broadcast.emit("new_notification_system", {
+        ...data,
+      });
+    });
   });
 };
 

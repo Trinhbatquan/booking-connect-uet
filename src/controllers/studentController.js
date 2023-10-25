@@ -1,4 +1,8 @@
-const { updateStudentService } = require("../services/studentService");
+const {
+  updateStudentService,
+  updateProfileStudentService,
+  updatePasswordStudentService,
+} = require("../services/studentService");
 
 const updateStudentController = async (req, res) => {
   try {
@@ -24,6 +28,77 @@ const updateStudentController = async (req, res) => {
   }
 };
 
+const updateProfileStudentController = async (req, res) => {
+  try {
+    const { user } = req;
+    const {
+      fullName,
+      phoneNumber,
+      address,
+      faculty,
+      classroom,
+      gender,
+      image,
+    } = req.body;
+    const data = await updateProfileStudentService({
+      id: user?.id,
+      fullName,
+      phoneNumber,
+      address,
+      faculty,
+      classroom,
+      gender,
+      image,
+    });
+    return res.status(200).json(data);
+  } catch (e) {
+    console.log(e);
+    res.status(501).json({
+      codeNumber: -1,
+      message: "Not update student",
+    });
+  }
+};
+
+const updatePasswordStudentController = async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+  const { user } = req;
+  try {
+    const data = await updatePasswordStudentService({
+      student: user,
+      currentPassword,
+      newPassword,
+    });
+    return res.status(200).json(data);
+  } catch (e) {
+    console.log(e);
+    res.status(501).json({
+      codeNumber: -1,
+      message: "Not update password student",
+    });
+  }
+};
+
+const getStudentController = async (req, res) => {
+  try {
+    const { user } = req;
+    return res.status(200).json({
+      codeNumber: 0,
+      student: user,
+    });
+  } catch (e) {
+    console.log("get student " + e);
+    res.status(200).send({
+      codeNumber: -1,
+      message_en: "Error. Please contact with admin.",
+      message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên",
+    });
+  }
+};
+
 module.exports = {
   updateStudentController,
+  getStudentController,
+  updateProfileStudentController,
+  updatePasswordStudentController,
 };

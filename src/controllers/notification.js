@@ -4,8 +4,10 @@ const {
   createNotifySystemService,
   updateNotifySystemService,
   deleteNotifySystemService,
+  getNotifyHomePageLimitedService,
 } = require("../services/notificationService");
 
+//manager
 const getNotificationController = async (req, res) => {
   try {
     const { managerId, roleManager, page, type } = req.query;
@@ -25,6 +27,7 @@ const getNotificationController = async (req, res) => {
   }
 };
 
+//system + homepage
 const getAllNotifyByTypeController = async (req, res) => {
   try {
     const { type } = req.query;
@@ -35,6 +38,20 @@ const getAllNotifyByTypeController = async (req, res) => {
     return res.status(200).json({
       codeNumber: -1,
       message: "Not get notify type system",
+    });
+  }
+};
+
+//homepage
+const getNotificationHomePageLimited = async (req, res) => {
+  try {
+    const data = await getNotifyHomePageLimitedService();
+    return res.status(200).json(data);
+  } catch (e) {
+    console.log(e);
+    return res.status(200).json({
+      codeNumber: -1,
+      message: "Not get notify type homepage limited",
     });
   }
 };
@@ -87,4 +104,5 @@ module.exports = {
   createNotifySystemController,
   updateNotifySystemController,
   deleteNotifySystemController,
+  getNotificationHomePageLimited,
 };

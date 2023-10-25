@@ -40,7 +40,8 @@ const createNewUserService = async (data) => {
         if (teacherExist) {
           resolve({
             codeNumber: 1,
-            message: "Email is existed. Please try other email.",
+            message_en: "Email is existed. Please try other email.",
+            message_vn: "Email đã sử dụng. Vui lòng dùng một email khác.",
           });
         } else {
           await db.Teacher.create({
@@ -57,7 +58,8 @@ const createNewUserService = async (data) => {
           });
           resolve({
             codeNumber: 0,
-            message: "Create Teacher Succeed",
+            message_en: "Create Teacher Succeed.",
+            message_vn: "Tạo mới giảng viên thành công.",
           });
         }
       } else if (type === "otherUser") {
@@ -69,7 +71,8 @@ const createNewUserService = async (data) => {
         if (otherUserExist) {
           resolve({
             codeNumber: 1,
-            message: "Email is existed. Please try other email.",
+            message_en: "Email is existed. Please try other email.",
+            message_vn: "Email đã sử dụng. Vui lòng dùng một email khác.",
           });
         } else {
           await db.OtherUser.create({
@@ -82,7 +85,8 @@ const createNewUserService = async (data) => {
           });
           resolve({
             codeNumber: 0,
-            message: "Create OtherUser Succeed",
+            message_en: "Create User Succeed.",
+            message_vn: "Tạo mới người dùng thành công.",
           });
         }
       }
@@ -162,12 +166,14 @@ const loginSystemService = async (email, password) => {
         if (!checkPassword) {
           resolve({
             codeNumber: 1,
-            message: "Password is wrong. Please try again.",
+            message_en: "Password is wrong. Please try again.",
+            message_vn: "Mật khẩu sai. Vui lòng thử lại.",
           });
         } else {
           resolve({
             codeNumber: 0,
-            message: "Login OK",
+            message_en: "Login succeed.",
+            message_vn: "Đăng nhập thành công.",
             user: {
               id: user?.id,
               fullName: user?.fullName,
@@ -193,7 +199,8 @@ const loginSystemService = async (email, password) => {
           if (!teacher) {
             resolve({
               codeNumber: 1,
-              message: "Email isn't exist. Please try a other email.",
+              message_en: "Email is existed. Please try other email.",
+              message_vn: "Email đã sử dụng. Vui lòng dùng một email khác.",
             });
           } else {
             const checkPassword = await bcrypt.compare(
@@ -203,12 +210,14 @@ const loginSystemService = async (email, password) => {
             if (!checkPassword) {
               resolve({
                 codeNumber: 1,
-                message: "Password is wrong. Please try again.",
+                message_en: "Password is wrong. Please try again.",
+                message_vn: "Mật khẩu sai. Vui lòng thử lại.",
               });
             } else {
               resolve({
                 codeNumber: 0,
-                message: "Login OK",
+                message_en: "Login succeed.",
+                message_vn: "Đăng nhập thành công.",
                 user: {
                   id: teacher?.id,
                   fullName: teacher?.fullName,
@@ -226,12 +235,14 @@ const loginSystemService = async (email, password) => {
           if (!checkPassword) {
             resolve({
               codeNumber: 1,
-              message: "Password is wrong. Please try again.",
+              message_en: "Password is wrong. Please try again.",
+              message_vn: "Mật khẩu sai. Vui lòng thử lại.",
             });
           } else {
             resolve({
               codeNumber: 0,
-              message: "Login OK",
+              message_en: "Login succeed.",
+              message_vn: "Đăng nhập thành công.",
               user: {
                 id: otherUser?.id,
                 fullName: otherUser?.fullName,
@@ -298,7 +309,9 @@ const registerHomePageService = (
         });
         resolve({
           codeNumber: 2,
-          message: "An Email sent to your account. Please verify.",
+          message_en: "An Email sent to your account. Please verify.",
+          message_vn:
+            "Một email đã gửi đến tài khoản của bạn. Vui lòng xác minh.",
         });
       } else if (exist?.status && !exist?.user?.verified) {
         const checkPassword = await bcrypt.compare(
@@ -308,7 +321,8 @@ const registerHomePageService = (
         if (!checkPassword) {
           resolve({
             codeNumber: 3,
-            message: "Password is wrong. Please try again.",
+            message_en: "Password is wrong. Please try again.",
+            message_vn: "Mật khẩu sai. Vui lòng thử lại.",
           });
         } else {
           let token = crypto.AES.encrypt(
@@ -337,7 +351,9 @@ const registerHomePageService = (
           });
           resolve({
             codeNumber: 2,
-            message: "An Email sent to your account. Please verify",
+            message_en: "An Email sent to your account. Please verify.",
+            message_vn:
+              "Một email đã gửi đến tài khoản của bạn. Vui lòng xác minh.",
           });
         }
       } else if (exist?.status && exist?.user?.verified) {
@@ -348,12 +364,14 @@ const registerHomePageService = (
         if (!checkPassword) {
           resolve({
             codeNumber: 3,
-            message: "Password is wrong. Please try again.",
+            message_en: "Password is wrong. Please try again.",
+            message_vn: "Mật khẩu sai. Vui lòng thử lại.",
           });
         } else {
           resolve({
             codeNumber: 0,
-            message: "Login OK",
+            message_en: "Sign up succeed.",
+            message_vn: "Đăng ký thành công.",
             user: {
               id: exist?.user?.id,
               fullName: exist?.user?.fullName,
@@ -380,19 +398,22 @@ const loginHomePageService = async (email, password) => {
       if (!student || !student?.verified) {
         resolve({
           codeNumber: 3,
-          message: "Please register to use system.",
+          message_en: "Please register to use system.",
+          message_vn: "Vui lòng đăng ký để sử dụng hệ thống.",
         });
       } else {
         const checkPassword = await bcrypt.compare(password, student?.password);
         if (!checkPassword) {
           resolve({
             codeNumber: 3,
-            message: "Password is wrong. Please try again.",
+            message_en: "Password is wrong. Please try again.",
+            message_vn: "Mật khẩu sai. Vui lòng thử lại.",
           });
         } else {
           resolve({
             codeNumber: 0,
-            message: "Login OK",
+            message_en: "Sign in succeed.",
+            message_vn: "Đăng nhập thành công.",
             user: {
               id: student?.id,
               fullName: student?.fullName,
@@ -466,7 +487,8 @@ const verificationEmailService = (req) => {
       });
       resolve({
         codeNumber: 0,
-        message: "Email verified successfully",
+        message_en: "Email is verified successfully",
+        message_vn: "Xác thực email thành công",
         user: {
           id: user?.id,
           fullName: user?.fullName,
@@ -493,12 +515,15 @@ const sendEmailToUpdatePassHomePageService = (email) => {
       if (!user) {
         resolve({
           codeNumber: 1,
-          message: "This Account is not exist. Please sign up.",
+          message_en: "This Account is not exist. Please sign up.",
+          message_vn: "Tài khoản không tồn tại. Vui lòng đăng ký.",
         });
       } else if (user && !user.verified) {
         resolve({
           codeNumber: 1,
-          message: "This Account is verified yet. Please sign up to verify.",
+          message_en: "This Account is verified yet. Please sign up to verify.",
+          message_vn:
+            "Tài khoản này chưa được xác minh. Vui lòng đăng ký để xác minh.",
         });
       }
       const checkToken = await db.TokenEmail.findOne({
@@ -532,7 +557,10 @@ const sendEmailToUpdatePassHomePageService = (email) => {
         });
         resolve({
           codeNumber: 2,
-          message: "An Email sent to your account. Please check to continue.",
+          message_en:
+            "An Email sent to your account. Please check to continue.",
+          message_vn:
+            "Một email được gửi đến tài khoản của bạn. Vui lòng kiểm tra để tiếp tục",
         });
       } else {
         await db.TokenEmail.create({
@@ -552,7 +580,10 @@ const sendEmailToUpdatePassHomePageService = (email) => {
         });
         resolve({
           codeNumber: 2,
-          message: "An Email sent to your account. Please check to continue.",
+          message_en:
+            "An Email sent to your account. Please check to continue.",
+          message_vn:
+            "Một email được gửi đến tài khoản của bạn. Vui lòng kiểm tra để tiếp tục",
         });
       }
     } catch (e) {
@@ -608,7 +639,8 @@ const verifyAndUpdatePassHomePageService = (email, token, password) => {
       if (Math.abs(Math.floor((date_now - updateTime) / 1000)) > 5 * 60) {
         resolve({
           codeNumber: 3,
-          message: "Token is expired. Please click into Send new link.",
+          message_en: "Token is expired. Please click into Send new link.",
+          message_vn: "Token đã hết hạn. Vui lòng nhấn vào Gửi link mới.",
         });
       }
 
@@ -632,7 +664,8 @@ const verifyAndUpdatePassHomePageService = (email, token, password) => {
       });
       resolve({
         codeNumber: 2,
-        message: "Update password successfully. Please log in again.",
+        message_en: "Update password successfully. Please log in again.",
+        message_vn: "Cập nhật mật khẩu thành công. Vui lòng đăng nhập lại",
       });
     } catch (e) {
       reject(e);
@@ -687,7 +720,8 @@ const getUserService = (userId) => {
       } else {
         resolve({
           codeNumber: 1,
-          message: "no find user",
+          message_en: "Error. Please contact with admin.",
+          message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên",
         });
       }
     } catch (e) {
@@ -750,7 +784,8 @@ const editUserService = async (data) => {
   if (!id) {
     return {
       codeNumber: 1,
-      message: "Missing parameter id",
+      message_en: "Error. Please contact with admin.",
+      message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên.",
     };
   }
   return new Promise(async (resolve, reject) => {
@@ -764,7 +799,8 @@ const editUserService = async (data) => {
         if (!teacher) {
           return {
             codeNumber: 1,
-            message: "Teacher not exist in system",
+            message_en: "Teacher is not exist in system.",
+            message_vn: "Giảng viên không tồn tại trong hệ thống.",
           };
         } else {
           await db.Teacher.update(
@@ -786,7 +822,8 @@ const editUserService = async (data) => {
           );
           resolve({
             codeNumber: 0,
-            message: "Edit Teacher Succeed",
+            message_en: "Edit Teacher Succeed.",
+            message_vn: "Cập nhật giảng viên thành công.",
           });
         }
       } else if (type === "otherUser") {
@@ -798,7 +835,8 @@ const editUserService = async (data) => {
         if (!OtherUser) {
           return {
             codeNumber: 1,
-            message: "OtherUser not exist in system",
+            message_en: "User is not exist in system.",
+            message_vn: "Người dùng không tồn tại trong hệ thống.",
           };
         } else {
           await db.OtherUser.update(
@@ -816,7 +854,8 @@ const editUserService = async (data) => {
           );
           resolve({
             codeNumber: 0,
-            message: "Edit OtherUser Succeed",
+            message_en: "Edit User Succeed.",
+            message_vn: "Cập nhật người dùng thành công.",
           });
         }
       }
@@ -832,7 +871,8 @@ const deleteUserService = async (data) => {
   if (!id) {
     return {
       codeNumber: 1,
-      message: "Missing parameter id",
+      message_en: "Error. Please contact with admin.",
+      message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên.",
     };
   }
   return new Promise(async (resolve, reject) => {
@@ -846,7 +886,8 @@ const deleteUserService = async (data) => {
         if (!teacher) {
           return {
             codeNumber: 1,
-            message: "Teacher not exist in system",
+            message_en: "Teacher is not exist in system.",
+            message_vn: "Giảng viên không tồn tại trong hệ thống.",
           };
         }
         await db.Teacher.destroy({
@@ -856,7 +897,8 @@ const deleteUserService = async (data) => {
         });
         resolve({
           codeNumber: 0,
-          message: "Delete Teacher Succeed",
+          message_en: "Delete Teacher Succeed.",
+          message_vn: "Xoá giảng viên thành công.",
         });
       } else if (type === "otherUser") {
         const OtherUser = await db.OtherUser.findOne({
@@ -867,7 +909,8 @@ const deleteUserService = async (data) => {
         if (!OtherUser) {
           return {
             codeNumber: 1,
-            message: "OtherUser not exist in system",
+            message_en: "User is not exist in system.",
+            message_vn: "Người dùng không tồn tại trong hệ thống.",
           };
         }
         await db.OtherUser.destroy({
@@ -877,7 +920,8 @@ const deleteUserService = async (data) => {
         });
         resolve({
           codeNumber: 0,
-          message: "Delete OtherUser Succeed",
+          message_en: "Delete User Succeed.",
+          message_vn: "Xoá người dùng thành công.",
         });
       }
     } catch (e) {

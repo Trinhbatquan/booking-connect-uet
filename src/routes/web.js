@@ -39,7 +39,12 @@ const {
   createQuestionController,
   updateStatusBookingScheduleByManagerController,
 } = require("../controllers/bookingController");
-const { updateStudentController } = require("../controllers/studentController");
+const {
+  updateStudentController,
+  getStudentController,
+  updateProfileStudentController,
+  updatePasswordStudentController,
+} = require("../controllers/studentController");
 const {
   checkExpiredToken,
   protectAdminToken,
@@ -52,7 +57,14 @@ const {
   createNotifySystemController,
   updateNotifySystemController,
   deleteNotifySystemController,
+  getNotificationHomePageLimited,
 } = require("../controllers/notification");
+
+const {
+  getPreviousFeedback,
+  saveFeedbackController,
+  getFeedbackController,
+} = require("../controllers/student_feedback");
 
 let router = express.Router();
 
@@ -153,18 +165,46 @@ const initWebRoutes = (app) => {
     (req, res, next) => protectUserToken(req, res, next, "student"),
     createBookingScheduleController
   );
+  router.post(
+    "/api/get-student",
+    (req, res, next) => checkExpiredToken(req, res, next, "student"),
+    (req, res, next) => protectUserToken(req, res, next, "student"),
+    getStudentController
+  );
   router.put(
     "/api/update-student",
     (req, res, next) => checkExpiredToken(req, res, next, "student"),
     (req, res, next) => protectUserToken(req, res, next, "student"),
     updateStudentController
   );
+  router.put(
+    "/api/update-profile-student",
+    (req, res, next) => checkExpiredToken(req, res, next, "student"),
+    (req, res, next) => protectUserToken(req, res, next, "student"),
+    updateProfileStudentController
+  );
+  router.put(
+    "/api/update-password-student",
+    (req, res, next) => checkExpiredToken(req, res, next, "student"),
+    (req, res, next) => protectUserToken(req, res, next, "student"),
+    updatePasswordStudentController
+  );
   router.get("/api/get-booking-schedule", getBookingScheduleController);
+
   router.post(
     "/api/create-question",
     (req, res, next) => checkExpiredToken(req, res, next, "student"),
     (req, res, next) => protectUserToken(req, res, next, "student"),
     createQuestionController
+  );
+
+  router.get("/api/get-feedback", getFeedbackController);
+  router.get("/api/previous-feedback", getPreviousFeedback);
+  router.post(
+    "/api/save-feedback",
+    (req, res, next) => checkExpiredToken(req, res, next, "student"),
+    (req, res, next) => protectUserToken(req, res, next, "student"),
+    saveFeedbackController
   );
 
   //forgotEmail
@@ -175,6 +215,11 @@ const initWebRoutes = (app) => {
   router.post(
     "/api/homepage/update-pass-forgot",
     verifyAndUpdatePasswordHomePageController
+  );
+
+  router.get(
+    "/api/get-notification-homePage-limited",
+    getNotificationHomePageLimited
   );
 
   return app.use("/", router);

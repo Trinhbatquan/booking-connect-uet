@@ -1,50 +1,54 @@
 const db = require("../models");
 const { convertTimeStamp } = require("../utils/convertTimeStamp");
 
+//manager + system
 const getNotificationService = ({ managerId, roleManager, page, type }) => {
   return new Promise(async (resolve, reject) => {
     try {
       const pageSize = 8;
       const pageCurrent = page || 1;
+      console.log(managerId);
       const totalDocument = await db.Notification.count({
-        where: managerId
-          ? {
-              managerId,
-              roleManager: roleManager
-                ? roleManager
-                : ["R2", "R3", "R4", "R5", "R6"],
-              type_notification: type
-                ? type
-                : ["new_book", "new_ques", "check_event", "system"],
-            }
-          : {
-              roleManager: roleManager
-                ? roleManager
-                : ["R2", "R3", "R4", "R5", "R6"],
-              type_notification: type
-                ? type
-                : ["new_book", "new_ques", "check_event", "system"],
-            },
+        where:
+          managerId || managerId?.length > 0
+            ? {
+                managerId,
+                roleManager: roleManager
+                  ? roleManager
+                  : ["R2", "R3", "R4", "R5", "R6"],
+                type_notification: type
+                  ? type
+                  : ["new_book", "new_ques", "check_event", "system"],
+              }
+            : {
+                roleManager: roleManager
+                  ? roleManager
+                  : ["R2", "R3", "R4", "R5", "R6"],
+                type_notification: type
+                  ? type
+                  : ["new_book", "new_ques", "check_event", "system"],
+              },
       });
       const data = await db.Notification.findAll({
-        where: managerId
-          ? {
-              managerId,
-              roleManager: roleManager
-                ? roleManager
-                : ["R2", "R3", "R4", "R5", "R6"],
-              type_notification: type
-                ? type
-                : ["new_book", "new_ques", "check_event", "system"],
-            }
-          : {
-              roleManager: roleManager
-                ? roleManager
-                : ["R2", "R3", "R4", "R5", "R6"],
-              type_notification: type
-                ? type
-                : ["new_book", "new_ques", "check_event", "system"],
-            },
+        where:
+          managerId || managerId?.length > 0
+            ? {
+                managerId,
+                roleManager: roleManager
+                  ? roleManager
+                  : ["R2", "R3", "R4", "R5", "R6"],
+                type_notification: type
+                  ? type
+                  : ["new_book", "new_ques", "check_event", "system"],
+              }
+            : {
+                roleManager: roleManager
+                  ? roleManager
+                  : ["R2", "R3", "R4", "R5", "R6"],
+                type_notification: type
+                  ? type
+                  : ["new_book", "new_ques", "check_event", "system"],
+              },
         include: [
           {
             model: db.Booking,
@@ -78,6 +82,7 @@ const getNotificationService = ({ managerId, roleManager, page, type }) => {
   });
 };
 
+//system + homepage
 const getAllNotifyByTypeService = (type_select) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -109,6 +114,33 @@ const getAllNotifyByTypeService = (type_select) => {
       resolve({
         codeNumber: 0,
         allNotifyCount: data,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+//homepage
+const getNotifyHomePageLimitedService = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const notify = await db.Notification.findAll({
+        where: {
+          type_notification: "system",
+          roleManager: "R3", //student notification
+        },
+        limit: 6,
+        nest: true,
+        raw: true,
+        order: [
+          ["updatedAt", "DESC"],
+          ["createdAt", "DESC"],
+        ],
+      });
+      resolve({
+        codeNumber: 0,
+        notifyHomePageLimited: notify,
       });
     } catch (e) {
       reject(e);
@@ -178,4 +210,5 @@ module.exports = {
   createNotifySystemService,
   updateNotifySystemService,
   deleteNotifySystemService,
+  getNotifyHomePageLimitedService,
 };
