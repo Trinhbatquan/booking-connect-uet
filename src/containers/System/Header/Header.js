@@ -24,6 +24,7 @@ import { logOutUser } from "../../../redux/authSlice";
 import { path } from "../../../utils/constant";
 import { NavLink } from "react-router-dom";
 import { logOutApi } from "../../../services/userService";
+import moment from "moment";
 
 import { socket } from "../../../index";
 import { toast, ToastContainer } from "react-toastify";
@@ -35,25 +36,25 @@ const HeaderUser = () => {
   const [openModelUser, setOpenModelUser] = useState(false);
   const currentUser = useSelector((state) => state.authReducer);
   const [socketNotify, setSocketNotify] = useState(false);
-  const notify = useSelector((state) => state.notificationReducer.notify);
+  // const notify = useSelector((state) => state.notificationReducer.notify);
   const dispatch = useDispatch();
 
-  let count = 0;
-  if (notify?.length > 0) {
-    notify.forEach((item) => {
-      for (let i = 0; i < notify.length; i++) {
-        if (notify[i]?.status === "NR") {
-          count++;
-          break;
-        }
-      }
-    });
-  }
+  // let count = 0;
+  // if (notify?.length > 0) {
+  //   notify.forEach((item) => {
+  //     for (let i = 0; i < notify.length; i++) {
+  //       if (notify[i]?.status === "NR") {
+  //         count++;
+  //         break;
+  //       }
+  //     }
+  //   });
+  // }
 
   useEffect(() => {
     console.log("000000");
 
-    const listenNotifyFromBackend = (data) => {
+    const listenNewBookingFromBackend = (data) => {
       const { managerId, roleManager, action } = data;
       if (managerId === currentUser?.id && roleManager === currentUser?.role) {
         if (action === "A1") {
@@ -84,10 +85,37 @@ const HeaderUser = () => {
         setSocketNotify(true);
       }
     };
-    socket.on("new_booking", (data) => listenNotifyFromBackend(data));
+
+    const listenNewNotifyFromSystem = (data) => {
+      const { dataRoleManager, time } = data;
+      const checkRole = dataRoleManager.includes(currentUser?.role);
+      if (checkRole) {
+        toast.info(
+          i18n.language === "en"
+            ? `You recently had a new notification from system at ${moment(
+                time
+              ).format("MMMM Do YYYY, h:mm:ss a")}.`
+            : `Bạn vừa có một thông báo mới từ hệ thống vào lúc ${moment(
+                time
+              ).format("MMMM Do YYYY, h:mm:ss a")}.`,
+          {
+            autoClose: false,
+            theme: "colored",
+            position: "bottom-right",
+          }
+        );
+        setSocketNotify(true);
+      }
+    };
+
+    socket.on("new_booking", (data) => listenNewBookingFromBackend(data));
+    socket.on("new_notification_system", (data) =>
+      listenNewNotifyFromSystem(data)
+    );
 
     return () => {
-      socket.off("new_booking", listenNotifyFromBackend);
+      socket.off("new_booking", listenNewBookingFromBackend);
+      socket.off("new_notification_system", listenNewNotifyFromSystem);
     };
   }, []);
 

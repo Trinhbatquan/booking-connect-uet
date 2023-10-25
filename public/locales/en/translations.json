@@ -44,7 +44,7 @@
 
     "system": {
          "token": {
-            "mess": "Token is expired. Please login again after 3 seconds."
+            "mess": "Token is expired. Please login again after 5 seconds."
         },
  
         "header": {
@@ -142,7 +142,9 @@
             "mess-1": "All Field have",
             "mess-2": "is required",
             "action": "Action",
-            "position": "Position"
+            "position": "Position",
+            "faculty": "Faculty",
+            "classroom": "Classroom"
         },
         "notification": {
             "required": " is required.",
@@ -154,7 +156,8 @@
             "update": "Update Successfully!",
             "delete": "Delete Successfully!",
             "fail": "Error. Please try again or contact admin!",
-            "miss": "Please enter all field."
+            "miss": "Please enter all field.",
+            "matchPassword": "Password is not match. Please try again."
         },
          "schedule": {
             "department": "Department",
@@ -177,12 +180,25 @@
     },
 
 
+    "login_register": {
+        "signup": "Sign up",
+        "signin": "Sign in",
+        "name": "FullName",
+        "password": "Password",
+        "confirm_password": "Confirm Password",
+        "faculty": "Faculties",
+        "classroom": "Classroom",
+        "phoneNumber": "PhoneNumber",
+        "forgotPassword": "Forget your password"
+    },
+
+
   
     "header": {
         "UET": "University of engineering and technology",
         "VNU": "Vietnam national university",
         "support": "Support",
-        "inform": "Inform of system",
+        "inform": "Inform",
         "survey": "Opinion Survey",
         "handbook": "Study Handbook",
         "contact": "Contact",

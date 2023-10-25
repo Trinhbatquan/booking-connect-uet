@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Loading from "../../../utils/Loading";
 import { loginHomePageApi } from "../../../services/userService";
 import HomeHeader from "../HomeHeader";
+import { useTranslation } from "react-i18next";
 
 const ForgotPassword = () => {
   const [focusEmail_login, setFocusEmail_login] = useState(false);
@@ -12,6 +13,8 @@ const ForgotPassword = () => {
 
   const [color, setColor] = useState(false);
 
+  const { t, i18n } = useTranslation();
+
   const handleFocusEmail_login = () => {
     setFocusEmail_login(true);
     setMessageLogin("");
@@ -20,11 +23,11 @@ const ForgotPassword = () => {
   const checkAdvancedRegister = () => {
     let regexEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     if (!email_login) {
-      setMessageLogin("Please enter your email.");
+      setMessageLogin(`${t("system.table.email")} ${t("system.table.mess-2")}`);
       return false;
     }
     if (!regexEmail.test(email_login)) {
-      setMessageLogin("Please enter correct email's format.");
+      setMessageLogin(t("system.notification.email"));
       return false;
     }
     return true;
@@ -36,10 +39,14 @@ const ForgotPassword = () => {
       setMessageLogin("");
       loginHomePageApi.forgot({ email: email_login }).then((data) => {
         if (data?.codeNumber === 2) {
-          setMessageLogin(data?.message);
+          setMessageLogin(
+            i18n.language === "en" ? data?.message_en : data?.message_vn
+          );
           setColor(true);
         } else {
-          setMessageLogin(data?.message);
+          setMessageLogin(
+            i18n.language === "en" ? data?.message_en : data?.message_vn
+          );
           setColor(false);
         }
         setIsLoading(false);
@@ -56,6 +63,13 @@ const ForgotPassword = () => {
         height: "100vh",
       }}
     >
+      {isLoading && (
+        <div className="fixed z-50 top-0 bottom-0 flex items-center justify-center mx-auto left-0 right-0 w-full max-h-full bg-black bg-opacity-25">
+          <div className="absolute top-[50%] left-[50%]">
+            <Loading />
+          </div>
+        </div>
+      )}
       <HomeHeader />
       <div
         className="container h-[550px] w-[65%] mx-auto flex overflow-hidden bg-white"
@@ -70,12 +84,16 @@ const ForgotPassword = () => {
           style={{ backgroundColor: "#6741ff" }}
         >
           <div class="text-center">
-            <h3 style={{ color: "#fff", fontSize: "30px" }}>Don't worry</h3>
+            <h3 style={{ color: "#fff", fontSize: "30px" }}>
+              {i18n.language === "en" ? "Don't worry" : "Đừng lo lắng"}
+            </h3>
             <p
               className="font-semibold text-white"
               style={{ fontSize: "16px" }}
             >
-              You are going to get my account now.
+              {i18n.language === "en"
+                ? "You are going to get my account now."
+                : "Bạn sẽ lấy lại tài khoản ngay."}
             </p>
           </div>
         </div>
@@ -84,9 +102,10 @@ const ForgotPassword = () => {
             className=""
             style={{ fontSize: "18px", color: "rgb(55, 55, 204)" }}
           >
-            Please enter email to continue.
+            {i18n.language === "en"
+              ? "Please enter email to continue."
+              : "Vui lòng nhập email để tiếp tục."}
           </p>
-          {isLoading && <Loading />}
           <div
             className={`flex text-center items-center justify-center py-2 text-md ${
               color ? "text-blue-700" : "text-red-600"
@@ -114,7 +133,7 @@ const ForgotPassword = () => {
             id="email"
             type="email"
             name="email"
-            placeholder="Enter your email"
+            placeholder="VD: 19020641@vnu.edu.vn"
             onChange={(e) => setEmail_login(e.target.value)}
           />
           <div
@@ -131,7 +150,7 @@ const ForgotPassword = () => {
                 height: "40px",
               }}
             >
-              Continue
+              {i18n.language === "en" ? "Continue" : "Tiếp tục"}
             </button>
           </div>
         </div>

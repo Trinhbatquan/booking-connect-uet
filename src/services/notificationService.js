@@ -10,6 +10,10 @@ const getNotiFy = {
     const url = "/api/all_notify_by_type";
     return axiosClient.get(url, { params });
   },
+  getHomePageLimited: (params) => {
+    const url = "/api/get-notification-homePage-limited";
+    return axiosClient.get(url, { params });
+  },
 };
 
 const createNotifySystem = (params, data) => {

@@ -22,6 +22,7 @@ import { logOutUser } from "../../../redux/authSlice";
 import { useNavigate } from "react-router";
 import { path } from "../../../utils/constant";
 import DeleteNotify from "./DeleteNotify";
+import { emit_new_notification_from_system } from "../../../utils/socket_client";
 
 const NotificationSystem = () => {
   const [loading, setLoading] = useState(true);
@@ -183,6 +184,7 @@ const NotificationSystem = () => {
       const notifyData = [];
       for (let i = 0; i < user?.length; i++) {
         notifyData.push({
+          managerId: 0,
           roleManager: user[i]?.value,
           title,
           content: detail,
@@ -223,6 +225,21 @@ const NotificationSystem = () => {
           });
           setLoading(false);
         } else {
+          //websocket notify to manager
+          const dataRoleManager = [];
+          for (let i = 0; i < user.length; i++) {
+            if (user[i]?.value !== "R3") {
+              dataRoleManager.push(user[i]?.value);
+            }
+          }
+          console.log(dataRoleManager);
+          console.log(user);
+          if (dataRoleManager?.length > 0) {
+            emit_new_notification_from_system({
+              dataRoleManager,
+              time: new Date(),
+            });
+          }
           getNotiFy
             .getAllCount({
               type: "system",
@@ -804,20 +821,18 @@ const NotificationSystem = () => {
                           marginTop: "25px",
                           marginBottom: "22px",
                           color: "#015198",
+                          height: "150px",
+                          maxHeight: "150px",
+                          lineHeight: "30px",
+                          overflow: "hidden",
+                          display: "-webkit-box",
+                          WebkitBoxOrient: "vertical",
+                          WebkitLineClamp: 5,
                         }}
-                      >
-                        <div
-                          className="text-md"
-                          style={{
-                            marginTop: "25px",
-                            marginBottom: "22px",
-                            color: "#015198",
-                          }}
-                          dangerouslySetInnerHTML={{
-                            __html: item?.contentHtml,
-                          }}
-                        ></div>
-                      </div>
+                        dangerouslySetInnerHTML={{
+                          __html: item?.contentHtml,
+                        }}
+                      ></div>
                       <div
                         className="text-sm flex items-center justify-start"
                         style={{

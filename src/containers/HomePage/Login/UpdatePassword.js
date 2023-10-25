@@ -6,11 +6,11 @@ import Loading from "../../../utils/Loading";
 import { loginHomePageApi } from "../../../services/userService";
 import { toast } from "react-toastify";
 import HomeHeader from "../HomeHeader";
+import { useTranslation } from "react-i18next";
 
 const UpdatePassword = () => {
   const param = useParams();
   const [isLoading, setIsLoading] = useState(false);
-  const [focusEmail_login, setFocusEmail_login] = useState(false);
   const [focusPassword_login, setFocusPassword_login] = useState(false);
   const [focusConformPassword, setFocusConformPassword] = useState(false);
 
@@ -24,6 +24,8 @@ const UpdatePassword = () => {
   const [expired, setExpired] = useState(4 * 60);
 
   const [eye_login, setEye_login] = useState(false);
+
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     let time = setInterval(() => {
@@ -41,10 +43,6 @@ const UpdatePassword = () => {
     };
   }, []);
 
-  const handleFocusEmail_login = () => {
-    setFocusEmail_login(true);
-    setMessageLogin("");
-  };
   const handleFocusPassword_login = () => {
     setFocusPassword_login(true);
     setMessageLogin("");
@@ -55,21 +53,22 @@ const UpdatePassword = () => {
   };
 
   const checkAdvancedRegister = () => {
-    // let regexEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     let regexPassword =
       /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{7,15}$/;
     if (!password_login || !confirmPs) {
-      setMessageLogin("Please enter all field.");
-      return false;
-    }
-    if (!regexPassword.test(password_login) || !regexPassword.test(confirmPs)) {
       setMessageLogin(
-        "Password must have the least 8 characters, 1 number and 1 a special character."
+        i18n.language === "en"
+          ? "Please enter all fields."
+          : "Vui lòng nhập đủ các trường"
       );
       return false;
     }
-    if (password_login.trim() !== confirmPs.trim()) {
-      setMessageLogin("Password not match. Please try again.");
+    if (!regexPassword.test(password_login) || !regexPassword.test(confirmPs)) {
+      setMessageLogin(t("system.notification.password"));
+      return false;
+    }
+    if (password_login !== confirmPs) {
+      setMessageLogin(t("system.notification.matchPassword"));
       return false;
     }
     return true;
@@ -78,49 +77,49 @@ const UpdatePassword = () => {
     if (checkAdvancedRegister()) {
       setIsLoading(true);
       setMessageLogin("");
-      setTimeout(() => {
-        loginHomePageApi
-          .updatePass_forgot(
-            {},
-            { email: email_login, token: param.token, password: password_login }
-          )
-          .then((data) => {
-            if (data?.codeNumber === 2) {
-              setColor(true);
-              setMessageLogin(data?.message);
-              setDisableButton(true);
-            } else if (data?.codeNumber === 3) {
-              setColor(false);
-              setMessageLogin(data?.message);
-            } else {
-              setColor(false);
-              toast.error("Error.Please contact with admin page.", {
-                theme: "colored",
-                autoClose: 3000,
-                position: "bottom-right",
-              });
-            }
-            setIsLoading(false);
-          });
-      }, 2000);
+      loginHomePageApi
+        .updatePass_forgot(
+          {},
+          { email: email_login, token: param.token, password: password_login }
+        )
+        .then((data) => {
+          if (data?.codeNumber === 2) {
+            setColor(true);
+            setMessageLogin(
+              i18n.language === "en" ? data?.message_en : data?.message_vn
+            );
+            setDisableButton(true);
+          } else if (data?.codeNumber === 3) {
+            setColor(false);
+            setMessageLogin(
+              i18n.language === "en" ? data?.message_en : data?.message_vn
+            );
+          } else {
+            setColor(false);
+            setMessageLogin(t("system.notification.fail"));
+          }
+          setIsLoading(false);
+        });
     }
   };
 
   const handleSendAgainLink = () => {
     setIsLoading(true);
     setMessageLogin("");
-    setTimeout(() => {
-      loginHomePageApi.forgot({ email: email_login }).then((data) => {
-        if (data?.codeNumber === 2) {
-          setMessageLogin(data?.message);
-          setColor(true);
-        } else {
-          setMessageLogin(data?.message);
-          setColor(false);
-        }
-        setIsLoading(false);
-      });
-    }, 2000);
+    loginHomePageApi.forgot({ email: email_login }).then((data) => {
+      if (data?.codeNumber === 2) {
+        setMessageLogin(
+          i18n.language === "en" ? data?.message_en : data?.message_vn
+        );
+        setColor(true);
+      } else {
+        setMessageLogin(
+          i18n.language === "en" ? data?.message_en : data?.message_vn
+        );
+        setColor(false);
+      }
+      setIsLoading(false);
+    });
   };
 
   return (
@@ -132,6 +131,13 @@ const UpdatePassword = () => {
         height: "100vh",
       }}
     >
+      {isLoading && (
+        <div className="fixed z-50 top-0 bottom-0 flex items-center justify-center mx-auto left-0 right-0 w-full max-h-full bg-black bg-opacity-25">
+          <div className="absolute top-[50%] left-[50%]">
+            <Loading />
+          </div>
+        </div>
+      )}
       <HomeHeader />
       <div
         className="container h-[550px] w-[65%] mx-auto flex overflow-hidden bg-white"
@@ -146,21 +152,28 @@ const UpdatePassword = () => {
           style={{ backgroundColor: "#6741ff" }}
         >
           <div class="text-center">
-            <h3 style={{ color: "#fff", fontSize: "30px" }}>Update Password</h3>
+            <h3 style={{ color: "#fff", fontSize: "30px" }}>
+              {i18n.language === "en" ? "Update Password" : "Cập nhật mật khẩu"}
+            </h3>
             <p
               className="font-semibold text-white"
               style={{ fontSize: "16px" }}
             >
-              Let's follow instruction to finish.
+              {i18n.language === "en"
+                ? " Let's follow instruction to finish."
+                : "Vui lòng làm theo hướng dẫn để kết thúc."}
             </p>
           </div>
         </div>
         <div className="w-[50%] flex flex-col items-center justify-center">
           <p className="w-[80%] text-center mx-auto text-blue-700 text-lg mt-16 flex flex-col items-center justify-center gap-0.5">
-            <span>Please enter new password to update.</span>
+            <span>
+              {i18n.language === "en"
+                ? "Please enter new password to update."
+                : "Vui lòng nhập mật khẩu mới để cập nhật."}
+            </span>
             <span>{`Time left: ${expired}s`}</span>
           </p>
-          {isLoading && <Loading />}
           <div
             className={`flex text-center items-center justify-center pb-2 pt-3 text-md ${
               color ? "text-blue-700" : "text-red-600"
@@ -183,7 +196,6 @@ const UpdatePassword = () => {
             type="email"
             disabled
             name="email"
-            placeholder="Enter your email"
           />
           <div className="login-form w-[70%] mb-4 relative">
             <input
@@ -201,7 +213,9 @@ const UpdatePassword = () => {
               id="password"
               type={`${eye_login ? "text" : "password"}`}
               name="password"
-              placeholder="Enter your password"
+              placeholder={
+                i18n.language === "en" ? "Enter your password" : "Nhập mật khẩu"
+              }
               onChange={(e) => setPassword_login(e.target.value)}
             />
             {eye_login ? (
@@ -231,7 +245,9 @@ const UpdatePassword = () => {
             id="password_confirm"
             type={`${eye_login ? "text" : "password"}`}
             name="password"
-            placeholder="Confirm your password"
+            placeholder={
+              i18n.language === "en" ? "Enter your password" : "Nhập mật khẩu"
+            }
             onChange={(e) => setConfirmPs(e.target.value)}
           />
           <div
@@ -250,7 +266,7 @@ const UpdatePassword = () => {
                 padding: "10px 15px",
               }}
             >
-              Update Password
+              {i18n.language === "en" ? "Update Password" : "Cập nhật mật khẩu"}
             </button>
           </div>
           <p className="pt-2 text-headingColor opacity-80 text-sm cursor-pointer mx-auto text-center flex items-center justify-center gap-1">
@@ -262,7 +278,7 @@ const UpdatePassword = () => {
                 }`}
                 onClick={() => !disableButton && handleSendAgainLink()}
               >
-                Send a new link.
+                {i18n.language === "en" ? "Send a new link." : "Gửi link mới."}
               </span>
             </div>
           </p>

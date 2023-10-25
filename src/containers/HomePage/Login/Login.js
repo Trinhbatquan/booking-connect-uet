@@ -15,6 +15,8 @@ import { select_faculty } from "../../../utils/constant";
 import { FaPencilAlt } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 import HomeHeader from "../HomeHeader";
+import { useTranslation } from "react-i18next";
+import { toast, ToastContainer } from "react-toastify";
 
 const Login = () => {
   //login
@@ -23,7 +25,7 @@ const Login = () => {
   const [eye_login, setEye_login] = useState(false);
   const [email_login, setEmail_login] = useState("");
   const [password_login, setPassword_login] = useState("");
-  const [messageLogin, setMessageLogin] = useState({});
+  const [messageLogin, setMessageLogin] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -42,7 +44,7 @@ const Login = () => {
   const [password_register, setPassword_register] = useState("");
   const [confirmPs, setConfirmPs] = useState("");
   const [faculty, setFaculty] = useState("");
-  const [messageRegister, setMessageRegister] = useState({});
+  const [messageRegister, setMessageRegister] = useState("");
   const [classroom, setClassroom] = useState("");
   const [phone, setPhone] = useState("");
 
@@ -50,38 +52,85 @@ const Login = () => {
 
   const [active, setActive] = useState(false);
   const containerRef = useRef();
-
+  const { t, i18n } = useTranslation();
   //login
   const handleFocusPassword_login = () => {
     setFocusPassword_login(true);
-    setMessageLogin({});
+    setMessageLogin("");
   };
 
   const handleFocusEmail_login = () => {
     setFocusEmail_login(true);
-    setMessageLogin({});
+    setMessageLogin("");
+  };
+
+  //check null state
+  const handleCheckNullState_Login = () => {
+    let result = true;
+    const stateArr = [email_login, password_login];
+    const notification_en = ["Email", "Password"];
+    const notification_vn = ["Trường Email", "Trường mật khẩu"];
+    for (let i = 0; i < stateArr.length; i++) {
+      if (!stateArr[i]) {
+        setMessageLogin(
+          `${
+            i18n.language === "en"
+              ? `${notification_en[i]} ${t("system.table.mess-2")}`
+              : `${notification_vn[i]} ${t("system.table.mess-2")}`
+          }`
+        );
+        result = false;
+        break;
+      } else {
+        setMessageLogin("");
+      }
+    }
+    return result;
+  };
+  const handleCheckValidate_Login = () => {
+    let result = true;
+    const checkNullState = handleCheckNullState_Login();
+    if (checkNullState) {
+      const regexEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+      const regexPassword =
+        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+      if (!regexEmail.test(email_login)) {
+        setMessageLogin(t("system.notification.email"));
+        return false;
+      }
+      if (!regexPassword.test(password_login)) {
+        setMessageLogin(t("system.notification.password"));
+        return false;
+      }
+
+      return result;
+    }
   };
 
   const handleLogin = () => {
-    setLoading(true);
-    setMessageLogin({});
-    loginHomePageApi
-      .loginUser({}, { email: email_login, password: password_login })
-      .then((data) => {
-        setLoading(false);
-        if (data?.codeNumber === 0) {
-          //success
-          dispatch(loginUserSucceed(data?.user));
-          navigate(`${path.HOMEPAGE}`);
-        } else {
-          //false
-          setMessageLogin({
-            codeNumber: data?.codeNumber,
-            message: data?.message,
-          });
-          dispatch(loginUserFailed());
-        }
-      });
+    if (handleCheckValidate_Login()) {
+      setLoading(true);
+      setMessageLogin("");
+      loginHomePageApi
+        .loginUser({}, { email: email_login, password: password_login })
+        .then((data) => {
+          if (data?.codeNumber === 0) {
+            //success
+            setLoading(false);
+            dispatch(loginUserSucceed(data?.user));
+            navigate(`${path.HOMEPAGE}`);
+          } else {
+            //false
+            setLoading(false);
+            setMessageLogin({
+              codeNumber: data?.codeNumber,
+              message:
+                i18n.language === "en" ? data?.message_en : data?.message_vn,
+            });
+            dispatch(loginUserFailed());
+          }
+        });
+    }
   };
 
   useEffect(() => {
@@ -98,38 +147,37 @@ const Login = () => {
   };
 
   const handleSignUp = () => {
-    console.log(1);
     setActive(true);
   };
 
   //register
   const handleFocusFullName_register = () => {
     setFocusFullName(true);
-    setMessageRegister({});
+    setMessageRegister("");
   };
   const handleFocusPassword_register = () => {
     setFocusPassword_register(true);
-    setMessageRegister({});
+    setMessageRegister("");
   };
   const handleFocusEmail_register = () => {
     setFocusEmail_register(true);
-    setMessageRegister({});
+    setMessageRegister("");
   };
   const handleFocusConfirmPassword_register = () => {
     setFocusConformPassword_register(true);
-    setMessageRegister({});
+    setMessageRegister("");
   };
   const handleFocusFaculty_register = () => {
     setFocusFaculty(true);
-    setMessageRegister({});
+    setMessageRegister("");
   };
   const handleFocusClassroom_register = () => {
     setFocusClassroom(true);
-    setMessageRegister({});
+    setMessageRegister("");
   };
   const handleFocusPhone_register = () => {
     setFocusPhone(true);
-    setMessageRegister({});
+    setMessageRegister("");
   };
 
   //check null state
@@ -151,9 +199,23 @@ const Login = () => {
       "Classroom",
       "PhoneNumber",
     ];
+    const notification_vn = [
+      "Trường Tên đầy đủ",
+      "Trường Email",
+      "Trường mật khẩu",
+      "Trường khoa",
+      "Trường lớp",
+      "Trường số điện thoại",
+    ];
     for (let i = 0; i < stateArr.length; i++) {
       if (!stateArr[i]) {
-        setMessageRegister(`${notification_en[i]} is required.`);
+        setMessageRegister(
+          `${
+            i18n.language === "en"
+              ? `${notification_en[i]} ${t("system.table.mess-2")}`
+              : `${notification_vn[i]} ${t("system.table.mess-2")}`
+          }`
+        );
         result = false;
         break;
       } else {
@@ -171,33 +233,27 @@ const Login = () => {
         /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
       const rejexPhoneNumber = /\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/;
       if (!regexEmail.test(email_register)) {
-        setMessageRegister(`Please enter the correct email format.`);
+        setMessageRegister(t("system.notification.email"));
         return false;
       }
       if (!regexPassword.test(password_register)) {
-        setMessageRegister(
-          `Password must have the least 8 letters, 1 number and 1 special character.`
-        );
+        setMessageRegister(t("system.notification.password"));
         return false;
       }
       if (!rejexPhoneNumber.test(phone)) {
-        setMessageRegister(`Please enter the correct phone format.`);
+        setMessageRegister(t("system.notification.phone"));
         return false;
       }
-
+      if (password_register !== confirmPs) {
+        setMessageRegister(t("system.notification.matchPassword"));
+        return false;
+      }
       return result;
     }
   };
 
   const handleRegister = () => {
-    console.log("register");
-    console.log(password_register, confirmPs);
-    if (
-      password_register &&
-      confirmPs &&
-      password_register === confirmPs &&
-      handleCheckValidate_Register()
-    ) {
+    if (handleCheckValidate_Register()) {
       setLoading(true);
       setMessageRegister({});
       loginHomePageApi
@@ -213,36 +269,43 @@ const Login = () => {
           }
         )
         .then((data) => {
-          setLoading(false);
           if (data?.codeNumber === 0) {
             //success
+            setLoading(false);
             dispatch(loginUserSucceed(data?.user));
             navigate(`${path.HOMEPAGE}`);
           } else {
             //false
+            setLoading(false);
             setMessageRegister({
               codeNumber: data?.codeNumber,
-              message: data?.message,
+              message:
+                i18n.language === "en" ? data?.message_en : data?.message_vn,
             });
             dispatch(loginUserFailed());
           }
         });
     } else {
-      setMessageRegister({
-        codeNumber: 1,
-        message: "Password is not match. Please try again.",
-      });
+      return;
     }
   };
 
   return (
     <div className="login-register-homepage-container">
+      {loading && (
+        <div className="fixed z-50 top-0 bottom-0 flex items-center justify-center mx-auto left-0 right-0 w-full max-h-full bg-black bg-opacity-25">
+          <div className="absolute top-[50%] left-[50%]">
+            <Loading />
+          </div>
+        </div>
+      )}
+      <ToastContainer />
       <HomeHeader />
       <div className={`${active ? "active" : ""} container`} ref={containerRef}>
         <div className="box">
           <div className="form login">
             <div className="font-semibold text-center login-text py-1">
-              Login
+              {t("login_register.signin")}
             </div>
             <div
               className={`${
@@ -251,16 +314,20 @@ const Login = () => {
                   : "messageLogin-text"
               } text-center mt-1`}
               style={
-                messageLogin && messageLogin?.codeNumber
+                messageLogin || messageLogin?.codeNumber
                   ? { opacity: "1" }
                   : { opacity: "0" }
               }
             >
-              {`${messageLogin?.message ? messageLogin?.message : "none"}`}
+              {`${
+                messageLogin?.message
+                  ? messageLogin?.message
+                  : messageLogin
+                  ? messageLogin
+                  : "none"
+              }`}
             </div>
-            <div className="flex items-center justify-center">
-              {loading && <Loading />}
-            </div>
+            <div className="flex items-center justify-center"></div>
             <div className="login-form w-2/3 flex flex-col items-start justify-center pb-4 mt-2">
               <div className="flex items-center justify-start gap-0.5 pb-1 pl-1">
                 <FaPencilAlt className="text-sm opacity-70" />
@@ -283,13 +350,13 @@ const Login = () => {
                 id="email"
                 type="email"
                 name="email"
-                placeholder="Enter your email"
+                placeholder="VD: 19020641@vnu.edu.vn"
                 onChange={(e) => setEmail_login(e.target.value)}
               />
             </div>
             <div className="login-form w-2/3 flex flex-col items-start justify-center pb-4 relative">
               <label className="opacity-70 pb-1 pl-1" htmlFor="password">
-                Password
+                {t("login_register.password")}
               </label>
               <input
                 autoComplete="false"
@@ -306,7 +373,11 @@ const Login = () => {
                 id="password"
                 type={`${eye_login ? "text" : "password"}`}
                 name="password"
-                placeholder="Enter your password"
+                placeholder={
+                  i18n.language === "en"
+                    ? "Enter your password"
+                    : "Nhập mật khẩu"
+                }
                 onChange={(e) => setPassword_login(e.target.value)}
               />
               {eye_login ? (
@@ -322,18 +393,20 @@ const Login = () => {
               )}
             </div>
             <div className="w-1/4 mt-4 " onClick={() => handleLogin()}>
-              <button className="w-full btn-form rounded-lg">Log in</button>
+              <button className="w-full btn-form rounded-lg">
+                {t("login_register.signin")}
+              </button>
             </div>
             <NavLink to="/forgot-pass" className="mt-2 w-full">
               <span className="login-forgot pl-1 cursor-pointer">
-                Forgot your password?
+                {t("login_register.forgotPassword")}
               </span>
             </NavLink>
           </div>
 
           <div className="form register">
             <div className="font-semibold text-center register-text py-1">
-              Sign up
+              {t("login_register.signup")}
             </div>
             <div
               className={`${
@@ -342,23 +415,25 @@ const Login = () => {
                   : "messageRegister-text"
               } text-center mt-1`}
               style={
-                messageRegister && messageRegister?.codeNumber
+                messageRegister || messageRegister?.codeNumber
                   ? { opacity: "1" }
                   : { opacity: "0" }
               }
             >
               {`${
-                messageRegister?.message ? messageRegister?.message : "none"
+                messageRegister?.message
+                  ? messageRegister?.message
+                  : messageRegister
+                  ? messageRegister
+                  : "none"
               }`}
             </div>
-            <div className="flex items-center justify-center">
-              {loading && <Loading />}
-            </div>
+            <div className="flex items-center justify-center"></div>
             <div className="register-form w-2/3 flex flex-col items-start justify-center pb-4 mt-2">
               <div className="flex items-center justify-start pl-1 pb-1 gap-0.5">
                 <FaPencilAlt className="text-sm opacity-70" />
                 <label className="opacity-70" htmlFor="name_register">
-                  FullName
+                  {t("login_register.name")}
                 </label>
               </div>
               <input
@@ -405,7 +480,7 @@ const Login = () => {
             </div>
             <div className="register-form w-2/3 flex flex-col items-start justify-center pb-4 mt-2 relative">
               <label className="opacity-70 pb-1 pl-1" htmlFor="pass_re">
-                Password
+                {t("login_register.password")}
               </label>
               <input
                 autoComplete="false"
@@ -422,7 +497,11 @@ const Login = () => {
                 id="pass_re"
                 type={`${eye_register ? "text" : "password"}`}
                 name="pass_re"
-                placeholder="Enter your password"
+                placeholder={
+                  i18n.language === "en"
+                    ? "Enter your password"
+                    : "Nhập mật khẩu"
+                }
                 onChange={(e) => setPassword_register(e.target.value)}
               />
               {eye_register ? (
@@ -439,7 +518,7 @@ const Login = () => {
             </div>
             <div className="register-form w-2/3 flex flex-col items-start justify-center pb-4 relative">
               <label className="opacity-70 pb-1 pl-1" htmlFor="password">
-                Confirm Password
+                {t("login_register.confirm_password")}
               </label>
               <input
                 autoComplete="false"
@@ -456,16 +535,20 @@ const Login = () => {
                 id="password"
                 type={`${eye_register ? "text" : "password"}`}
                 name="password"
-                placeholder="Enter your password"
+                placeholder={
+                  i18n.language === "en"
+                    ? "Enter your password"
+                    : "Nhập mật khẩu"
+                }
                 onChange={(e) => setConfirmPs(e.target.value)}
               />
             </div>
             <div className="register-form w-2/3 flex flex-col items-start justify-center pb-4 mt-2">
               <label className="opacity-70 pb-1 pl-1" htmlFor="faculties">
-                Khoa
+                {t("login_register.faculty")}
               </label>
               <select
-                className={`w-full py-2 px-3 rounded-md placeholder:text-slate-400 outline-none
+                className={`w-full py-2 px-3 rounded-md text-sm placeholder:text-slate-400 outline-none
                                   ${
                                     focusFaculty
                                       ? "bg-white duration-200 transition-all"
@@ -479,13 +562,18 @@ const Login = () => {
                 onFocus={() => handleFocusFaculty_register()}
                 onBlur={() => setFocusFaculty(false)}
               >
-                <option name="faculties" value="">
-                  Select---
+                <option name="faculties" value="" className="text-sm">
+                  {i18n.language === "en" ? "Select---" : "Chọn---"}
                 </option>
                 {select_faculty?.length > 0 &&
                   select_faculty?.map((e, i) => {
                     return (
-                      <option key={i} name="faculties" value={e?.value}>
+                      <option
+                        key={i}
+                        name="faculties"
+                        value={e?.value}
+                        className="text-sm"
+                      >
                         {e?.label}
                       </option>
                     );
@@ -494,7 +582,7 @@ const Login = () => {
             </div>
             <div className="register-form w-2/3 flex flex-col items-start justify-center pb-4 mt-2">
               <label className="opacity-70 pb-1 pl-1" htmlFor="classroom">
-                Classroom
+                {t("login_register.classroom")}
               </label>
               <input
                 autoComplete="false"
@@ -517,7 +605,7 @@ const Login = () => {
             </div>
             <div className="register-form w-2/3 flex flex-col items-start justify-center pb-4 mt-2">
               <label className="opacity-70 pb-1 pl-1" htmlFor="phone">
-                PhoneNumber
+                {t("login_register.phoneNumber")}
               </label>
               <input
                 autoComplete="false"
@@ -534,13 +622,17 @@ const Login = () => {
                 id="phone"
                 type="text"
                 name="phone"
-                placeholder="Enter your phoneNumber"
+                placeholder={
+                  i18n.language === "en"
+                    ? "Enter your phone"
+                    : "Nhập số điện thoại của bạn"
+                }
                 onChange={(e) => setPhone(e.target.value)}
               />
             </div>
             <div className="w-1/3 mt-4" onClick={() => handleRegister()}>
               <button className="w-full btn-form rounded-lg py-1">
-                Sign up
+                {t("login_register.signup")}
               </button>
             </div>
           </div>
@@ -548,23 +640,33 @@ const Login = () => {
 
         <div class="overlay">
           <div class="page page_signUp">
-            <h3>Welcome Back!</h3>
+            <h3>
+              {i18n.language === "en" ? "Welcome Back!" : "Chào mừng quay lại!"}
+            </h3>
             <p>
-              To Dialogue scheduling system And Support answer questions for
-              learners of UET.
+              {i18n.language === "en"
+                ? "To Dialogue scheduling system And Support answer questions for learners of UET."
+                : "Hệ thống lập kế hoạch đối thoại và hỗ trợ giải đáp thắc mắc cho người học UET."}
             </p>
 
             <button class="btn btnSign-in" onClick={() => handleSignIn()}>
-              Sign Up <i class="bi bi-arrow-right"></i>
+              {t("login_register.signup")}
+              {} <i class="bi bi-arrow-right"></i>
             </button>
           </div>
 
           <div class="page page_signIn">
-            <h3>Hello Friend!</h3>
-            <p>Let's register to use website. Good luck to you.</p>
+            <h3>{i18n.language === "en" ? "Hello Friend!" : "Chào bạn!"}</h3>
+            <p>
+              {i18n.language === "en"
+                ? "Let's register to use website. Have a good day."
+                : "Đăng ký để sử dụng hệ thống. Chúc bạn một ngày tốt lành."}
+            </p>
 
             <button class="btn btnSign-up" onClick={() => handleSignUp()}>
-              <i class="bi bi-arrow-left"></i> Sign In
+              <i class="bi bi-arrow-left"></i>
+              {t("login_register.signin")}
+              {}
             </button>
           </div>
         </div>

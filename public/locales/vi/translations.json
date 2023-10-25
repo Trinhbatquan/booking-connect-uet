@@ -44,7 +44,7 @@
 
      "system": {
         "token": {
-            "mess": "Token hết hạn. Vui lòng đăng nhập lại trong 3s nữa."
+            "mess": "Token hết hạn. Vui lòng đăng nhập lại trong 5s nữa."
         },
  
         "header": {
@@ -141,7 +141,9 @@
             "mess-1": "Tất cả các trường có",
             "mess-2": "bắt buộc nhập",
             "action": "Hành động",
-            "position": "Chức vụ"
+            "position": "Chức vụ",
+            "faculty": "Khoa",
+            "classroom": "Lớp"
 
         },
            "notification": {
@@ -154,7 +156,9 @@
             "update": "Cập nhật thành công!",
             "delete": "Xoá bỏ thành công!",
             "fail": "Có lỗi. Vui lòng thử lại hoặc liên hệ quản trị viên!",
-            "miss": "Vui lòng nhập đủ các trường."
+            "miss": "Vui lòng nhập đủ các trường.",
+            "matchPassword": "Mật khẩu không khớp. Vui lòng thử lại."
+
         },
         "schedule": {
             "department": "Phòng ban",
@@ -177,13 +181,24 @@
     },
 
 
+    "login_register": {
+        "signup": "Đăng ký",
+        "signin": "Đăng nhập",
+        "name": "Tên đầy đủ",
+        "password": "Mật khẩu",
+        "confirm_password": "Nhập lại mật khẩu",
+        "faculty": "Khoa",
+        "classroom": "Lớp",
+        "phoneNumber": "Số điện thoại",
+        "forgotPassword": "Quên mật khẩu"
+    },
 
 
     "header": {
         "UET": "Trường Đại học Công nghệ",
         "VNU": "Đại học Quốc gia Hà Nội",
         "support": "Hỗ trợ",
-         "inform": "Giới thiệu hệ thống",
+         "inform": "Giới thiệu",
         "survey": "Khảo sát ý kiến",
         "handbook": "Cẩm nang học tập",
         "contact": "Liên hệ",

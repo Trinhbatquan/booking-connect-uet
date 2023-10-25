@@ -1,8 +1,41 @@
 import React from "react";
 import Slider from "react-slick";
 import { useTranslation } from "react-i18next";
+
+import { useState, useEffect } from "react";
+
+import "./Notification.scss";
+import { path } from "../../../utils/constant";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
+import { setNavigate } from "../../../redux/navigateSlice";
+import { getNotiFy } from "../../../services/notificationService";
+import convertBufferToBase64 from "../../../utils/convertBufferToBase64";
+
 const Notification = ({ settings }) => {
+  const [notificationData, setNotificationData] = useState([]);
+  const dispatch = useDispatch();
   const { t } = useTranslation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    getNotiFy.getHomePageLimited({}).then((data) => {
+      if (data.codeNumber === 0) {
+        const notifyLimited = data?.notifyHomePageLimited;
+        if (notifyLimited?.length > 0) {
+          for (let i = 0; i < notifyLimited?.length; i++) {
+            if (notifyLimited[i]?.image?.data) {
+              notifyLimited[i].image.data = convertBufferToBase64(
+                notifyLimited[i].image.data
+              );
+            }
+          }
+        }
+        setNotificationData(notifyLimited);
+      }
+    });
+  }, []);
+  const handleNotificationSelected = (id) => {};
   return (
     <div className="section-container notification-container w-full h-auto">
       <div className="section-content">
@@ -15,44 +48,34 @@ const Notification = ({ settings }) => {
             {t("header.see-all")}
           </button>
         </div>
-        <div className="section-body">
+        <div className="section-body-notification">
           <Slider {...settings}>
-            <div className="section-item notification-item">
-              <div className="section-item-img rounded-md shadow-sm shadow-cyan-600"></div>
-              <div className="section-item-text text-headingColor">
-                Tester 1
-              </div>
-            </div>
-            <div className="section-item notification-item">
-              <div className="section-item-img rounded-md shadow-sm shadow-cyan-600"></div>
-              <div className="section-item-text text-headingColor">
-                Tester 2
-              </div>
-            </div>
-            <div className="section-item notification-item">
-              <div className="section-item-img rounded-md shadow-sm shadow-cyan-600"></div>
-              <div className="section-item-text text-headingColor">
-                Tester 3
-              </div>
-            </div>
-            <div className="section-item notification-item">
-              <div className="section-item-img rounded-md shadow-sm shadow-cyan-600"></div>
-              <div className="section-item-text text-headingColor">
-                Tester 4
-              </div>
-            </div>
-            <div className="section-item notification-item">
-              <div className="section-item-img rounded-md shadow-sm shadow-cyan-600"></div>
-              <div className="section-item-text text-headingColor">
-                Tester 5
-              </div>
-            </div>
-            <div className="section-item notification-item">
-              <div className="section-item-img rounded-md shadow-sm shadow-cyan-600"></div>
-              <div className="section-item-text text-headingColor">
-                Tester 6
-              </div>
-            </div>
+            {notificationData?.length > 0 &&
+              notificationData.map((item, index) => {
+                return (
+                  <div
+                    key={index}
+                    className="section-item-notification"
+                    onClick={() => handleNotificationSelected(item)}
+                  >
+                    <div className="section-item-img-notification">
+                      <div
+                        className="img"
+                        style={{
+                          backgroundImage: `url(${
+                            item?.image?.data
+                              ? item.image.data
+                              : "https://uet.vnu.edu.vn/wp-content/uploads/2018/01/GetArticleImage.jpg"
+                          })`,
+                        }}
+                      ></div>
+                    </div>
+                    <div className="section-item-text-notification text-headingColor">
+                      {item?.title}
+                    </div>
+                  </div>
+                );
+              })}
           </Slider>
         </div>
       </div>

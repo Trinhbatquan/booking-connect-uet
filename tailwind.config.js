@@ -70,6 +70,8 @@ module.exports = {
         blurColor: "#c3b5b5",
         backColor: "rgb(28, 184, 3)",
         blurThemeColor: "rgb(72, 72, 237)",
+        sliceNotSelected: "#f8f8f8",
+        sliceSelected: "#1d5193",
       },
     },
   },

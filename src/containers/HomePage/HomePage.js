@@ -24,7 +24,7 @@ const Faculties = lazy(() => import("./Section/Faculty"));
 const Teacher = lazy(() => import("./Section/Teacher"));
 const Health = lazy(() => import("./Section/Health"));
 const Notification = lazy(() => import("./Section/Notification"));
-const Contact = lazy(() => import("./Section/Contact"));
+const Survey = lazy(() => import("./Section/Survey"));
 const HomeFooter = lazy(() => import("./HomeFooter"));
 
 const HomePage = () => {
@@ -163,13 +163,13 @@ const HomePage = () => {
   };
 
   const notificationSectionSettingSlick = {
-    dots: true,
+    // dots: true,
     infinite: true,
     slidesToShow: 3,
     slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 3000,
-    pauseOnHover: true,
+    // autoplay: true,
+    // autoplaySpeed: 3000,
+    // pauseOnHover: true,
     responsive: [
       {
         breakpoint: 1024,
@@ -199,8 +199,14 @@ const HomePage = () => {
         },
       },
     ],
-    nextArrow: <NextArrow type="disable" />,
-    prevArrow: <PrevArrow type="disable" />,
+    nextArrow: <NextArrow />,
+    prevArrow: <PrevArrow />,
+    beforeChange: function (currentSlide, nextSlide) {
+      console.log("before change", currentSlide, nextSlide);
+    },
+    afterChange: function (currentSlide) {
+      console.log("after change", currentSlide);
+    },
   };
 
   const navigate = useNavigate();
@@ -224,8 +230,8 @@ const HomePage = () => {
         <Faculties settings={settingReactSlick_faculty} />
         <Teacher settings={settingReactSlick} />
         <Health />
-        <Notification settings={notificationSectionSettingSlick} />
-        <Contact />
+        <Survey />
+        <Notification settings={settingReactSlick} />
         <HomeFooter />
       </div>
     </Suspense>

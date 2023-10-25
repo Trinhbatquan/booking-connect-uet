@@ -38,6 +38,9 @@ import Notification from "./Manager/Notification/Notification";
 import Dashboard from "./Manager/Dashboard/Dashboard";
 import DashboardSystem from "./System/DashboardSystem/DashboardSystem";
 import FacultyDetail from "./HomePage/Detail/FacultyDetail";
+import UpdateProfile from "./HomePage/UpdateProfile";
+import Inform from "./HomePage/Inform";
+import Contact from "./HomePage/Contact";
 
 function App() {
   const [appearScrollTop, setAppearScrollTop] = useState(false);
@@ -100,6 +103,16 @@ function App() {
         <Route
           path="/updatePass/:email/verify/:token"
           element={<UpdatePassword />}
+        />
+
+        <Route
+          path={`${path.HOMEPAGE}/${path.update_profile}`}
+          element={<UpdateProfile />}
+        />
+        <Route path={`${path.HOMEPAGE}/${path.inform}`} element={<Inform />} />
+        <Route
+          path={`${path.HOMEPAGE}/${path.contact}`}
+          element={<Contact />}
         />
 
         {/* system */}

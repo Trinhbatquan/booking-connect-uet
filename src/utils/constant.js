@@ -37,6 +37,10 @@ export const path = {
   detail_id: "detail",
   detail_mul_id: "faculty_detail",
   login_homepage: "login?",
+  update_profile: "update_profile",
+  change_password: "change_password",
+  inform: "inform",
+  contact: "contact",
 };
 
 export const languages = {

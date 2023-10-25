@@ -6,10 +6,19 @@ const updateStudent = {
     const url = "/api/update-student";
     return axiosClient.put(url, data, { params });
   },
-  //   getTeacherById: (params) => {
-  //     const url = "/api/one-teacher";
-  //     return axiosClient.get(url, { params });
-  //   },
+  updateProfile: (params, data) => {
+    const url = "/api/update-profile-student";
+    return axiosClient.put(url, data, { params });
+  },
+  updatePassword: (params, data) => {
+    const url = "/api/update-password-student";
+    return axiosClient.put(url, data, { params });
+  },
 };
 
-export { updateStudent };
+const getStudent = (params, data) => {
+  const url = "/api/get-student";
+  return axiosClient.post(url, data, { params });
+};
+
+export { updateStudent, getStudent };

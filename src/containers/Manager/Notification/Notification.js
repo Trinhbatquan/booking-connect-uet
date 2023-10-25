@@ -16,22 +16,28 @@ import { path } from "../../../utils/constant";
 const Notification = () => {
   const [loading, setLoading] = useState(true);
   const [type, setType] = useState("");
-  const [typeNotificationData, setTypeNotificationData] = useState([]);
   const { i18n } = useTranslation();
   const [page, setPage] = useState(1);
 
   const currentUser = useSelector((state) => state.authReducer);
-  const dataNotify = useSelector((state) => state.notificationReducer);
-  const { notify, pageCurrent, pageTotal } = dataNotify;
-
-  console.log(dataNotify);
+  const dataNotify = useSelector((state) => state.notificationManagerReducer);
+  let notify, pageCurrent, pageTotal;
+  if (dataNotify?.notify?.length > 0) {
+    notify = dataNotify.notify;
+    pageCurrent = dataNotify.pageCurrent;
+    pageTotal = dataNotify.pageTotal;
+  }
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
     getNotiFy
-      .get({ managerId: currentUser?.id, roleManager: currentUser?.role, page })
+      .get({
+        managerId: [+currentUser?.id, +0],
+        roleManager: currentUser?.role,
+        page,
+      })
       .then((res) => {
         console.log(res);
 
@@ -69,7 +75,9 @@ const Notification = () => {
           ) : (
             <>
               <p className="text-2xl text-blurThemeColor font-semibold pb-2 relative">
-                <span>{`Tổng số thông báo (${notify?.length})`}</span>
+                <span>{`Tổng số thông báo (${
+                  notify?.length > 0 ? notify.length : 0
+                })`}</span>
                 <span
                   style={{
                     position: "absolute",
@@ -128,7 +136,7 @@ const Notification = () => {
                                   lineHeight: "18px",
                                 }}
                               >
-                                {`${new Date(item?.createdAt).getDate() + 1}`}
+                                {`${new Date(item?.createdAt).getDate()}`}
                               </div>
                             </div>
                           </div>
@@ -158,15 +166,30 @@ const Notification = () => {
                               color: "#015198",
                             }}
                           >
-                            {i18n.language === "en"
-                              ? contentNotify(
-                                  item?.type_notification,
-                                  item
-                                ).en()
-                              : contentNotify(
-                                  item?.type_notification,
-                                  item
-                                ).vn()}
+                            {item?.type_notification === "system" ? (
+                              <div
+                                className="text-md"
+                                style={{
+                                  marginTop: "25px",
+                                  marginBottom: "22px",
+                                  color: "#015198",
+                                  height: "150px",
+                                  maxHeight: "150px",
+                                  lineHeight: "30px",
+                                  overflow: "hidden",
+                                  display: "-webkit-box",
+                                  WebkitBoxOrient: "vertical",
+                                  WebkitLineClamp: 5,
+                                }}
+                                dangerouslySetInnerHTML={{
+                                  __html: item?.contentHtml,
+                                }}
+                              ></div>
+                            ) : i18n.language === "en" ? (
+                              contentNotify(item?.type_notification, item).en()
+                            ) : (
+                              contentNotify(item?.type_notification, item).vn()
+                            )}
                           </div>
                           <div
                             className="text-sm flex items-center justify-start"

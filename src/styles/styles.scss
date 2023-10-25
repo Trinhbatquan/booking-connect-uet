@@ -122,7 +122,15 @@ html {
     color: blueviolet;
   }
 
-  .-space-x-px {
+  .-space-x-px,
+  .profile-user-homepage {
     list-style: none;
+  }
+
+  .loading-overlay {
+    z-index: 1200;
+  }
+  .modal-setting {
+    z-index: 1300;
   }
 }
