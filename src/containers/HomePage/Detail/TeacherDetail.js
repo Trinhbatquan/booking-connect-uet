@@ -16,7 +16,7 @@ import convertBufferToBase64 from "../../../utils/convertBufferToBase64";
 import Schedule from "../Schedule/Schedule";
 import { getScheduleByIdAndDate } from "../../../services/scheduleService";
 import { dateFormat, path } from "../../../utils/constant";
-import Navigate from "../NavigateCustom";
+// import Navigate from "../NavigateCustom";
 import avatar from "../../../assets/image/uet.png";
 import { updateStudent } from "../../../services/studentService";
 import { ToastContainer, toast } from "react-toastify";
@@ -37,7 +37,7 @@ import DetailSkeleton from "./DetailSkeleton";
 //socket
 import { emit_create_booking } from "../../../utils/socket_client";
 
-const TeacherDetail = ({ idTeacher, roleTeacher, type }) => {
+const TeacherDetail = ({ codeUrlTeacher, roleTeacher, type }) => {
   const [loading, setLoading] = useState(false);
   const [userData, setUserData] = useState({});
   const [timeDataApi, setTimeDataApi] = useState(null);
@@ -45,11 +45,11 @@ const TeacherDetail = ({ idTeacher, roleTeacher, type }) => {
   const [openModalSchedule, setOpenModalSchedule] = useState(false);
   const [dataModalSchedule, setDataModalSchedule] = useState({});
 
-  const [action, setAction] = useState(type ? "schedule" : "");
+  const [action, setAction] = useState("schedule");
 
-  const idParam = useParams()?.id;
+  const codeUrlParam = useParams()?.code_url;
   const roleParam = useParams()?.roleId;
-  const id = idTeacher || idParam;
+  const code_url = codeUrlTeacher || codeUrlParam;
   const roleId = roleTeacher || roleParam;
 
   const date_tomorrow = moment(new Date())
@@ -57,7 +57,7 @@ const TeacherDetail = ({ idTeacher, roleTeacher, type }) => {
     .format(dateFormat.SEND_TO_SERVER);
   console.log(date_tomorrow);
 
-  const navigate = useSelector((state) => state.navigateReducer.navigate);
+  // const navigate = useSelector((state) => state.navigateReducer.navigate);
   const currentStudent = useSelector((state) => state.studentReducer);
   const navigateHome = useNavigate();
   const { t, i18n } = useTranslation();
@@ -96,9 +96,9 @@ const TeacherDetail = ({ idTeacher, roleTeacher, type }) => {
     setTimeout(async () => {
       let res;
       if (roleId === "R5") {
-        res = await getTeacherHomePageAPI.getTeacherById({ id: +id });
+        res = await getTeacherHomePageAPI.getTeacherById({ code_url });
       } else {
-        res = await getUserApi.getUser({ id: +id });
+        res = await getUserApi.getUser({ code_url });
       }
       let managerId;
       if (res?.codeNumber === 0) {
@@ -112,7 +112,7 @@ const TeacherDetail = ({ idTeacher, roleTeacher, type }) => {
         setUserData(data);
       }
       const data = await getScheduleByIdAndDate.get({
-        managerId: +id,
+        managerId,
         date: date_tomorrow,
         roleManager: roleId,
       });
@@ -147,11 +147,11 @@ const TeacherDetail = ({ idTeacher, roleTeacher, type }) => {
 
       setLoading(false);
     }, 1000);
-  }, [i18n.language]);
+  }, []);
 
   const loadTimeOfDate = async (value) => {
     console.log(value);
-    const managerId = +id;
+    const managerId = +userData?.id;
     const date = value;
     const roleManager = roleId;
     const data = await getScheduleByIdAndDate.get({
@@ -326,7 +326,7 @@ const TeacherDetail = ({ idTeacher, roleTeacher, type }) => {
     const body = {
       email: currentStudent?.email,
       studentId: currentStudent?.id,
-      managerId: +id,
+      managerId: +userData?.id,
       roleManager: roleId,
       action: "A2",
       ...data,
@@ -340,7 +340,7 @@ const TeacherDetail = ({ idTeacher, roleTeacher, type }) => {
         });
         emitter.emit("EVENT_CLEAR_DATA");
         //socket_emit_booking_create
-        emit_create_booking(+id, roleId, "A2");
+        emit_create_booking(+userData?.id, roleId, "A2");
       } else {
         toast.error(res?.message, {
           autoClose: 2000,
@@ -378,11 +378,11 @@ const TeacherDetail = ({ idTeacher, roleTeacher, type }) => {
                   : "detail-teacher-container"
               }`}
             >
-              {!type && (
+              {/* {!type && (
                 <div className="detail-navbar w-full">
                   <Navigate texts={navigate} />
                 </div>
-              )}
+              )} */}
               <div className="detail-teacher">
                 <div
                   className="detail-teacher-avatar flex-3"

@@ -57,7 +57,32 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    gap: 25px;
+    gap: 20px;
     padding-bottom: 10px;
+
+    .navigation {
+      font-weight: 450;
+    }
   }
+}
+
+.action_dropdown,
+.student_dropdown {
+  display: none;
+}
+
+.action_dropdown::before,
+.student_dropdown::before {
+  content: "";
+  position: absolute;
+  top: -20px;
+  left: 0;
+  width: 80%;
+  height: 20px;
+  background-color: transparent;
+}
+
+.action_header:hover .action_dropdown,
+.student_header:hover .student_dropdown {
+  display: block;
 }

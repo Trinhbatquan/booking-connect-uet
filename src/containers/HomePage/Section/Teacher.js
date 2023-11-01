@@ -1,34 +1,26 @@
 import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 
 import { getTeacherHomePageAPI } from "../../../services/teacherService";
-import Loading from "./../../../utils/Loading";
-import {
-  getTopTenTeacherFailed,
-  getTopTenTeacherSucceed,
-} from "../../../redux/teacherSlice";
 import convertBufferToBase64 from "../../../utils/convertBufferToBase64";
-import { path } from "../../../utils/constant";
-import { setNavigate } from "../../../redux/navigateSlice";
 
 import { useTranslation } from "react-i18next";
+import TeacherSkeleton from "./SkeletonSection/TeacherSkeleton";
+import lozad from "lozad";
 
 const Teacher = ({ settings }) => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [topTeacher, setTopTeacher] = useState([]);
 
   const { t } = useTranslation();
 
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // const teachers = useSelector((state) => state.teacherReducer.topTenTeachers);
-
   useEffect(() => {
-    setLoading(true);
-    setTimeout(() => {
+    const getAPI = () => {
+      console.log(2);
+
       getTeacherHomePageAPI.getTeacher({ limit: 10 }).then((data) => {
         if (data?.codeNumber !== 0) {
           alert(data?.message);
@@ -36,16 +28,43 @@ const Teacher = ({ settings }) => {
         } else {
           // dispatch(getTopTenTeacherSucceed(data?.teacher));
           console.log({ data });
-          setTopTeacher(data?.teacher);
+          const teacherData = data?.teacher;
+          if (teacherData?.length > 0) {
+            for (let i = 0; i < teacherData.length; i++) {
+              if (teacherData[i]?.image?.data) {
+                teacherData[i].image.data = convertBufferToBase64(
+                  teacherData[i].image.data
+                );
+              }
+            }
+          }
+          setTopTeacher(teacherData);
           setLoading(false);
         }
       });
-    }, 1000);
+    };
+
+    getAPI();
   }, []);
 
-  const handleDetailTeacher = (id) => {
-    navigate(`${path.detail_id}/${id}/role/R5`);
-    dispatch(setNavigate("detail"));
+  useEffect(() => {
+    console.log(1);
+    const lazyLoadImg = () => {
+      lozad(".lozad", {
+        load: function (el) {
+          el.src = el.dataset.src;
+          el.onload = function () {
+            el.classList.add("fade");
+          };
+        },
+      }).observe();
+    };
+    lazyLoadImg();
+  }, [topTeacher]);
+
+  const handleDetailTeacher = (data) => {
+    navigate(`${data?.code_url}/ids-role/R5`);
+    // dispatch(setNavigate("detail"));
   };
 
   return (
@@ -63,37 +82,42 @@ const Teacher = ({ settings }) => {
           </button>
         </div>
         <div className="section-body">
-          {loading && <Loading />}
           <Slider {...settings}>
-            {topTeacher?.length > 0 &&
-              topTeacher?.map((teacher, index) => {
-                return (
-                  <div
-                    className="section-item"
-                    key={index}
-                    onClick={() => handleDetailTeacher(teacher?.id)}
-                  >
-                    <div className="section-item-teacher">
-                      <div className="section-item-img section-item-img-teacher shadow-sm shadow-cyan-600">
-                        <img
-                          src={
-                            teacher?.image?.data
-                              ? convertBufferToBase64(teacher?.image?.data)
-                              : null
-                          }
-                          alt="None"
-                        />
-                      </div>
-                      <div className="section-item-text section-item-text-teacher text-headingColor">
-                        {teacher?.positionData?.valueVn}, {teacher?.fullName}
-                        <p className="mx-auto mt-1">
-                          {teacher?.facultyData?.fullName}
-                        </p>
+            {loading
+              ? new Array(5).fill(0).map((item, index) => {
+                  return (
+                    <div key={index} className="section-item">
+                      <TeacherSkeleton />
+                    </div>
+                  );
+                })
+              : topTeacher?.length > 0 &&
+                topTeacher?.map((teacher, index) => {
+                  return (
+                    <div
+                      className="section-item"
+                      key={index}
+                      onClick={() => handleDetailTeacher(teacher)}
+                    >
+                      <div className="section-item-teacher">
+                        <div className="section-item-img section-item-img-teacher shadow-sm shadow-cyan-600">
+                          <img
+                            className="lozad"
+                            data-src={teacher?.image?.data}
+                            src=""
+                            alt=""
+                          />
+                        </div>
+                        <div className="section-item-text section-item-text-teacher text-headingColor">
+                          {teacher?.positionData?.valueVn}, {teacher?.fullName}
+                          <p className="mx-auto mt-1">
+                            {teacher?.facultyData?.fullName}
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
           </Slider>
         </div>
       </div>

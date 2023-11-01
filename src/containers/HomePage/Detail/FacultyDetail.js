@@ -49,14 +49,14 @@ const FacultyDetail = () => {
 
   const [action, setAction] = useState("");
 
-  const { id, roleId } = useParams();
+  const { code_url, roleId } = useParams();
   console.log(teacherFaculty);
   console.log(markDownTeacherData);
   const date_tomorrow = moment(new Date())
     .add(1, "days")
     .format(dateFormat.SEND_TO_SERVER);
 
-  const navigate = useSelector((state) => state.navigateReducer.navigate);
+  // const navigate = useSelector((state) => state.navigateReducer.navigate);
   const currentStudent = useSelector((state) => state.studentReducer);
   const navigateHome = useNavigate();
   const { t, i18n } = useTranslation();
@@ -93,7 +93,7 @@ const FacultyDetail = () => {
   useEffect(() => {
     setLoading(true);
     setTimeout(async () => {
-      let res = await getUserApi.getUser({ id: +id });
+      let res = await getUserApi.getUser({ code_url });
       let managerId;
       if (res?.codeNumber === 0) {
         const { data } = res;
@@ -106,7 +106,7 @@ const FacultyDetail = () => {
         setFacultyData(data);
       }
       const data = await getScheduleByIdAndDate.get({
-        managerId: +id,
+        managerId,
         date: date_tomorrow,
         roleManager: roleId,
       });
@@ -139,22 +139,22 @@ const FacultyDetail = () => {
         }
       }
 
+      await getTeacherFaculty.get({ facultyId: managerId }).then((res) => {
+        if (res?.codeNumber === 0) {
+          setTeacherFaculty(res?.teacherByFaculty);
+          setMarkDownTeacherData(res?.markDownTeacher);
+        }
+      });
+
       setLoading(false);
     }, 1000);
-  }, [i18n.language]);
-
-  useEffect(() => {
-    getTeacherFaculty.get({ facultyId: +id }).then((res) => {
-      if (res?.codeNumber === 0) {
-        setTeacherFaculty(res?.teacherByFaculty);
-        setMarkDownTeacherData(res?.markDownTeacher);
-      }
-    });
   }, []);
+
+  useEffect(() => {}, []);
 
   const loadTimeOfDate = async (value) => {
     // console.log(value);
-    const managerId = +id;
+    const managerId = +facultyData?.id;
     const date = value;
     const roleManager = roleId;
     const data = await getScheduleByIdAndDate.get({
@@ -309,7 +309,7 @@ const FacultyDetail = () => {
     const body = {
       email: currentStudent?.email,
       studentId: currentStudent?.id,
-      managerId: +id,
+      managerId: +facultyData?.id,
       roleManager: roleId,
       action: "A2",
       ...data,
@@ -348,9 +348,6 @@ const FacultyDetail = () => {
         ) : (
           <>
             <div className="detail-container detail-teacher-container">
-              <div className="detail-navbar w-full">
-                <Navigate texts={navigate} />
-              </div>
               <div className="detail-teacher">
                 <div
                   className="detail-teacher-avatar flex-3"
@@ -461,7 +458,7 @@ const FacultyDetail = () => {
                         }}
                       >
                         <TeacherDetail
-                          idTeacher={item?.id}
+                          codeUrlTeacher={item?.code_url}
                           roleTeacher="R5"
                           type="faculty"
                         />

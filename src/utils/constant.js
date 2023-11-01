@@ -22,6 +22,7 @@ export const path = {
   healthStudentDescription: "healthStudentDescription",
   dashboardManager: "dashboardManager",
   notificationManager: "notificationManager",
+  newsManager: "newsManager",
 
   // student: "student",
 
@@ -41,6 +42,7 @@ export const path = {
   change_password: "change_password",
   inform: "inform",
   contact: "contact",
+  survey: "survey",
 };
 
 export const languages = {

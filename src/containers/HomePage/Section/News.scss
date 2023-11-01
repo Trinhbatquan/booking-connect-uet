@@ -1,0 +1,8 @@
+.button-news {
+  transform: translateX(0);
+  transition: all 0.3s;
+}
+
+.detail-news:hover .button-news {
+  transform: translateX(4px);
+}

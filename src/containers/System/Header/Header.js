@@ -609,6 +609,18 @@ const HeaderAdmin = () => {
           <MdOutlineNotificationAdd className="text-lg" />
           <span>Quản lý thông báo</span>
         </NavLink>
+
+        <NavLink
+          to={path.newsManager}
+          className="system-header-text relative text-blurColor font-semibold text-lg w-[14%] h-full flex items-center gap-1
+       justify-center cursor-pointer pl-3 hover:text-white transition-all duration-200"
+          style={({ isActive }) => ({
+            color: isActive ? "#fff" : "rgb(195, 181, 181)",
+          })}
+        >
+          <MdOutlineNotificationAdd className="text-lg" />
+          <span>{i18n.language === "en" ? "News" : "Tin tức"}</span>
+        </NavLink>
       </div>
 
       <div className="system-header-item-right flex items-center justify-items-end gap-8">

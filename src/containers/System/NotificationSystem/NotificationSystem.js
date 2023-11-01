@@ -284,10 +284,7 @@ const NotificationSystem = () => {
     setTitle(data.title);
     setDetail(data.content);
     setContentHtml(data.contentHtml);
-    // let base64File = "";
-    // if (user?.image?.data) {
-    //   base64File = new Buffer(user.image.data, "base64").toString("binary");
-    // }
+
     if (data?.image?.data) {
       setPreviewImage(data?.image?.data);
     } else {

@@ -5,7 +5,7 @@ import teacherReducer from "./redux/teacherSlice";
 import navigateReducer from "./redux/navigateSlice";
 import studentReducer from "./redux/studentSlice";
 import notificationManagerReducer from "./redux/notificationManagerSlice";
-
+import searchHomePageReducer from "./redux/searchSlice";
 const store = configureStore({
   reducer: {
     authReducer,
@@ -13,6 +13,7 @@ const store = configureStore({
     navigateReducer,
     studentReducer,
     notificationManagerReducer,
+    searchHomePageReducer,
   },
 });
 

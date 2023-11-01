@@ -10,16 +10,18 @@ import { useDispatch } from "react-redux";
 import { path } from "../../../utils/constant";
 import { useNavigate } from "react-router";
 import { setNavigate } from "../../../redux/navigateSlice";
+import FacultySkeleton from "./SkeletonSection/FacultySkeleton";
+import lozad from "lozad";
 
 const Faculties = ({ settings }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
 
   const imageData = [
     "https://i-vn.joboko.com/okoimg/vieclam.uet.vnu.edu.vn/xurl/images/cate-6.svg",
     "https://i-vn.joboko.com/okoimg/vieclam.uet.vnu.edu.vn/xurl/images/cate-5.svg",
     "https://i-vn.joboko.com/okoimg/vieclam.uet.vnu.edu.vn/xurl/images/cate-4.svg",
-    // "https://i-vn.joboko.com/okoimg/vieclam.uet.vnu.edu.vn/xurl/images/cate-1.svg",
     "https://i-vn.joboko.com/okoimg/vieclam.uet.vnu.edu.vn/xurl/images/cate-2.svg",
   ];
 
@@ -32,13 +34,27 @@ const Faculties = ({ settings }) => {
       if (data?.codeNumber === 0) {
         console.log(data.user);
         setFacultyData(data.user);
+        setLoading(false);
       }
     });
   }, []);
 
-  const handleFacultyClick = (id) => {
-    navigate(`${path.detail_mul_id}/${id}/role/R4`);
-    dispatch(setNavigate("detail"));
+  useEffect(() => {
+    const lazyLoadImg = () => {
+      lozad(".lozad", {
+        load: function (el) {
+          el.src = el.dataset.src;
+          el.onload = function () {
+            el.classList.add("fade");
+          };
+        },
+      }).observe();
+    };
+    lazyLoadImg();
+  }, [facultyData]);
+
+  const handleFacultyClick = (data) => {
+    navigate(`${path.detail_id}/${data?.code_url}/ids-role/R4`);
   };
 
   return (
@@ -58,32 +74,39 @@ const Faculties = ({ settings }) => {
         </div>
         <div className="section-body">
           <Slider {...settings}>
-            {facultyData?.length > 0 &&
-              facultyData.map((faculty, index) => {
-                return (
-                  <div
-                    key={index}
-                    className="section-item-faculty"
-                    onClick={() => handleFacultyClick(faculty.id)}
-                  >
-                    <div className="section-item-img-faculty">
-                      <div
-                        className="img"
-                        style={{
-                          backgroundImage: `url(${
+            {loading
+              ? new Array(8).fill(0).map((item, index) => {
+                  return (
+                    <div key={index} className="section-item-faculty">
+                      <FacultySkeleton />
+                    </div>
+                  );
+                })
+              : facultyData?.length > 0 &&
+                facultyData.map((faculty, index) => {
+                  return (
+                    <div
+                      key={index}
+                      className="section-item-faculty"
+                      onClick={() => handleFacultyClick(faculty)}
+                    >
+                      <div className="section-item-img-faculty">
+                        <img
+                          className="img lozad"
+                          data-src={
                             imageData[index]
                               ? imageData[index]
                               : imageData[index - 4]
-                          })`,
-                        }}
-                      ></div>
+                          }
+                          alt=""
+                        />
+                      </div>
+                      <div className="section-item-text-faculty text-headingColor">
+                        {faculty?.fullName}
+                      </div>
                     </div>
-                    <div className="section-item-text-faculty text-headingColor">
-                      {faculty?.fullName}
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
 
             {/* <div className="section-item">
               <div className="section-item-img rounded-md shadow-sm shadow-cyan-600"></div>

@@ -23,7 +23,7 @@ const Departments = lazy(() => import("./Section/Departments"));
 const Faculties = lazy(() => import("./Section/Faculty"));
 const Teacher = lazy(() => import("./Section/Teacher"));
 const Health = lazy(() => import("./Section/Health"));
-const Notification = lazy(() => import("./Section/Notification"));
+const News = lazy(() => import("./Section/News"));
 const Survey = lazy(() => import("./Section/Survey"));
 const HomeFooter = lazy(() => import("./HomeFooter"));
 
@@ -231,7 +231,7 @@ const HomePage = () => {
         <Teacher settings={settingReactSlick} />
         <Health />
         <Survey />
-        <Notification settings={settingReactSlick} />
+        <News />
         <HomeFooter />
       </div>
     </Suspense>

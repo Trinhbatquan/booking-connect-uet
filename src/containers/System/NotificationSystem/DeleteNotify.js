@@ -16,8 +16,8 @@ const DeleteNotify = ({ dataNotifyDelete, isClose, deleteNotify }) => {
         animate={{ opacity: 1, translateY: 0 }}
         exit={{ opacity: 0, translateY: -50 }}
         transition={{ duration: 0.4, delay: 0.1 }}
-        className="z-50 fixed top-6 w-fit flex flex-col h-auto bg-white rounded-lg shadow backdrop-blur-md mx-auto mt-16 pb-3 overflow-hidden"
-        style={{ left: "40%" }}
+        className="z-50 fixed top-6 w-[50%] flex flex-col h-auto bg-white rounded-lg shadow backdrop-blur-md mx-auto mt-16 pb-3 overflow-hidden"
+        style={{ left: "25%" }}
       >
         <div className="bg-blue-600 px-3 py-2 w-full">
           <span className="text-white font-semibold">Delete Notification</span>

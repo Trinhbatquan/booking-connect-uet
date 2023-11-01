@@ -41,6 +41,8 @@ import FacultyDetail from "./HomePage/Detail/FacultyDetail";
 import UpdateProfile from "./HomePage/UpdateProfile";
 import Inform from "./HomePage/Inform";
 import Contact from "./HomePage/Contact";
+import SurveyOpinion from "./HomePage/Survey Opinion";
+import NewsSystem from "./System/News/NewsSystem";
 
 function App() {
   const [appearScrollTop, setAppearScrollTop] = useState(false);
@@ -87,11 +89,11 @@ function App() {
 
         <Route path={path.HOMEPAGE} element={<HomePage />} />
         <Route
-          path={`${path.HOMEPAGE}/${path.detail_id}/:id/role/:roleId`}
+          path={`${path.HOMEPAGE}/:code_url/ids-role/:roleId`}
           element={<TeacherDetail />}
         />
         <Route
-          path={`${path.HOMEPAGE}/${path.detail_mul_id}/:id/role/:roleId`}
+          path={`${path.HOMEPAGE}/${path.detail_id}/:code_url/ids-role/:roleId`}
           element={<FacultyDetail />}
         />
         <Route
@@ -110,6 +112,10 @@ function App() {
           element={<UpdateProfile />}
         />
         <Route path={`${path.HOMEPAGE}/${path.inform}`} element={<Inform />} />
+        <Route
+          path={`${path.HOMEPAGE}/${path.survey}`}
+          element={<SurveyOpinion />}
+        />
         <Route
           path={`${path.HOMEPAGE}/${path.contact}`}
           element={<Contact />}
@@ -159,6 +165,7 @@ function App() {
             path={path.notificationManager}
             element={<NotificationSystem />}
           />
+          <Route path={path.newsManager} element={<NewsSystem />} />
         </Route>
 
         {/* manager */}

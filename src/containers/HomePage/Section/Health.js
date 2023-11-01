@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./Health.scss";
+import lozad from "lozad";
 
 import { useTranslation } from "react-i18next";
 
@@ -8,26 +9,39 @@ import bgThree from "../../../assets/image/test.jpg";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { getUserApi } from "../../../services/userService";
-import { path } from "../../../utils/constant";
-import { setNavigate } from "../../../redux/navigateSlice";
+import HealthStudentSkeleton from "./SkeletonSection/HealthStudentSkeleton";
 
 const Health = () => {
   const { t } = useTranslation();
-
+  const [loading, setLoading] = useState(true);
   const [healthData, setHealthData] = useState([]);
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
     getUserApi.getUserByRole({ role: "R6" }).then((data) => {
       if (data?.codeNumber === 0) {
         setHealthData(data.user);
+        setLoading(false);
       }
     });
   }, []);
-  const handleHealthDetail = (id) => {
-    navigate(`${path.detail_id}/${id}/role/R6`);
-    dispatch(setNavigate("detail"));
+  useEffect(() => {
+    const lazyLoadImg = () => {
+      lozad(".lozad", {
+        load: function (el) {
+          el.src = el.dataset.src;
+          el.onload = function () {
+            el.classList.add("fade");
+          };
+        },
+      }).observe();
+    };
+    lazyLoadImg();
+  }, [healthData]);
+
+  const handleHealthDetail = (data) => {
+    navigate(`${data?.code_url}/ids-role/R6`);
+    // dispatch(setNavigate("detail"));
   };
 
   const data = [
@@ -44,55 +58,66 @@ const Health = () => {
         </div>
 
         <div className="flex items-center justify-center gap-5 mx-auto">
-          <div
-            className="section-item-health"
-            onClick={() => handleHealthDetail(healthData[0]?.id)}
-          >
-            <div className="item">
+          {loading ? (
+            new Array(4).fill(0).map((item, index) => {
+              return <HealthStudentSkeleton key={index} />;
+            })
+          ) : (
+            <>
               <div
-                className="section-item-img-health"
-                style={{ backgroundImage: `url(${data[0]})` }}
-              ></div>
-              <div className="section-item-text-health">
-                {healthData[0]?.fullName}
+                className="section-item-health"
+                onClick={() => handleHealthDetail(healthData[0])}
+              >
+                <div className="item">
+                  <img
+                    alt=""
+                    data-src={data[0]}
+                    className="section-item-img-health lozad"
+                  ></img>
+                  <div className="section-item-text-health">
+                    {healthData[0]?.fullName}
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-
-          <div
-            className="section-item-health"
-            onClick={() => handleHealthDetail(healthData[1]?.id)}
-          >
-            <div className="item">
               <div
-                className="section-item-img-health "
-                style={{ backgroundImage: `url(${data[1]})` }}
-              ></div>
-              <div className="section-item-text-health">
-                {healthData[1]?.fullName}
+                className="section-item-health"
+                onClick={() => handleHealthDetail(healthData[1])}
+              >
+                <div className="item">
+                  <img
+                    alt=""
+                    data-src={data[1]}
+                    className="section-item-img-health lozad"
+                  ></img>
+                  <div className="section-item-text-health">
+                    {healthData[1]?.fullName}
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-          <div className="section-item-health">
-            <div className="item">
-              <div
-                className="section-item-img-health"
-                style={{ backgroundImage: `url(${bgThree})` }}
-              ></div>
-              <div className="section-item-text-health">
-                Trắc nghiệm khách quan về tâm lý
+              <div className="section-item-health">
+                <div className="item">
+                  <img
+                    alt=""
+                    data-src={bgThree}
+                    className="section-item-img-health lozad"
+                  ></img>
+                  <div className="section-item-text-health">
+                    Trắc nghiệm khách quan về tâm lý
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-          <div className="section-item-health">
-            <div className="item">
-              <div
-                className="section-item-img-health"
-                style={{ backgroundImage: `url(${bgFour})` }}
-              ></div>
-              <div className="section-item-text-health">Khác</div>
-            </div>
-          </div>
+              <div className="section-item-health">
+                <div className="item">
+                  <img
+                    alt=""
+                    data-src={bgFour}
+                    className="section-item-img-health lozad"
+                  ></img>
+                  <div className="section-item-text-health">Khác</div>
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>

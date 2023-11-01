@@ -1,18 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Slider from "react-slick";
-
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router";
-import { setNavigate } from "../../../redux/navigateSlice";
+import lozad from "lozad";
 import { useTranslation } from "react-i18next";
 import { NextArrow, PrevArrow } from "./ArrowCustom";
 import { getFeedback } from "../../../services/student_feedback";
 import convertBufferToBase64 from "../../../utils/convertBufferToBase64";
 
 const Survey = ({ settings }) => {
-  const dispatch = useDispatch();
-  const { t } = useTranslation();
-  const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
   const [feelingStudent, setFeelingStudent] = useState("");
 
   const [currentSlice, setCurrentSlice] = useState(1);
@@ -35,6 +30,20 @@ const Survey = ({ settings }) => {
       }
     });
   }, []);
+
+  useEffect(() => {
+    const lazyLoadImg = () => {
+      lozad(".lozad", {
+        load: function (el) {
+          el.src = el.dataset.src;
+          el.onload = function () {
+            el.classList.add("fade");
+          };
+        },
+      }).observe();
+    };
+    lazyLoadImg();
+  }, [feelingStudent]);
 
   const studentSetting = {
     // dots: true,
@@ -84,18 +93,19 @@ const Survey = ({ settings }) => {
       );
     },
   };
-  console.log(feelingStudent);
   return (
     <div className="section-container contact-container w-full h-auto">
       <div className="section-content">
         <div className="section-header flex items-center justify-between">
-          <div className="section-header-text">{t("header.survey")}</div>
-          <button
+          <div className="section-header-text">
+            {i18n.language === "en" ? "Student Opinion" : "Ý kiến sinh viên"}
+          </div>
+          {/* <button
             className="section-header-button outline-none border-none bg-blurColor text-headingColor bg-opacity-30 shadow-sm 
           backdrop-blur-sm hover:bg-blue-800 hover:text-white transition-all duration-300"
           >
             {t("header.see-all")}
-          </button>
+          </button> */}
         </div>
         <div className="w-full">
           <Slider {...studentSetting}>
@@ -157,17 +167,27 @@ const Survey = ({ settings }) => {
                         <div
                           className={`feedback_avatar ${
                             index === currentSlice
-                              ? "absolute border-spacing-3 border-white w-[127px] h-[127px] inset-0 -top-[85px]"
+                              ? "absolute w-[144px] h-[144px] inset-0 -top-[85px] p-[8px]"
                               : "w-[90px] h-[90px] border-spacing-2 border-white"
                           }`}
-                          style={{
-                            borderRadius: "50%",
-                            margin: "0 auto 4px",
-                            backgroundColor: "#fff",
-                          }}
+                          style={
+                            index === currentSlice
+                              ? {
+                                  borderRadius: "50%",
+                                  margin: "0 auto 4px",
+                                  backgroundColor: "#fff",
+                                  border: "1px solid rgb(249, 221, 221)",
+                                }
+                              : {
+                                  borderRadius: "50%",
+                                  margin: "0 auto 4px",
+                                  backgroundColor: "#fff",
+                                }
+                          }
                         >
                           <img
                             alt=""
+                            className="lozad"
                             style={{
                               display: "block",
                               width: "100%",
@@ -175,7 +195,7 @@ const Survey = ({ settings }) => {
                               objectFit: "cover",
                               borderRadius: "50%",
                             }}
-                            src={
+                            data-src={
                               item?.studentData_FeedBack?.image?.data
                                 ? item.studentData_FeedBack.image.data
                                 : "https://i-vn2.joboko.com/okoimg/vieclam.uet.vnu.edu.vn/xurl/images/logo-dhcn.png"
@@ -184,7 +204,7 @@ const Survey = ({ settings }) => {
                         </div>
                         <p
                           className={`font-semibold ${
-                            index === currentSlice ? "pt-[46px]" : ""
+                            index === currentSlice ? "pt-[72px]" : ""
                           }`}
                           style={{
                             fontSize: "14px",
