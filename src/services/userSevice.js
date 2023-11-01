@@ -7,6 +7,7 @@ const db = require("../models");
 
 const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto-js");
+const render_code_url = require("../utils/render_code_url");
 // const { convertTimeStamp } = require("../utils/convertTimeStamp");
 // const { formatDate } = require("../utils/contants");
 // const addHours = require("../utils/addHoursDate");
@@ -31,6 +32,7 @@ const createNewUserService = async (data) => {
 
   return new Promise(async (resolve, reject) => {
     try {
+      const code_url = await render_code_url(fullName);
       if (type === "teacher") {
         const teacherExist = await db.Teacher.findOne({
           where: {
@@ -55,6 +57,7 @@ const createNewUserService = async (data) => {
             facultyId,
             note,
             image: image || null,
+            code_url,
           });
           resolve({
             codeNumber: 0,
@@ -82,6 +85,7 @@ const createNewUserService = async (data) => {
             address,
             roleId,
             phoneNumber,
+            code_url,
           });
           resolve({
             codeNumber: 0,
@@ -91,6 +95,7 @@ const createNewUserService = async (data) => {
         }
       }
     } catch (e) {
+      console.log(e);
       reject(e);
     }
   });
@@ -674,12 +679,12 @@ const verifyAndUpdatePassHomePageService = (email, token, password) => {
 };
 
 //getOtherUserById
-const getUserService = (userId) => {
+const getUserService = (code_url) => {
   return new Promise(async (resolve, reject) => {
     try {
       const user = await db.OtherUser.findOne({
         where: {
-          id: userId,
+          code_url,
         },
         attributes: {
           exclude: ["password"],
@@ -725,6 +730,7 @@ const getUserService = (userId) => {
         });
       }
     } catch (e) {
+      console.log(e);
       reject(e);
     }
   });

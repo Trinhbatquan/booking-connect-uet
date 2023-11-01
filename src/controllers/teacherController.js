@@ -31,15 +31,15 @@ const getTeacherController = async (req, res) => {
 };
 
 const getOneTeacherController = async (req, res) => {
-  const { id } = req.query;
-  if (!id) {
+  const { code_url } = req.query;
+  if (!code_url) {
     res.status(400).send({
       codeNumber: 1,
-      message: "Missing parameter id teacher",
+      message: "Missing parameter code_url teacher",
     });
   }
   try {
-    const data = await getOneTeacherService(id);
+    const data = await getOneTeacherService(code_url);
     res.status(200).send(data);
   } catch (e) {
     console.log(e);

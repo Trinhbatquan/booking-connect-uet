@@ -41,6 +41,7 @@ module.exports = (sequelize, DataTypes) => {
       phoneNumber: DataTypes.STRING,
       //   image: DataTypes.BLOB,
       //   verified: DataTypes.BOOLEAN,
+      code_url: DataTypes.STRING,
     },
     {
       sequelize,

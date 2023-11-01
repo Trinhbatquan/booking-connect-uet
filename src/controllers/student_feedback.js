@@ -77,6 +77,7 @@ const saveFeedbackController = async (req, res) => {
 
 const getFeedbackController = async (req, res) => {
   try {
+    const { limit } = req.query;
     const data = await db.Student_FeedBack.findAll({
       include: [
         {
@@ -87,11 +88,13 @@ const getFeedbackController = async (req, res) => {
       ],
       raw: true,
       nest: true, //fix result.get is not a function
-      limit: 5,
+      limit: limit ? limit : 5,
     });
+    const countDocument = await db.Student_FeedBack.count();
     return res.status(200).json({
       codeNumber: 0,
       feedback: data,
+      count: countDocument,
     });
   } catch (e) {
     console.log(e);

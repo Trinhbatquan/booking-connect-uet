@@ -66,6 +66,14 @@ const {
   getFeedbackController,
 } = require("../controllers/student_feedback");
 
+const {
+  createNewsController,
+  updateNewsController,
+  deleteNewsController,
+  getNewsController,
+  getNewsLimitedController,
+} = require("../controllers/newsController");
+
 let router = express.Router();
 
 const initWebRoutes = (app) => {
@@ -149,6 +157,28 @@ const initWebRoutes = (app) => {
     protectAdminToken,
     deleteNotifySystemController
   );
+
+  //news
+  router.post(
+    "/api/create-news",
+    (req, res, next) => checkExpiredToken(req, res, next, "system"),
+    protectAdminToken,
+    createNewsController
+  );
+  router.put(
+    "/api/update-news",
+    (req, res, next) => checkExpiredToken(req, res, next, "system"),
+    protectAdminToken,
+    updateNewsController
+  );
+  router.delete(
+    "/api/delete-news",
+    (req, res, next) => checkExpiredToken(req, res, next, "system"),
+    protectAdminToken,
+    deleteNewsController
+  );
+  router.get("/api/get-news", getNewsController);
+  router.get("/api/get-news-limited", getNewsLimitedController);
 
   //manager api
   router.get("/api/notification", getNotificationController);

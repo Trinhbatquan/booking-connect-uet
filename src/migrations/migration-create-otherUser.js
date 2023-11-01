@@ -30,6 +30,9 @@ module.exports = {
       phoneNumber: {
         type: Sequelize.STRING,
       },
+      code_url: {
+        type: Sequelize.STRING,
+      },
       // image: {
       //   type: Sequelize.STRING,
       // },

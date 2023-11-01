@@ -279,15 +279,15 @@ const verifyAndUpdatePasswordHomePageController = async (req, res) => {
 };
 
 const getUserController = async (req, res) => {
-  const userId = req.query.id;
-  if (!userId) {
+  const code_url = req.query?.code_url;
+  if (!code_url) {
     res.status(500).send({
       codeNumber: 1,
       message_en: "Error. Please contact with admin.",
       message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên",
     });
   } else {
-    const data = await getUserService(userId);
+    const data = await getUserService(code_url);
     if (data?.codeNumber === 0) {
       res.status(200).send(data);
     } else {

@@ -39,7 +39,7 @@ const getTeacherService = (limit) => {
   });
 };
 
-const getOneTeacherService = (id) => {
+const getOneTeacherService = (code_url) => {
   return new Promise(async (resolve, reject) => {
     try {
       const data = await db.Teacher.findOne({
@@ -67,7 +67,7 @@ const getOneTeacherService = (id) => {
           // },
         ],
         where: {
-          id,
+          code_url,
         },
         raw: true,
         nest: true, //fix result.get is not a function

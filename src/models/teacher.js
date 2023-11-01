@@ -41,6 +41,7 @@ module.exports = (sequelize, DataTypes) => {
       facultyId: DataTypes.INTEGER,
       note: DataTypes.STRING,
       image: DataTypes.BLOB("long"),
+      code_url: DataTypes.STRING,
     },
     {
       sequelize,
