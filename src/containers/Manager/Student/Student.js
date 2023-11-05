@@ -35,7 +35,7 @@ const ScheduleManager = () => {
         style={{ maxWidth: "80%", width: "80%" }}
       >
         <p className="mx-auto text-2xl text-blue-600 font-semibold">
-          Manager Student's Schedule Booking and Question
+          Quản lý thông tin
         </p>
 
         <div className="flex items-center justify-between gap-10 w-full">
@@ -49,7 +49,7 @@ const ScheduleManager = () => {
                 }`}
             onClick={() => setAction("schedule")}
           >
-            Student's Schedule Booking
+            Quản lý lịch hẹn của sinh viên
           </button>
           <button
             type="button"
@@ -61,7 +61,7 @@ const ScheduleManager = () => {
                 }`}
             onClick={() => setAction("question")}
           >
-            Student's question
+            Quản lý câu hỏi từ sinh viên
           </button>
         </div>
 

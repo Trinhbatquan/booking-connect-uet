@@ -69,6 +69,10 @@
           height: 220px;
           max-height: 220px;
           border-radius: 4px;
+          transition: all 0.3s ease-in-out;
+        }
+        & .section-item-teacher:hover {
+          border-color: #0189fd;
         }
         &-img {
           // background-image: url("../../../assets/image/banner.jpeg");

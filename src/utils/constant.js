@@ -43,6 +43,11 @@ export const path = {
   inform: "inform",
   contact: "contact",
   survey: "survey",
+  teacher: "teacher_see_all",
+  news: "news_see_all",
+  detail_news: "detail_news",
+  notify: "notify_see_all",
+  detail_notify: "detail_notify",
 };
 
 export const languages = {

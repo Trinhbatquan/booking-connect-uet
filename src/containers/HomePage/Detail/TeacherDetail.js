@@ -217,109 +217,105 @@ const TeacherDetail = ({ codeUrlTeacher, roleTeacher, type }) => {
       timeType,
       reason,
     } = data;
-    updateStudent
-      .update(
-        {},
-        {
-          email,
-          phoneNumber,
-        }
-      )
-      .then((data) => {
-        if (data?.codeNumber === -1) {
-          toast.error(`${t("system.notification.fail")}`, {
-            autoClose: 2000,
-            position: "bottom-right",
-            theme: "colored",
-          });
-          setLoading(false);
-        } else if (data?.codeNumber === -2) {
-          toast.error(`${t("system.token.mess")}`, {
-            autoClose: 3000,
-            position: "bottom-right",
-            theme: "colored",
-          });
-          setTimeout(async () => {
-            logOutHomePageApi.logoutUser({}).then((data) => {
-              if (data?.codeNumber === 0) {
-                dispatch(logOutUser());
-                navigateHome(
-                  `${path.HOMEPAGE}/${path.login_homepage}?redirect=/homepage`
-                );
-              } else {
-              }
-            });
-          }, 3000);
-        } else if (data?.codeNumber === 1) {
-          toast.error(data?.message, {
-            autoClose: 2000,
-            position: "bottom-right",
-            theme: "colored",
-          });
-          setLoading(false);
-        } else {
-          const handleSomething = async () => {
-            const res = await createBookingScheduleService.create(
-              {},
-              {
-                email,
-                managerId,
-                roleManager,
-                studentId,
-                date,
-                timeType,
-                reason,
-              }
-            );
-            if (res?.codeNumber === 0) {
-              setOpenModalSchedule(false);
-              if (res?.type === "create") {
-                toast.success(res?.message, {
-                  autoClose: 2000,
-                  position: "bottom-right",
-                  theme: "colored",
-                });
-              } else {
-                toast.error(res?.message, {
-                  autoClose: 2000,
-                  position: "bottom-right",
-                  theme: "colored",
-                });
-              }
-              loadTimeOfDate(date);
+    // updateStudent
+    //   .update(
+    //     {},
+    //     {
+    //       email,
+    //       phoneNumber,
+    //     }
+    //   )
+    //   .then((data) => {
+    //     if (data?.codeNumber === -1) {
+    //       toast.error(`${t("system.notification.fail")}`, {
+    //         autoClose: 2000,
+    //         position: "bottom-right",
+    //         theme: "colored",
+    //       });
+    //       setLoading(false);
+    //     } else if (data?.codeNumber === -2) {
+    //       toast.error(`${t("system.token.mess")}`, {
+    //         autoClose: 3000,
+    //         position: "bottom-right",
+    //         theme: "colored",
+    //       });
+    //       setTimeout(async () => {
+    //         logOutHomePageApi.logoutUser({}).then((data) => {
+    //           if (data?.codeNumber === 0) {
+    //             dispatch(logOutUser());
+    //             navigateHome(
+    //               `${path.HOMEPAGE}/${path.login_homepage}?redirect=/homepage`
+    //             );
+    //           } else {
+    //           }
+    //         });
+    //       }, 3000);
+    //     } else if (data?.codeNumber === 1) {
+    //       toast.error(data?.message, {
+    //         autoClose: 2000,
+    //         position: "bottom-right",
+    //         theme: "colored",
+    //       });
+    //       setLoading(false);
+    //     } else {
+    //       const handleSomething = async () => {
+    const res = await createBookingScheduleService.create(
+      {},
+      {
+        email,
+        managerId,
+        roleManager,
+        studentId,
+        date,
+        timeType,
+        reason,
+      }
+    );
+    if (res?.codeNumber === 0) {
+      //socket_emit_booking_create
+      emit_create_booking(managerId, roleManager, "A1");
+      setOpenModalSchedule(false);
+      if (res?.type === "create") {
+        toast.success(res?.message, {
+          autoClose: 2000,
+          position: "bottom-right",
+          theme: "colored",
+        });
+      } else {
+        toast.error(res?.message, {
+          autoClose: 2000,
+          position: "bottom-right",
+          theme: "colored",
+        });
+      }
+      loadTimeOfDate(date);
 
-              // console.log(timeDataApi);
-              // let filterSchedule = [];
-              // filterSchedule = await getBookingScheduleNotSelected(
-              //   timeDataApi,
-              //   managerId,
-              //   "R5",
-              //   currentStudent?.id,
-              //   date,
-              //   "A1"
-              // );
+      // console.log(timeDataApi);
+      // let filterSchedule = [];
+      // filterSchedule = await getBookingScheduleNotSelected(
+      //   timeDataApi,
+      //   managerId,
+      //   "R5",
+      //   currentStudent?.id,
+      //   date,
+      //   "A1"
+      // );
 
-              // console.log(filterSchedule);
+      // console.log(filterSchedule);
 
-              // setTimeDataApi(filterSchedule);
-              // setLoading(false);
-              // console.log("update");
-            } else if (res?.codeNumber === 1) {
-              toast.error(res?.message, {
-                autoClose: 2000,
-                position: "bottom-right",
-                theme: "colored",
-              });
-              setLoading(false);
-            }
-          };
-          handleSomething();
-
-          //socket_emit_booking_create
-          emit_create_booking(managerId, roleManager, "A1");
-        }
+      // setTimeDataApi(filterSchedule);
+      // setLoading(false);
+      // console.log("update");
+    } else if (res?.codeNumber === 1) {
+      toast.error(res?.message, {
+        autoClose: 2000,
+        position: "bottom-right",
+        theme: "colored",
       });
+      setLoading(false);
+    }
   };
+  // handleSomething();
 
   //questions
   const createBooking = async (data) => {

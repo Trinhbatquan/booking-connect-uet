@@ -179,7 +179,10 @@ const HeaderUser = () => {
                   : {}
               }
             >
-              <li>{t("system.header.manager-schedule")}</li>
+              <li>
+                {/* {t("system.header.manager-schedule")} */}
+                Tạo lịch hẹn
+              </li>
             </NavLink>
             <NavLink
               to={path.student}
@@ -197,7 +200,7 @@ const HeaderUser = () => {
                   : {}
               }
             >
-              <li>Quản lý sinh viên</li>
+              <li>Quản lý thông tin</li>
             </NavLink>
           </ul>
         </div>
@@ -263,7 +266,7 @@ const HeaderUser = () => {
                     </span>
                   </div>
                 </div>
-                <ul className="py-2  text-gray-200 border-t border-b border-slate-400">
+                <ul className="py-2 profile-user-manager text-gray-200 border-t border-b border-slate-400">
                   <li>
                     <div className="flex items-center gap-1 px-4 py-2 hover:bg-blue-600 hover:text-white">
                       <AiFillEdit />{" "}
@@ -328,7 +331,7 @@ const HeaderAdmin = () => {
           <MdDashboard className="text-lg" />
           <span>Tổng quan</span>
         </NavLink>
-        <div
+        {/* <div
           className="system-header-text relative text-blurColor font-semibold text-lg w-1/5 h-full flex items-center gap-1
        justify-center cursor-pointer pl-3 hover:text-white transition-all duration-200"
         >
@@ -380,7 +383,7 @@ const HeaderAdmin = () => {
               <li>Quản lý sinh viên</li>
             </NavLink>
           </ul>
-        </div>
+        </div> */}
 
         <div
           className={`system-header-text relative text-blurColor font-semibold text-lg w-1/6 h-full flex items-center gap-1
@@ -600,7 +603,7 @@ const HeaderAdmin = () => {
 
         <NavLink
           to={path.notificationManager}
-          className="system-header-text relative text-blurColor font-semibold text-lg w-1/5 h-full flex items-center gap-1
+          className="system-header-text relative text-blurColor font-semibold text-lg w-1/6 h-full flex items-center gap-1
        justify-center cursor-pointer pl-3 hover:text-white transition-all duration-200"
           style={({ isActive }) => ({
             color: isActive ? "#fff" : "rgb(195, 181, 181)",
@@ -667,7 +670,7 @@ const HeaderAdmin = () => {
                     </span>
                   </div>
                 </div>
-                <ul className="py-2  text-gray-200 border-t border-b border-slate-400">
+                <ul className="py-2 profile-user-manager text-gray-200 border-t border-b border-slate-400">
                   <li>
                     <div className="flex items-center gap-1 px-4 py-2 hover:bg-blue-600 hover:text-white">
                       <AiFillEdit />{" "}

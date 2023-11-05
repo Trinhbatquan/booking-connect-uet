@@ -1,24 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-
 const teacherInitialState = {
-    topTenTeachers: []
-  };
-
+  searchTeacher: "",
+  teacherData: [],
+  descriptionTeacher: [],
+};
 
 const teacherSlice = createSlice({
   name: "teacher",
   initialState: teacherInitialState,
-  reducers: {
-    getTopTenTeacherSucceed: (state, action) => {
-      state.topTenTeachers = action.payload;
-    },
-    getTopTenTeacherFailed: (state, action) => {
-      state.topTenTeachers = [];
-    },
-  },
+  reducers: {},
 });
 
 const { actions, reducer } = teacherSlice;
-export const {getTopTenTeacherFailed, getTopTenTeacherSucceed } = actions;
+export const {} = actions;
 export default reducer;

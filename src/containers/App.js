@@ -43,6 +43,11 @@ import Inform from "./HomePage/Inform";
 import Contact from "./HomePage/Contact";
 import SurveyOpinion from "./HomePage/Survey Opinion";
 import NewsSystem from "./System/News/NewsSystem";
+import SeeAllTeacher from "./HomePage/SeeAll/SeeAllTeacher";
+import NewsSeeAll from "./HomePage/SeeAll/NewsSeeAll";
+import NewsDetail from "./HomePage/Detail/NewsDetail";
+import NotificationSeeAll from "./HomePage/SeeAll/NotificationSeeAll";
+import NotificationDetail from "./HomePage/Detail/NotificationDetail";
 
 function App() {
   const [appearScrollTop, setAppearScrollTop] = useState(false);
@@ -119,6 +124,26 @@ function App() {
         <Route
           path={`${path.HOMEPAGE}/${path.contact}`}
           element={<Contact />}
+        />
+        <Route
+          path={`${path.HOMEPAGE}/${path.teacher}`}
+          element={<SeeAllTeacher />}
+        />
+        <Route
+          path={`${path.HOMEPAGE}/${path.news}`}
+          element={<NewsSeeAll />}
+        />
+        <Route
+          path={`${path.HOMEPAGE}/${path.notify}`}
+          element={<NotificationSeeAll />}
+        />
+        <Route
+          path={`${path.HOMEPAGE}/${path.detail_news}/:code_url`}
+          element={<NewsDetail />}
+        />
+        <Route
+          path={`${path.HOMEPAGE}/${path.detail_notify}/:code_url`}
+          element={<NotificationDetail />}
         />
 
         {/* system */}

@@ -749,7 +749,8 @@ const ScheduleManager = () => {
         style={{ maxWidth: "80%", width: "80%" }}
       >
         <p className="mx-auto text-2xl text-blue-600 font-semibold">
-          {t("system.schedule.manager")}
+          {/* {t("system.schedule.manager")} */}
+          Tạo lịch hẹn mới
         </p>
         <div className="flex items-start justify-between w-full gap-10">
           <motion.div

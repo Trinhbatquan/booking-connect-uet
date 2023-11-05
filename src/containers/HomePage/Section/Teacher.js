@@ -8,6 +8,7 @@ import convertBufferToBase64 from "../../../utils/convertBufferToBase64";
 import { useTranslation } from "react-i18next";
 import TeacherSkeleton from "./SkeletonSection/TeacherSkeleton";
 import lozad from "lozad";
+import { path } from "../../../utils/constant";
 
 const Teacher = ({ settings }) => {
   const [loading, setLoading] = useState(true);
@@ -21,14 +22,14 @@ const Teacher = ({ settings }) => {
     const getAPI = () => {
       console.log(2);
 
-      getTeacherHomePageAPI.getTeacher({ limit: 10 }).then((data) => {
+      getTeacherHomePageAPI.getTeacherHomePage({}).then((data) => {
         if (data?.codeNumber !== 0) {
           alert(data?.message);
           // dispatch(getTopTenTeacherFailed());
         } else {
           // dispatch(getTopTenTeacherSucceed(data?.teacher));
           console.log({ data });
-          const teacherData = data?.teacher;
+          const teacherData = data?.teacherData;
           if (teacherData?.length > 0) {
             for (let i = 0; i < teacherData.length; i++) {
               if (teacherData[i]?.image?.data) {
@@ -67,6 +68,10 @@ const Teacher = ({ settings }) => {
     // dispatch(setNavigate("detail"));
   };
 
+  const handleSeeAllTeacher = () => {
+    navigate(`${path.HOMEPAGE}/${path.teacher}`);
+  };
+
   return (
     <div className="section-container teacher-container w-full h-auto">
       <div className="section-content">
@@ -77,6 +82,7 @@ const Teacher = ({ settings }) => {
           <button
             className="section-header-button outline-none border-none bg-blurColor text-headingColor bg-opacity-30 shadow-sm
           backdrop-blur-sm hover:bg-blue-800 hover:text-white transition-all duration-300"
+            onClick={handleSeeAllTeacher}
           >
             {t("header.see-all")}
           </button>
@@ -104,7 +110,6 @@ const Teacher = ({ settings }) => {
                           <img
                             className="lozad"
                             data-src={teacher?.image?.data}
-                            src=""
                             alt=""
                           />
                         </div>

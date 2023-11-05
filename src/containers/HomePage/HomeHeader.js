@@ -409,6 +409,7 @@ const HomeHeader = () => {
                     className={`cursor-pointer hover:bg-gray-100 transition-all duration-300 p-[10px] pl-[20px]
                      text-headingColor border-none block w-full font-normal`}
                     style={{ fontSize: "16px" }}
+                    onClick={() => navigate(`${path.HOMEPAGE}/${path.news}`)}
                   >
                     {i18n.language === "en" ? "News" : "Tin tức"}
                   </div>
@@ -418,13 +419,15 @@ const HomeHeader = () => {
                     className={`cursor-pointer hover:bg-gray-100 transition-all duration-300 p-[10px] pl-[20px]
                      text-headingColor border-none block w-full font-normal`}
                     style={{ fontSize: "16px" }}
+                    onClick={() => navigate(`${path.HOMEPAGE}/${path.notify}`)}
                   >
                     {i18n.language === "en" ? "Notification" : "Thông báo"}
                   </div>
                 </li>
               </ul>
             </div>
-            <NavLink
+
+            <div
               className="student_header relative navigation text-md text-headingColor hover:text-blue-700"
               // style={({ isActive }) =>
               //   isActive
@@ -438,6 +441,7 @@ const HomeHeader = () => {
                 {i18n.language === "en" ? "FOR STUDENT" : "DÀNH CHO SINH VIÊN"}
                 <IoMdArrowDropdown className="hover:text-blue-700" />
               </span>
+
               <ul
                 className="student_dropdown absolute profile-user-homepage avatar-modal"
                 style={{
@@ -457,53 +461,50 @@ const HomeHeader = () => {
                 }}
               >
                 <li>
-                  {/* <div
-                    className={`cursor-pointer hover:bg-gray-100 transition-all duration-300 p-[10px] pl-[20px]
-                     text-headingColor border-none block w-full font-normal`}
-                    style={{ fontSize: "16px" }}
-                  >
-                    {i18n.language === "en"
-                      ? "Recruitment & Jobs"
-                      : "Tuyển dụng và việc làm"}
-                  </div> */}
-                  <Link
-                    className="cursor-pointer hover:bg-gray-100 transition-all duration-300 p-[10px] pl-[20px]
+                  <a
+                    className="hover:bg-gray-100 transition-all duration-300 p-[10px] pl-[20px]
                      text-headingColor border-none block w-full font-normal"
                     style={{ fontSize: "16px" }}
                     target={"_blank"}
-                    to="https://vieclam.uet.vnu.edu.vn/"
+                    rel="noopener noreferrer"
+                    href="https://vieclam.uet.vnu.edu.vn/"
+                    alt=""
                   >
                     {i18n.language === "en"
                       ? "Recruitment & Jobs"
                       : "Tuyển dụng và việc làm"}
-                  </Link>
+                  </a>
                 </li>
                 <li>
-                  <Link
-                    className="cursor-pointer hover:bg-gray-100 transition-all duration-300 p-[10px] pl-[20px]
+                  <a
+                    href="http://handbook.uet.vnu.edu.vn/"
+                    className="hover:bg-gray-100 transition-all duration-300 p-[10px] pl-[20px]
                      text-headingColor border-none block w-full font-normal"
                     style={{ fontSize: "16px" }}
                     target={"_blank"}
-                    to="http://handbook.uet.vnu.edu.vn/"
+                    rel="noopener noreferrer"
+                    alt=""
                   >
                     {i18n.language === "en"
                       ? "Student HandBook"
                       : "Sổ tay sinh viên"}
-                  </Link>
+                  </a>
                 </li>
                 <li>
-                  <Link
-                    className="cursor-pointer hover:bg-gray-100 transition-all duration-300 p-[10px] pl-[20px]
+                  <a
+                    className="hover:bg-gray-100 transition-all duration-300 p-[10px] pl-[20px]
                      text-headingColor border-none block w-full font-normal"
                     style={{ fontSize: "16px" }}
                     target={"_blank"}
-                    to="https://uet.vnu.edu.vn/"
+                    rel="noopener noreferrer"
+                    href="https://uet.vnu.edu.vn/"
+                    alt=""
                   >
                     {i18n.language === "en" ? "UET Website" : "Trang chủ UET"}
-                  </Link>
+                  </a>
                 </li>
               </ul>
-            </NavLink>
+            </div>
             <NavLink
               to={`${path.HOMEPAGE}/${path.contact}`}
               className="navigation text-md uppercase text-headingColor hover:text-blue-700"

@@ -108,18 +108,18 @@ const BookingModal = ({
 
   const handleCheckValidate = () => {
     let result = true;
-    const checkNullState = handleCheckNullState();
-    if (checkNullState) {
-      const rejexPhoneNumber = /\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/;
-      // const regexEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-      // console.log(regexEmail.test(email));
-      if (!rejexPhoneNumber.test(phoneNumber)) {
-        setNotifyCheckState("Please enter correct format of phone");
-        result = false;
-      }
-    } else {
-      result = false;
-    }
+    // const checkNullState = handleCheckNullState();
+    // if (checkNullState) {
+    //   const rejexPhoneNumber = /\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/;
+    //   // const regexEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    //   // console.log(regexEmail.test(email));
+    //   if (!rejexPhoneNumber.test(phoneNumber)) {
+    //     setNotifyCheckState("Please enter correct format of phone");
+    //     result = false;
+    //   }
+    // } else {
+    //   result = false;
+    // }
     return result;
   };
 
@@ -150,9 +150,9 @@ const BookingModal = ({
       >
         {/* Header BookingModal */}
         <div className="bg-blue-600 px-6 py-2 w-full pt-4 flex items-center">
-          <span className="text-white font-semibold">Create a new booking</span>
+          <span className="text-white font-semibold">Đặt một lịch hẹn mới</span>
         </div>
-        <div className="detail-teacher">
+        <div className="px-6 pt-3 detail-teacher">
           <div
             className="detail-teacher-avatar flex-3"
             style={{
@@ -173,13 +173,13 @@ const BookingModal = ({
           </div>
         </div>
 
-        <div className="pt-1 pb-4 px-6 flex flex-col w-full">
-          <span
-            className="mx-auto text-red-500 mb-1"
+        <div className="mt-3 pb-4 px-6 flex flex-col w-full">
+          {/* <span
+            className="mx-auto text-red-500"
             style={notifyCheckState ? { opacity: "1" } : { opacity: "0" }}
           >
             {notifyCheckState ? notifyCheckState : "Null"}
-          </span>
+          </span> */}
           <div className="w-full flex items-center justify-center gap-6">
             <div className="flex-1 flex flex-col justify-center">
               <label className="mb-1 text-headingColor flex items-center gap-1">
@@ -198,7 +198,7 @@ const BookingModal = ({
             </div>
             <div className="flex-1 flex flex-col justify-center">
               <label className="mb-1 text-headingColor flex items-center gap-1">
-                FullName
+                Tên đầy đủ
                 <HiOutlinePencilAlt />
               </label>
               <input
@@ -214,9 +214,9 @@ const BookingModal = ({
           </div>
 
           <div className="w-full flex items-center justify-center gap-6 mt-3">
-            <div className="flex-1 flex flex-col justify-center">
+            {/* <div className="flex-1 flex flex-col justify-center">
               <label className="mb-1 text-headingColor flex items-center gap-1">
-                PhoneNumber
+                
                 <HiOutlinePencilAlt />
               </label>
               <input
@@ -229,10 +229,10 @@ const BookingModal = ({
                 }
                 onFocus={() => setNotifyCheckState("")}
               />
-            </div>
+            </div> */}
             <div className="flex-1 flex flex-col justify-center">
               <label className="mb-1 text-headingColor flex items-center gap-1">
-                Mssv <HiOutlinePencilAlt />
+                Mã số sinh viên <HiOutlinePencilAlt />
               </label>
               <input
                 className=" rounded-sm w-full focus:ring-0 focus:border focus:border-solid focus:border-gray-500 border border-solid bg-gray-200 outline-none py-1 px-2 text-md"
@@ -249,7 +249,7 @@ const BookingModal = ({
           <div className="w-full flex items-center justify-center gap-6 mt-3">
             <div className="flex flex-col justify-center flex-1">
               <label className="mb-1 text-headingColor flex items-center gap-1">
-                Reason <HiOutlinePencilAlt />
+                Lý do đặt lịch <HiOutlinePencilAlt />
               </label>
               <textarea
                 className=" rounded-sm w-full focus:ring-0 focus:border focus:border-solid focus:border-gray-500 border border-solid border-gray-500 outline-none py-1 px-2 text-md"
@@ -275,14 +275,14 @@ const BookingModal = ({
               style={{ maxWidth: "15%", width: "15%" }}
               onClick={() => handleCreateBookingSchedule()}
             >
-              Add New
+              Thêm mới
             </button>
             <button
               className="bg-green-800 text-white mt-6 py-2 px-1 ml-3 font-semibold rounded-md shadow backdrop-blur-md bg-opacity-80 hover:bg-opacity-100"
               style={{ maxWidth: "10%", width: "10%" }}
               onClick={() => close()}
             >
-              Close
+              Đóng
             </button>
           </div>
         </div>

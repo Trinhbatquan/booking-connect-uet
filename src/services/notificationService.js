@@ -14,6 +14,10 @@ const getNotiFy = {
     const url = "/api/get-notification-homePage-limited";
     return axiosClient.get(url, { params });
   },
+  getOneNotifyHomePage: (params) => {
+    const url = "/api/get-one-notify";
+    return axiosClient.get(url, { params });
+  },
 };
 
 const createNotifySystem = (params, data) => {

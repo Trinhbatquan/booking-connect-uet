@@ -4,22 +4,24 @@ import { FaSearch } from "react-icons/fa";
 import { BsHouses, BsDatabase } from "react-icons/bs";
 import { RiHeartsLine } from "react-icons/ri";
 import { GiMedicalPackAlt } from "react-icons/gi";
-
+import { HiOutlineBookOpen } from "react-icons/hi";
 import { useTranslation } from "react-i18next";
 
 // HỆ THỐNG ĐẶT LỊCH ONLINE
 
 import "./HomeBanner.scss";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import filterSearchInputHomePage from "../../utils/filterSearchHomePage";
 import { setSearchText } from "../../redux/searchSlice";
+import { path } from "../../utils/constant";
 
 const HomeBanner = () => {
   const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
   const [inputValue, setInputValue] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
   const searchInput = useRef();
   const dropDownSearch = useRef();
   const searchText = useSelector((state) => state.searchHomePageReducer.search);
@@ -209,6 +211,26 @@ const HomeBanner = () => {
     };
   }, []);
 
+  const removeHashFromURL = (event) => {
+    console.log(event);
+    event.preventDefault();
+    // Prevent the default link behavior
+
+    // Get the hash from the href attribute of the clicked link
+    const hash = event.target;
+    const hashParent = hash.parentElement.getAttribute("href");
+    console.log(hashParent);
+
+    if (hashParent) {
+      const element = document.getElementById(hashParent.slice(1));
+      console.log(element);
+
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  };
+
   const handleReduxChangeValue = (value) => {
     setInputValue(value);
     dispatch(setSearchText(value));
@@ -353,36 +375,59 @@ const HomeBanner = () => {
         </div>
       </div>
       <div className="homepage-banner-down flex items-center justify-center gap-32">
-        <div className="topic flex flex-col justify-start items-center">
+        <a
+          className="topic flex flex-col justify-start items-center"
+          href="#department-container"
+          alt=""
+          onClick={removeHashFromURL}
+        >
           <BsHouses className="topic-icon text-gray-600 cursor-pointer py-3 rounded-full shadow-md backdrop-blur-md border border-blurColor" />
           <span className="topic-content  cursor-pointer text-xl">
             {t("banner.department")}
           </span>
-        </div>
-        <div className="topic flex flex-col justify-start items-center">
+        </a>
+        <a
+          className="topic flex flex-col justify-start items-center"
+          href="#faculty-container"
+          alt=""
+          onClick={removeHashFromURL}
+        >
           <BsDatabase className="topic-icon text-gray-600 cursor-pointer py-3 rounded-full shadow-md backdrop-blur-md border border-blurColor" />
           <span className="topic-content  cursor-pointer text-xl">
             {t("banner.faculty")}
           </span>
-        </div>
-        <div className="topic flex flex-col justify-start items-center">
-          <BsDatabase className="topic-icon text-gray-600 cursor-pointer py-3 rounded-full shadow-md backdrop-blur-md border border-blurColor" />
+        </a>
+        <div
+          className="topic flex flex-col justify-start items-center"
+          onClick={() => navigate(`${path.HOMEPAGE}/${path.teacher}`)}
+        >
+          <HiOutlineBookOpen className="topic-icon text-gray-600 cursor-pointer py-3 rounded-full shadow-md backdrop-blur-md border border-blurColor" />
           <span className="topic-content  cursor-pointer text-xl">
             {t("banner.teacher")}
           </span>
         </div>
-        <div className="topic flex flex-col justify-start items-center">
+        <a
+          className="topic flex flex-col justify-start items-center"
+          href="#health-container"
+          alt=""
+          onClick={removeHashFromURL}
+        >
           <GiMedicalPackAlt className="topic-icon text-gray-600 cursor-pointer py-3 rounded-full shadow-md backdrop-blur-md border border-blurColor" />
           <span className="topic-content  cursor-pointer text-xl">
             {t("banner.health")}
           </span>
-        </div>
-        <div className="topic flex flex-col justify-start items-center">
+        </a>
+        <a
+          className="topic flex flex-col justify-start items-center"
+          href="#health-container"
+          alt=""
+          onClick={removeHashFromURL}
+        >
           <RiHeartsLine className="topic-icon text-gray-600 cursor-pointer py-3 rounded-full shadow-md backdrop-blur-md border border-blurColor" />
           <span className="topic-content  cursor-pointer text-xl">
             {t("banner.mental")}
           </span>
-        </div>
+        </a>
       </div>
     </div>
   );

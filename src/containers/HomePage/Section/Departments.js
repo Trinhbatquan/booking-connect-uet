@@ -50,18 +50,15 @@ const Departments = ({ settings }) => {
     // dispatch(setNavigate("detail"));
   };
   return (
-    <div className="section-container department-container w-full h-auto">
+    <div
+      id="department-container"
+      className="section-container department-container w-full h-auto"
+    >
       <div className="section-content">
         <div className="section-header flex items-center justify-between">
           <div className="section-header-text">
             {t("header.contact-department")}
           </div>
-          <button
-            className="section-header-button outline-none border-none bg-blurColor text-headingColor bg-opacity-30 shadow-sm 
-          backdrop-blur-sm hover:bg-blue-800 hover:text-white transition-all duration-300"
-          >
-            {t("header.see-all")}
-          </button>
         </div>
         <div className="section-body-department">
           <Slider {...settings}>

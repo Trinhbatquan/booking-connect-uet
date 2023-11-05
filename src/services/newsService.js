@@ -21,6 +21,10 @@ const news = {
     const url = "/api/get-news-limited";
     return axiosClient.get(url, { params });
   },
+  getOneNews: (params) => {
+    const url = "/api/one-news";
+    return axiosClient.get(url, { params });
+  },
 };
 
 export { news };

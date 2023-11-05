@@ -10,6 +10,8 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { getUserApi } from "../../../services/userService";
 import HealthStudentSkeleton from "./SkeletonSection/HealthStudentSkeleton";
+import { Link } from "react-router-dom";
+import Instruction from "./Instruction";
 
 const Health = () => {
   const { t } = useTranslation();
@@ -49,7 +51,10 @@ const Health = () => {
     "https://i-vn.joboko.com/okoimg/vieclam.uet.vnu.edu.vn/xurl/images/image-4.png",
   ];
   return (
-    <div className="section-container health-container w-full h-auto">
+    <div
+      id="health-container"
+      className="section-container health-container w-full h-auto"
+    >
       <div className="section-content">
         <div className="section-header flex items-center justify-between">
           <div className="section-header-text">
@@ -94,7 +99,11 @@ const Health = () => {
                   </div>
                 </div>
               </div>
-              <div className="section-item-health">
+              <Link
+                className="section-item-health"
+                to="https://vieclam.ptithcm.edu.vn/trac-nghiem-huong-nghiep-news4541"
+                target="_blank"
+              >
                 <div className="item">
                   <img
                     alt=""
@@ -102,10 +111,10 @@ const Health = () => {
                     className="section-item-img-health lozad"
                   ></img>
                   <div className="section-item-text-health">
-                    Trắc nghiệm khách quan về tâm lý
+                    Trắc nghiệm khách quan về tâm lý và hướng nghiệp
                   </div>
                 </div>
-              </div>
+              </Link>
               <div className="section-item-health">
                 <div className="item">
                   <img
@@ -119,6 +128,8 @@ const Health = () => {
             </>
           )}
         </div>
+
+        <Instruction type="question" />
       </div>
     </div>
   );

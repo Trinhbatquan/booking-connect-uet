@@ -218,7 +218,15 @@ const HomePage = () => {
   }, []);
 
   return (
-    <Suspense fallback={<Loading type="start" />}>
+    <Suspense
+      fallback={
+        <div className="fixed loading-overlay top-0 bottom-0 flex items-center justify-center mx-auto left-0 right-0 w-full max-h-full bg-black bg-opacity-25">
+          <div className="absolute">
+            <Loading />
+          </div>
+        </div>
+      }
+    >
       <div
       // style={{ width: "100vw",height: "100vh",overflow: "scroll" }}
       >

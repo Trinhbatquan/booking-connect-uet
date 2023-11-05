@@ -13,6 +13,7 @@ import {
   getNotiFy,
   updateNotifySystem,
 } from "../../../services/notificationService";
+import render_code_url from "../../../utils/render_code_url";
 import { useDispatch } from "react-redux";
 import { getAllNotify } from "../../../redux/notificationManagerSlice";
 import convertBufferToBase64 from "../../../utils/convertBufferToBase64";
@@ -191,6 +192,7 @@ const NotificationSystem = () => {
           contentHtml,
           image,
           type_notification: "system",
+          code_url: render_code_url(title),
         });
       }
       await createNotifySystem({}, { notifyData }).then((res) => {

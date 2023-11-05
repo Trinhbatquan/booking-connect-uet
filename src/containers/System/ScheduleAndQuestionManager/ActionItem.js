@@ -131,7 +131,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
             textAlign: "center",
           }}
         >
-          {`Show ${options.first} - ${options.last} of ${options.totalRecords}`}
+          {`Hiển thị ${options.first} - ${options.last} của ${options.totalRecords}`}
         </span>
       );
     },
@@ -143,7 +143,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
           onClick={options.onClick}
           disabled={options.disabled}
         >
-          <span className="p-3">Previous</span>
+          <span className="p-3">Trước</span>
           <Ripple />
         </button>
       );
@@ -156,7 +156,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
           onClick={options.onClick}
           disabled={options.disabled}
         >
-          <span className="p-3">Next</span>
+          <span className="p-3">Sau</span>
           <Ripple />
         </button>
       );
@@ -278,8 +278,8 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
             onChange={onGlobalFilterChange1}
             placeholder={`${
               action === "schedule"
-                ? "Search by name, email, date or status"
-                : "Search by name, email, time or status"
+                ? "Tìm kiếm theo tên, email, ngày hoặc trạng thái"
+                : "Tìm kiếm theo tên, email, thời gian hoặc trạng thái"
             }`}
             style={{ width: "100%" }}
           />
@@ -854,9 +854,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
           >
             <BsBox />
             {`${
-              action === "schedule"
-                ? "Total of schedule:"
-                : "Total of question:"
+              action === "schedule" ? "Tổng số lịch hẹn:" : "Tổng số câu hỏi:"
             }`}{" "}
             <span className="text">
               {dataBookingTotal?.length ? dataBookingTotal.length : 0}
@@ -872,7 +870,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                }`}
             onClick={() => setStatus("new")}
           >
-            <FaRunning /> New:
+            <FaRunning /> Mới:
             <span className="text">{countNew ? countNew : 0}</span>
           </button>
           {action === "schedule" && (
@@ -886,7 +884,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                   }`}
               onClick={() => setStatus("process")}
             >
-              <FaRunning /> In process:
+              <FaRunning /> Đang tiến hành:
               <span className="text">{countProcess ? countProcess : 0}</span>
             </button>
           )}
@@ -900,7 +898,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                }`}
             onClick={() => setStatus("done")}
           >
-            <AiOutlineFileDone /> Done:
+            <AiOutlineFileDone /> Hoàn thành:
             <span className="text">{countDone ? countDone : 0}</span>
           </button>
           {action === "schedule" && (
@@ -914,7 +912,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                   }`}
               onClick={() => setStatus("cancel")}
             >
-              <AiOutlineFileDone /> Cancel:
+              <AiOutlineFileDone /> Bị huỷ:
               <span className="text">{countCancel ? countCancel : 0}</span>
             </button>
           )}
@@ -925,7 +923,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                 `}
           >
             {/* <GrRefresh className="text-xl text-white" /> */}
-            Refresh
+            Tải lại trang
           </button>
         </div>
 
@@ -1003,14 +1001,17 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                     header={t("system.header.faculty")}
                   ></Column>
                   {action === "question" && (
-                    <Column header="Time" body={timeTemplate}></Column>
-                  )}
-                  {action === "schedule" && (
-                    <Column header="Date" body={dateTemplate}></Column>
+                    <Column header="Thời gian" body={timeTemplate}></Column>
                   )}
                   {action === "schedule" && (
                     <Column
-                      header="Time"
+                      header="Ngày, tháng, năm"
+                      body={dateTemplate}
+                    ></Column>
+                  )}
+                  {action === "schedule" && (
+                    <Column
+                      header="Thời gian"
                       field="timeDataBooking.valueEn"
                     ></Column>
                   )}
@@ -1040,7 +1041,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                             htmlFor="helper-text"
                             class="block mb-2 text-md font-medium text-gray-900 dark:text-white"
                           >
-                            FullName
+                            Tên đầy đủ
                           </label>
                           <input
                             type="text"
@@ -1070,7 +1071,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                             htmlFor="helper-text"
                             class="block mb-2 text-md font-medium text-gray-900 dark:text-white"
                           >
-                            Faculty
+                            Ngành
                           </label>
                           <input
                             type="text"
@@ -1087,7 +1088,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                             htmlFor="helper-text"
                             class="block mb-2 text-md font-medium text-gray-900 dark:text-white"
                           >
-                            Date
+                            Ngày, tháng, năm
                           </label>
                           <input
                             type="text"
@@ -1102,7 +1103,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                             htmlFor="helper-text"
                             class="block mb-2 text-md font-medium text-gray-900 dark:text-white"
                           >
-                            Time
+                            Thời gian
                           </label>
                           <input
                             type="text"
@@ -1117,7 +1118,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                             htmlFor="helper-text"
                             class="block mb-2 text-md font-medium text-gray-900 dark:text-white"
                           >
-                            PhoneNumber
+                            Số điện thoại
                           </label>
                           <input
                             type="text"
@@ -1133,7 +1134,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                           htmlFor="helper-text"
                           class="block mb-2 text-md font-medium text-gray-900 dark:text-white"
                         >
-                          Reason
+                          Lý do
                         </label>
                         <input
                           type="text"
@@ -1154,7 +1155,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                               acceptOrCancelSchedule("done", dataBookingSelect)
                             }
                           >
-                            Confirm completion
+                            Xác nhận hoàn thành
                           </button>
                         )}
                         {status === "new" && (
@@ -1170,7 +1171,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                                 )
                               }
                             >
-                              Accept
+                              Chấp nhận
                             </button>
                             <button
                               type="submit"
@@ -1183,7 +1184,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                                 )
                               }
                             >
-                              Cancel
+                              Huỷ bỏ
                             </button>
                           </>
                         )}
@@ -1197,7 +1198,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                             setSelectedProducts8(null);
                           }}
                         >
-                          Close
+                          Đóng
                         </button>
                       </div>
                     </div>
@@ -1209,7 +1210,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                             htmlFor="helper-text"
                             class="block mb-2 text-md font-medium text-gray-900 dark:text-white"
                           >
-                            FullName
+                            Tên đầy đủ
                           </label>
                           <input
                             type="text"
@@ -1241,7 +1242,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                             htmlFor="helper-text"
                             class="block mb-2 text-md font-medium text-gray-900 dark:text-white"
                           >
-                            Faculty
+                            Ngành
                           </label>
                           <input
                             type="text"
@@ -1256,7 +1257,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                             htmlFor="helper-text"
                             class="block mb-2 text-md font-medium text-gray-900 dark:text-white"
                           >
-                            Time
+                            Thời gian
                           </label>
                           <input
                             type="text"
@@ -1272,7 +1273,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                           htmlFor="helper-text"
                           class="block mb-2 text-md font-medium text-gray-900 dark:text-white"
                         >
-                          Subject
+                          Chủ đề
                         </label>
                         <input
                           type="text"
@@ -1287,7 +1288,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                           htmlFor="helper-text"
                           class="block mb-2 text-md font-medium text-gray-900 dark:text-white"
                         >
-                          Question
+                          Nội dung
                         </label>
                         <textarea
                           type="text"
@@ -1341,7 +1342,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                             setSelectedProducts8(null);
                           }}
                         >
-                          Close
+                          Đóng
                         </button>
                       </div>
                     </div>

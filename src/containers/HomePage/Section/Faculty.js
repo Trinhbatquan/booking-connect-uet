@@ -12,6 +12,7 @@ import { useNavigate } from "react-router";
 import { setNavigate } from "../../../redux/navigateSlice";
 import FacultySkeleton from "./SkeletonSection/FacultySkeleton";
 import lozad from "lozad";
+import Instruction from "./Instruction";
 
 const Faculties = ({ settings }) => {
   const dispatch = useDispatch();
@@ -58,19 +59,16 @@ const Faculties = ({ settings }) => {
   };
 
   return (
-    <div className="section-container faculty-container w-full">
+    <div
+      id="faculty-container"
+      className="section-container faculty-container w-full"
+    >
       <div className="section-content">
         <div className="section-header flex items-center justify-between">
           <div className="section-header-text">
             {" "}
             {t("header.contact-faculty")}
           </div>
-          <button
-            className="section-header-button outline-none border-none bg-blurColor text-headingColor bg-opacity-30 shadow-sm 
-          backdrop-blur-sm hover:bg-blue-800 hover:text-white transition-all duration-300"
-          >
-            {t("header.see-all")}
-          </button>
         </div>
         <div className="section-body">
           <Slider {...settings}>
@@ -130,6 +128,8 @@ const Faculties = ({ settings }) => {
             </div> */}
           </Slider>
         </div>
+
+        <Instruction />
       </div>
     </div>
   );

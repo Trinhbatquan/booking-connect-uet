@@ -6,6 +6,14 @@ const getTeacherHomePageAPI = {
     const url = "/api/teacher";
     return axiosClient.get(url, { params });
   },
+  getTeacherHomePage: (params) => {
+    const url = "/api/teacher_homepage";
+    return axiosClient.get(url, { params });
+  },
+  getTeacherBySearch: (params) => {
+    const url = "/api/teacher_by_search";
+    return axiosClient.get(url, { params });
+  },
   getTeacherById: (params) => {
     const url = "/api/one-teacher";
     return axiosClient.get(url, { params });

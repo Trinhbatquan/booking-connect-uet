@@ -9,12 +9,14 @@ import "./News.scss";
 import { news } from "../../../services/newsService";
 import convertBufferToBase64 from "../../../utils/convertBufferToBase64";
 import NewsSkeleton from "./SkeletonSection/NewsSkeleton";
+import { useNavigate } from "react-router";
+import { path } from "../../../utils/constant";
 
 const News = ({ settings }) => {
   const [newsData, setNewsData] = useState([]);
   const { t, i18n } = useTranslation();
   const [loading, setLoading] = useState(true);
-
+  const navigate = useNavigate();
   useEffect(() => {
     // getNotiFy.getHomePageLimited({}).then((data) => {
     //   if (data.codeNumber === 0) {
@@ -68,10 +70,13 @@ const News = ({ settings }) => {
     <div className="section-container notification-container w-full h-auto">
       <div className="section-content">
         <div className="section-header flex items-center justify-between">
-          <div className="section-header-text">{t("header.notification")}</div>
+          <div className="section-header-text">
+            {i18n.language === "en" ? "News" : "Tin Tức"}
+          </div>
           <button
             className="section-header-button outline-none border-none bg-blurColor text-headingColor bg-opacity-30 shadow-sm
           backdrop-blur-sm hover:bg-blue-800 hover:text-white transition-all duration-300"
+            onClick={() => navigate(`${path.HOMEPAGE}/${path.news}`)}
           >
             {t("header.see-all")}
           </button>
@@ -79,11 +84,18 @@ const News = ({ settings }) => {
         <div className="section-body-notification">
           {loading ? (
             <NewsSkeleton />
-          ) : newsData?.length < 4 ? (
+          ) : newsData?.length < 1 ? (
             ""
           ) : (
             <div className="grid grid-cols-2 gap-12" style={{}}>
-              <div className="cursor-pointer  relative h-[375px] rounded-lg overflow-hidden">
+              <div
+                className="relative h-[375px] rounded-lg overflow-hidden cursor-pointer"
+                onClick={() =>
+                  navigate(
+                    `${path.HOMEPAGE}/${path.detail_news}/${newsData[0]?.code_url}`
+                  )
+                }
+              >
                 <img
                   className="lozad"
                   data-src={
@@ -138,159 +150,69 @@ const News = ({ settings }) => {
                   </p>
                 </div>
               </div>
-              <div className="h-[375px] overflow-hidden grid grid-rows-3 grid-flow-col">
-                <div
-                  className=" cursor-pointer  flex items-start justify-start h-[125px] w-full gap-8 mb-[20px]
-        pb-[17px]"
-                  style={{ borderBottom: "1px dashed #b1b1b1" }}
-                >
-                  <img
-                    className="lozad"
-                    data-src={newsData[1]?.avatarNew?.data}
-                    alt=""
-                    style={{
-                      overflow: "hidden",
-                      borderRadius: "10px",
-                      width: "150px",
-                      height: "100px",
-                      objectFit: "cover",
-                    }}
-                  />
-                  <div className="flex-1">
-                    <p
-                      style={{
-                        display: "-webkit-box",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: "vertical",
-                        lineHeight: 1.6,
-                        color: "#000",
-                        fontSize: "15px",
-                        fontWeight: "450",
-                        margin: "0 0 10px",
-                      }}
-                    >
-                      {newsData[1]?.title}
-                    </p>
-                    <p
-                      className="detail-news flex items-start justify-start w-full gap-1"
-                      style={{
-                        color: "#f68500",
-                        fontWeight: "600",
-                        lineHeight: "1.5",
-                      }}
-                    >
-                      <span>
-                        {i18n.language === "en" ? "Detail" : "Chi tiết"}
-                      </span>
-                      <BsArrowRight
-                        className="button-news text-xl"
-                        style={{ color: "#f68500" }}
-                      />
-                    </p>
-                  </div>
-                </div>
-                <div
-                  className="cursor-pointer flex items-center justify-start h-[125px] w-full gap-8 mb-[20px]
+              <div className="h-[375px] overflow-hidden flex flex-col items-start justify-between">
+                {newsData.slice(1, newsData.length).map((item, index) => {
+                  return (
+                    <div
+                      key={index}
+                      className="flex items-start justify-start flex-1 w-full gap-8 mb-[20px] pb-[15px]
         "
-                  style={{ borderBottom: "1px dashed #b1b1b1" }}
-                >
-                  <img
-                    className="lozad"
-                    data-src={newsData[2]?.avatarNew?.data}
-                    alt=""
-                    style={{
-                      overflow: "hidden",
-                      borderRadius: "10px",
-                      width: "150px",
-                      height: "100px",
-                      objectFit: "cover",
-                    }}
-                  />
-                  <div className="flex-1 pb-[10px]">
-                    <p
-                      style={{
-                        display: "-webkit-box",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: "vertical",
-                        lineHeight: 1.6,
-                        color: "#000",
-                        fontSize: "15px",
-                        fontWeight: "450",
-                        margin: "0 0 10px",
-                      }}
+                      style={{ borderBottom: "1px dashed #b1b1b1" }}
                     >
-                      {newsData[2]?.title}
-                    </p>
-                    <p
-                      className="detail-news flex items-center justify-start gap-1"
-                      style={{
-                        color: "#f68500",
-                        fontWeight: "600",
-                        lineHeight: "1.5",
-                      }}
-                    >
-                      <span>
-                        {i18n.language === "en" ? "Detail" : "Chi tiết"}
-                      </span>
-                      <BsArrowRight
-                        className="button-news text-xl"
-                        style={{ color: "#f68500" }}
+                      <img
+                        className="lozad"
+                        data-src={item?.avatarNew?.data}
+                        alt=""
+                        style={{
+                          overflow: "hidden",
+                          borderRadius: "10px",
+                          width: "150px",
+                          height: "100px",
+                          objectFit: "cover",
+                        }}
                       />
-                    </p>
-                  </div>
-                </div>
-                <div className="cursor-pointer flex items-end justify-start gap-8">
-                  <img
-                    className="lozad"
-                    data-src={newsData[3]?.avatarNew?.data}
-                    alt=""
-                    style={{
-                      overflow: "hidden",
-                      borderRadius: "10px",
-                      width: "150px",
-                      height: "100px",
-                      objectFit: "cover",
-                    }}
-                  />
-                  <div className="flex-1 pb-[40px]">
-                    <p
-                      style={{
-                        display: "-webkit-box",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: "vertical",
-                        lineHeight: 1.6,
-                        color: "#000",
-                        fontSize: "15px",
-                        fontWeight: "450",
-                        margin: "0 0 10px",
-                      }}
-                    >
-                      {newsData[3]?.title}
-                    </p>
-                    <p
-                      className="detail-news flex items-center justify-start gap-1"
-                      style={{
-                        color: "#f68500",
-                        fontWeight: "600",
-                        lineHeight: "1.5",
-                      }}
-                    >
-                      <span>
-                        {i18n.language === "en" ? "Detail" : "Chi tiết"}
-                      </span>
-                      <BsArrowRight
-                        className="button-news text-xl"
-                        style={{ color: "#f68500" }}
-                      />
-                    </p>
-                  </div>
-                </div>
+                      <div className="flex-1">
+                        <p
+                          style={{
+                            display: "-webkit-box",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: "vertical",
+                            lineHeight: 1.6,
+                            color: "#000",
+                            fontSize: "15px",
+                            fontWeight: "450",
+                            margin: "0 0 10px",
+                          }}
+                        >
+                          {item?.title}
+                        </p>
+                        <p
+                          className="cursor-pointer detail-news flex items-start justify-start w-full gap-1"
+                          style={{
+                            color: "#f68500",
+                            fontWeight: "600",
+                            lineHeight: "1.5",
+                          }}
+                          onClick={() =>
+                            navigate(
+                              `${path.HOMEPAGE}/${path.detail_news}/${item?.code_url}`
+                            )
+                          }
+                        >
+                          <span>
+                            {i18n.language === "en" ? "See more" : "Xem thêm"}
+                          </span>
+                          <BsArrowRight
+                            className="button-news text-xl"
+                            style={{ color: "#f68500" }}
+                          />
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           )}
