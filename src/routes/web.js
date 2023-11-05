@@ -16,11 +16,13 @@ const {
 } = require("../controllers/userController");
 const { getAllCodeByType } = require("../controllers/allCodeController");
 const {
-  getTeacherController,
+  getTeacherSystemController,
+  getTeacherHomePageController,
   getOneTeacherController,
   createTeacherInfoController,
   getTeacherInfoController,
   getOneTeacherByFacultyController,
+  getTeacherBySearchController,
 } = require("../controllers/teacherController");
 const {
   createMarkDownController,
@@ -58,6 +60,7 @@ const {
   updateNotifySystemController,
   deleteNotifySystemController,
   getNotificationHomePageLimited,
+  getOneNotifyHomePageController,
 } = require("../controllers/notification");
 
 const {
@@ -72,6 +75,7 @@ const {
   deleteNewsController,
   getNewsController,
   getNewsLimitedController,
+  getOneNewsController,
 } = require("../controllers/newsController");
 
 let router = express.Router();
@@ -105,7 +109,9 @@ const initWebRoutes = (app) => {
 
   router.get("/api/allCode_type", getAllCodeByType);
 
-  router.get("/api/teacher", getTeacherController); //teacher
+  router.get("/api/teacher", getTeacherSystemController); //teacher
+  router.get("/api/teacher_by_search", getTeacherBySearchController); //teacher
+  router.get("/api/teacher_homepage", getTeacherHomePageController); //teacher
   router.get("/api/one-teacher", getOneTeacherController); //teacher
   router.get("/api/teacher/by-faculty", getOneTeacherByFacultyController); //teacher
 
@@ -179,6 +185,7 @@ const initWebRoutes = (app) => {
   );
   router.get("/api/get-news", getNewsController);
   router.get("/api/get-news-limited", getNewsLimitedController);
+  router.get("/api/one-news", getOneNewsController);
 
   //manager api
   router.get("/api/notification", getNotificationController);
@@ -251,6 +258,8 @@ const initWebRoutes = (app) => {
     "/api/get-notification-homePage-limited",
     getNotificationHomePageLimited
   );
+
+  router.get("/api/get-one-notify", getOneNotifyHomePageController);
 
   return app.use("/", router);
 };

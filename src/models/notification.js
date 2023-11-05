@@ -24,6 +24,7 @@ module.exports = (sequelize, DataTypes) => {
       contentHtml: DataTypes.TEXT("long"),
       content: DataTypes.TEXT("long"),
       image: DataTypes.BLOB("long"),
+      code_url: DataTypes.STRING,
     },
     {
       sequelize,

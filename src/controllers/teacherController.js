@@ -1,26 +1,49 @@
 const {
-  getTeacherService,
+  getTeacherHomePageService,
+  getTeacherSystemService,
   getOneTeacherService,
   createTeacherInfoService,
   getTeacherInfoByIdService,
   getTeacherByFacultyService,
+  getTeacherBySearchService,
 } = require("../services/teacherService");
 
-const getTeacherController = async (req, res) => {
-  const { limit } = req.query;
-  // if (!limit) {
-  //   res.status(400).send({
-  //     codeNumber: 1,
-  //     message: "Missing parameter limit",
-  //   });
-  // }
+const getTeacherHomePageController = async (req, res) => {
+  const { limit, page } = req.query;
   try {
-    const data = await getTeacherService(limit);
+    const data = await getTeacherHomePageService(limit, page);
+    res.status(200).send(data);
+  } catch (e) {
+    console.log(e);
+    res.status(200).send({
+      codeNumber: -1,
+      message: "Can not get teacher",
+    });
+  }
+};
+
+const getTeacherSystemController = async (req, res) => {
+  try {
+    const data = await getTeacherSystemService();
     res.status(200).send({
       codeNumber: 0,
       message: "Get Teacher Succeed",
       teacher: data,
     });
+  } catch (e) {
+    console.log(e);
+    res.status(200).send({
+      codeNumber: -1,
+      message: "Can not get teacher",
+    });
+  }
+};
+
+const getTeacherBySearchController = async (req, res) => {
+  const { search } = req.query;
+  try {
+    const data = await getTeacherBySearchService(search);
+    res.status(200).send(data);
   } catch (e) {
     console.log(e);
     res.status(200).send({
@@ -119,9 +142,11 @@ const getOneTeacherByFacultyController = async (req, res) => {
 };
 
 module.exports = {
-  getTeacherController,
+  getTeacherSystemController,
+  getTeacherHomePageController,
   getOneTeacherController,
   createTeacherInfoController,
   getTeacherInfoController,
   getOneTeacherByFacultyController,
+  getTeacherBySearchController,
 };

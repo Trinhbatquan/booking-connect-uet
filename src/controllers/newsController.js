@@ -4,6 +4,7 @@ const {
   deleteNewsService,
   getNewsService,
   getNewsLimitedService,
+  getOneNewsService,
 } = require("../services/newsService");
 
 const createNewsController = async (req, res) => {
@@ -113,10 +114,26 @@ const getNewsLimitedController = async (req, res) => {
   }
 };
 
+const getOneNewsController = async (req, res) => {
+  try {
+    const { code_url } = req.query;
+    const data = await getOneNewsService({ code_url });
+    return res.status(200).json(data);
+  } catch (e) {
+    console.log(e);
+    return res.status(200).json({
+      codeNumber: -1,
+      message_en: "Error. Please contact with admin.",
+      message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên",
+    });
+  }
+};
+
 module.exports = {
   createNewsController,
   updateNewsController,
   deleteNewsController,
   getNewsController,
   getNewsLimitedController,
+  getOneNewsController,
 };

@@ -21,6 +21,9 @@ module.exports = {
       avatarNew: {
         type: Sequelize.BLOB("long"),
       },
+      code_url: {
+        type: Sequelize.STRING,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

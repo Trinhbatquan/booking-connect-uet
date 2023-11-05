@@ -82,7 +82,7 @@ const getNotificationService = ({ managerId, roleManager, page, type }) => {
   });
 };
 
-//system + homepage
+//system
 const getAllNotifyByTypeService = (type_select) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -122,15 +122,24 @@ const getAllNotifyByTypeService = (type_select) => {
 };
 
 //homepage
-const getNotifyHomePageLimitedService = () => {
+const getNotifyHomePageLimitedService = ({ page }) => {
   return new Promise(async (resolve, reject) => {
     try {
+      const pageSize = 2;
+      const pageCurrent = page || 1;
+      const totalDocument = await db.Notification.count({
+        where: {
+          type_notification: "system",
+          roleManager: "R3", //student notification
+        },
+      });
       const notify = await db.Notification.findAll({
         where: {
           type_notification: "system",
           roleManager: "R3", //student notification
         },
-        limit: 6,
+        limit: pageSize,
+        offset: (pageCurrent - 1) * pageSize,
         nest: true,
         raw: true,
         order: [
@@ -140,7 +149,31 @@ const getNotifyHomePageLimitedService = () => {
       });
       resolve({
         codeNumber: 0,
-        notifyHomePageLimited: notify,
+        notify,
+        pageCurrent,
+        countsNotify: totalDocument,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const getOneNotifyHomePageService = ({ code_url }) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const notify = await db.Notification.findOne({
+        where: {
+          type_notification: "system",
+          roleManager: "R3", //student notification
+          code_url,
+        },
+        nest: true,
+        raw: true,
+      });
+      resolve({
+        codeNumber: 0,
+        notify,
       });
     } catch (e) {
       reject(e);
@@ -211,4 +244,5 @@ module.exports = {
   updateNotifySystemService,
   deleteNotifySystemService,
   getNotifyHomePageLimitedService,
+  getOneNotifyHomePageService,
 };

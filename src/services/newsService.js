@@ -1,13 +1,16 @@
 const db = require("../models");
+const render_code_url = require("../utils/render_code_url");
 
 const createNewsService = ({ title, content, contentHtml, avatarNew }) => {
   return new Promise(async (resolve, reject) => {
     try {
+      const code_url = await render_code_url(title);
       const data = await db.New.create({
         title,
         content,
         contentHtml,
         avatarNew,
+        code_url,
       });
       resolve({
         codeNumber: 0,
@@ -92,12 +95,12 @@ const deleteNewsService = ({ id }) => {
 const getNewsService = ({ page }) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const pageSize = 8;
+      const pageSize = 2;
       const pageCurrent = page || 1;
       const totalDocument = await db.New.count();
       const data = await db.New.findAll({
         offset: (pageCurrent - 1) * pageSize,
-        limit: 8,
+        limit: pageSize,
         nest: true,
         raw: true,
         order: [
@@ -140,10 +143,30 @@ const getNewsLimitedService = ({ limit }) => {
   });
 };
 
+const getOneNewsService = ({ code_url }) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const data = await db.New.findOne({
+        where: {
+          code_url,
+        },
+      });
+      resolve({
+        codeNumber: 0,
+        news: data,
+      });
+    } catch (e) {
+      console.log(e);
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
   createNewsService,
   updateNewsService,
   deleteNewsService,
   getNewsService,
   getNewsLimitedService,
+  getOneNewsService,
 };

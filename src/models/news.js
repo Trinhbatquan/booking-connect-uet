@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
       contentHtml: DataTypes.TEXT("long"),
       content: DataTypes.TEXT("long"),
       avatarNew: DataTypes.BLOB("long"),
+      code_url: DataTypes.STRING,
     },
     {
       sequelize,
