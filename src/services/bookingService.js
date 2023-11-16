@@ -4,8 +4,20 @@ const { convertTimeStamp } = require("../utils/convertTimeStamp");
 const sendEmail = require("../utils/sendEmail");
 const moment = require("moment");
 require("moment/locale/vi");
+const natural = require("natural");
 
-//socket
+// Hàm tách câu thành tập hợp các từ
+function tokenize(text) {
+  return new Set(text.toLowerCase().split(" "));
+}
+// Hàm tính chỉ số Jaccard giữa hai tập hợp
+function calculateJaccardIndex(set1, set2) {
+  const intersectionSize = new Set([...set1].filter((x) => set2.has(x))).size;
+  const unionSize = set1.size + set2.size - intersectionSize;
+  return intersectionSize / unionSize;
+}
+
+const similarityThreshold = 0.8;
 
 const createBookingScheduleService = (
   studentId,
@@ -64,14 +76,19 @@ const createBookingScheduleService = (
         resolve({
           codeNumber: 0,
           type: "create",
-          message: "Take appointment successfully!",
+          message_en:
+            "Take appointment successfully! Please check email regularly to know process of your schedule",
+          message_vn:
+            "Đặt lịch hẹn thành công! Vui lòng kiểm tra email để theo dõi tiến trình đặt lịch của bạn.",
         });
       } else if (!created) {
         resolve({
           codeNumber: 0,
           type: "other",
-          message:
+          message_en:
             "You can take appointment after your previous appointment is done!",
+          message_vn:
+            "Bạn có thể đặt lịch sau khi lịch hẹn trước đó của bạn hoàn thành!",
         });
       }
     } catch (e) {
@@ -120,17 +137,8 @@ const createQuestionService = (
 ) => {
   return new Promise(async (resolve, reject) => {
     try {
-      // One Student just allow to book one answer with one department
-      //at the same time
-      const [user, created] = await db.Booking.findOrCreate({
-        where: {
-          managerId,
-          roleManager,
-          studentId,
-          statusId: ["S1"],
-          actionId: action,
-        },
-        defaults: {
+      const handleSaveQuestion = async () => {
+        const bookingData = await db.Booking.create({
           statusId: "S1",
           managerId,
           roleManager,
@@ -139,19 +147,18 @@ const createQuestionService = (
           question,
           others,
           actionId: action,
-        },
-      });
-      console.log(created);
-      if (created) {
-        const bookingData = await db.Booking.findOne({
-          where: {
-            managerId,
-            roleManager,
-            studentId,
-            actionId: "A2",
-            statusId: ["S1"],
-          },
         });
+        // const data = await db.Booking.findOne({
+        //   where: {
+        //     managerId,
+        //     roleManager,
+        //     studentId,
+        //     actionId: "A2",
+        //     statusId: ["S1"],
+        //   },
+        // });
+        console.log(1);
+        console.log(bookingData);
         await db.Notification.create({
           managerId,
           roleManager,
@@ -161,15 +168,121 @@ const createQuestionService = (
         resolve({
           codeNumber: 0,
           type: "create",
-          message: "Make question successfully!",
+          message_en:
+            "Make question successfully! Answer will be sent to your email.",
+          message_vn:
+            "Đặt câu hỏi thành công! Câu trả lời sẽ được gửi qua email của bạn.",
         });
-      } else if (!created) {
+      };
+      // One Student just allow to book one answer with one department
+      //at the same time
+      const existPreviousQuestion = await db.Booking.findAll({
+        where: {
+          managerId,
+          roleManager,
+          studentId,
+          statusId: ["S1"],
+          actionId: action,
+        },
+      });
+      if (existPreviousQuestion?.length > 0) {
+        console.log(2);
         resolve({
           codeNumber: 0,
           type: "other",
-          message:
+          message_en:
             "You can make question after your previous question is answered!",
+          message_vn:
+            "Bạn có thể đặt câu hỏi mới sau khi câu hỏi trước đó được trả lời!",
         });
+      } else {
+        const questionData = await db.Booking.findAll({
+          where: {
+            managerId,
+            roleManager,
+            statusId: ["S3"],
+            actionId: action,
+          },
+        });
+        console.log("question");
+        console.log(questionData);
+        if (questionData?.length > 0) {
+          console.log(3);
+          const newSubjectSet = tokenize(subject);
+          const newQuestionSet = tokenize(question);
+          for (let i = 0; i < questionData?.length; i++) {
+            const subjectSet = tokenize(questionData[i]?.subject);
+            const similaritySubject = calculateJaccardIndex(
+              newSubjectSet,
+              subjectSet
+            );
+            console.log(similaritySubject);
+            if (similaritySubject >= similarityThreshold) {
+              const questionSet = tokenize(questionData[i]?.question);
+              const similarityQuestion = calculateJaccardIndex(
+                newQuestionSet,
+                questionSet
+              );
+              console.log(similarityQuestion);
+              if (similarityQuestion >= similarityThreshold) {
+                //find Answer and send email
+                const answer = await db.Answer.findOne({
+                  where: {
+                    questionId: questionData[i]?.id,
+                  },
+                });
+                console.log(answer);
+                if (answer) {
+                  //send email
+                  const student = await db.Student.findOne({
+                    where: { id: studentId },
+                  });
+                  let manager;
+                  if (roleManager === "R5") {
+                    manager = await db.Teacher.findOne({
+                      where: {
+                        id: managerId,
+                      },
+                    });
+                  } else {
+                    manager = await db.OtherUser.findOne({
+                      where: {
+                        id: managerId,
+                      },
+                    });
+                  }
+                  console.log("sent");
+                  await sendEmail({
+                    email: student?.email,
+                    studentData: student,
+                    subject: "Thông báo về câu hỏi của bạn.",
+                    type: "question-done",
+                    managerData: manager,
+                    bookingData: {
+                      role: roleManager,
+                      subjectQuestion: subject,
+                      answer: answer?.answer,
+                    },
+                  });
+                  resolve({
+                    codeNumber: 0,
+                    type: "sent",
+                    message_en:
+                      "Make question successfully! Answer is sent to your email.",
+                    message_vn:
+                      "Đặt câu hỏi thành công! Câu trả lời đã được gửi qua email của bạn.",
+                  });
+                }
+              } else {
+                await handleSaveQuestion();
+              }
+            } else {
+              await handleSaveQuestion();
+            }
+          }
+        } else {
+          await handleSaveQuestion();
+        }
       }
     } catch (e) {
       reject(e);

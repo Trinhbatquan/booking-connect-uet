@@ -362,29 +362,36 @@ const registerHomePageService = (
           });
         }
       } else if (exist?.status && exist?.user?.verified) {
-        const checkPassword = await bcrypt.compare(
-          password,
-          exist?.user?.password
-        );
-        if (!checkPassword) {
-          resolve({
-            codeNumber: 3,
-            message_en: "Password is wrong. Please try again.",
-            message_vn: "Mật khẩu sai. Vui lòng thử lại.",
-          });
-        } else {
-          resolve({
-            codeNumber: 0,
-            message_en: "Sign up succeed.",
-            message_vn: "Đăng ký thành công.",
-            user: {
-              id: exist?.user?.id,
-              fullName: exist?.user?.fullName,
-              email: exist?.user?.email,
-              roleId: "R3",
-            },
-          });
-        }
+        // const checkPassword = await bcrypt.compare(
+        //   password,
+        //   exist?.user?.password
+        // );
+        // if (!checkPassword) {
+        //   resolve({
+        //     codeNumber: 3,
+        //     message_en: "Password is wrong. Please try again.",
+        //     message_vn: "Mật khẩu sai. Vui lòng thử lại.",
+        //   });
+        // } else {
+        //   resolve({
+        //     codeNumber: 0,
+        //     message_en: "Sign up succeed.",
+        //     message_vn: "Đăng ký thành công.",
+        //     user: {
+        //       id: exist?.user?.id,
+        //       fullName: exist?.user?.fullName,
+        //       email: exist?.user?.email,
+        //       roleId: "R3",
+        //     },
+        //   });
+        // }
+        resolve({
+          codeNumber: 2,
+          message_en:
+            "This account existed in the system. Please log in to continue.",
+          message_vn:
+            "Tài khoản này đã nằm trong hệ thống. Vui lòng đăng nhập để sử dụng.",
+        });
       }
     } catch (e) {
       reject(e);

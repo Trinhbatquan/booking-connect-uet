@@ -90,29 +90,38 @@ const registerHomePage = async (req, res) => {
   } else {
     try {
       const checkVNU = email.split("@")[1];
+      const checkUET = email.slice(2, 4);
       if (checkVNU && checkVNU === process.env.EMAIL_VNU) {
-        let data = await registerHomePageService(
-          email,
-          password,
-          fullName,
-          faculty,
-          classroom,
-          phoneNumber
-        );
-        if (data?.codeNumber === 0) {
-          const { email, roleId } = data?.user;
-          const token = await createTokenRandom(email, roleId, "student");
-          return res
-            .cookie("access_token_booking_UET_homepage", token, {
-              httpOnly: true,
-              secure: true,
-              sameSite: "lax",
-              expires: new Date(Date.now() + 30 * 24 * 3600000), //1 month
-            })
-            .status(200)
-            .send(data);
+        if (checkUET && checkUET === process.env.EMAIL_UET) {
+          let data = await registerHomePageService(
+            email,
+            password,
+            fullName,
+            faculty,
+            classroom,
+            phoneNumber
+          );
+          if (data?.codeNumber === 0) {
+            const { email, roleId } = data?.user;
+            const token = await createTokenRandom(email, roleId, "student");
+            return res
+              .cookie("access_token_booking_UET_homepage", token, {
+                httpOnly: true,
+                secure: true,
+                sameSite: "lax",
+                expires: new Date(Date.now() + 30 * 24 * 3600000), //1 month
+              })
+              .status(200)
+              .send(data);
+          } else {
+            return res.status(401).send(data);
+          }
         } else {
-          return res.status(401).send(data);
+          return res.status(400).send({
+            codeNumber: 1,
+            message_en: "Please use UET mail.",
+            message_vn: "Vui lòng sử dụng UET mail.",
+          });
         }
       } else {
         return res.status(400).send({

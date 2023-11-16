@@ -2,25 +2,25 @@ const db = require("../models");
 const { convertTimeStamp } = require("../utils/convertTimeStamp");
 const bcrypt = require("bcryptjs");
 
-const updateStudentService = (email, phoneNumber) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const data = await db.Student.update(
-        {
-          phoneNumber,
-        },
-        {
-          where: {
-            email,
-          },
-        }
-      );
-      resolve();
-    } catch (e) {
-      reject(e);
-    }
-  });
-};
+// const updateStudentService = (email, phoneNumber) => {
+//   return new Promise(async (resolve, reject) => {
+//     try {
+//       const data = await db.Student.update(
+//         {
+//           phoneNumber,
+//         },
+//         {
+//           where: {
+//             email,
+//           },
+//         }
+//       );
+//       resolve();
+//     } catch (e) {
+//       reject(e);
+//     }
+//   });
+// };
 
 const updateProfileStudentService = ({
   id,
@@ -117,7 +117,7 @@ const updatePasswordStudentService = ({
 };
 
 module.exports = {
-  updateStudentService,
+  // updateStudentService,
   updateProfileStudentService,
   updatePasswordStudentService,
 };

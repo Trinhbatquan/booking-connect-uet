@@ -21,7 +21,8 @@ const createBookingScheduleController = async (req, res) => {
     ) {
       return res.status(501).json({
         codeNumber: 1,
-        message: "Missing parameters",
+        message_en: "Error. Please contact with admin.",
+        message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên",
       });
     } else {
       const action = "A1";
@@ -40,7 +41,8 @@ const createBookingScheduleController = async (req, res) => {
     console.log("booking " + e);
     res.status(501).json({
       codeNumber: -1,
-      message: "Not create booking schedule",
+      message_en: "Error. Please contact with admin.",
+      message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên",
     });
   }
 };
@@ -82,7 +84,8 @@ const createQuestionController = async (req, res) => {
     if (!studentId || !managerId || !roleManager || !subject || !question) {
       return res.status(501).json({
         codeNumber: 1,
-        message: "Missing parameters",
+        message_en: "Error. Please contact with admin.",
+        message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên",
       });
     } else {
       const action = "A2";
@@ -101,7 +104,8 @@ const createQuestionController = async (req, res) => {
     console.log("booking " + e);
     res.status(501).json({
       codeNumber: -1,
-      message: "Not create booking schedule",
+      message_en: "Error. Please contact with admin.",
+      message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên",
     });
   }
 };

@@ -42,7 +42,7 @@ const {
   updateStatusBookingScheduleByManagerController,
 } = require("../controllers/bookingController");
 const {
-  updateStudentController,
+  // updateStudentController,
   getStudentController,
   updateProfileStudentController,
   updatePasswordStudentController,
@@ -208,12 +208,12 @@ const initWebRoutes = (app) => {
     (req, res, next) => protectUserToken(req, res, next, "student"),
     getStudentController
   );
-  router.put(
-    "/api/update-student",
-    (req, res, next) => checkExpiredToken(req, res, next, "student"),
-    (req, res, next) => protectUserToken(req, res, next, "student"),
-    updateStudentController
-  );
+  // router.put(
+  //   "/api/update-student",
+  //   (req, res, next) => checkExpiredToken(req, res, next, "student"),
+  //   (req, res, next) => protectUserToken(req, res, next, "student"),
+  //   updateStudentController
+  // );
   router.put(
     "/api/update-profile-student",
     (req, res, next) => checkExpiredToken(req, res, next, "student"),
