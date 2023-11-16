@@ -7,7 +7,7 @@ import { path } from "../utils/constant";
 import Login from "./Auth/Login/Login";
 
 import HomePage from "./HomePage/HomePage";
-import TeacherDetail from "./HomePage/Detail/TeacherDetail";
+import Detail from "./HomePage/Detail/Detail";
 import LoginHomePage from "./HomePage/Login/Login";
 
 import { BsArrowUpCircleFill } from "react-icons/bs";
@@ -48,6 +48,7 @@ import NewsSeeAll from "./HomePage/SeeAll/NewsSeeAll";
 import NewsDetail from "./HomePage/Detail/NewsDetail";
 import NotificationSeeAll from "./HomePage/SeeAll/NotificationSeeAll";
 import NotificationDetail from "./HomePage/Detail/NotificationDetail";
+import HealthSeeAll from "./HomePage/SeeAll/HealthSeeAll";
 
 function App() {
   const [appearScrollTop, setAppearScrollTop] = useState(false);
@@ -95,7 +96,7 @@ function App() {
         <Route path={path.HOMEPAGE} element={<HomePage />} />
         <Route
           path={`${path.HOMEPAGE}/:code_url/ids-role/:roleId`}
-          element={<TeacherDetail />}
+          element={<Detail />}
         />
         <Route
           path={`${path.HOMEPAGE}/${path.detail_id}/:code_url/ids-role/:roleId`}
@@ -144,6 +145,10 @@ function App() {
         <Route
           path={`${path.HOMEPAGE}/${path.detail_notify}/:code_url`}
           element={<NotificationDetail />}
+        />
+        <Route
+          path={`${path.HOMEPAGE}/${path.health}`}
+          element={<HealthSeeAll />}
         />
 
         {/* system */}

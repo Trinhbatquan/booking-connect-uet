@@ -329,13 +329,15 @@ const HeaderAdmin = () => {
           })}
         >
           <MdDashboard className="text-lg" />
-          <span>Tổng quan</span>
+          <span>{i18n.language === "en" ? "Dashboard" : "Tổng quan"}</span>
         </NavLink>
-        {/* <div
+        <div
           className="system-header-text relative text-blurColor font-semibold text-lg w-1/5 h-full flex items-center gap-1
        justify-center cursor-pointer pl-3 hover:text-white transition-all duration-200"
         >
-          <span>{t("system.header.admin")}</span>
+          <span>
+            {i18n.language === "en" ? "Schedule & Question" : "Lịch và câu hỏi"}
+          </span>
           <IoIosArrowDown className="text-lg relative" style={{ top: "1px" }} />
           <ul
             className="absolute left-0 list-none flex flex-col justify-center w-300"
@@ -362,7 +364,11 @@ const HeaderAdmin = () => {
                   : {}
               }
             >
-              <li>{t("system.header.manager-schedule")}</li>
+              <li>
+                {i18n.language === "en"
+                  ? "Create Appointment"
+                  : "Tạo lịch hẹn mới"}
+              </li>
             </NavLink>
             <NavLink
               to={path.studentManager}
@@ -380,10 +386,14 @@ const HeaderAdmin = () => {
                   : {}
               }
             >
-              <li>Quản lý sinh viên</li>
+              <li>
+                {i18n.language === "en"
+                  ? "Schedule & Question Management"
+                  : "Quản lý lịch và câu hỏi"}
+              </li>
             </NavLink>
           </ul>
-        </div> */}
+        </div>
 
         <div
           className={`system-header-text relative text-blurColor font-semibold text-lg w-1/6 h-full flex items-center gap-1
@@ -601,29 +611,64 @@ const HeaderAdmin = () => {
           </ul>
         </div>
 
-        <NavLink
-          to={path.notificationManager}
-          className="system-header-text relative text-blurColor font-semibold text-lg w-1/6 h-full flex items-center gap-1
+        <div
+          className="system-header-text relative text-blurColor font-semibold text-lg w-1/5 h-full flex items-center gap-1
        justify-center cursor-pointer pl-3 hover:text-white transition-all duration-200"
-          style={({ isActive }) => ({
-            color: isActive ? "#fff" : "rgb(195, 181, 181)",
-          })}
         >
           <MdOutlineNotificationAdd className="text-lg" />
-          <span>Quản lý thông báo</span>
-        </NavLink>
-
-        <NavLink
-          to={path.newsManager}
-          className="system-header-text relative text-blurColor font-semibold text-lg w-[14%] h-full flex items-center gap-1
-       justify-center cursor-pointer pl-3 hover:text-white transition-all duration-200"
-          style={({ isActive }) => ({
-            color: isActive ? "#fff" : "rgb(195, 181, 181)",
-          })}
-        >
-          <MdOutlineNotificationAdd className="text-lg" />
-          <span>{i18n.language === "en" ? "News" : "Tin tức"}</span>
-        </NavLink>
+          <span>
+            {i18n.language === "en"
+              ? "Notify And News"
+              : "Tin tức và thông báo"}
+          </span>
+          <IoIosArrowDown className="text-lg relative" style={{ top: "1px" }} />
+          <ul
+            className="absolute left-0 list-none flex flex-col justify-center w-300"
+            style={{
+              top: "50px",
+              backgroundColor: "#fff",
+              border: "1px solid #cccdc9",
+              padding: "15px",
+            }}
+          >
+            <NavLink
+              to={path.notificationManager}
+              className="system-header-option text-lg"
+              style={({ isActive }) =>
+                isActive
+                  ? {
+                      color: "#004aac",
+                      backgroundColor: "#d3ecfc",
+                      transition: "background-color 0.1s",
+                      fontWeight: "600",
+                      lineHeight: "20px",
+                      padding: "10px 15px",
+                    }
+                  : {}
+              }
+            >
+              <li>{i18n.language === "en" ? "Notification" : "Thông báo"}</li>
+            </NavLink>
+            <NavLink
+              to={path.newsManager}
+              className="system-header-option text-lg"
+              style={({ isActive }) =>
+                isActive
+                  ? {
+                      color: "#004aac",
+                      backgroundColor: "#d3ecfc",
+                      transition: "background-color 0.1s",
+                      fontWeight: "600",
+                      lineHeight: "20px",
+                      padding: "10px 15px",
+                    }
+                  : {}
+              }
+            >
+              <li>{i18n.language === "en" ? "News" : "Tin tức"}</li>
+            </NavLink>
+          </ul>
+        </div>
       </div>
 
       <div className="system-header-item-right flex items-center justify-items-end gap-8">

@@ -774,7 +774,13 @@ const FacultyManager = () => {
             ? t("system.faculty.update")
             : t("system.faculty.create")}
         </div>
-        {loading && <Loading />}
+        {loading && (
+          <div className="fixed loading-overlay top-0 bottom-0 flex items-center justify-center mx-auto left-0 right-0 w-full max-h-full bg-black bg-opacity-25">
+            <div className="absolute">
+              <Loading />
+            </div>
+          </div>
+        )}
         <div className="flex overflow-hidden flex-col h-auto bg-slate-200 rounded-lg shadow backdrop-blur-md shadow-gray-300 mt-2 mb-1">
           <div className="pt-1 pb-4 px-3 flex flex-col justify-center-center w-full">
             <span

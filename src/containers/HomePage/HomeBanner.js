@@ -21,7 +21,6 @@ const HomeBanner = () => {
   const dispatch = useDispatch();
   const [inputValue, setInputValue] = useState("");
   const navigate = useNavigate();
-  const location = useLocation();
   const searchInput = useRef();
   const dropDownSearch = useRef();
   const searchText = useSelector((state) => state.searchHomePageReducer.search);
@@ -31,37 +30,37 @@ const HomeBanner = () => {
       label_vn: "Giảng viên",
       data: [
         {
-          url: "/homePage/dinh-thi-thai-mai/ids-role/R5",
+          url: `${path.HOMEPAGE}/dinh-thi-thai-mai/ids-role/R5`,
           label: "Đinh Thị Thái Mai",
           code: "dinh thi thai mai",
         },
         {
-          url: "/homePage/bui-trung-ninh/ids-role/R5",
+          url: `${path.HOMEPAGE}/bui-trung-ninh/ids-role/R5`,
           label: "Bùi Trung Ninh",
           code: "bui trung ninh",
         },
         {
-          url: "/homePage/chu-thi-phuong-dung/ids-role/R5",
+          url: `${path.HOMEPAGE}/chu-thi-phuong-dung/ids-role/R5`,
           label: "Chu Thị Phương Dung",
           code: "chu thi phuong dung",
         },
         {
-          url: "/homePage/tran-nhu-chi/ids-role/R5",
+          url: `${path.HOMEPAGE}/tran-nhu-chi/ids-role/R5`,
           label: "Trần Như Chí",
           code: "tran nhu chi",
         },
         {
-          url: "/homePage/nguyen-thu-hang/ids-role/R5",
+          url: `${path.HOMEPAGE}/nguyen-thu-hang/ids-role/R5`,
           label: "Nguyễn Thu Hằng",
           code: "nguyen thu hang",
         },
         {
-          url: "/homePage/pham-dinh-tuan/ids-role/R5",
+          url: `${path.HOMEPAGE}/pham-dinh-tuan/ids-role/R5`,
           label: "Phạm Đình Tuân",
           code: "pham dinh tuan",
         },
         {
-          url: "/homePage/hoang-gia-hung/ids-role/R5",
+          url: `${path.HOMEPAGE}/hoang-gia-hung/ids-role/R5`,
           label: "Hoàng Gia Hưng",
           code: "hoang gia hung",
         },
@@ -74,42 +73,42 @@ const HomeBanner = () => {
 
       data: [
         {
-          url: "/homePage/phong-dao-tao/ids-role/R2",
+          url: `${path.HOMEPAGE}/phong-dao-tao/ids-role/R2`,
           label: "Phòng Đào tạo",
           code: "phong dao tao",
         },
         {
-          url: "/homePage/phong-to-chuc-can-bo/ids-role/R2",
+          url: `${path.HOMEPAGE}/phong-to-chuc-can-bo/ids-role/R2`,
           label: "Phòng Tổ Chức Cán Bộ",
           code: "phong to chuc can bo",
         },
         {
-          url: "/homePage/phong-cong-tac-sinh-vien/ids-role/R2",
+          url: `${path.HOMEPAGE}/phong-cong-tac-sinh-vien/ids-role/R2`,
           label: "Phòng Công Tác Sinh Viên",
           code: "phong cong tac sinh vien",
         },
         {
-          url: "/homePage/phong-hanh-chinh-quan-tri/ids-role/R2",
+          url: `${path.HOMEPAGE}/phong-hanh-chinh-quan-tri/ids-role/R2`,
           label: "Phòng Hành chính Quản trị",
           code: "phong hanh chinh quan tri",
         },
         {
-          url: "/homePage/phong-ke-hoach-tai-chinh/ids-role/R2",
+          url: `${path.HOMEPAGE}/phong-ke-hoach-tai-chinh/ids-role/R2`,
           label: "Phòng Kế hoạch Tài chính",
           code: "phong ke hoach tai chinh",
         },
         {
-          url: "/homePage/phong-khoa-hoc-cong-nghe-va-hop-tac-phat-trien/ids-role/R2",
+          url: `${path.HOMEPAGE}/phong-khoa-hoc-cong-nghe-va-hop-tac-phat-trien/ids-role/R2`,
           label: "Phòng Khoa học Công nghệ và Hợp tác Phát triển",
           code: "phong khoa hocj cong nghe va hop tac phat trien",
         },
         {
-          url: "/homePage/phong-thanh-tra-va-phap-che/ids-role/R2",
+          url: `${path.HOMEPAGE}/phong-thanh-tra-va-phap-che/ids-role/R2`,
           label: "Phòng Thanh tra và Pháp chế",
           code: "phong thanh tra va phap che",
         },
         {
-          url: "/homePage/trung-tam-dam-bao-chat-luong/ids-role/R2",
+          url: `${path.HOMEPAGE}/trung-tam-dam-bao-chat-luong/ids-role/R2`,
           label: "Trung tâm Đảm bảo chất lượng",
           code: "trung tam bao dam chat luong",
         },
@@ -121,42 +120,42 @@ const HomeBanner = () => {
       label_vn: "Khoa Viện",
       data: [
         {
-          url: "/homePage/detail/khoa-cong-nghe-thong-tin/ids-role/R4",
+          url: `${path.HOMEPAGE}/detail/khoa-cong-nghe-thong-tin/ids-role/R4`,
           label: "Khoa Công nghệ Thông tin",
           code: "khoa cong nghe thong tin",
         },
         {
-          url: "/homePage/detail/khoa-dien-tu-vien-thong/ids-role/R4",
+          url: `${path.HOMEPAGE}/detail/khoa-dien-tu-vien-thong/ids-role/R4`,
           label: "Khoa Điện tử Viễn Thông",
           code: "khoa dien tu vien thong",
         },
         {
-          url: "/homePage/detail/khoa-vat-ly-ki-thuat-va-cong-nghe-nano/ids-role/R4",
+          url: `${path.HOMEPAGE}/detail/khoa-vat-ly-ki-thuat-va-cong-nghe-nano/ids-role/R4`,
           label: "Khoa Vật lý Kĩ thuật và Công nghệ Nano",
           code: "khoa vat ly ki thuat va cong nghe nano",
         },
         {
-          url: "/homePage/detail/khoa-co-ki-thuat-va-tu-dong-hoa/ids-role/R4",
+          url: `${path.HOMEPAGE}/detail/khoa-co-ki-thuat-va-tu-dong-hoa/ids-role/R4`,
           label: "Khoa Cơ học Kỹ thuật và Tự động hoá",
           code: "khoa co ky thuat va tu dong hoa",
         },
         {
-          url: "/homePage/detail/khoa-cong-nghe-nong-nghiep/ids-role/R4",
+          url: `${path.HOMEPAGE}/detail/khoa-cong-nghe-nong-nghiep/ids-role/R4`,
           label: "Khoa Công nghệ Nông nghiệp",
           code: "khoa cong nghe nong nghiep",
         },
         {
-          url: "/homePage/detail/khoa-cong-nghe-xay-dung-va-giao-thong/ids-role/R4",
+          url: `${path.HOMEPAGE}/detail/khoa-cong-nghe-xay-dung-va-giao-thong/ids-role/R4`,
           label: "Khoa Công nghệ Xây dựng và Giao Thông",
           code: "khoa cong nghe xay dung va giao thong",
         },
         {
-          url: "/homePage/detail/vien-cong-nghe-hang-khong-vu-tru 	/ids-role/R4",
+          url: `${path.HOMEPAGE}/detail/vien-cong-nghe-hang-khong-vu-tru 	/ids-role/R4`,
           label: "Viện Công nghệ Hàng không Vũ trụ",
           code: "vien cong nghe hang khong vu tru",
         },
         {
-          url: "/homePage/detail/vien-tri-tue-nhan-taog/ids-role/R4",
+          url: `${path.HOMEPAGE}/detail/vien-tri-tue-nhan-taog/ids-role/R4`,
           label: "Viện Trí tuệ Nhân tạo",
           code: "vien tri tue nhan tao",
         },
@@ -167,12 +166,12 @@ const HomeBanner = () => {
       label_vn: "Ban sức khoẻ sinh viên",
       data: [
         {
-          url: "/homePage/ban-quan-ly-suc-khoe-sinh-vien/ids-role/R6",
+          url: `${path.HOMEPAGE}/ban-quan-ly-suc-khoe-sinh-vien/ids-role/R6`,
           label: "Ban quản lý sức khoẻ sinh viên",
           code: "ban quan ly suc khoe sinh vien",
         },
         {
-          url: "/homePage/ban-ho-tro-tam-ly-sinh-vien/ids-role/R6",
+          url: `${path.HOMEPAGE}/ban-ho-tro-tam-ly-sinh-vien/ids-role/R6`,
           label: "Ban Hỗ trợ Tâm lý sinh viên",
           code: "ban ho tro tam ly sinh vien",
         },
@@ -406,18 +405,17 @@ const HomeBanner = () => {
             {t("banner.teacher")}
           </span>
         </div>
-        <a
+        <NavLink
           className="topic flex flex-col justify-start items-center"
-          href="#health-container"
-          alt=""
-          onClick={removeHashFromURL}
+          to={`${path.HOMEPAGE}/${path.health}`}
+          // onClick={removeHashFromURL}
         >
           <GiMedicalPackAlt className="topic-icon text-gray-600 cursor-pointer py-3 rounded-full shadow-md backdrop-blur-md border border-blurColor" />
           <span className="topic-content  cursor-pointer text-xl">
-            {t("banner.health")}
+            {i18n.language === "en" ? "Student Health" : "Sức khoẻ sinh viên"}
           </span>
-        </a>
-        <a
+        </NavLink>
+        {/* <a
           className="topic flex flex-col justify-start items-center"
           href="#health-container"
           alt=""
@@ -427,7 +425,7 @@ const HomeBanner = () => {
           <span className="topic-content  cursor-pointer text-xl">
             {t("banner.mental")}
           </span>
-        </a>
+        </a> */}
       </div>
     </div>
   );

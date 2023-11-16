@@ -37,11 +37,13 @@ import {
 } from "../../../services/dshboardService";
 import Chart from "./Chart";
 import Pie from "./Pie";
+import { useTranslation } from "react-i18next";
 
 const DashboardSystem = () => {
   const [dbUser, setDbUser] = useState("total");
   const [dbTime, setDbTime] = useState("month");
   const [loading, setLoading] = useState(true);
+  const { i18n } = useTranslation();
 
   let userSelected;
   if (dbUser === "total") {
@@ -142,7 +144,9 @@ const DashboardSystem = () => {
         >
           <div className="flex items-center bg-transparent justify-start gap-1">
             <BsPerson className="text-3xl text-white" />
-            <span className="font-semibold text-white text-lg ">Đối tượng</span>
+            <span className="font-semibold text-white text-lg ">
+              {i18n.language === "en" ? "User" : "Đối tượng"}
+            </span>
           </div>
           <hr
             style={{
@@ -179,7 +183,9 @@ const DashboardSystem = () => {
               onClick={() => setDbUser("total")}
             >
               <BsBorderAll className="text-white text-2xl" />
-              <span className="text-md  text-white">Tất cả</span>
+              <span className="text-md  text-white">
+                {i18n.language === "en" ? "All" : "Tất cả"}
+              </span>
             </div>
           </div>
 
@@ -204,7 +210,9 @@ const DashboardSystem = () => {
               onClick={() => setDbUser("R2")}
             >
               <BiHomeAlt2 className="text-white text-2xl" />
-              <span className="text-md  text-white">Phòng ban</span>
+              <span className="text-md  text-white">
+                {i18n.language === "en" ? "Department" : "Phòng ban"}
+              </span>
             </div>
           </div>
 
@@ -229,7 +237,9 @@ const DashboardSystem = () => {
               onClick={() => setDbUser("R4")}
             >
               <FaCube className="text-white text-2xl" />
-              <span className="text-md  text-white">Khoa viện</span>
+              <span className="text-md  text-white">
+                {i18n.language === "en" ? "Faculties" : "Khoa viện"}
+              </span>
             </div>
           </div>
 
@@ -254,7 +264,9 @@ const DashboardSystem = () => {
               onClick={() => setDbUser("R5")}
             >
               <BsBook className="text-white text-2xl" />
-              <span className="text-md  text-white">Giảng viên</span>
+              <span className="text-md  text-white">
+                {i18n.language === "en" ? "Teacher" : "Giảng viên"}
+              </span>
             </div>
           </div>
 
@@ -279,7 +291,11 @@ const DashboardSystem = () => {
               onClick={() => setDbUser("R6")}
             >
               <BsHeart className="text-white text-2xl" />
-              <span className="text-md  text-white">Quản lý sức khoẻ</span>
+              <span className="text-md  text-white">
+                {i18n.language === "en"
+                  ? "Health Management"
+                  : "Quản lý sức khoẻ"}
+              </span>
             </div>
           </div>
         </ul>
@@ -291,7 +307,7 @@ const DashboardSystem = () => {
           <div className="flex items-center bg-transparent justify-start gap-1">
             <AiOutlineFieldTime className="text-3xl text-white" />
             <span className="font-semibold text-white text-lg">
-              Thống kê theo
+              {i18n.language === "en" ? "Statistics follow" : "Thống kê theo"}
             </span>
           </div>
           <hr
@@ -390,7 +406,11 @@ const DashboardSystem = () => {
           </p> */}
         </div>
         {loading ? (
-          <Loading />
+          <div className="fixed loading-overlay top-0 bottom-0 flex items-center justify-center mx-auto left-0 right-0 w-full max-h-full bg-black bg-opacity-25">
+            <div className="absolute">
+              <Loading />
+            </div>
+          </div>
         ) : (
           <div className="flex flex-col items-start justify-center gap-1 w-full">
             <div className="p-[24px] flex flex-col items-start w-full gap-2">

@@ -38,8 +38,19 @@
       border-radius: 0 0 15px 15px;
       background-color: #fff;
       text-align: center;
-      font-size: 16px;
       color: #000;
+      & .text_1 {
+        font-size: 18px;
+
+        font-weight: 450 !important;
+        line-height: 1.2;
+        margin-bottom: 10px;
+      }
+      & .text_2 {
+        font-size: 14px;
+
+        line-height: 1.5;
+      }
     }
   }
   &:nth-child(1) {

@@ -43,6 +43,7 @@ const ScheduleManager = () => {
   const [isUpdate, setIsUpdate] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
   const [dataScheduleDelete, setDataScheduleDelete] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const [action, setAction] = useState("");
 
@@ -91,6 +92,7 @@ const ScheduleManager = () => {
 
   //handle change select
   const handleChangeSelect_general = async (e) => {
+    setLoading(true);
     if (e?.value === "R5") {
       await getTeacherHomePageAPI.getTeacher({}).then((data) => {
         if (data?.codeNumber === 0) {
@@ -119,6 +121,7 @@ const ScheduleManager = () => {
     setSelectedOptionObject(e);
     setAction("");
     // setIsUpdate(false);
+    setLoading(false);
   };
 
   const handleChangeSelect_detail = async (e) => {
@@ -465,7 +468,7 @@ const ScheduleManager = () => {
         style={{ maxWidth: "80%", width: "80%" }}
       >
         <p className="mx-auto text-2xl text-blue-600 font-semibold">
-          Manager Student's Schedule Booking and Question
+          Quản lý lịch hẹn và câu hỏi
         </p>
 
         <div className="flex items-start justify-between w-full gap-10">
@@ -513,7 +516,7 @@ const ScheduleManager = () => {
                 }`}
               onClick={() => setAction("schedule")}
             >
-              Student's Schedule Booking
+              Lịch hẹn của sinh viên
             </button>
             <button
               type="button"
@@ -525,7 +528,7 @@ const ScheduleManager = () => {
                 }`}
               onClick={() => setAction("question")}
             >
-              Student's question
+              Câu hỏi của sinh viên
             </button>
           </div>
         )}

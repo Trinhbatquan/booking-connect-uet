@@ -101,7 +101,7 @@ const Schedule = ({ type, change, timeData, teacher, handleSchedule }) => {
           <div className="schedule-content-label">
             <FaCalendarAlt className="text-xl" />
             <span className="text-base font-semibold uppercase text-headingColor">
-              Choose calender
+              {i18n.language === "en" ? "Choose calender" : "Chọn lịch hẹn"}
             </span>
           </div>
           <div className="schedule-content-body">
@@ -139,20 +139,28 @@ const Schedule = ({ type, change, timeData, teacher, handleSchedule }) => {
           {timeData && Array.isArray(timeData) && timeData?.length > 0 && (
             <div className="w-full flex items-center justify-start gap-6">
               <span className="schedule-content-note text-headingColor text-md flex items-center justify-start gap-1">
-                Chọn <BsHandIndexThumb /> và đặt lịch
+                <span>{i18n.language === "en" ? "Choose" : "Chọn"}</span>
+                <BsHandIndexThumb />
+                <span>
+                  {i18n.language === "en" ? "make appointment" : "đặt lịch"}
+                </span>
               </span>
               <span className="schedule-content-note text-headingColor text-md flex items-center justify-start gap-1">
-                <BsCircleFill className="text-2xl text-gray-500" /> Lịch đã chọn
+                <BsCircleFill className="text-2xl text-gray-500" />{" "}
+                {i18n.language === "en"
+                  ? "Selected appointment"
+                  : "Lịch đã chọn"}
               </span>
               <span className="schedule-content-note text-headingColor text-md flex items-center justify-start gap-1">
-                <BsCircleFill className="text-2xl text-yellow-300" /> Lịch trống
+                <BsCircleFill className="text-2xl text-yellow-300" />{" "}
+                {i18n.language === "en" ? "Empty appointment" : "Lịch trống"}
               </span>
             </div>
           )}
         </div>
         <div className="schedule-content-contact">
           <p className="text-base font-semibold uppercase text-pink-600">
-            Địa chỉ
+            {i18n.language === "en" ? "Address" : "Địa chỉ"}
           </p>
           <p className="text-base text-headingColor">{teacher?.address}</p>
           <p className="text-base text-headingColor">{contact.university}</p>

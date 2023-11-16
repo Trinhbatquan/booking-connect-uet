@@ -34,20 +34,20 @@ export const path = {
 
   //homepage
   UET: "https://uet.vnu.edu.vn",
-  HOMEPAGE: "/homePage",
-  detail_id: "detail",
-  detail_mul_id: "faculty_detail",
-  login_homepage: "login?",
-  update_profile: "update_profile",
-  change_password: "change_password",
-  inform: "inform",
-  contact: "contact",
-  survey: "survey",
-  teacher: "teacher_see_all",
-  news: "news_see_all",
-  detail_news: "detail_news",
-  notify: "notify_see_all",
-  detail_notify: "detail_notify",
+  HOMEPAGE: "/trang-sinh-vien",
+  detail_id: "khoa-vien",
+  login_homepage: "dang-nhap?",
+  update_profile: "cap-nhat-tai-khoan",
+  change_password: "thay-doi-mat-khau",
+  inform: "gioi-thieu",
+  contact: "lien-he",
+  survey: "khao-sat",
+  teacher: "danh-sach-giang-vien",
+  news: "danh-sach-tin-tuc",
+  detail_news: "tin-tuc",
+  notify: "danh-sach-thong-bao",
+  detail_notify: "thong-bao",
+  health: "danh-sach-suc-khoe-sinh-vien",
 };
 
 export const languages = {
@@ -110,8 +110,8 @@ export const select_faculty = [
     value: "Viện Công nghệ Hàng không Vũ trụ",
   },
   {
-    label: "Khoa Cơ khí Kĩ thuật và Tự động hoá",
-    value: "Khoa Cơ khí Kĩ thuật và Tự động hoá",
+    label: "Khoa Cơ học Kĩ thuật và Tự động hoá",
+    value: "Khoa Cơ học Kĩ thuật và Tự động hoá",
   },
   {
     label: "Viện Trí tuệ Nhân tạo",

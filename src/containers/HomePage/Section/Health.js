@@ -14,13 +14,14 @@ import { Link } from "react-router-dom";
 import Instruction from "./Instruction";
 
 const Health = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [healthData, setHealthData] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     getUserApi.getUserByRole({ role: "R6" }).then((data) => {
+      console.log(data);
       if (data?.codeNumber === 0) {
         setHealthData(data.user);
         setLoading(false);
@@ -58,7 +59,7 @@ const Health = () => {
       <div className="section-content">
         <div className="section-header flex items-center justify-between">
           <div className="section-header-text">
-            {t("header.health-student")}
+            {i18n.language === "en" ? "Student Health" : "Sức khoẻ sinh viên"}
           </div>
         </div>
 
@@ -80,7 +81,11 @@ const Health = () => {
                     className="section-item-img-health lozad"
                   ></img>
                   <div className="section-item-text-health">
-                    {healthData[0]?.fullName}
+                    <p className="text_1">{healthData[0]?.fullName}</p>
+                    <p className="text_2">
+                      Kết nối, giải đáp và tư vấn về các vấn đề sức khoẻ của
+                      sinh viên.
+                    </p>
                   </div>
                 </div>
               </div>
@@ -95,7 +100,11 @@ const Health = () => {
                     className="section-item-img-health lozad"
                   ></img>
                   <div className="section-item-text-health">
-                    {healthData[1]?.fullName}
+                    <p className="text_1">{healthData[1]?.fullName}</p>
+                    <p className="text_2">
+                      Cung cấp các phương pháp kết nối để giám sát sức khoẻ bản
+                      thân.
+                    </p>
                   </div>
                 </div>
               </div>
@@ -111,7 +120,11 @@ const Health = () => {
                     className="section-item-img-health lozad"
                   ></img>
                   <div className="section-item-text-health">
-                    Trắc nghiệm khách quan về tâm lý và hướng nghiệp
+                    <p className="text_1">Trắc nghiệm khách quan về tâm lý</p>
+                    <p className="text_2">
+                      Hướng dẫn về công cụ trắc nghiệm kèm theo các bản trắc
+                      nghiệm được thiết kế.
+                    </p>
                   </div>
                 </div>
               </Link>
@@ -122,7 +135,12 @@ const Health = () => {
                     data-src={bgFour}
                     className="section-item-img-health lozad"
                   ></img>
-                  <div className="section-item-text-health">Khác</div>
+                  <div className="section-item-text-health">
+                    <p className="text_1">Khác</p>
+                    <p className="text_2">
+                      Các tính năng sẽ phát triển trong tương lai.
+                    </p>
+                  </div>
                 </div>
               </div>
             </>

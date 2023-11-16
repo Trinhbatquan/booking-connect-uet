@@ -1,3 +1,52 @@
 .teacher-see-all-item:last-child {
   border: none !important;
 }
+
+.health-see-all-text {
+  padding: 16px 30px 12px;
+  transition: all color 0.5s ease;
+  color: #000;
+  & .text_1 {
+    font-size: 18px;
+    font-weight: 500 !important;
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+  & .text_2 {
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 6px;
+  }
+  & .detail-news {
+    color: #f68500;
+    & .button-news {
+      color: #f68500;
+      transform: translateX(0);
+      transition: all 0.3s;
+    }
+  }
+}
+
+.health-see-all-text:hover {
+  background-color: #1d5193;
+  color: #fff;
+}
+
+.health-see-all-text:hover .detail-news,
+.health-see-all-text:hover .button-news {
+  color: #fff;
+}
+
+.health-see-all-img:hover ~ .health-see-all-text {
+  background-color: #1d5193;
+  color: #fff;
+}
+
+.health-see-all-img:hover ~ .health-see-all-text .detail-news,
+.health-see-all-img:hover ~ .health-see-all-text .button-news {
+  color: #fff;
+}
+
+.detail-news:hover .button-news {
+  transform: translateX(4px);
+}

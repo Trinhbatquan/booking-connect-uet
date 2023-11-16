@@ -223,7 +223,13 @@ const FacultyDescription = () => {
       <p className="mx-auto text-2xl text-blue-600 font-semibold mb-10">
         {t("system.faculty.description")}
       </p>
-      {loading && <Loading />}
+      {loading && (
+        <div className="fixed loading-overlay top-0 bottom-0 flex items-center justify-center mx-auto left-0 right-0 w-full max-h-full bg-black bg-opacity-25">
+          <div className="absolute">
+            <Loading />
+          </div>
+        </div>
+      )}
       <div
         className={`flex items-center justify-center mt-3 gap-1 py-2 px-1 text-white font-semibold rounded-md  
         bg-blue-600 mb-1

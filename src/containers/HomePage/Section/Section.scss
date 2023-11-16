@@ -64,6 +64,7 @@
         max-width: 300px;
         & .section-item-teacher {
           border: 1px solid #eee;
+          background-color: #f6f6f6;
           width: 95%;
           max-width: 95%;
           height: 220px;
@@ -86,7 +87,7 @@
         &-img.section-item-img-teacher {
           background-image: none;
           margin-top: 10px;
-          margin-bottom: 5px;
+          margin-bottom: 15px;
           width: 120px;
           height: 120px;
           border-radius: 50%;
@@ -107,6 +108,8 @@
           &.section-item-text-teacher {
             width: 80%;
             text-align: center;
+            color: #1d5193;
+            font-weight: 600;
           }
         }
         // &.health-item {
@@ -159,7 +162,7 @@
   border-radius: 50% !important;
   background-color: transparent !important;
   transform: translateY(-100%) !important;
-  z-index: 100 !important;
+  z-index: 80 !important;
   transition: all 0.3s ease-in-out;
 }
 

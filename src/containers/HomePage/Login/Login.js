@@ -292,6 +292,7 @@ const Login = () => {
 
   return (
     <div className="login-register-homepage-container">
+      {console.log("render")}
       {loading && (
         <div className="fixed z-50 top-0 bottom-0 flex items-center justify-center mx-auto left-0 right-0 w-full max-h-full bg-black bg-opacity-25">
           <div className="absolute top-[50%] left-[50%]">
@@ -300,7 +301,7 @@ const Login = () => {
         </div>
       )}
       <ToastContainer />
-      <HomeHeader />
+      <HomeHeader action="preventDefault_checkClickDropDown" />
       <div className={`${active ? "active" : ""} container`} ref={containerRef}>
         <div className="box">
           <div className="form login">

@@ -8,7 +8,7 @@
   top: 0;
   left: 0;
   right: 0;
-  z-index: 1000;
+  z-index: 90;
   // box-shadow: 0 0 2px 5px rgba(0, 0, 0, 0.1);
   box-shadow: 0 4px 10px rgba(214, 214, 214, 0.25);
 
@@ -85,4 +85,18 @@
 .action_header:hover .action_dropdown,
 .student_header:hover .student_dropdown {
   display: block;
+}
+
+.drop_down_language {
+  display: none;
+}
+.drop_down_language.appear {
+  display: block !important;
+}
+
+.drop_down_profile {
+  display: none;
+}
+.drop_down_profile.appear {
+  display: block !important;
 }

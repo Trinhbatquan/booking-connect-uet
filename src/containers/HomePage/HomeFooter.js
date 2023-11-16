@@ -5,6 +5,8 @@ import { MdPhonelinkRing, MdEmail, MdNavigateNext } from "react-icons/md";
 import "./HomeFooter.scss";
 import { useTranslation } from "react-i18next";
 import FooterAvatar from "../../assets/image/footer.jpg";
+import { NavLink } from "react-router-dom";
+import { path } from "../../utils/constant";
 
 const HomeFooter = () => {
   const { i18n, t } = useTranslation();
@@ -21,7 +23,7 @@ const HomeFooter = () => {
       }}
     >
       <div
-        className="homeFooter-content text-white py-5 flex items-center justify-between"
+        className="homeFooter-content text-white py-5 flex items-start justify-between"
         style={{ fontSize: "16px" }}
       >
         <div className="flex flex-col items-start justify-start gap-1">
@@ -44,13 +46,13 @@ const HomeFooter = () => {
             <span>
               {i18n.language === "en" ? "Phone: " : "Điện thoại: "}
               <a className="text-white" href="tel:+02437547460" target="_blank">
-                024.37547.460
+                024.37548.864
               </a>
             </span>
           </p>
           <p className="flex items-center justify-start gap-3">
             <FaFax className="text-xl" />
-            <span>Fax: 024.37547.460</span>
+            <span>Fax: 024.37548.864</span>
           </p>
           <p className="flex items-center justify-start gap-3">
             <MdEmail className="text-xl" />
@@ -72,11 +74,19 @@ const HomeFooter = () => {
           >
             {i18n.language === "en" ? "Category" : "Danh mục"}
           </p>
-          <p className="flex items-center justify-start gap-3">
+          {/* <p className="flex items-center justify-start gap-3">
             <MdNavigateNext className="text-xl" />
             <span>{t("header.inform")}</span>
-          </p>
-          <p className="flex items-center justify-start gap-3">
+          </p> */}
+          <NavLink
+            to={`${path.HOMEPAGE}/${path.inform}`}
+            className="navigation text-md  text-white flex items-center justify-start gap-3"
+          >
+            <MdNavigateNext className="text-xl" />
+
+            <span>{i18n.language === "en" ? "Inform" : "Giới thiệu"}</span>
+          </NavLink>
+          {/* <p className="flex items-center justify-start gap-3">
             <MdNavigateNext className="text-xl" />
             <span>{t("header.Action")}</span>
           </p>
@@ -88,7 +98,31 @@ const HomeFooter = () => {
           <p className="flex items-center justify-start gap-3">
             <MdNavigateNext className="text-xl" />
             <span>{t("header.handbook")}</span>
-          </p>
+          </p> */}
+          <NavLink
+            to={`${path.HOMEPAGE}/${path.news}`}
+            className="navigation text-md  text-white flex items-center justify-start gap-3"
+          >
+            <MdNavigateNext className="text-xl" />
+
+            <span>{i18n.language === "en" ? "News" : "Tin tức"}</span>
+          </NavLink>
+          <NavLink
+            to={`${path.HOMEPAGE}/${path.notify}`}
+            className="navigation text-md  text-white flex items-center justify-start gap-3"
+          >
+            <MdNavigateNext className="text-xl" />
+
+            <span>{i18n.language === "en" ? "Notification" : "Thông báo"}</span>
+          </NavLink>
+          <NavLink
+            // to={`${path.HOMEPAGE}/${path.notify}`}
+            className="navigation text-md  text-white flex items-center justify-start gap-3"
+          >
+            <MdNavigateNext className="text-xl" />
+
+            <span>{i18n.language === "en" ? "Support" : "Hỗ trợ"}</span>
+          </NavLink>
         </div>
         <div className="flex flex-col items-start justify-start gap-1">
           <p
@@ -101,32 +135,10 @@ const HomeFooter = () => {
             <MdNavigateNext className="text-xl" />
             <a
               className="text-white"
-              href="https://vieclam.uet.vnu.edu.vn"
-              target="_blank"
-            >
-              {i18n.language === "en"
-                ? "UET Employment Website"
-                : "Trang việc làm UET"}
-            </a>
-          </p>
-          <p className="flex items-center justify-start gap-3">
-            <MdNavigateNext className="text-xl" />
-            <a
-              className="text-white"
-              href="https://vieclam.uet.vnu.edu.vn"
+              href="http://handbook.uet.vnu.edu.vn/"
               target="_blank"
             >
               {i18n.language === "en" ? "Student HandBook" : "Sổ tay sinh viên"}
-            </a>
-          </p>
-          <p className="flex items-center justify-start gap-3">
-            <MdNavigateNext className="text-xl" />
-            <a
-              className="text-white"
-              href="https://uet.vnu.edu.vn"
-              target="_blank"
-            >
-              {i18n.language === "en" ? "UET Website" : "Trang chủ UET"}
             </a>
           </p>
           <p className="flex items-center justify-start gap-3">

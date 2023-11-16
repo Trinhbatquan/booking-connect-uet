@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 
 import { Link, NavLink } from "react-router-dom";
 import { FaBars } from "react-icons/fa";
@@ -30,14 +30,15 @@ import {
   getPreviousFeedback,
   saveFeedback,
 } from "../../services/student_feedback";
+import flag_en from "../../assets/image/en.png";
+import flag_vi from "../../assets/image/vi.png";
 
-const HomeHeader = () => {
+const HomeHeader = ({ action }) => {
   const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   //update password
-  const [openModelUser, setOpenModelUser] = useState(false);
   const [isUpdatePassword, setIsUpdatePassword] = useState(false);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -46,7 +47,60 @@ const HomeHeader = () => {
   const [eye, setEye] = useState(false);
 
   const currentUser = useSelector((state) => state.studentReducer);
-  console.log(currentUser);
+
+  const languageDropDownRef = useRef();
+  const languageDivRef = useRef();
+  const profileDivRef = useRef();
+  const profileDropDownRef = useRef();
+
+  useEffect(() => {
+    console.log("check State");
+    const divLanguage = document.querySelector(".header_homepage_language");
+    const divProfile = document.querySelector(".header_homepage_profile");
+
+    const handleClickDivLanguage = () => {
+      languageDropDownRef.current.classList.toggle("appear");
+    };
+    const handleClickDivProfile = () => {
+      console.log(2222222);
+      profileDropDownRef.current.classList.toggle("appear");
+    };
+    function handleClickOutDiv(event) {
+      if (
+        event.target !== languageDivRef.current &&
+        event.target !== languageDivRef.current.childNodes[0] &&
+        event.target !== languageDivRef.current.childNodes[1]
+      ) {
+        languageDropDownRef.current.classList.remove("appear");
+      }
+
+      if (!action) {
+        if (
+          event.target !== profileDivRef.current &&
+          event.target !== profileDivRef.current.childNodes[0] &&
+          event.target !== profileDivRef.current.childNodes[1]
+        ) {
+          console.log(33333);
+          profileDropDownRef.current.classList.remove("appear");
+        }
+      }
+    }
+
+    divLanguage.addEventListener("click", handleClickDivLanguage);
+    document.addEventListener("click", handleClickOutDiv);
+    if (!action) {
+      divProfile.addEventListener("click", handleClickDivProfile);
+    }
+
+    return () => {
+      console.log("running");
+      document.removeEventListener("click", handleClickOutDiv);
+      divLanguage.removeEventListener("click", handleClickDivLanguage);
+      if (!action) {
+        divProfile.removeEventListener("click", handleClickDivProfile);
+      }
+    };
+  }, []);
 
   const handleChangeLanguages = (language) => {
     i18n.changeLanguage(language);
@@ -56,7 +110,9 @@ const HomeHeader = () => {
     logOutHomePageApi.logoutUser({}).then((data) => {
       if (data?.codeNumber === 0) {
         dispatch(logOutUser());
+        console.log("logout");
         navigate(`${path.HOMEPAGE}/${path.login_homepage}?redirect=/homepage`);
+        console.log("logout2");
       } else {
       }
     });
@@ -172,150 +228,192 @@ const HomeHeader = () => {
         </div>
         <div className="homepage-herder-right">
           <div className="homepage-herder-right-up">
-            {i18n.language === "vi" ? (
-              <div
-                className={`text-sm ml-3 cursor-pointer flex items-center justify-center gap-1 text-black hover:text-blue-700 hover:opacity-100`}
-                onClick={() => handleChangeLanguages("en")}
+            <div className="relative">
+              {i18n.language === "vi" ? (
+                <div
+                  className={`header_homepage_language text-sm ml-3 cursor-pointer flex items-center justify-center gap-3 text-black hover:text-blue-700 hover:opacity-100`}
+                  ref={languageDivRef}
+                >
+                  <img
+                    src={flag_vi}
+                    alt=""
+                    className="object-cover w-[20px] h-[15px]"
+                    style={{ borderRadius: "8px" }}
+                  />
+                  <span className="flex items-center justify-center gap-1">
+                    Tiếng Việt{" "}
+                    <IoMdArrowDropdown className="hover:text-blue-700" />
+                  </span>
+                </div>
+              ) : (
+                <div
+                  className={`header_homepage_language text-sm ml-3 cursor-pointer flex items-center justify-center gap-3 text-black hover:text-blue-700 hover:opacity-100`}
+                  ref={languageDivRef}
+                >
+                  <img
+                    src={flag_en}
+                    alt=""
+                    className="object-cover w-[20px] h-[15px]"
+                    style={{ borderRadius: "8px" }}
+                  />
+                  <span className="flex items-center justify-center gap-1">
+                    Tiếng Anh{" "}
+                    <IoMdArrowDropdown className="hover:text-blue-700" />
+                  </span>
+                </div>
+              )}
+
+              <ul
+                className="drop_down_language rounded-sm h-[72px] w-[100%] bg-white"
+                style={{
+                  position: "absolute",
+                  zIndex: 5,
+                  top: "19px",
+                  right: "0px",
+                  left: "12px",
+                  cursor: "pointer",
+                  boxShadow: "rgba(0, 0, 0, 0.25) 0px 1px 5px",
+                  border: "1px solid rgb(201, 151, 151)",
+                }}
+                ref={languageDropDownRef}
               >
-                Tiếng Việt <IoMdArrowDropdown className="hover:text-blue-700" />
-              </div>
-            ) : (
-              <div
-                className={`text-sm ml-3 cursor-pointer flex items-center justify-center gap-1 text-black hover:text-blue-700 hover:opacity-100`}
-                onClick={() => handleChangeLanguages("vi")}
-              >
-                Tiếng Anh <IoMdArrowDropdown className="hover:text-blue-700" />
-              </div>
-            )}
+                <li className="">
+                  <div
+                    className={`text-center rounded-sm py-[4px] mx-[5px] my-[3px] hover:bg-gray-300 ${
+                      i18n.language === "vi" ? "bg-gray-300" : "bg-white"
+                    }`}
+                    onClick={() => handleChangeLanguages("vi")}
+                  >
+                    {i18n.language === "en" ? "Vietnamese" : "Tiếng Việt"}
+                  </div>
+                </li>
+                <li className="mt-1">
+                  <div
+                    className={`text-center rounded-sm py-[4px] mx-[5px] my-[3px] hover:bg-gray-300 ${
+                      i18n.language === "en" ? "bg-gray-300" : "bg-white"
+                    }`}
+                    onClick={() => handleChangeLanguages("en")}
+                  >
+                    {i18n.language === "en" ? "English" : "Tiếng Anh"}
+                  </div>
+                </li>
+              </ul>
+            </div>
 
             {currentUser?.isLogin && currentUser?.role === "R3" && (
               <div
                 className={`avatar relative text-black text-xl ml-3 cursor-pointer hover:text-blue-700 flex items-center justify-center gap-0`}
-                onClick={() => setOpenModelUser(!openModelUser)}
               >
-                {/* <BsFillPersonFill className={``} /> */}
-                <div className="flex items-center justify-center gap-3 ml-3">
+                <div
+                  className="header_homepage_profile flex items-center justify-center gap-3 ml-3"
+                  ref={profileDivRef}
+                >
                   <div
                     className="flex items-center justify-center rounded-full bg-blue-700 text-white
                             "
-                    style={{ width: "30px", height: "30px" }}
+                    style={{ width: "30px", height: "30px", fontSize: "15px" }}
                   >
-                    <span className="" style={{ fontSize: "15px" }}>
-                      {currentUser?.fullName.slice(0, 1)}
-                    </span>
+                    {currentUser?.fullName.slice(0, 1)}
                   </div>
-                  <div className="flex items-center justify-start gap-0.5">
-                    <span
-                      className=" text-black"
-                      style={{ fontSize: "13px" }}
-                    >{`${currentUser?.fullName} - #${
+                  <div
+                    className="flex items-center justify-start gap-0.5 text-black "
+                    style={{ fontSize: "13px" }}
+                  >
+                    {`${currentUser?.fullName} - #${
                       currentUser?.email.split("@")[0]
-                    }`}</span>
-                    {openModelUser ? (
-                      <IoMdArrowDropup />
-                    ) : (
-                      <IoMdArrowDropdown />
-                    )}
+                    }`}
                   </div>
                 </div>
-                <AnimatePresence>
-                  {openModelUser && (
-                    <motion.div
-                      initial={{ opacity: 0, translateY: -50 }}
-                      animate={{ opacity: 1, translateY: 0 }}
-                      exit={{ opacity: 0, translateY: -50 }}
-                      transition={{ duration: 0.5, delay: 0.1 }}
-                      className="avatar-modal absolute right-0 top-11 z-50 rounded-lg  w-80 bg-white backdrop-blur-sm"
-                      style={{ boxShadow: "0 4px 20px rgba(0,0,0,.25)" }}
-                    >
+
+                <div
+                  className="drop_down_profile avatar-modal absolute right-0 top-11 z-50 rounded-lg  w-80 bg-white backdrop-blur-sm"
+                  ref={profileDropDownRef}
+                  style={{ boxShadow: "0 4px 20px rgba(0,0,0,.25)" }}
+                >
+                  <div
+                    className=""
+                    style={{
+                      position: "absolute",
+                      top: "-5px",
+                      right: "4px",
+                      transform: "rotate(45deg)",
+                      width: "18px",
+                      height: "18px",
+                      backgroundColor: "#fff",
+                    }}
+                  ></div>
+                  <div className="text-sm text-headingColor">
+                    <div className="h-full w-full flex items-center justify-start cursor-text">
                       <div
-                        className=""
+                        className="relative flex items-center justify-start"
                         style={{
-                          position: "absolute",
-                          top: "-5px",
-                          right: "4px",
-                          transform: "rotate(45deg)",
-                          width: "18px",
-                          height: "18px",
-                          backgroundColor: "#fff",
+                          width: "100px",
+                          height: "100px",
                         }}
-                      ></div>
-                      <div className="text-sm text-headingColor">
-                        <div className="h-full w-full flex items-center justify-start cursor-text">
-                          <div
-                            className="relative flex items-center justify-start"
-                            style={{
-                              width: "100px",
-                              height: "100px",
-                            }}
-                          >
-                            <div
-                              className="flex items-center justify-center rounded-full bg-blue-700 text-white
-                            absolute top-0 right-0 bottom-0 left-0 w-full h-full m-auto"
-                              style={{ width: "60px", height: "60px" }}
-                            >
-                              <span className="" style={{ fontSize: "30px" }}>
-                                {currentUser?.fullName.slice(0, 1)}
-                              </span>
-                            </div>
-                          </div>
-                          <div className="h-full flex flex-col items-start gap-2">
-                            <span
-                              className="font-semibold"
-                              style={{ fontSize: "16px" }}
-                            >
-                              {currentUser?.fullName}
-                            </span>
-                            <span>{currentUser?.email}</span>
-                          </div>
-                        </div>
-                      </div>
-                      <ul className="profile-user-homepage py-2 text-headingColor border-t border-b border-slate-200">
-                        <li>
-                          <div
-                            className="flex items-center gap-2 px-4 py-2 hover:text-blue-700"
-                            onClick={() =>
-                              navigate(
-                                `${path.HOMEPAGE}/${path.update_profile}`
-                              )
-                            }
-                          >
-                            <AiFillEdit />{" "}
-                            <span>
-                              {i18n.language === "en"
-                                ? "Edit Profile"
-                                : "Cập nhật tài khoản"}
-                            </span>
-                          </div>
-                        </li>
-                        <li>
-                          <div
-                            className="flex items-center gap-2 px-4 py-2 hover:text-blue-700"
-                            onClick={() => setIsUpdatePassword(true)}
-                          >
-                            <AiFillUnlock />{" "}
-                            <span>
-                              {i18n.language === "en"
-                                ? "Change Password"
-                                : "Thay đổi mật khẩu"}
-                            </span>
-                          </div>
-                        </li>
-                      </ul>
-                      <div className="py-2">
+                      >
                         <div
-                          className="flex items-center gap-2 px-4 py-2  hover:text-blue-700 text-headingColor"
-                          onClick={() => handleLogOutHomePage()}
+                          className="flex items-center justify-center rounded-full bg-blue-700 text-white
+                            absolute top-0 right-0 bottom-0 left-0 w-full h-full m-auto"
+                          style={{ width: "60px", height: "60px" }}
                         >
-                          <BiLogOutCircle />{" "}
-                          <span>
-                            {i18n.language === "en" ? "Sign out" : "Đăng xuất"}
+                          <span className="" style={{ fontSize: "30px" }}>
+                            {currentUser?.fullName.slice(0, 1)}
                           </span>
                         </div>
                       </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                      <div className="h-full flex flex-col items-start gap-2">
+                        <span
+                          className="font-semibold"
+                          style={{ fontSize: "16px" }}
+                        >
+                          {currentUser?.fullName}
+                        </span>
+                        <span>{currentUser?.email}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <ul className="profile-user-homepage py-2 text-headingColor border-t border-b border-slate-200">
+                    <li>
+                      <div
+                        className="flex items-center gap-2 px-4 py-2 hover:text-blue-700"
+                        onClick={() =>
+                          navigate(`${path.HOMEPAGE}/${path.update_profile}`)
+                        }
+                      >
+                        <AiFillEdit />{" "}
+                        <span>
+                          {i18n.language === "en"
+                            ? "Edit Profile"
+                            : "Cập nhật tài khoản"}
+                        </span>
+                      </div>
+                    </li>
+                    <li>
+                      <div
+                        className="flex items-center gap-2 px-4 py-2 hover:text-blue-700"
+                        onClick={() => setIsUpdatePassword(true)}
+                      >
+                        <AiFillUnlock />{" "}
+                        <span>
+                          {i18n.language === "en"
+                            ? "Change Password"
+                            : "Thay đổi mật khẩu"}
+                        </span>
+                      </div>
+                    </li>
+                  </ul>
+                  <div className="py-2">
+                    <div
+                      className="flex items-center gap-2 px-4 py-2  hover:text-blue-700 text-headingColor"
+                      onClick={() => handleLogOutHomePage()}
+                    >
+                      <BiLogOutCircle />{" "}
+                      <span>
+                        {i18n.language === "en" ? "Sign out" : "Đăng xuất"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
             {!currentUser?.isLogin && !currentUser?.role && (
@@ -356,32 +454,32 @@ const HomeHeader = () => {
             </NavLink>
             <NavLink
               to={`${path.HOMEPAGE}/${path.inform}`}
-              className="navigation text-md uppercase hover:text-blue-700 text-headingColor"
+              className="navigation text-md uppercase text-black hover:text-blue-700"
               style={({ isActive }) =>
                 isActive
                   ? {
                       color: "#1d5193",
                     }
-                  : { color: "#000" }
+                  : {}
               }
             >
               <span>{t("header.inform")}</span>
             </NavLink>
             <NavLink
               to={`${path.HOMEPAGE}/${path.survey}`}
-              className={`navigation text-md uppercase hover:text-blue-700 text-headingColor`}
+              className={`navigation text-md uppercase text-black hover:text-blue-700`}
               style={({ isActive }) =>
                 isActive
                   ? {
                       color: "#1d5193",
                     }
-                  : { color: "#000" }
+                  : {}
               }
             >
               <span>{t("header.survey")}</span>
             </NavLink>
 
-            <div className="action_header navigation cursor-pointer text-md text-headingColor hover:text-blue-700 hover:opacity-100 relative">
+            <div className="action_header navigation cursor-pointer text-md text-black hover:text-blue-700 hover:opacity-100 relative">
               <span className="flex items-center justify-center gap-1">
                 {t("header.Action")}{" "}
                 <IoMdArrowDropdown className="hover:text-blue-700" />
@@ -428,7 +526,7 @@ const HomeHeader = () => {
             </div>
 
             <div
-              className="student_header relative navigation text-md text-headingColor hover:text-blue-700"
+              className="relative navigation text-md text-black hover:text-blue-700"
               // style={({ isActive }) =>
               //   isActive
               //     ? {
@@ -437,77 +535,36 @@ const HomeHeader = () => {
               //     : { color: "#000" }
               // }
             >
-              <span className="flex items-center justify-center gap-1">
-                {i18n.language === "en" ? "FOR STUDENT" : "DÀNH CHO SINH VIÊN"}
+              {/* <span className="flex items-center justify-center gap-1">
+                {i18n.language === "en" ? "STUDENT HANDBOOK" : "SỔ TAY SINH VIÊN"}
                 <IoMdArrowDropdown className="hover:text-blue-700" />
-              </span>
-
-              <ul
-                className="student_dropdown absolute profile-user-homepage avatar-modal"
-                style={{
-                  padding: ".5rem 0",
-                  margin: 0,
-                  marginTop: "0px",
-                  fontSize: "1rem",
-                  color: "#212529",
-                  textAlign: "left",
-                  listStyle: "none",
-                  backgroundColor: "#fff",
-                  backgroundClip: "padding-box",
-                  border: "1px solid rgba(0,0,0,.15)",
-                  borderRadius: ".25rem",
-                  minWidth: "200px",
-                  top: "40px",
-                }}
+              </span> */}
+              {/* <a
+                href="http://handbook.uet.vnu.edu.vn/"
+                className="text-md text-headingColor hover:text-blue-700"
+                style={{ fontSize: "16px" }}
+                target={"_blank"}
+                rel="noopener noreferrer"
+                alt=""
               >
-                <li>
-                  <a
-                    className="hover:bg-gray-100 transition-all duration-300 p-[10px] pl-[20px]
-                     text-headingColor border-none block w-full font-normal"
-                    style={{ fontSize: "16px" }}
-                    target={"_blank"}
-                    rel="noopener noreferrer"
-                    href="https://vieclam.uet.vnu.edu.vn/"
-                    alt=""
-                  >
-                    {i18n.language === "en"
-                      ? "Recruitment & Jobs"
-                      : "Tuyển dụng và việc làm"}
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="http://handbook.uet.vnu.edu.vn/"
-                    className="hover:bg-gray-100 transition-all duration-300 p-[10px] pl-[20px]
-                     text-headingColor border-none block w-full font-normal"
-                    style={{ fontSize: "16px" }}
-                    target={"_blank"}
-                    rel="noopener noreferrer"
-                    alt=""
-                  >
-                    {i18n.language === "en"
-                      ? "Student HandBook"
-                      : "Sổ tay sinh viên"}
-                  </a>
-                </li>
-                <li>
-                  <a
-                    className="hover:bg-gray-100 transition-all duration-300 p-[10px] pl-[20px]
-                     text-headingColor border-none block w-full font-normal"
-                    style={{ fontSize: "16px" }}
-                    target={"_blank"}
-                    rel="noopener noreferrer"
-                    href="https://uet.vnu.edu.vn/"
-                    alt=""
-                  >
-                    {i18n.language === "en" ? "UET Website" : "Trang chủ UET"}
-                  </a>
-                </li>
-              </ul>
+                {i18n.language === "en"
+                  ? "STUDENT HANDBOOK"
+                  : "SỔ TAY SINH VIÊN"}
+              </a> */}
+              <Link
+                className="navigation text-md uppercase hover:text-blue-700 text-black"
+                to="http://handbook.uet.vnu.edu.vn/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {i18n.language === "en"
+                  ? "STUDENT HANDBOOK"
+                  : "SỔ TAY SINH VIÊN"}
+              </Link>
             </div>
             <NavLink
               to={`${path.HOMEPAGE}/${path.contact}`}
-              className="navigation text-md uppercase text-headingColor hover:text-blue-700"
+              className="navigation text-md uppercase hover:text-blue-700"
               style={({ isActive }) =>
                 isActive
                   ? {
@@ -520,7 +577,7 @@ const HomeHeader = () => {
             </NavLink>
             <NavLink
               // to={`${path.HOMEPAGE}/${path.contact}`}
-              className="navigation text-md uppercase text-headingColor hover:text-blue-700"
+              className="navigation text-md uppercase text-black hover:text-blue-700"
               // style={({ isActive }) =>
               //   isActive
               //     ? {

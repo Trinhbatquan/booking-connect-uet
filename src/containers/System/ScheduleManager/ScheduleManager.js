@@ -37,6 +37,7 @@ import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { Ripple } from "primereact/ripple";
 import { Dropdown } from "primereact/dropdown";
 import { classNames } from "primereact/utils";
+import Loading from "../../../utils/Loading";
 
 const ScheduleManager = () => {
   const [selectedOptionObject, setSelectedOptionObject] = useState({});
@@ -45,6 +46,7 @@ const ScheduleManager = () => {
     new Date().setDate(new Date().getDate() + 1)
   );
 
+  const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState([]);
   const [timeData, setTimeData] = useState([]);
   const [timeUserSelected, setTimeUserSelected] = useState([]);
@@ -328,11 +330,11 @@ const ScheduleManager = () => {
             }));
           }
           setTimeData(allCode);
+          setLoading(false);
         }
       });
     }
     fetchData();
-    // initFilters1();
   }, []);
 
   //option-general select
@@ -356,6 +358,7 @@ const ScheduleManager = () => {
 
   //handle change select
   const handleChangeSelect_general = async (e) => {
+    setLoading(true);
     if (e?.value === "R5") {
       await getTeacherHomePageAPI.getTeacher({}).then((data) => {
         if (data?.codeNumber === 0) {
@@ -383,10 +386,12 @@ const ScheduleManager = () => {
     setTimeData(timeData);
     setSelectedOptionObject(e);
     setIsUpdate(false);
+    setLoading(false);
   };
 
   const handleChangeSelect_detail = async (e) => {
     console.log(selectedOptionObject);
+    setLoading(true);
     await getScheduleSystem
       .get({ managerId: e?.value, roleManager: selectedOptionObject?.value })
       .then((data) => {
@@ -431,6 +436,7 @@ const ScheduleManager = () => {
     setTimeData(timeData);
     setIsUpdate(false);
     setSelectedOption(e);
+    setLoading(false);
   };
 
   //handle change date picker
@@ -548,6 +554,8 @@ const ScheduleManager = () => {
     if (!handleCheckNull()) {
       return;
     }
+    setLoading(true);
+
     const action = isUpdate ? "update" : "create";
     const body = {
       scheduleData: handleCheckNull(),
@@ -556,6 +564,8 @@ const ScheduleManager = () => {
     const data = await createSchedule.create({}, body);
     if (data?.codeNumber === 0) {
       if (data?.message === "create") {
+        setLoading(false);
+
         toast.success(`${t("system.notification.create")}`, {
           autoClose: 2000,
           position: "bottom-right",
@@ -564,6 +574,8 @@ const ScheduleManager = () => {
         //   setSelectedOption({});
         setSelectedProducts8(null);
       } else {
+        setLoading(false);
+
         toast.success(`${t("system.notification.update")}`, {
           autoClose: 2000,
           position: "bottom-right",
@@ -621,12 +633,16 @@ const ScheduleManager = () => {
           }
         });
     } else if (data?.codeNumber === -1) {
+      setLoading(false);
+
       toast.error(`${t("system.notification.fail")}`, {
         autoClose: 2000,
         position: "bottom-right",
         theme: "colored",
       });
     } else if (data?.codeNumber === -2) {
+      setLoading(false);
+
       toast.error(`${t("system.token.mess")}`, {
         autoClose: 3000,
         position: "bottom-right",
@@ -641,6 +657,8 @@ const ScheduleManager = () => {
         });
       }, 3000);
     } else if (data?.codeNumber === 1) {
+      setLoading(false);
+
       toast.error(data?.message, {
         autoClose: 2000,
         position: "bottom-right",
@@ -669,6 +687,8 @@ const ScheduleManager = () => {
   };
   const deleteSchedule = async (managerId, date, roleManager) => {
     console.log(date);
+    setLoading(true);
+
     deleteScheduleByIdAndDate
       .delete({ managerId, date, roleManager })
       .then((res) => {
@@ -715,7 +735,10 @@ const ScheduleManager = () => {
                   )
               );
               setTimeUserSelected(timeScheduleData);
+              setLoading(false);
             } else {
+              setLoading(false);
+
               setTimeUserSelected([]);
             }
             setSelectedProducts8([]);
@@ -741,7 +764,13 @@ const ScheduleManager = () => {
   return (
     <Fragment>
       <div className="w-full" style={{ height: "100px" }}></div>
-
+      {loading && (
+        <div className="fixed loading-overlay top-0 bottom-0 flex items-center justify-center mx-auto left-0 right-0 w-full max-h-full bg-black bg-opacity-25">
+          <div className="absolute">
+            <Loading />
+          </div>
+        </div>
+      )}
       <ToastContainer />
       <div
         className="mt-3 flex flex-col items-start mx-auto pb-5 gap-8"

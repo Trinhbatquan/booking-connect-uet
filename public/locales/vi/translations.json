@@ -204,7 +204,7 @@
         "contact": "Thông tin liên hệ",
         "Action": "HOẠT ĐỘNG",
         "contact-department": "Liên hệ các phòng ban",
-        "contact-faculty": "Liên hệ các khoa, viện",
+        "contact-faculty": "Liên hệ các khoa/viện",
         "contact-teacher": "Liên hệ các giảng viên",
         "health-student": "Về sức khoẻ sinh viên",
         "notification": "Thông báo",
@@ -215,7 +215,7 @@
         "contentTwo": "HỖ TRỢ GIẢI ĐÁP THẮC MẮC CHO NGƯỜI HỌC",
         "search": "Tìm phòng ban, khoa, viện,...",
         "department": "Các phòng ban",
-        "faculty": "Các khoa, viện",
+        "faculty": "Các khoa/viện",
         "health": "Sức khoẻ thể chất",
         "mental": "Tư vấn tâm lý",
         "teacher": "Các giảng viên"

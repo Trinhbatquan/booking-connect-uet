@@ -48,16 +48,16 @@ const Contact = () => {
                 {i18n.language === "en" ? "Phone: " : "Điện thoại: "}
                 <a
                   className="text-headingColor"
-                  href="tel:+02437547460"
+                  href="tel:+02437548864"
                   target="_blank"
                 >
-                  024.37547.460
+                  024.37548.864
                 </a>
               </span>
             </p>
             <p className="flex items-center text-headingColor justify-start gap-3">
               <FaFax className="text-xl" />
-              <span>Fax: 024.37547.460</span>
+              <span>Fax: 024.37548.864</span>
             </p>
             <p className="flex items-center justify-start gap-3">
               <MdEmail className="text-xl" />

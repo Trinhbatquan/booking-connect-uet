@@ -1,33 +1,23 @@
 import React, { useEffect, useState } from "react";
 import moment from "moment";
 import "moment/locale/vi";
-import { useParams } from "react-router";
-import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
 
 import "./Detail.scss";
 import HomeHeader from "../HomeHeader";
 import HomeFooter from "../HomeFooter";
 import Loading from "../../../utils/Loading";
 
-import {
-  getTeacherFaculty,
-  getTeacherHomePageAPI,
-} from "../../../services/teacherService";
+import { getTeacherHomePageAPI } from "../../../services/teacherService";
 import convertBufferToBase64 from "../../../utils/convertBufferToBase64";
 import Schedule from "../Schedule/Schedule";
 import { getScheduleByIdAndDate } from "../../../services/scheduleService";
 import { dateFormat, path } from "../../../utils/constant";
 import avatar from "../../../assets/image/uet.png";
-import { updateStudent } from "../../../services/studentService";
 import { ToastContainer, toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
-import {
-  getUserApi,
-  logOutApi,
-  logOutHomePageApi,
-} from "../../../services/userService";
-import { logOutUser } from "../../../redux/studentSlice";
+import { getUserApi, logOutApi } from "../../../services/userService";
 import {
   createBookingScheduleService,
   createQuestionService,
@@ -37,26 +27,31 @@ import checkBookedSchedule from "../../../utils/checkBookedSchedule";
 import QuestionForm from "../QuestionForm/QuestionForm";
 import { emitter } from "../../../utils/emitter";
 import BookingModal from "../BookingForm/BookingModal";
+import DetailSkeleton from "./DetailSkeleton";
+
+//socket
 import { emit_create_booking } from "../../../utils/socket_client";
-
-import Detail from "./Detail";
 import { handleMessageFromBackend } from "../../../utils/handleMessageFromBackend";
+import { logOutUser } from "../../../redux/studentSlice";
 
-const FacultyDetail = () => {
+const Detail = ({ codeUrlTeacher, roleTeacher, type }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [facultyData, setFacultyData] = useState({});
+  const [loadingTeacher, setLoadingTeacher] = useState(false);
+  const [userData, setUserData] = useState({});
   const [timeDataApi, setTimeDataApi] = useState(null);
-  const [teacherFaculty, setTeacherFaculty] = useState([]);
-  const [markDownTeacherData, setMarkDownTeacherData] = useState([]);
 
   const [openModalSchedule, setOpenModalSchedule] = useState(false);
   const [dataModalSchedule, setDataModalSchedule] = useState({});
 
   const [action, setAction] = useState("schedule");
 
-  const { code_url, roleId } = useParams();
-  console.log(teacherFaculty);
-  console.log(markDownTeacherData);
+  const codeUrlParam = useParams()?.code_url;
+  const roleParam = useParams()?.roleId;
+  const code_url = codeUrlTeacher || codeUrlParam;
+  const roleId = roleTeacher || roleParam;
+
   const date_tomorrow = moment(new Date())
     .add(1, "days")
     .format(dateFormat.SEND_TO_SERVER);
@@ -64,8 +59,6 @@ const FacultyDetail = () => {
   // const navigate = useSelector((state) => state.navigateReducer.navigate);
   const currentStudent = useSelector((state) => state.studentReducer);
   const { t, i18n } = useTranslation();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const getBookingScheduleNotSelected = async (
     getTime,
@@ -84,6 +77,8 @@ const FacultyDetail = () => {
       actionId,
     });
     if (bookingSelected.codeNumber === 0) {
+      console.log(bookingSelected.bookingSchedule);
+      // if (bookingSelected?.bookingSchedule?.length > 0) {
       bookingSelected.bookingSchedule.forEach((item) => {
         bookingScheduleData.push(item?.timeType);
       });
@@ -94,19 +89,28 @@ const FacultyDetail = () => {
   };
 
   useEffect(() => {
-    setLoading(true);
+    if (!type) {
+      setLoading(true);
+    } else {
+      setLoadingTeacher(true);
+    }
     setTimeout(async () => {
-      let res = await getUserApi.getUser({ code_url });
+      let res;
+      if (roleId === "R5") {
+        res = await getTeacherHomePageAPI.getTeacherById({ code_url });
+      } else {
+        res = await getUserApi.getUser({ code_url });
+      }
       let managerId;
       if (res?.codeNumber === 0) {
         const { data } = res;
-        // console.log(data);
+        console.log(data);
         managerId = data?.id;
         const image = data?.image?.data;
         if (image) {
           data.image = convertBufferToBase64(data?.image?.data);
         }
-        setFacultyData(data);
+        setUserData(data);
       }
       const data = await getScheduleByIdAndDate.get({
         managerId,
@@ -139,27 +143,22 @@ const FacultyDetail = () => {
             "A1"
           );
 
-          // console.log(getTime);
+          console.log(getTime);
           setTimeDataApi(getTime);
         }
       }
 
-      await getTeacherFaculty.get({ facultyId: managerId }).then((res) => {
-        if (res?.codeNumber === 0) {
-          setTeacherFaculty(res?.teacherByFaculty);
-          setMarkDownTeacherData(res?.markDownTeacher);
-        }
-      });
-
-      setLoading(false);
+      if (!type) {
+        setLoading(false);
+      } else {
+        setLoadingTeacher(false);
+      }
     }, 1000);
   }, []);
 
-  useEffect(() => {}, []);
-
   const loadTimeOfDate = async (value) => {
-    // console.log(value);
-    const managerId = +facultyData?.id;
+    console.log(value);
+    const managerId = +userData?.id;
     const date = value;
     const roleManager = roleId;
     const data = await getScheduleByIdAndDate.get({
@@ -183,10 +182,10 @@ const FacultyDetail = () => {
             valueTimeEn: item?.timeData?.valueEn,
           });
         });
-        // console.log(getTime);
+        console.log(getTime);
         getTime = await getBookingScheduleNotSelected(
           getTime,
-          facultyData?.id,
+          userData?.id,
           roleId,
           currentStudent?.id,
           date,
@@ -199,7 +198,7 @@ const FacultyDetail = () => {
   };
 
   const handleSchedule = ({ timeType, valueTime }, date) => {
-    // console.log({ timeType, valueTime }, date);
+    console.log({ timeType, valueTime }, date);
     setOpenModalSchedule(true);
     const data = {
       currentStudent,
@@ -207,7 +206,7 @@ const FacultyDetail = () => {
       valueTime,
       date,
     };
-    // console.log(data);
+    console.log(data);
     setDataModalSchedule(data);
   };
 
@@ -283,7 +282,7 @@ const FacultyDetail = () => {
     const body = {
       email: currentStudent?.email,
       studentId: currentStudent?.id,
-      managerId: +facultyData?.id,
+      managerId: +userData?.id,
       roleManager: roleId,
       action: "A2",
       ...data,
@@ -304,7 +303,7 @@ const FacultyDetail = () => {
           emitter.emit("EVENT_CLEAR_DATA");
           if (res?.type === "create") {
             //socket_emit_booking_create
-            emit_create_booking(+facultyData?.id, roleId, "A2");
+            emit_create_booking(+userData?.id, roleId, "A2");
           }
         } else {
           toast.info(
@@ -344,59 +343,71 @@ const FacultyDetail = () => {
 
   return (
     <>
-      <div>
-        <ToastContainer />
-        <HomeHeader />
-        <div className="w-full h-[100px]"></div>
-        {loading ? (
-          <div className="loading-overlay fixed top-0 bottom-0 flex items-center justify-center mx-auto left-0 right-0 w-full max-h-full bg-black bg-opacity-25">
-            <div className="absolute">
-              <Loading />
-            </div>
+      {loading && (
+        <div className="loading-overlay fixed top-0 bottom-0 flex items-center justify-center mx-auto left-0 right-0 w-full max-h-full bg-black bg-opacity-25">
+          <div className="absolute">
+            <Loading />
           </div>
-        ) : (
-          <>
-            <div className="detail-container detail-teacher-container">
-              <div className="detail-teacher">
-                <div
-                  className="detail-teacher-avatar flex-3"
-                  style={{
-                    backgroundImage: `url(${
-                      roleId === "R5"
-                        ? facultyData?.image
-                          ? facultyData?.image
-                          : avatar
+        </div>
+      )}
+      <ToastContainer />
+      {!type && <HomeHeader />}
+      {!type && <div className="w-full h-[100px]"></div>}
+      {loadingTeacher ? (
+        <DetailSkeleton />
+      ) : (
+        <>
+          {" "}
+          <div
+            className={`${
+              type
+                ? "detail-teacher-faculty-container"
+                : "detail-teacher-container"
+            }`}
+          >
+            <div className="detail-teacher">
+              <div
+                className="detail-teacher-avatar flex-3"
+                style={{
+                  backgroundImage: `url(${
+                    roleId === "R5"
+                      ? userData?.image
+                        ? userData?.image
                         : avatar
-                    })`,
-                  }}
-                ></div>
-                <div className="detail-teacher-content flex-1">
-                  <p className="detail-teacher-content-name">
-                    {`${
-                      roleId === "R5"
-                        ? `${facultyData?.positionData?.valueVn}
+                      : avatar
+                  })`,
+                }}
+              ></div>
+              <div className="detail-teacher-content flex-1">
+                <p className="detail-teacher-content-name">
+                  {userData?.id
+                    ? roleId === "R5"
+                      ? `${userData?.positionData?.valueVn}
                           ,
-                          ${facultyData?.fullName}
+                          ${userData?.fullName}
                         `
-                        : facultyData?.fullName
-                    }`}
-                  </p>
-                  <p>
-                    {roleId === "R5"
-                      ? facultyData?.markdownData_teacher?.description
-                      : facultyData?.markdownData_other?.description}
-                  </p>
-                </div>
+                      : userData?.fullName
+                    : ""}
+                </p>
+                <p>
+                  {userData?.id
+                    ? roleId === "R5"
+                      ? userData?.markdownData_teacher?.description
+                      : userData?.markdownData_other?.description
+                    : ""}
+                </p>
               </div>
+            </div>
+            <div className="action-teacher">
               <div className="action-select">
                 <button
                   type="button"
                   class={`hover:bg-blue-800 hover:text-white rounded-lg focus:ring-4 focus:ring-blue-300 font-medium  text-md px-5 py-2.5 mr-2 mb-2 focus:outline-none
-                ${
-                  action === "schedule"
-                    ? "text-white bg-blue-800"
-                    : "text-gray-400 bg-white border border-gray-600"
-                }`}
+                  ${
+                    action === "schedule"
+                      ? "text-white bg-blue-800"
+                      : "text-gray-400 bg-white border border-gray-600"
+                  }`}
                   onClick={() => setAction("schedule")}
                 >
                   {t("teacher.schedule.name")}
@@ -404,91 +415,52 @@ const FacultyDetail = () => {
                 <button
                   type="button"
                   class={`hover:bg-blue-800 hover:text-white  focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-md px-5 py-2.5 mr-2 mb-2 focus:outline-none
-                ${
-                  action === "question"
-                    ? "text-white bg-blue-800"
-                    : "text-gray-400 bg-white border border-gray-600"
-                }`}
+                  ${
+                    action === "question"
+                      ? "text-white bg-blue-800"
+                      : "text-gray-400 bg-white border border-gray-600"
+                  }`}
                   onClick={() => setAction("question")}
                 >
                   {t("teacher.question.name")}
                 </button>
               </div>
-
               {action === "schedule" && (
                 <Schedule
+                  type={type}
                   change={loadTimeOfDate}
                   timeData={timeDataApi}
-                  teacher={facultyData}
+                  teacher={userData}
                   handleSchedule={handleSchedule}
                 />
               )}
-              {action === "question" && <QuestionForm create={createBooking} />}
-              <div
-                className="description-teacher"
-                dangerouslySetInnerHTML={
-                  roleId === "R5"
-                    ? {
-                        __html: facultyData?.markdownData_teacher?.markdownHtml,
-                      }
-                    : {
-                        __html: facultyData?.markdownData_other?.markdownHtml,
-                      }
-                }
-              ></div>
-            </div>
-
-            <div
-              className="list-teacher flex flex-col gap-3 items-center justify-start py-[15px]"
-              style={{ width: "100%", backgroundColor: "#eee" }}
-            >
-              <div className="w-full px-[15%] mx-auto flex flex-col items-start justify-start gap-4">
+              {action === "question" && (
+                <QuestionForm type={type} create={createBooking} />
+              )}
+              {!type && (
                 <div
-                  className="p-[10px] round-sm"
-                  style={{
-                    color: "blue",
-                    backgroundColor: "#fff",
-                    border: "1pz solid #ced4da",
-                    fontSize: "18px",
-                    fontWeight: "bold",
-                  }}
-                >
-                  {i18n.language === "en"
-                    ? "Teacher List"
-                    : "Danh sách giảng viên"}
-                </div>
-                {teacherFaculty?.length > 0 &&
-                  teacherFaculty.map((item, index) => {
-                    return (
-                      <div
-                        className="w-full flex items-center justify-start gap-1 flex-1 p-[15px]"
-                        key={index}
-                        style={{
-                          backgroundColor: "#fff",
-                          boxShadow: "0 1px 6px rgba(32,33,36,0.28)",
-                          borderRadius: "8px",
-                          borderBottom: "none",
-                        }}
-                      >
-                        <Detail
-                          codeUrlTeacher={item?.code_url}
-                          roleTeacher="R5"
-                          type="faculty"
-                        />
-                      </div>
-                    );
-                  })}
-              </div>
+                  className="description-teacher"
+                  dangerouslySetInnerHTML={
+                    roleId === "R5"
+                      ? {
+                          __html: userData?.markdownData_teacher?.markdownHtml,
+                        }
+                      : {
+                          __html: userData?.markdownData_other?.markdownHtml,
+                        }
+                  }
+                ></div>
+              )}
             </div>
-            <HomeFooter />
-          </>
-        )}
-      </div>
+          </div>
+          {!type && <HomeFooter />}
+        </>
+      )}
       {openModalSchedule && (
         <BookingModal
           close={closeModalSchedule}
           dataModalSchedule={dataModalSchedule}
-          userData={facultyData}
+          userData={userData}
           roleManager={roleId}
           create={createBookingSchedule}
         />
@@ -501,4 +473,4 @@ const FacultyDetail = () => {
   );
 };
 
-export default FacultyDetail;
+export default Detail;

@@ -124,14 +124,15 @@ html {
 
   .-space-x-px,
   .profile-user-homepage,
-  .profile-user-manager {
+  .profile-user-manager,
+  .drop_down_language {
     list-style: none;
   }
 
   .loading-overlay {
-    z-index: 1200;
+    z-index: 1000;
   }
   .modal-setting {
-    z-index: 1300;
+    z-index: 101;
   }
 }

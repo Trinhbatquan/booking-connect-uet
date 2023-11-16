@@ -1,8 +1,6 @@
 .detail-teacher-container {
   max-width: 100%;
   width: 100%;
-  // margin: 0 auto;
-  margin-top: 100px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -134,7 +132,7 @@
   justify-content: flex-start;
   align-items: flex-start;
   .detail-teacher {
-    width: 50%;
+    width: 45%;
     display: flex;
     justify-content: flex-start;
     align-items: flex-start;
@@ -157,7 +155,7 @@
   }
   .action-teacher {
     padding: 0 10px;
-    width: 50%;
+    width: 55%;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -228,7 +226,7 @@
       outline: none;
     }
     & select {
-      width: fit-content;
+      min-width: 36%;
       border: none;
       outline: none;
       color: #337ab7;
@@ -253,10 +251,24 @@
 }
 
 .modal-schedule-overplay {
-  z-index: 10000 !important;
+  z-index: 100 !important;
 }
 .modal-schedule-container {
-  z-index: 1000000 !important;
-  height: 530px;
-  max-height: 530px;
+  z-index: 101 !important;
+  height: 375px;
+  max-height: 375px;
+}
+
+.note-make-question {
+  z-index: 102 !important;
+}
+
+.modal-confirm-schedule-overplay,
+.modal-confirm-question-overplay {
+  z-index: 102 !important;
+}
+
+.modal-confirm-schedule-container,
+.modal-confirm-question-container {
+  z-index: 103 !important;
 }
