@@ -52,17 +52,18 @@ const HeaderUser = () => {
   // }
 
   useEffect(() => {
-    console.log("000000");
-
     const listenNewBookingFromBackend = (data) => {
       const { managerId, roleManager, action } = data;
       if (managerId === currentUser?.id && roleManager === currentUser?.role) {
         if (action === "A1") {
-          console.log("11111");
           toast.info(
             i18n.language === "en"
-              ? "You recently had a new appointment from student."
-              : "Bạn vừa có một lịch hẹn mới từ sinh viên.",
+              ? `You recently had a new appointment from student(${moment(
+                  new Date()
+                ).calendar()}).`
+              : `Bạn vừa có một lịch hẹn mới từ sinh viên (${moment(
+                  new Date()
+                ).calendar()}).`,
             {
               autoClose: false,
               theme: "colored",
@@ -70,11 +71,14 @@ const HeaderUser = () => {
             }
           );
         } else {
-          console.log("22222");
           toast.info(
             i18n.language === "en"
-              ? "You recently had a new question from student."
-              : "Bạn vừa có một câu hỏi mới từ sinh viên.",
+              ? `You recently had a new question from student (${moment(
+                  new Date()
+                ).calendar()}).`
+              : `Bạn vừa có một câu hỏi mới từ sinh viên (${moment(
+                  new Date()
+                ).calendar()}).`,
             {
               autoClose: false,
               theme: "colored",
@@ -92,12 +96,12 @@ const HeaderUser = () => {
       if (checkRole) {
         toast.info(
           i18n.language === "en"
-            ? `You recently had a new notification from system at ${moment(
+            ? `You recently had a new notification from system (${moment(
                 time
-              ).format("MMMM Do YYYY, h:mm:ss a")}.`
-            : `Bạn vừa có một thông báo mới từ hệ thống vào lúc ${moment(
+              ).calendar()}).`
+            : `Bạn vừa có một thông báo mới từ hệ thống (${moment(
                 time
-              ).format("MMMM Do YYYY, h:mm:ss a")}.`,
+              ).calendar()}).`,
           {
             autoClose: false,
             theme: "colored",

@@ -10,6 +10,7 @@ import { AiFillHome } from "react-icons/ai";
 import "./HomeHeader.scss";
 import { path } from "../../utils/constant";
 import { BsFillPersonFill } from "react-icons/bs";
+import { GoBell } from "react-icons/go";
 import { IoMdArrowDropdown, IoMdArrowDropup } from "react-icons/io";
 import { MdOutlineEmail } from "react-icons/md";
 import { AiFillEdit, AiFillUnlock } from "react-icons/ai";
@@ -26,12 +27,20 @@ import { RiDeleteBack2Fill } from "react-icons/ri";
 import { updateStudent } from "../../services/studentService";
 import { ToastContainer, toast } from "react-toastify";
 import { handleMessageFromBackend } from "../../utils/handleMessageFromBackend";
+import { socket } from "../../index";
+import moment from "moment";
 import {
   getPreviousFeedback,
   saveFeedback,
 } from "../../services/student_feedback";
 import flag_en from "../../assets/image/en.png";
 import flag_vi from "../../assets/image/vi.png";
+import { FaBell } from "react-icons/fa";
+import { TbBellRinging } from "react-icons/tb";
+import {
+  getNotiFy,
+  updateNotifyToOld,
+} from "../../services/notificationService";
 
 const HomeHeader = ({ action }) => {
   const { t, i18n } = useTranslation();
@@ -44,8 +53,10 @@ const HomeHeader = ({ action }) => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [notifyCheckState, setNotifyCheckState] = useState("");
+  const [countNewNotification, setCountNewNotification] = useState(0);
+  const [socketNotify, setSocketNotify] = useState(false);
   const [eye, setEye] = useState(false);
-
+  console.log(socketNotify);
   const currentUser = useSelector((state) => state.studentReducer);
 
   const languageDropDownRef = useRef();
@@ -100,6 +111,106 @@ const HomeHeader = ({ action }) => {
         divProfile.removeEventListener("click", handleClickDivProfile);
       }
     };
+  }, []);
+
+  useEffect(() => {
+    const listenNewUpdateBookingFromBackend = (data) => {
+      const { studentId, type, actionId } = data;
+      if (studentId === currentUser?.id) {
+        if (actionId === "A2") {
+          if (type === "done") {
+            toast.info(
+              i18n.language === "en"
+                ? `A question has recently answered. Check now! (${moment(
+                    new Date()
+                  ).calendar()})`
+                : `Một câu hỏi của bạn vừa được trả lời. Kiểm tra ngay! (${moment(
+                    new Date()
+                  ).calendar()})`,
+              {
+                autoClose: false,
+                theme: "colored",
+                position: "bottom-right",
+              }
+            );
+          }
+        } else if (actionId === "A1") {
+          if (type === "process") {
+            toast.info(
+              i18n.language === "en"
+                ? `A appointment has recently approved. Check now! (${moment(
+                    new Date()
+                  ).calendar()})`
+                : `Một lịch hẹn của bạn vừa được chấp nhận. Kiểm tra ngay! (${moment(
+                    new Date()
+                  ).calendar()})`,
+              {
+                autoClose: false,
+                theme: "colored",
+                position: "bottom-right",
+              }
+            );
+          } else if (type === "done") {
+            toast.info(
+              i18n.language === "en"
+                ? `A appointment has recently finished. Thanks for your using! (${moment(
+                    new Date()
+                  ).calendar()})`
+                : `Một lịch hẹn của bạn vừa được xác nhận hoàn thành. Cảm ơn vì đã sử dụng dịch vụ! (${moment(
+                    new Date()
+                  ).calendar()})`,
+              {
+                autoClose: false,
+                theme: "colored",
+                position: "bottom-right",
+              }
+            );
+          } else if (type === "cancel") {
+            toast.info(
+              i18n.language === "en"
+                ? `Ohhh! A appointment has recently canceled. Please find the reason of the cancelation. (${moment(
+                    new Date()
+                  ).calendar()})`
+                : `Ohhh! Một lịch hẹn của bạn vừa bị huỷ. Vui lòng tìm hiểu lý do huỷ. (${moment(
+                    new Date()
+                  ).calendar()})`,
+              {
+                autoClose: false,
+                theme: "colored",
+                position: "bottom-right",
+              }
+            );
+          }
+        }
+        setSocketNotify(true);
+        setCountNewNotification(countNewNotification + 1);
+      }
+    };
+
+    socket.on("new_notification_for_student_about_update_booking", (data) =>
+      listenNewUpdateBookingFromBackend(data)
+    );
+
+    return () => {
+      socket.off(
+        "new_notification_for_student_about_update_booking",
+        listenNewUpdateBookingFromBackend
+      );
+    };
+  }, []);
+
+  useEffect(() => {
+    //getCountNewNotify
+    getNotiFy
+      .getCountNewNotify({
+        type: "student",
+        studentId: currentUser?.id,
+      })
+      .then((data) => {
+        if (data?.codeNumber === 0) {
+          setCountNewNotification(data?.countNewNotify);
+        }
+      });
   }, []);
 
   const handleChangeLanguages = (language) => {
@@ -205,6 +316,20 @@ const HomeHeader = ({ action }) => {
       });
   };
 
+  const handleResetNotify = async () => {
+    if (countNewNotification > 0) {
+      updateNotifyToOld({
+        type: "student",
+        studentId: currentUser?.id,
+      }).then((data) => {
+        setSocketNotify(false);
+        navigate(`${path.HOMEPAGE}/${path.notify}`);
+      });
+    } else {
+      navigate(`${path.HOMEPAGE}/${path.notify}`);
+    }
+  };
+
   return (
     <Fragment>
       <div className="homepage-header-container flex items-center">
@@ -228,10 +353,28 @@ const HomeHeader = ({ action }) => {
         </div>
         <div className="homepage-herder-right">
           <div className="homepage-herder-right-up">
+            <div
+              className="relative cursor-pointer pr-2 flex items-center justify-center gap-2"
+              onClick={() => handleResetNotify()}
+            >
+              {socketNotify ? (
+                <TbBellRinging className="bell relative -top-[1px] text-blurThemeColor text-xl" />
+              ) : (
+                <GoBell className="text-blurThemeColor text-xl relative -top-[1px]" />
+              )}
+              {+countNewNotification > 0 && (
+                <div className="absolute right-[68px] -top-[12px] flex items-center justify-center w-6 h-5 p-1 text-white bg-red-600 rounded-full">
+                  <span className="text-xs">{`${countNewNotification}+`}</span>
+                </div>
+              )}
+              <span className="text-sm">
+                {i18n.language === "en" ? "Notification" : "Thông báo"}
+              </span>
+            </div>
             <div className="relative">
               {i18n.language === "vi" ? (
                 <div
-                  className={`header_homepage_language text-sm ml-3 cursor-pointer flex items-center justify-center gap-3 text-black hover:text-blue-700 hover:opacity-100`}
+                  className={`header_homepage_language text-sm ml-3 cursor-pointer flex items-center justify-center gap-2 text-black hover:text-blue-700 hover:opacity-100`}
                   ref={languageDivRef}
                 >
                   <img
@@ -240,14 +383,14 @@ const HomeHeader = ({ action }) => {
                     className="object-cover w-[20px] h-[15px]"
                     style={{ borderRadius: "8px" }}
                   />
-                  <span className="flex items-center justify-center gap-1">
+                  <span className="flex items-center justify-center">
                     Tiếng Việt{" "}
                     <IoMdArrowDropdown className="hover:text-blue-700" />
                   </span>
                 </div>
               ) : (
                 <div
-                  className={`header_homepage_language text-sm ml-3 cursor-pointer flex items-center justify-center gap-3 text-black hover:text-blue-700 hover:opacity-100`}
+                  className={`header_homepage_language text-sm ml-3 cursor-pointer flex items-center justify-center gap-2 text-black hover:text-blue-700 hover:opacity-100`}
                   ref={languageDivRef}
                 >
                   <img
@@ -256,7 +399,7 @@ const HomeHeader = ({ action }) => {
                     className="object-cover w-[20px] h-[15px]"
                     style={{ borderRadius: "8px" }}
                   />
-                  <span className="flex items-center justify-center gap-1">
+                  <span className="flex items-center justify-center">
                     Tiếng Anh{" "}
                     <IoMdArrowDropdown className="hover:text-blue-700" />
                   </span>
@@ -466,7 +609,7 @@ const HomeHeader = ({ action }) => {
               <span>{t("header.inform")}</span>
             </NavLink>
             <NavLink
-              to={`${path.HOMEPAGE}/${path.survey}`}
+              to={`${path.HOMEPAGE}/${path.processBooking}`}
               className={`navigation text-md uppercase text-black hover:text-blue-700`}
               style={({ isActive }) =>
                 isActive
@@ -476,10 +619,26 @@ const HomeHeader = ({ action }) => {
                   : {}
               }
             >
-              <span>{t("header.survey")}</span>
+              <span>
+                {i18n.language === "en"
+                  ? "Process Management"
+                  : "Quản lý tiến trình"}
+              </span>
             </NavLink>
-
-            <div className="action_header navigation cursor-pointer text-md text-black hover:text-blue-700 hover:opacity-100 relative">
+            <NavLink
+              to={`${path.HOMEPAGE}/${path.news}`}
+              className={`navigation text-md uppercase text-black hover:text-blue-700`}
+              style={({ isActive }) =>
+                isActive
+                  ? {
+                      color: "#1d5193",
+                    }
+                  : {}
+              }
+            >
+              <span>{i18n.language === "en" ? "News" : "Tin tức"}</span>
+            </NavLink>
+            {/* <div className="action_header navigation cursor-pointer text-md text-black hover:text-blue-700 hover:opacity-100 relative">
               <span className="flex items-center justify-center gap-1">
                 {t("header.Action")}{" "}
                 <IoMdArrowDropdown className="hover:text-blue-700" />
@@ -523,7 +682,7 @@ const HomeHeader = ({ action }) => {
                   </div>
                 </li>
               </ul>
-            </div>
+            </div> */}
 
             <div
               className="relative navigation text-md text-black hover:text-blue-700"
@@ -576,17 +735,17 @@ const HomeHeader = ({ action }) => {
               <span>{t("header.contact")}</span>
             </NavLink>
             <NavLink
-              // to={`${path.HOMEPAGE}/${path.contact}`}
-              className="navigation text-md uppercase text-black hover:text-blue-700"
-              // style={({ isActive }) =>
-              //   isActive
-              //     ? {
-              //         color: "#1d5193",
-              //       }
-              //     : { color: "#000" }
-              // }
+              to={`${path.HOMEPAGE}/${path.survey}`}
+              className={`navigation text-md uppercase text-black hover:text-blue-700`}
+              style={({ isActive }) =>
+                isActive
+                  ? {
+                      color: "#1d5193",
+                    }
+                  : {}
+              }
             >
-              <span>{t("header.support")}</span>
+              <span>{t("header.survey")}</span>
             </NavLink>
           </div>
         </div>

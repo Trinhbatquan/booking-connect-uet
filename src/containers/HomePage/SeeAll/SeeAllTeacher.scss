@@ -50,3 +50,10 @@
 .detail-news:hover .button-news {
   transform: translateX(4px);
 }
+
+.drop_down_notify {
+  display: none;
+}
+.notification-option:hover ul {
+  display: block;
+}

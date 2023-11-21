@@ -48,6 +48,7 @@ export const path = {
   notify: "danh-sach-thong-bao",
   detail_notify: "thong-bao",
   health: "danh-sach-suc-khoe-sinh-vien",
+  processBooking: "booking-process",
 };
 
 export const languages = {
@@ -122,4 +123,34 @@ export const select_faculty = [
 export const markdown = {
   teacher: "teacher",
   other: "other",
+};
+
+export const positionCustom = (positionId, lang) => {
+  if (positionId === "P1") {
+    return lang === "en" ? "Professor" : "Giáo sư";
+  } else if (positionId === "P2") {
+    return lang === "en" ? "Associate Professor" : "Phó giáo sư";
+  } else {
+    return lang === "en" ? "Doctor of Philosophy" : "Tiến sĩ";
+  }
+};
+
+export const statusCustom = (statusId, lang, actionId) => {
+  if (statusId === "S1") {
+    return lang === "en" ? "New" : "Mới";
+  } else if (statusId === "S2") {
+    return lang === "en" ? "In Process" : "Đang tiến hành";
+  } else if (statusId === "S3") {
+    return lang === "en"
+      ? actionId === "A1"
+        ? "Finished"
+        : "Answer Directly"
+      : actionId === "A1"
+      ? "Đã hoàn thành"
+      : "Trả lời trực tiếp";
+  } else if (statusId === "S4") {
+    return lang === "en" ? "Canceled" : "Bị huỷ bỏ";
+  } else {
+    return lang === "en" ? "Answer Automatically" : "Trả lời tự động";
+  }
 };

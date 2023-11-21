@@ -49,6 +49,7 @@ import NewsDetail from "./HomePage/Detail/NewsDetail";
 import NotificationSeeAll from "./HomePage/SeeAll/NotificationSeeAll";
 import NotificationDetail from "./HomePage/Detail/NotificationDetail";
 import HealthSeeAll from "./HomePage/SeeAll/HealthSeeAll";
+import ProcessBooking from "./HomePage/ProcessBooking/ProcessBooking";
 
 function App() {
   const [appearScrollTop, setAppearScrollTop] = useState(false);
@@ -149,6 +150,10 @@ function App() {
         <Route
           path={`${path.HOMEPAGE}/${path.health}`}
           element={<HealthSeeAll />}
+        />
+        <Route
+          path={`${path.HOMEPAGE}/${path.processBooking}`}
+          element={<ProcessBooking />}
         />
 
         {/* system */}

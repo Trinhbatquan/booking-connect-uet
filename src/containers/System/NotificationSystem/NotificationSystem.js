@@ -193,6 +193,7 @@ const NotificationSystem = () => {
           image,
           type_notification: "system",
           code_url: render_code_url(title),
+          isNew: 1,
         });
       }
       await createNotifySystem({}, { notifyData }).then((res) => {

@@ -45,6 +45,9 @@ const QuestionForm = ({ type, create }) => {
     setSubject("");
     setQuestion("");
     setOthers("");
+    setAvatar("");
+    setPreviewAvatar("");
+    inputFileRef.current.value = "";
   });
 
   const handleCheckNullState = () => {
@@ -80,6 +83,8 @@ const QuestionForm = ({ type, create }) => {
 
   const createQuestion = () => {
     create({ subject, question, avatar, others, option: optionMakeQuestion });
+    setIsOpenConfirmQuestion(false);
+    setOptionMakeQuestion("");
   };
   const closeConfirm = () => {
     setIsOpenConfirmQuestion(false);
@@ -109,13 +114,29 @@ const QuestionForm = ({ type, create }) => {
     let data = e.target.files;
     let file = data[0];
     if (file) {
-      let urlAvatar = URL.createObjectURL(file);
-      setPreviewAvatar(urlAvatar);
-      try {
-        const base64File = await convertFileToBase64(file);
-        setAvatar(base64File);
-      } catch (e) {
-        console.log("base64 file " + e);
+      if (file?.size > 100000) {
+        inputFileRef.current.value = "";
+        toast.error(
+          `${
+            i18n.language === "en"
+              ? "This image is too big, please use image size < 500KB"
+              : "Ảnh hiện tại quá lớn. Vui lòng sử dụng ảnh dưới 500KB"
+          }`,
+          {
+            autoClose: 3000,
+            theme: "colored",
+            position: "bottom-right",
+          }
+        );
+      } else {
+        let urlAvatar = URL.createObjectURL(file);
+        setPreviewAvatar(urlAvatar);
+        try {
+          const base64File = await convertFileToBase64(file);
+          setAvatar(base64File);
+        } catch (e) {
+          console.log("base64 file " + e);
+        }
       }
     }
   };
@@ -200,19 +221,21 @@ const QuestionForm = ({ type, create }) => {
             >
               {i18n.language === "en" ? "Upload file" : "Tải ảnh"}
             </label>
+
             <input
               class="bg-gray-50 border border-gray-300 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full"
-              aria-describedby="file_input_help"
               id="file_input"
+              accept=".jpg, .png, *.jpg, *.jpeg, .jpeg"
               type="file"
               onChange={(e) => handleChangeAndPreviewImage(e)}
               ref={inputFileRef}
             />
+
             <p
               class="mt-1 text-sm text-gray-500 dark:text-gray-300"
               id="file_input_help"
             >
-              SVG, PNG, JPG.
+              PNG, JPG, JPEG FILE
             </p>
             {previewAvatar && (
               <div className="w-full h-24 flex-1 relative">

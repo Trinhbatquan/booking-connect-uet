@@ -1,5 +1,6 @@
 import moment from "moment";
 import { dateFormat, path } from "./constant";
+import "moment/locale/vi";
 
 const timeKey = ["T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8"];
 const timeDataVn = [
@@ -103,6 +104,138 @@ const contentNotify = (type, data) => {
   } else if (type === "system") {
     content.vn = data.content;
     content.en = data.content;
+  } else if (type === "appointment_approved") {
+    content.vn = () => (
+      <>
+        <p>Một lịch hẹn của bạn đã được chấp nhận</p>
+        <p>
+          {`Lý do của lịch hẹn: `} <u>{data?.bookingData?.reason}</u>
+        </p>
+        <p>
+          {`Thời gian gặp mặt: `}{" "}
+          <u>
+            {`${moment(data?.bookingData?.date).format("dddd - DD/MM/YYYY")} lúc
+            ${timeDataVn[index]}`}
+          </u>
+        </p>
+      </>
+    );
+    content.en = () => (
+      <>
+        <p>A appointment has recently approved</p>
+        <p>
+          {`Reason: `} <u>{data?.bookingData?.reason}</u>
+        </p>
+        <p>
+          {`Appointment Time: `}{" "}
+          <u>
+            {`${moment(data?.bookingData?.date)
+              .locale("en")
+              .format("dddd - DD/MM/YYYY")} at
+            ${timeDataEn[index]}`}
+          </u>
+        </p>
+      </>
+    );
+  } else if (type === "appointment_canceled") {
+    content.vn = () => (
+      <>
+        <p>Một lịch hẹn của bạn đã bị huỷ bỏ</p>
+        <p>
+          {`Lý do của lịch hẹn: `} <u>{data?.bookingData?.reason}</u>
+        </p>
+        <p>
+          {`Thời gian gặp mặt: `}{" "}
+          <u>
+            {`${moment(data?.bookingData?.date).format("dddd - DD/MM/YYYY")} lúc
+            ${timeDataVn[index]}`}
+          </u>
+        </p>
+      </>
+    );
+    content.en = () => (
+      <>
+        <p>A appointment has recently canceled</p>
+        <p>
+          {`Reason: `} <u>{data?.bookingData?.reason}</u>
+        </p>
+        <p>
+          {`Appointment Time: `}{" "}
+          <u>
+            {`${moment(data?.bookingData?.date)
+              .locale("en")
+              .format("dddd - DD/MM/YYYY")} at
+            ${timeDataEn[index]}`}
+          </u>
+        </p>
+      </>
+    );
+  } else if (type === "appointment_finished") {
+    content.vn = () => (
+      <>
+        <p>Một lịch hẹn của bạn đã được xác nhận hoàn thành</p>
+        <p>
+          {`Lý do của lịch hẹn: `} <u>{data?.bookingData?.reason}</u>
+        </p>
+        <p>
+          {`Thời gian gặp mặt: `}{" "}
+          <u>
+            {`${moment(data?.bookingData?.date).format("dddd - DD/MM/YYYY")} lúc
+            ${timeDataVn[index]}`}
+          </u>
+        </p>
+      </>
+    );
+    content.en = () => (
+      <>
+        <p>A appointment has recently completed</p>
+        <p>
+          {`Reason: `} <u>{data?.bookingData?.reason}</u>
+        </p>
+        <p>
+          {`Appointment Time: `}{" "}
+          <u>
+            {`${moment(data?.bookingData?.date)
+              .locale("en")
+              .format("dddd - DD/MM/YYYY")} at
+            ${timeDataEn[index]}`}
+          </u>
+        </p>
+      </>
+    );
+  } else if (type === "question_answered") {
+    content.vn = () => (
+      <>
+        <p>Một câu hỏi của bạn đã được trả lời</p>
+        <p>
+          {`Chủ đề câu hỏi: `} <u>{data?.bookingData?.subject}</u>
+        </p>
+        <p>
+          {`Thời gian đặt câu hỏi: `}{" "}
+          <u>
+            {`${moment(data?.bookingData?.createdAt).format(
+              "dddd - DD/MM/YYYY"
+            )}`}
+          </u>
+        </p>
+      </>
+    );
+    content.en = () => (
+      <>
+        <p>A question has recently answered</p>
+        <p>
+          {`Question Subject: `} <u>{data?.bookingData?.subject}</u>
+        </p>
+        <p>
+          {`Question Making Time: `}{" "}
+          <u>
+            {`${moment(data?.bookingData?.createdAt)
+              .locale("en")
+              .format("dddd - DD/MM/YYYY")}`}
+          </u>
+        </p>
+      </>
+    );
   }
 
   return content;

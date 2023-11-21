@@ -37,6 +37,8 @@ import { logOutUser } from "../../../redux/authSlice";
 import { useNavigate } from "react-router";
 import GetCancelReason from "./GetCancelReason";
 import ConfirmAnswer from "./ConfirmAnswer";
+import convertBufferToBase64 from "./../../../utils/convertBufferToBase64";
+import { emit_new_notification_update_booking_for_student } from "../../../utils/socket_client";
 
 const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
   const [loading, setLoading] = useState(false);
@@ -429,7 +431,6 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
   };
 
   useEffect(() => {
-    console.log(moment("2023-09-19T17:00:00.000Z").format("DD/MM/YYYY"));
     let statusId = [];
     if (status === "total") {
       statusId = ["S1", "S2", "S3", "S4"];
@@ -638,6 +639,13 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
           });
         };
         clearData();
+
+        //socket notify to student
+        emit_new_notification_update_booking_for_student({
+          studentId: data?.studentData?.id,
+          actionId: "A2",
+          type: "done",
+        });
       }
     });
   };
@@ -749,6 +757,12 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
             });
           };
           clearData();
+          //socket notify to student
+          emit_new_notification_update_booking_for_student({
+            studentId: rowData?.studentData?.id,
+            actionId: "A1",
+            type,
+          });
         }
       });
     } else if (type === "cancel") {
@@ -833,6 +847,12 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
             });
           };
           clearData();
+          //socket notify to student
+          emit_new_notification_update_booking_for_student({
+            studentId: data?.studentData?.id,
+            actionId: "A1",
+            type: "cancel",
+          });
         }
       });
     }
@@ -1272,20 +1292,46 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                           />
                         </div>
                       </div>
-                      <div className="w-full">
-                        <label
-                          htmlFor="helper-text"
-                          class="block mb-2 text-md font-medium text-gray-900 dark:text-white"
-                        >
-                          Chủ đề
-                        </label>
-                        <input
-                          type="text"
-                          id="helper-text"
-                          value={dataBookingSelect?.subject}
-                          disabled
-                          class="bg-gray-50 border border-gray-300 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                        />
+                      <div className="flex items-start justify-start gap-5 w-full">
+                        <div className="flex-1">
+                          <label
+                            htmlFor="helper-text"
+                            class="block mb-2 text-md font-medium text-gray-900 dark:text-white"
+                          >
+                            Chủ đề
+                          </label>
+                          <input
+                            type="text"
+                            id="helper-text"
+                            value={dataBookingSelect?.subject}
+                            disabled
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                          />
+                        </div>
+                        {dataBookingSelect?.image?.data && (
+                          <div className="flex-1">
+                            <label
+                              htmlFor="helper-text"
+                              class="block mb-2 text-md font-medium text-gray-900 dark:text-white"
+                            >
+                              Ảnh kèm theo câu hỏi
+                            </label>
+                            <div className="w-full h-48 flex-1 relative">
+                              <div
+                                style={{
+                                  backgroundImage: `url(${convertBufferToBase64(
+                                    dataBookingSelect.image.data
+                                  )})`,
+                                  backgroundRepeat: "no-repeat",
+                                  backgroundSize: "contain",
+                                  height: "100%",
+                                  width: "50%",
+                                  cursor: "pointer",
+                                }}
+                              ></div>
+                            </div>
+                          </div>
+                        )}
                       </div>
                       <div className="w-full">
                         <label

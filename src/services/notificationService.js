@@ -18,6 +18,10 @@ const getNotiFy = {
     const url = "/api/get-one-notify";
     return axiosClient.get(url, { params });
   },
+  getCountNewNotify: (params) => {
+    const url = "/api/get-count-new-notify";
+    return axiosClient.get(url, { params });
+  },
 };
 
 const createNotifySystem = (params, data) => {
@@ -35,9 +39,21 @@ const deleteNotifySystem = (params) => {
   return axiosClient.delete(url, { params });
 };
 
+const updateNotifyToOld = (params) => {
+  const url = "/api/update-to-old-notify";
+  return axiosClient.get(url, { params });
+};
+
+const deleteNotifyStudentAndManager = (params, data) => {
+  const url = "/api/delete-notify";
+  return axiosClient.post(url, data, { params });
+};
+
 export {
   getNotiFy,
   createNotifySystem,
   updateNotifySystem,
   deleteNotifySystem,
+  updateNotifyToOld,
+  deleteNotifyStudentAndManager,
 };

@@ -22,6 +22,13 @@ const getBookingSchedule = {
   },
 };
 
+const getAllBookingStudentByIdAndAction = {
+  get: (params) => {
+    const url = "/api/get-all-booking-student";
+    return axiosClient.get(url, { params });
+  },
+};
+
 //system
 const getAllBooking = {
   getByManagerAndAction: (params) => {
@@ -42,4 +49,5 @@ export {
   createQuestionService,
   getAllBooking,
   updateStatusBookingSchedule,
+  getAllBookingStudentByIdAndAction,
 };

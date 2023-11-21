@@ -40,7 +40,7 @@ const NotificationDetail = () => {
         );
       }
     });
-  });
+  }, []);
 
   return (
     <div>

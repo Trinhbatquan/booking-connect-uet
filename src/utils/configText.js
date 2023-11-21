@@ -12,6 +12,8 @@ const toLowerCaseNonAccentVietnamese = (str) => {
   str = str.replace(/:/g, "");
   str = str.replace(/\?/g, "");
   str = str.replace(/\./g, "");
+  str = str.replace(/\//g, "");
+
   // Â, Ê, Ă, Ơ, Ư
   str = str.split(" ");
   return str.join(" ");

@@ -15,4 +15,14 @@ const emit_new_notification_from_system = (data) => {
   });
 };
 
-export { emit_create_booking, emit_new_notification_from_system };
+const emit_new_notification_update_booking_for_student = (data) => {
+  socket.emit("new_notify_update_booking_for_student", {
+    data,
+  });
+};
+
+export {
+  emit_create_booking,
+  emit_new_notification_from_system,
+  emit_new_notification_update_booking_for_student,
+};

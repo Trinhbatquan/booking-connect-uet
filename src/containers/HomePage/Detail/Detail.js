@@ -243,14 +243,14 @@ const Detail = ({ codeUrlTeacher, roleTeacher, type }) => {
         toast.success(
           i18n.language === "en" ? res?.message_en : res?.message_vn,
           {
-            autoClose: 4000,
+            autoClose: 6000,
             position: "bottom-right",
             theme: "colored",
           }
         );
       } else {
         toast.info(i18n.language === "en" ? res?.message_en : res?.message_vn, {
-          autoClose: 3000,
+          autoClose: 6000,
           position: "bottom-right",
           theme: "colored",
         });
@@ -295,7 +295,7 @@ const Detail = ({ codeUrlTeacher, roleTeacher, type }) => {
           toast.success(
             i18n.language === "en" ? res?.message_en : res?.message_vn,
             {
-              autoClose: 4000,
+              autoClose: 6000,
               position: "bottom-right",
               theme: "colored",
             }
@@ -309,12 +309,11 @@ const Detail = ({ codeUrlTeacher, roleTeacher, type }) => {
           toast.info(
             i18n.language === "en" ? res?.message_en : res?.message_vn,
             {
-              autoClose: 4000,
+              autoClose: 6000,
               position: "bottom-right",
               theme: "colored",
             }
           );
-
           //emitter clear data component child
         }
       } else {
