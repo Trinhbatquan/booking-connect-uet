@@ -4,6 +4,7 @@ const {
   getAllBookingByManagerAndActionService,
   createQuestionService,
   updateStatusBookingByManagerService,
+  getAllBookingStudentService,
 } = require("../services/bookingService");
 
 //homepage
@@ -79,9 +80,24 @@ const getBookingScheduleController = async (req, res) => {
 
 const createQuestionController = async (req, res) => {
   try {
-    const { studentId, managerId, roleManager, subject, question, others } =
-      req.body;
-    if (!studentId || !managerId || !roleManager || !subject || !question) {
+    const {
+      studentId,
+      managerId,
+      roleManager,
+      subject,
+      question,
+      others,
+      avatar,
+      option,
+    } = req.body;
+    if (
+      !studentId ||
+      !managerId ||
+      !roleManager ||
+      !subject ||
+      !question ||
+      !option
+    ) {
       return res.status(501).json({
         codeNumber: 1,
         message_en: "Error. Please contact with admin.",
@@ -96,7 +112,9 @@ const createQuestionController = async (req, res) => {
         subject,
         question,
         others,
-        action
+        action,
+        option,
+        avatar
       );
       return res.status(200).json(data);
     }
@@ -173,10 +191,39 @@ const updateStatusBookingScheduleByManagerController = async (req, res) => {
   }
 };
 
+//homepage
+const getAllBookingStudentController = async (req, res) => {
+  const { studentId, actionId } = req.query;
+  try {
+    if (!studentId || !actionId) {
+      console.log(studentId, actionId);
+      return res.status(501).json({
+        codeNumber: 1,
+        message_en: "Error. Please contact with admin.",
+        message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên",
+      });
+    } else {
+      const data = await getAllBookingStudentService({
+        studentId,
+        actionId,
+      });
+      return res.status(200).json(data);
+    }
+  } catch (e) {
+    console.log("get schedule booking student" + e);
+    res.status(501).json({
+      codeNumber: -1,
+      message_en: "Error. Please contact with admin.",
+      message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên",
+    });
+  }
+};
+
 module.exports = {
   createBookingScheduleController,
   getBookingScheduleController,
   getAllBookingByManagerAndAction,
   createQuestionController,
   updateStatusBookingScheduleByManagerController,
+  getAllBookingStudentController,
 };

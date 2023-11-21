@@ -19,6 +19,16 @@ module.exports = (sequelize, DataTypes) => {
           targetKey: "id",
           as: "studentData",
         }),
+        Booking.belongsTo(models.Teacher, {
+          foreignKey: "managerId",
+          targetKey: "id",
+          as: "teacherData",
+        }),
+        Booking.belongsTo(models.OtherUser, {
+          foreignKey: "managerId",
+          targetKey: "id",
+          as: "otherUserData",
+        }),
         Booking.hasOne(models.Answer, {
           foreignKey: "questionId",
           as: "answerData",
@@ -42,6 +52,8 @@ module.exports = (sequelize, DataTypes) => {
       others: DataTypes.STRING,
       actionId: DataTypes.STRING,
       statusId: DataTypes.STRING,
+      image: DataTypes.BLOB("long"),
+      questionSimilarityId: DataTypes.INTEGER,
     },
     {
       sequelize,

@@ -42,6 +42,12 @@ module.exports = {
       statusId: {
         type: Sequelize.STRING,
       },
+      image: {
+        type: Sequelize.BLOB("long"),
+      },
+      questionSimilarityId: {
+        type: Sequelize.INTEGER,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

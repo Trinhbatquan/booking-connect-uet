@@ -40,6 +40,7 @@ const {
   getAllBookingByManagerAndAction,
   createQuestionController,
   updateStatusBookingScheduleByManagerController,
+  getAllBookingStudentController,
 } = require("../controllers/bookingController");
 const {
   // updateStudentController,
@@ -61,6 +62,9 @@ const {
   deleteNotifySystemController,
   getNotificationHomePageLimited,
   getOneNotifyHomePageController,
+  getCountNewNotifyController,
+  updateToOldNotifyController,
+  deleteNotifyController,
 } = require("../controllers/notification");
 
 const {
@@ -77,6 +81,8 @@ const {
   getNewsLimitedController,
   getOneNewsController,
 } = require("../controllers/newsController");
+
+const { getAnswerController } = require("../controllers/answerController");
 
 let router = express.Router();
 
@@ -259,7 +265,26 @@ const initWebRoutes = (app) => {
     getNotificationHomePageLimited
   );
 
+  router.get("/api/get-count-new-notify", getCountNewNotifyController);
+  router.get("/api/update-to-old-notify", updateToOldNotifyController);
+  router.post(
+    "/api/delete-notify",
+    (req, res, next) =>
+      req?.type === "student"
+        ? checkExpiredToken(req, res, next, "student")
+        : checkExpiredToken(req, res, next, "system"),
+    (req, res, next) =>
+      req?.type === "student"
+        ? protectUserToken(req, res, next, "student")
+        : protectUserToken(req, res, next, "otherUser"),
+    deleteNotifyController
+  );
+
   router.get("/api/get-one-notify", getOneNotifyHomePageController);
+
+  router.get("/api/get-all-booking-student", getAllBookingStudentController);
+
+  router.get("/api/get-answer-by-id", getAnswerController);
 
   return app.use("/", router);
 };

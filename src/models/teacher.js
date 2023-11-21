@@ -13,12 +13,12 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "positionId",
         targetKey: "keyMap",
         as: "positionData",
-      }),
-        Teacher.belongsTo(models.AllCode, {
-          foreignKey: "gender",
-          targetKey: "keyMap",
-          as: "genderData",
-        });
+      });
+      Teacher.belongsTo(models.AllCode, {
+        foreignKey: "gender",
+        targetKey: "keyMap",
+        as: "genderData",
+      });
       Teacher.hasOne(models.MarkDown, {
         foreignKey: "userId",
         as: "markdownData_teacher",
@@ -26,6 +26,10 @@ module.exports = (sequelize, DataTypes) => {
       Teacher.belongsTo(models.OtherUser, {
         foreignKey: "facultyId",
         as: "facultyData",
+      });
+      Teacher.hasMany(models.Booking, {
+        foreignKey: "managerId",
+        as: "teacherData",
       });
     }
   }

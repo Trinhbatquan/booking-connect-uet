@@ -12,6 +12,7 @@ module.exports = function toLowerCaseNonAccentVietnamese(str) {
   str = str.replace(/:/g, "");
   str = str.replace(/\?/g, "");
   str = str.replace(/\./g, "");
+  str = str.replace(/\//g, "");
 
   str = str.split(" ");
   let result = "";

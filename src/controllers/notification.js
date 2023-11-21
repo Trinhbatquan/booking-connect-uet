@@ -6,7 +6,30 @@ const {
   deleteNotifySystemService,
   getNotifyHomePageLimitedService,
   getOneNotifyHomePageService,
+  getCountNewNotifyService,
+  updateToOldNotifyService,
+  deleteNotifyService,
 } = require("../services/notificationService");
+
+//manager + student
+const getCountNewNotifyController = async (req, res) => {
+  try {
+    const { type, studentId, managerId, roleManager } = req.query;
+    const data = await getCountNewNotifyService({
+      type,
+      studentId,
+      managerId,
+      roleManager,
+    });
+    return res.status(200).json(data);
+  } catch (e) {
+    console.log(e);
+    return res.status(200).json({
+      codeNumber: -1,
+      message: "Not get notify type homepage limited",
+    });
+  }
+};
 
 //manager
 const getNotificationController = async (req, res) => {
@@ -43,11 +66,15 @@ const getAllNotifyByTypeController = async (req, res) => {
   }
 };
 
-//homepage
+//homepage get notify student by id (both system + booking)
 const getNotificationHomePageLimited = async (req, res) => {
   try {
-    const { page } = req.query;
-    const data = await getNotifyHomePageLimitedService({ page });
+    const { page, studentId, typeNotification } = req.query;
+    const data = await getNotifyHomePageLimitedService({
+      page,
+      studentId,
+      typeNotification,
+    });
     return res.status(200).json(data);
   } catch (e) {
     console.log(e);
@@ -114,6 +141,47 @@ const deleteNotifySystemController = async (req, res) => {
   }
 };
 
+const updateToOldNotifyController = async (req, res) => {
+  try {
+    const { type, studentId, managerId, roleManager } = req.query;
+    const data = await updateToOldNotifyService({
+      type,
+      studentId,
+      managerId,
+      roleManager,
+    });
+    return res.status(200).json(data);
+  } catch (e) {
+    console.log(e);
+    return res.status(200).json({
+      codeNumber: -1,
+      message: "Not get notify type homepage limited",
+    });
+  }
+};
+
+const deleteNotifyController = async (req, res) => {
+  try {
+    const { type, studentId, managerId, roleManager, action, notifyId } =
+      req.body;
+    const data = await deleteNotifyService({
+      type,
+      studentId,
+      managerId,
+      roleManager,
+      action,
+      notifyId,
+    });
+    return res.status(200).json(data);
+  } catch (e) {
+    console.log(e);
+    return res.status(200).json({
+      codeNumber: -1,
+      message: "Not get notify type homepage limited",
+    });
+  }
+};
+
 module.exports = {
   getNotificationController,
   getAllNotifyByTypeController,
@@ -122,4 +190,7 @@ module.exports = {
   deleteNotifySystemController,
   getNotificationHomePageLimited,
   getOneNotifyHomePageController,
+  getCountNewNotifyController,
+  updateToOldNotifyController,
+  deleteNotifyController,
 };

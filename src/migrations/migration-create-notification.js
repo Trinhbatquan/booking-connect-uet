@@ -15,6 +15,9 @@ module.exports = {
       roleManager: {
         type: Sequelize.STRING,
       },
+      studentId: {
+        type: Sequelize.INTEGER,
+      },
       type_notification: {
         type: Sequelize.STRING,
       },
@@ -35,6 +38,11 @@ module.exports = {
       },
       code_url: {
         type: Sequelize.STRING,
+      },
+      isNew: {
+        type: Sequelize.INTEGER,
+        defaultValue: 0,
+        allowNull: false,
       },
       createdAt: {
         allowNull: false,

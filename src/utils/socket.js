@@ -8,20 +8,29 @@ const connectSocket = (io) => {
     //listen for creating booking
     socket.on("create_booking", (data) => {
       //notify the booking for user
-      console.log("noti");
       socket.broadcast.emit("new_booking", {
         ...data,
       });
-      console.log("noti2");
     });
 
     //new notification from system
     socket.on("new_notify_from_system", ({ data }) => {
       //notify the booking for user
-      console.log(data);
       socket.broadcast.emit("new_notification_system", {
         ...data,
       });
+    });
+
+    //new notification update booking for student
+    socket.on("new_notify_update_booking_for_student", ({ data }) => {
+      //notify the booking for user
+      console.log(data);
+      socket.broadcast.emit(
+        "new_notification_for_student_about_update_booking",
+        {
+          ...data,
+        }
+      );
     });
   });
 };

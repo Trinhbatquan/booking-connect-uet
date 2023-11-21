@@ -1,6 +1,44 @@
 const db = require("../models");
 const { convertTimeStamp } = require("../utils/convertTimeStamp");
 
+//manager + student
+const getCountNewNotifyService = ({
+  type,
+  studentId,
+  managerId,
+  roleManager,
+}) => {
+  return new Promise(async (resolve, reject) => {
+    let data = [];
+    try {
+      if (type === "student") {
+        //get count new notify of a student
+        data = await db.Notification.findAll({
+          where: {
+            isNew: 0,
+            studentId,
+          },
+        });
+      } else if (type === "manager") {
+        //get count new notify of a manager
+        data = await db.Notification.findAll({
+          where: {
+            isNew: 0,
+            managerId,
+            roleManager,
+          },
+        });
+      }
+      resolve({
+        codeNumber: 0,
+        countNewNotify: data?.length,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 //manager + system
 const getNotificationService = ({ managerId, roleManager, page, type }) => {
   return new Promise(async (resolve, reject) => {
@@ -122,22 +160,47 @@ const getAllNotifyByTypeService = (type_select) => {
 };
 
 //homepage
-const getNotifyHomePageLimitedService = ({ page }) => {
+const getNotifyHomePageLimitedService = ({
+  page,
+  studentId,
+  typeNotification,
+}) => {
   return new Promise(async (resolve, reject) => {
     try {
       const pageSize = 2;
       const pageCurrent = page || 1;
       const totalDocument = await db.Notification.count({
-        where: {
-          type_notification: "system",
-          roleManager: "R3", //student notification
-        },
+        where:
+          typeNotification === "system"
+            ? {
+                type_notification: "system",
+                roleManager: "R3", //student notification
+              }
+            : {
+                studentId,
+              },
       });
       const notify = await db.Notification.findAll({
-        where: {
-          type_notification: "system",
-          roleManager: "R3", //student notification
-        },
+        where:
+          typeNotification === "system"
+            ? {
+                type_notification: "system",
+                roleManager: "R3", //student notification
+              }
+            : {
+                studentId,
+              },
+        include: [
+          {
+            model: db.Booking,
+            as: "bookingData",
+          },
+          {
+            model: db.AllCode,
+            as: "notificationType",
+            attributes: ["valueEn", "valueVn"],
+          },
+        ],
         limit: pageSize,
         offset: (pageCurrent - 1) * pageSize,
         nest: true,
@@ -237,6 +300,107 @@ const deleteNotifySystemService = (notifyId, roleManager) => {
   });
 };
 
+const updateToOldNotifyService = ({
+  type,
+  studentId,
+  managerId,
+  roleManager,
+}) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (type === "student") {
+        //get count new notify of a student
+        await db.Notification.update(
+          {
+            isNew: 1,
+          },
+          {
+            where: {
+              isNew: 0,
+              studentId,
+            },
+          }
+        );
+      } else if (type === "manager") {
+        //get count new notify of a manager
+        data = await db.Notification.update(
+          {
+            isNew: 1,
+          },
+          {
+            where: {
+              isNew: 0,
+              managerId,
+              roleManager,
+            },
+          }
+        );
+      }
+      resolve({
+        codeNumber: 0,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const deleteNotifyService = ({
+  type,
+  studentId,
+  managerId,
+  roleManager,
+  action,
+  notifyId,
+}) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (type === "student") {
+        //delete notify of student
+        if (action === "all") {
+          await db.Notification.destroy({
+            where: {
+              studentId,
+            },
+          });
+        } else {
+          //delete one notify
+          await db.Notification.destroy({
+            where: {
+              studentId,
+              id: notifyId,
+            },
+          });
+        }
+      } else if (type === "manager") {
+        if (action === "all") {
+          await db.Notification.destroy({
+            where: {
+              managerId,
+              roleManager,
+            },
+          });
+        } else {
+          await db.Notification.destroy({
+            where: {
+              id: notifyId,
+              managerId,
+              roleManager,
+            },
+          });
+        }
+      }
+      resolve({
+        codeNumber: 0,
+        message_en: "Delete notification successfully",
+        message_vn: "Xoá thông báo thành công",
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
   getNotificationService,
   getAllNotifyByTypeService,
@@ -245,4 +409,7 @@ module.exports = {
   deleteNotifySystemService,
   getNotifyHomePageLimitedService,
   getOneNotifyHomePageService,
+  getCountNewNotifyService,
+  updateToOldNotifyService,
+  deleteNotifyService,
 };

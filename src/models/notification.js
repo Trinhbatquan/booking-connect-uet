@@ -18,6 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       managerId: DataTypes.INTEGER,
       roleManager: DataTypes.STRING,
+      studentId: DataTypes.INTEGER,
       type_notification: DataTypes.STRING,
       bookingId: DataTypes.INTEGER,
       title: DataTypes.STRING,
@@ -25,6 +26,7 @@ module.exports = (sequelize, DataTypes) => {
       content: DataTypes.TEXT("long"),
       image: DataTypes.BLOB("long"),
       code_url: DataTypes.STRING,
+      isNew: DataTypes.INTEGER,
     },
     {
       sequelize,
