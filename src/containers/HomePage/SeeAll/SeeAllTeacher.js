@@ -10,6 +10,7 @@ import HomeFooter from "./../HomeFooter";
 import "./SeeAllTeacher.scss";
 import { useNavigate } from "react-router";
 import { path } from "../../../utils/constant";
+import nodata from "../../../assets/image/nodata.png";
 const SeeAllTeacher = () => {
   const { i18n } = useTranslation();
   const [loading, setLoading] = useState(true);
@@ -215,79 +216,91 @@ const SeeAllTeacher = () => {
           border: "1px solid #f2f2f2",
           borderRadius: "3px",
           backgroundColor: "#f6f6f6",
+          minHeight: "300px",
         }}
       >
         <div className="flex flex-col items-start justify-start">
-          {teacher?.length === 0
-            ? ""
-            : teacher.map((item, index) => {
-                return (
-                  <div
-                    className="teacher-see-all-item w-full"
-                    key={index}
-                    style={{
-                      display: "flex",
-                      alignItems: "flex-start",
-                      borderBottom: "1px dashed #e3e3e3",
-                      marginBottom: "20px",
-                      paddingBottom: "20px",
-                    }}
-                  >
-                    <div className="w-[230px] h-[152px] mx-auto flex items-start justify-center">
-                      <div
-                        className=""
-                        style={{
-                          backgroundImage: `url(${item?.image?.data})`,
-                          backgroundSize: "cover",
-                          width: "130px",
-                          height: "130px",
-                          backgroundRepeat: "no-repeat",
-                          borderRadius: "50%",
-                        }}
-                      ></div>
-                    </div>
-                    <div className="flex-1">
-                      <p
-                        className=""
-                        style={{
-                          fontWeight: "500",
-                          fontSize: "20px",
-                          color: "black",
-                          lineHeight: "1.5",
-                        }}
-                      >
-                        {`${item?.positionData?.valueVn}
+          {teacher?.length === 0 ? (
+            <img
+              src={nodata}
+              alt=""
+              style={{
+                height: "300px",
+                width: "70%",
+                objectFit: "cover",
+                margin: "0 auto",
+              }}
+            />
+          ) : (
+            teacher.map((item, index) => {
+              return (
+                <div
+                  className="teacher-see-all-item w-full"
+                  key={index}
+                  style={{
+                    display: "flex",
+                    alignItems: "flex-start",
+                    borderBottom: "1px dashed #e3e3e3",
+                    marginBottom: "20px",
+                    paddingBottom: "20px",
+                  }}
+                >
+                  <div className="w-[230px] h-[152px] mx-auto flex items-start justify-center">
+                    <div
+                      className=""
+                      style={{
+                        backgroundImage: `url(${item?.image?.data})`,
+                        backgroundSize: "cover",
+                        width: "130px",
+                        height: "130px",
+                        backgroundRepeat: "no-repeat",
+                        borderRadius: "50%",
+                      }}
+                    ></div>
+                  </div>
+                  <div className="flex-1">
+                    <p
+                      className=""
+                      style={{
+                        fontWeight: "500",
+                        fontSize: "20px",
+                        color: "black",
+                        lineHeight: "1.5",
+                      }}
+                    >
+                      {`${item?.positionData?.valueVn}
                           ,
                           ${item?.fullName}
                         `}
-                      </p>
-                      <p
-                        style={{
-                          fontSize: "14px",
-                          lineHeight: "1.2",
-                          color: "#555",
-                        }}
+                    </p>
+                    <p
+                      style={{
+                        fontSize: "14px",
+                        lineHeight: "1.2",
+                        color: "#555",
+                      }}
+                    >
+                      {descriptionTeacher[index]}
+                    </p>
+                    <div className="w-full flex items-start justify-start gap-4 mt-[10px]">
+                      <button
+                        class="px-5 py-1.5 flex cursor-pointer transition-all ease-in duration-150 items-center justify-center overflow-hidden text-sm font-semibold border border-backColor text-white  rounded-md bg-backColor hover:text-backColor hover:bg-white"
+                        onClick={() =>
+                          navigate(
+                            `${path.HOMEPAGE}/${item?.code_url}/ids-role/R5`
+                          )
+                        }
                       >
-                        {descriptionTeacher[index]}
-                      </p>
-                      <div className="w-full flex items-start justify-start gap-4 mt-[10px]">
-                        <button
-                          class="px-5 py-1.5 flex cursor-pointer transition-all ease-in duration-150 items-center justify-center overflow-hidden text-sm font-semibold border border-backColor text-white  rounded-md bg-backColor hover:text-backColor hover:bg-white"
-                          onClick={() =>
-                            navigate(
-                              `${path.HOMEPAGE}/${item?.code_url}/ids-role/R5`
-                            )
-                          }
-                        >
-                          <span class="">
-                            {i18n.language === "en" ? "Detail" : "Chi tiết"}
-                          </span>
-                        </button>
-                      </div>
+                        <span class="">
+                          {i18n.language === "en" ? "Detail" : "Chi tiết"}
+                        </span>
+                      </button>
                     </div>
                   </div>
-                );
-              })}
+                </div>
+              );
+            })
+          )}
         </div>
       </div>
       {teacher?.length < totalPage && !search && (

@@ -15,20 +15,18 @@ import { BsArrowUpCircleFill } from "react-icons/bs";
 import "../styles/styles.scss";
 
 import {
-  RootSystem,
-  ScheduleManager,
-  DepartmentManager,
-  FacultyManager,
-  TeacherManager,
-  HealthStudentManager,
-  TeacherDescription,
-  DepartmentDescription,
-  FacultyDescription,
-  HealthStudentDescription,
+  CreateScheduleSystem,
+  DashboardSystem,
+  NewSystem,
   NotificationSystem,
+  RootDepartment,
+  RootFaculty,
+  RootHealthStudentSystem,
+  RootSystem,
+  RootTeacher,
+  ScheduleAndQuestionSystem,
 } from "./System";
 import EmailVerify from "./HomePage/EmailVerify/EmailVerify";
-import ScheduleAndQuestion from "./System/ScheduleAndQuestionManager/ScheduleAndQuestion";
 import ForgotPassword from "./HomePage/Login/ForgotPassword";
 import UpdatePassword from "./HomePage/Login/UpdatePassword";
 import RootManager from "./Manager/RootManager";
@@ -36,7 +34,6 @@ import Schedule from "./Manager/Schedule/Schedule";
 import Student from "./Manager/Student/Student";
 import Notification from "./Manager/Notification/Notification";
 import Dashboard from "./Manager/Dashboard/Dashboard";
-import DashboardSystem from "./System/DashboardSystem/DashboardSystem";
 import FacultyDetail from "./HomePage/Detail/FacultyDetail";
 import UpdateProfile from "./HomePage/UpdateProfile";
 import Inform from "./HomePage/Inform";
@@ -152,7 +149,7 @@ function App() {
           element={<HealthSeeAll />}
         />
         <Route
-          path={`${path.HOMEPAGE}/${path.processBooking}`}
+          path={`${path.HOMEPAGE}/${path.processBooking}?`}
           element={<ProcessBooking />}
         />
 
@@ -163,44 +160,32 @@ function App() {
         />
 
         <Route path={path.SYSTEM} element={<RootSystem />}>
-          <Route path={path.scheduleManager} element={<ScheduleManager />} />
-          <Route path={path.studentManager} element={<ScheduleAndQuestion />} />
-
           <Route
-            path={path.departmentManager}
-            element={<DepartmentManager />}
+            path={path.createScheduleSystem}
+            element={<CreateScheduleSystem />}
           />
           <Route
-            path={path.departmentDescription}
-            element={<DepartmentDescription />}
+            path={path.scheduleAndQuestionSystem}
+            element={<ScheduleAndQuestionSystem />}
           />
 
-          <Route path={path.facultyManager} element={<FacultyManager />} />
-          <Route
-            path={path.facultyDescription}
-            element={<FacultyDescription />}
-          />
+          <Route path={path.departmentSystem} element={<RootDepartment />} />
 
-          <Route path={path.teacherManager} element={<TeacherManager />} />
-          <Route
-            path={path.teacherDescription}
-            element={<TeacherDescription />}
-          />
+          <Route path={path.facultySystem} element={<RootFaculty />} />
+
+          <Route path={path.teacherSystem} element={<RootTeacher />} />
 
           <Route
-            path={path.healthStudentManager}
-            element={<HealthStudentManager />}
+            path={path.healthStudentSystem}
+            element={<RootHealthStudentSystem />}
           />
+
+          <Route path={path.dashboardSystem} element={<DashboardSystem />} />
           <Route
-            path={path.healthStudentDescription}
-            element={<HealthStudentDescription />}
-          />
-          <Route path={path.dashboardManager} element={<DashboardSystem />} />
-          <Route
-            path={path.notificationManager}
+            path={path.notificationSystem}
             element={<NotificationSystem />}
           />
-          <Route path={path.newsManager} element={<NewsSystem />} />
+          <Route path={path.newsSystem} element={<NewSystem />} />
         </Route>
 
         {/* manager */}

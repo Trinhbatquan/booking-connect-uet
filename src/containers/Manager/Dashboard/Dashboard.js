@@ -38,6 +38,7 @@ import {
 import Pie from "./../../System/DashboardSystem/Pie";
 import { useSelector } from "react-redux";
 import Chart from "./../../System/DashboardSystem/Chart";
+import Header from "../../System/Header/Header";
 
 const DashBoard = () => {
   // const [dbUser, setDbUser] = useState("total");
@@ -127,6 +128,8 @@ const DashBoard = () => {
       }}
     >
       <ToastContainer />
+      <Header />
+      <div className="w-full" style={{ height: "110px" }}></div>
 
       {/* <div className="w-full h-[60px]"></div> */}
 

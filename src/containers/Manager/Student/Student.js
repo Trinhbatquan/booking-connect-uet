@@ -7,7 +7,8 @@ import { useLocation, useNavigate } from "react-router";
 import { useTranslation } from "react-i18next";
 import "moment/locale/vi";
 
-import ActionItem from "../../System/ScheduleAndQuestionManager/ActionItem";
+import ActionItem from "../../System/ScheduleAndQuestionSystem/ActionItem";
+import Header from "../../System/Header/Header";
 
 const ScheduleManager = () => {
   const { t, i18n } = useTranslation();
@@ -30,6 +31,8 @@ const ScheduleManager = () => {
   return (
     <Fragment>
       <ToastContainer />
+      <Header />
+      <div className="w-full" style={{ height: "110px" }}></div>
       <div
         className="mt-3 flex flex-col items-start mx-auto pb-5 gap-8"
         style={{ maxWidth: "80%", width: "80%" }}

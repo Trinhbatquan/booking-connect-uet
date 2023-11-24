@@ -114,7 +114,7 @@ const QuestionForm = ({ type, create }) => {
     let data = e.target.files;
     let file = data[0];
     if (file) {
-      if (file?.size > 100000) {
+      if (file?.size > 400000) {
         inputFileRef.current.value = "";
         toast.error(
           `${
@@ -231,12 +231,12 @@ const QuestionForm = ({ type, create }) => {
               ref={inputFileRef}
             />
 
-            <p
+            {/* <p
               class="mt-1 text-sm text-gray-500 dark:text-gray-300"
               id="file_input_help"
             >
               PNG, JPG, JPEG FILE
-            </p>
+            </p> */}
             {previewAvatar && (
               <div className="w-full h-24 flex-1 relative">
                 <div

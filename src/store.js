@@ -6,6 +6,7 @@ import navigateReducer from "./redux/navigateSlice";
 import studentReducer from "./redux/studentSlice";
 import notificationManagerReducer from "./redux/notificationManagerSlice";
 import searchHomePageReducer from "./redux/searchSlice";
+import countNewNotifyReducer from "./redux/countNewNotifySlice";
 const store = configureStore({
   reducer: {
     authReducer,
@@ -14,6 +15,7 @@ const store = configureStore({
     studentReducer,
     notificationManagerReducer,
     searchHomePageReducer,
+    countNewNotifyReducer,
   },
 });
 

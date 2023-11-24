@@ -11,6 +11,7 @@ import { RiArrowDownSLine } from "react-icons/ri";
 import MdEditor from "react-markdown-editor-lite";
 import MarkdownIt from "markdown-it";
 import HomeFooter from "../HomeFooter";
+import nodata from "../../../assets/image/nodata.png";
 
 const NewsSeeAll = () => {
   const [loading, setLoading] = useState(false);
@@ -70,6 +71,7 @@ const NewsSeeAll = () => {
         style={{
           border: "1px solid #f2f2f2",
           borderRadius: "3px",
+          minHeight: "300px",
         }}
       >
         <div className=" relative mb-[30px]">
@@ -89,115 +91,126 @@ const NewsSeeAll = () => {
         </div>
 
         <div className="flex flex-col items-start justify-start">
-          {newsData?.length === 0
-            ? ""
-            : newsData.map((item, index) => {
-                return (
-                  <div
-                    className="teacher-see-all-item w-full gap-8"
-                    key={index}
-                    style={{
-                      display: "flex",
-                      alignItems: "flex-start",
-                      borderBottom: "1px dashed #e3e3e3",
-                      marginBottom: "20px",
-                      paddingBottom: "20px",
-                    }}
-                    // onClick={() =>
-                    //   navigate(`${path.HOMEPAGE}/${item?.code_url}/ids-role/R5`)
-                    // }
-                  >
-                    <div className="relative w-[230px] h-[152px] mx-auto flex items-start justify-center">
-                      <div
-                        className=""
-                        style={{
-                          backgroundImage: `url(${item?.avatarNew?.data})`,
-                          backgroundSize: "cover",
-                          width: "100%",
-                          height: "100%",
-                          backgroundRepeat: "no-repeat",
-                          borderRadius: "8px",
-                        }}
-                      ></div>
-                      <div
-                        style={{
-                          position: "absolute",
-                          top: 0,
-                          left: "-53px",
-                          width: "50px",
-                          height: "50px",
-                        }}
-                      >
-                        <div
-                          className="text-md"
-                          style={{
-                            padding: "10px 10px",
-                            fontSize: "12px",
-                            lineHeight: "18px",
-                            minWidth: "30px",
-                            backgroundColor: "#17376e",
-                            borderRadius: "5px",
-                          }}
-                        >
-                          <div className="month text-white text-md text-center">
-                            {`Th${new Date(item?.createdAt).getMonth() + 1}`}
-                          </div>
-                          <div
-                            className="day text-white text-lg text-center"
-                            style={{
-                              lineHeight: "18px",
-                            }}
-                          >
-                            {`${new Date(item?.createdAt).getDate()}`}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex-1">
-                      <h3
-                        style={{
-                          margin: "0px",
-                          color: "#343434",
-                        }}
-                      >
-                        {item?.title}
-                      </h3>
+          {newsData?.length === 0 ? (
+            <img
+              src={nodata}
+              alt=""
+              style={{
+                height: "300px",
+                width: "70%",
+                objectFit: "cover",
+                margin: "0 auto",
+              }}
+            />
+          ) : (
+            newsData.map((item, index) => {
+              return (
+                <div
+                  className="teacher-see-all-item w-full gap-8"
+                  key={index}
+                  style={{
+                    display: "flex",
+                    alignItems: "flex-start",
+                    borderBottom: "1px dashed #e3e3e3",
+                    marginBottom: "20px",
+                    paddingBottom: "20px",
+                  }}
+                  // onClick={() =>
+                  //   navigate(`${path.HOMEPAGE}/${item?.code_url}/ids-role/R5`)
+                  // }
+                >
+                  <div className="relative w-[230px] h-[152px] mx-auto flex items-start justify-center">
+                    <div
+                      className=""
+                      style={{
+                        backgroundImage: `url(${item?.avatarNew?.data})`,
+                        backgroundSize: "cover",
+                        width: "100%",
+                        height: "100%",
+                        backgroundRepeat: "no-repeat",
+                        borderRadius: "8px",
+                      }}
+                    ></div>
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        left: "-53px",
+                        width: "50px",
+                        height: "50px",
+                      }}
+                    >
                       <div
                         className="text-md"
                         style={{
-                          marginTop: "10px",
-                          marginBottom: "22px",
-                          color: "#015198",
-                          height: "90px",
-                          maxHeight: "90px",
-                          lineHeight: "30px",
-                          overflow: "hidden",
-                          display: "-webkit-box",
-                          WebkitBoxOrient: "vertical",
-                          WebkitLineClamp: 3,
+                          padding: "10px 10px",
+                          fontSize: "12px",
+                          lineHeight: "18px",
+                          minWidth: "30px",
+                          backgroundColor: "#17376e",
+                          borderRadius: "5px",
                         }}
-                        dangerouslySetInnerHTML={{
-                          __html: item?.contentHtml,
-                        }}
-                      ></div>
-                      <div className="w-full flex items-start justify-start gap-4">
-                        <button
-                          class="px-5 py-1.5 flex cursor-pointer transition-all ease-in duration-150 items-center justify-center overflow-hidden text-sm font-semibold border border-backColor text-white  rounded-md bg-backColor hover:text-backColor hover:bg-white"
-                          onClick={() =>
-                            navigate(
-                              `${path.HOMEPAGE}/${path.detail_news}/${item?.code_url}`
-                            )
-                          }
+                      >
+                        <div className="month text-white text-md text-center">
+                          {`Th${new Date(item?.createdAt).getMonth() + 1}`}
+                        </div>
+                        <div
+                          className="day text-white text-lg text-center"
+                          style={{
+                            lineHeight: "18px",
+                          }}
                         >
-                          <span class="">
-                            {i18n.language === "en" ? "Detail" : "Chi tiết"}
-                          </span>
-                        </button>
+                          {`${new Date(item?.createdAt).getDate()}`}
+                        </div>
                       </div>
                     </div>
                   </div>
-                );
-              })}
+                  <div className="flex-1">
+                    <h3
+                      style={{
+                        margin: "0px",
+                        color: "#343434",
+                      }}
+                    >
+                      {item?.title}
+                    </h3>
+                    <div
+                      className="text-md"
+                      style={{
+                        marginTop: "10px",
+                        marginBottom: "22px",
+                        color: "#015198",
+                        height: "90px",
+                        maxHeight: "90px",
+                        lineHeight: "30px",
+                        overflow: "hidden",
+                        display: "-webkit-box",
+                        WebkitBoxOrient: "vertical",
+                        WebkitLineClamp: 3,
+                      }}
+                      dangerouslySetInnerHTML={{
+                        __html: item?.contentHtml,
+                      }}
+                    ></div>
+                    <div className="w-full flex items-start justify-start gap-4">
+                      <button
+                        class="px-5 py-1.5 flex cursor-pointer transition-all ease-in duration-150 items-center justify-center overflow-hidden text-sm font-semibold border border-backColor text-white  rounded-md bg-backColor hover:text-backColor hover:bg-white"
+                        onClick={() =>
+                          navigate(
+                            `${path.HOMEPAGE}/${path.detail_news}/${item?.code_url}`
+                          )
+                        }
+                      >
+                        <span class="">
+                          {i18n.language === "en" ? "Detail" : "Chi tiết"}
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })
+          )}
         </div>
 
         {newsData?.length < totalPage && (

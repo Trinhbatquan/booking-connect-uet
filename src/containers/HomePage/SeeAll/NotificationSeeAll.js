@@ -8,12 +8,14 @@ import convertBufferToBase64 from "../../../utils/convertBufferToBase64";
 import { useTranslation } from "react-i18next";
 import { path } from "../../../utils/constant";
 import { RiArrowDownSLine } from "react-icons/ri";
+import { FaLongArrowAltUp } from "react-icons/fa";
 import MdEditor from "react-markdown-editor-lite";
 import MarkdownIt from "markdown-it";
 import HomeFooter from "../HomeFooter";
 import {
   deleteNotifyStudentAndManager,
   getNotiFy,
+  updateNotifyToOld,
 } from "../../../services/notificationService";
 import { BsThreeDots } from "react-icons/bs";
 import "./SeeAllTeacher.scss";
@@ -25,14 +27,22 @@ import { useDispatch, useSelector } from "react-redux";
 import contentNotify from "./../../../utils/contentNotification";
 import ConfirmSeeAll from "./ConfirmSeeAll";
 import { handleMessageFromBackend } from "../../../utils/handleMessageFromBackend";
-import { logOutApi } from "../../../services/userService";
+import {
+  logOutApi,
+  logOutHomePageApi,
+  loginHomePageApi,
+} from "../../../services/userService";
 import { logOutUser } from "../../../redux/studentSlice";
+import { socket } from "../../..";
+import { setCountNewNotifyHomePage } from "../../../redux/countNewNotifySlice";
+import nodata from "../../../assets/image/nodata.png";
 
 const NotificationSeeAll = () => {
   const [loading, setLoading] = useState(false);
   const [notifyData, setNotifyData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState(0);
+  const [appearButtonRefresh, setAppearButtonRefresh] = useState(false);
   const navigate = useNavigate();
   const { i18n } = useTranslation();
   const mdParser = new MarkdownIt(/* Markdown-it options */);
@@ -40,6 +50,9 @@ const NotificationSeeAll = () => {
   const [isOpenConfirmNotify, setIsOpenConfirmNotify] = useState(false);
   const [actionDeleteNotify, setActionDeleteNotify] = useState("");
   const currentUser = useSelector((state) => state.studentReducer);
+  const countNewNotificationRedux = useSelector(
+    (state) => state.countNewNotifyReducer.countNewNotifyHomePage
+  );
 
   const dispatch = useDispatch();
 
@@ -125,6 +138,91 @@ const NotificationSeeAll = () => {
       });
   }, []);
 
+  useEffect(() => {
+    const listenNewUpdateBookingFromBackend = (data) => {
+      const { studentId, type, actionId } = data;
+      if (studentId === currentUser?.id) {
+        if (actionId === "A2") {
+          if (type === "done") {
+            toast.info(
+              i18n.language === "en"
+                ? `A question has recently answered. Check now! (${moment(
+                    new Date()
+                  ).calendar()})`
+                : `Một câu hỏi của bạn vừa được trả lời. Kiểm tra ngay! (${moment(
+                    new Date()
+                  ).calendar()})`,
+              {
+                autoClose: 5000,
+                theme: "colored",
+                position: "bottom-right",
+              }
+            );
+          }
+        } else if (actionId === "A1") {
+          if (type === "process") {
+            toast.info(
+              i18n.language === "en"
+                ? `A appointment has recently approved. Check now! (${moment(
+                    new Date()
+                  ).calendar()})`
+                : `Một lịch hẹn của bạn vừa được chấp nhận. Kiểm tra ngay! (${moment(
+                    new Date()
+                  ).calendar()})`,
+              {
+                autoClose: 5000,
+                theme: "colored",
+                position: "bottom-right",
+              }
+            );
+          } else if (type === "done") {
+            toast.info(
+              i18n.language === "en"
+                ? `A appointment has recently finished. Thanks for your using! (${moment(
+                    new Date()
+                  ).calendar()})`
+                : `Một lịch hẹn của bạn vừa được xác nhận hoàn thành. Cảm ơn vì đã sử dụng dịch vụ! (${moment(
+                    new Date()
+                  ).calendar()})`,
+              {
+                autoClose: 5000,
+                theme: "colored",
+                position: "bottom-right",
+              }
+            );
+          } else if (type === "cancel") {
+            toast.info(
+              i18n.language === "en"
+                ? `Ohhh! A appointment has recently canceled. Please find the reason of the cancelation. (${moment(
+                    new Date()
+                  ).calendar()})`
+                : `Ohhh! Một lịch hẹn của bạn vừa bị huỷ. Vui lòng tìm hiểu lý do huỷ. (${moment(
+                    new Date()
+                  ).calendar()})`,
+              {
+                autoClose: 5000,
+                theme: "colored",
+                position: "bottom-right",
+              }
+            );
+          }
+        }
+        setAppearButtonRefresh(true);
+        dispatch(setCountNewNotifyHomePage(countNewNotificationRedux + 1));
+      }
+    };
+    socket.on("new_notification_for_student_about_update_booking", (data) =>
+      listenNewUpdateBookingFromBackend(data)
+    );
+
+    return () => {
+      socket.off(
+        "new_notification_for_student_about_update_booking",
+        listenNewUpdateBookingFromBackend
+      );
+    };
+  }, []);
+
   const handleCallAPIWhenChangePage = (page) => {
     fetchDataNotify({
       page,
@@ -144,7 +242,9 @@ const NotificationSeeAll = () => {
     if (typeNotification === "system") {
       navigate(`${path.HOMEPAGE}/${path.detail_notify}/${data?.code_url}`);
     } else {
-      navigate(`${path.HOMEPAGE}/${path.processBooking}`);
+      navigate(
+        `${path.HOMEPAGE}/${path.processBooking}?${data?.bookingData?.actionId}`
+      );
     }
   };
 
@@ -192,11 +292,11 @@ const NotificationSeeAll = () => {
         });
         if (data?.codeNumber === -2) {
           setTimeout(() => {
-            logOutApi.logoutUser({}).then((data) => {
+            logOutHomePageApi.logoutUser({}).then((data) => {
               if (data?.codeNumber === 0) {
                 dispatch(logOutUser());
                 navigate(
-                  `${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`
+                  `${path.HOMEPAGE}/${path.login_homepage}redirect=/homepage`
                 );
               }
             });
@@ -206,12 +306,20 @@ const NotificationSeeAll = () => {
     });
   };
 
+  const handleRefreshNotification = async () => {
+    setAppearButtonRefresh(false);
+    dispatch(setCountNewNotifyHomePage(0));
+    await fetchDataNotify({ option: "booking", page: +1 });
+    if (countNewNotificationRedux > 0) {
+      updateNotifyToOld({
+        type: "student",
+        studentId: currentUser?.id,
+      }).then((data) => {});
+    }
+  };
+
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-      }}
-    >
+    <div style={{}}>
       <ToastContainer />
       {loading && (
         <div className="fixed loading-overlay top-0 bottom-0 flex items-center justify-center mx-auto left-0 right-0 w-full max-h-full bg-black bg-opacity-25">
@@ -226,6 +334,7 @@ const NotificationSeeAll = () => {
         className="relative mt-[34px] pt-[20px] mb-[20px] mx-[10%] pr-[30px] pl-[65px]"
         style={{
           border: "1px solid rgb(242, 242, 242)",
+          minHeight: "300px",
         }}
       >
         <div className="mb-[30px] relative">
@@ -299,11 +408,16 @@ const NotificationSeeAll = () => {
             )}
           </div>
           {notifyData?.length === 0 ? (
-            <u className="flex items-center justify-center mx-auto">
-              {i18n.language === "en"
-                ? "No notification here"
-                : "Không có thông báo ở đây"}
-            </u>
+            <img
+              src={nodata}
+              alt=""
+              style={{
+                height: "300px",
+                width: "70%",
+                objectFit: "cover",
+                margin: "0 auto",
+              }}
+            />
           ) : (
             <div
               className="rounded-lg w-full"
@@ -591,6 +705,18 @@ const NotificationSeeAll = () => {
           closeConfirm={closeConfirm}
           confirmDeleteNotify={deleteNotify}
         />
+      )}
+      {appearButtonRefresh && (
+        <button
+          class={`fixed modal-confirm-schedule-overplay flex gap-1 top-44 px-5 py-1.5 left-[50%] -translate-x-[50%]  transition-all ease-in duration-150 items-center justify-center overflow-hidden text-md font-semibold border border-blue-500 bg-blue-500 text-white rounded-2xl hover:bg-blue-600 
+            `}
+          onClick={() => handleRefreshNotification()}
+        >
+          <FaLongArrowAltUp className="text-2xl text-white" />
+          <span class="">
+            {i18n.language === "en" ? "New notifications" : "Thông báo mới"}
+          </span>
+        </button>
       )}
     </div>
   );

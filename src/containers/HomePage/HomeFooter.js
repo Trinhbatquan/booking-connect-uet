@@ -116,12 +116,12 @@ const HomeFooter = () => {
             <span>{i18n.language === "en" ? "Notification" : "Thông báo"}</span>
           </NavLink>
           <NavLink
-            // to={`${path.HOMEPAGE}/${path.notify}`}
+            to={`${path.HOMEPAGE}/${path.survey}`}
             className="navigation text-md  text-white flex items-center justify-start gap-3"
           >
             <MdNavigateNext className="text-xl" />
 
-            <span>{i18n.language === "en" ? "Support" : "Hỗ trợ"}</span>
+            <span>{i18n.language === "en" ? "Survey" : "Khảo sát"}</span>
           </NavLink>
         </div>
         <div className="flex flex-col items-start justify-start gap-1">

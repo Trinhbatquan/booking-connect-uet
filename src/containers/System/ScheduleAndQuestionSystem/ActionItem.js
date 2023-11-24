@@ -11,13 +11,13 @@ import {
   getAllBooking,
   updateStatusBookingSchedule,
 } from "../../../services/bookingService";
-import Loading from "./../../../utils/Loading";
+import Loading from "../../../utils/Loading";
 
 import { useTranslation } from "react-i18next";
 import moment from "moment";
 import { dateFormat, path } from "../../../utils/constant";
 
-import "../DepartmentManager/DepartmentManager.scss";
+import "../DepartmentSystem/DepartmentManager.scss";
 
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -37,7 +37,7 @@ import { logOutUser } from "../../../redux/authSlice";
 import { useNavigate } from "react-router";
 import GetCancelReason from "./GetCancelReason";
 import ConfirmAnswer from "./ConfirmAnswer";
-import convertBufferToBase64 from "./../../../utils/convertBufferToBase64";
+import convertBufferToBase64 from "../../../utils/convertBufferToBase64";
 import { emit_new_notification_update_booking_for_student } from "../../../utils/socket_client";
 
 const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {

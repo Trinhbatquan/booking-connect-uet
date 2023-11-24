@@ -8,7 +8,7 @@ import {
   saveFeedback,
 } from "../../../services/student_feedback";
 import { handleMessageFromBackend } from "../../../utils/handleMessageFromBackend";
-import { logOutApi } from "../../../services/userService";
+import { logOutApi, logOutHomePageApi } from "../../../services/userService";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { logOutUser } from "../../../redux/studentSlice";
@@ -95,11 +95,11 @@ const SurveyOpinion = () => {
         }
         if (data?.codeNumber === -2) {
           setTimeout(() => {
-            logOutApi.logoutUser({}).then((data) => {
+            logOutHomePageApi.logoutUser({}).then((data) => {
               if (data?.codeNumber === 0) {
                 dispatch(logOutUser());
                 navigate(
-                  `${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`
+                  `${path.HOMEPAGE}/${path.login_homepage}?redirect=/homepage`
                 );
               }
             });
@@ -162,11 +162,11 @@ const SurveyOpinion = () => {
           });
           if (data?.codeNumber === -2) {
             setTimeout(() => {
-              logOutApi.logoutUser({}).then((data) => {
+              logOutHomePageApi.logoutUser({}).then((data) => {
                 if (data?.codeNumber === 0) {
                   dispatch(logOutUser());
                   navigate(
-                    `${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`
+                    `${path.HOMEPAGE}/${path.login_homepage}?redirect=/homepage`
                   );
                 }
               });
@@ -190,102 +190,114 @@ const SurveyOpinion = () => {
       <HomeHeader />
       <div className="w-full h-[100px]"></div>
       <div className="content-inform py-[20px] my-[5px] px-[10%] mx-auto flex items-start justify-center gap-6">
-        <div className="mx-auto w-[70%]">
+        <div className="mx-auto w-full">
           <h2 className="text-blurThemeColor font-semibold text-3xl pb-[19px] border-b-2 border-gray-300">
             {t("header.survey")}
           </h2>
-          <div className=" pb-6 flex flex-col bg-white rounded-lg  mx-auto mt-4 py-3">
+          <div className="w-fit bg-blurThemeColor font-semibold text-white rounded-lg py-[8px] px-[12px] mt-4">
+            <p className="text-white text-md flex items-center justify-start gap-1.5">
+              <FaStreetView className="text-white text-xl" />
+              {`${
+                i18n.language === "en" ? "Total of opinion:" : "Tổng số ý kiến:"
+              } ${totalFeedBack}`}
+            </p>
+          </div>
+          <div className="pb-6 flex flex-col bg-white rounded-lg  mx-auto mt-4 py-3">
             <span className=" text-blurThemeColor my-2 text-lg flex items-start justify-start gap-1">
               <HiOutlinePencilAlt className="text-blurThemeColor text-3xl" />
               {i18n.language === "en"
                 ? "Your feedback will be collected and evaluated to improve system's experience and educational quality of school."
                 : "Phản hồi của bạn sẽ được thu thập và đánh giá nhằm nâng cao trải nghiệm hệ thống và chất lượng giảng dạy của nhà trường"}
             </span>
-            <div className="feedback_system mt-4 w-full flex flex-col items-start justify-start gap-2 py-2 relative">
-              <label className="w-[280px] font-semibold text-headingColor max-w-[280px] flex items-start justify-start gap-1.5">
-                <TbApps className="text-xl" />{" "}
-                {i18n.language === "en" ? "About system:" : "Về hệ thống:"}
-              </label>
-              <textarea
-                autoComplete="false"
-                className={` flex-1 shadow-sm bg-gray-50 border border-gray-400 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-2 py-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light
+            <div className="w-full flex items-start justify-start gap-10">
+              <div className="feedback_system mt-4 flex-1 flex flex-col items-start justify-start gap-2 py-2 relative">
+                <label className="w-[280px] font-semibold text-headingColor max-w-[280px] flex items-start justify-start gap-1.5">
+                  <TbApps className="text-xl" />{" "}
+                  {i18n.language === "en" ? "About system:" : "Về hệ thống:"}
+                </label>
+                <textarea
+                  autoComplete="false"
+                  className={`w-full shadow-sm bg-gray-50 border border-gray-400 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 bflex-1 px-2 py-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light
                                       `}
-                value={system}
-                rows="4"
-                name="feedback"
-                placeholder={
-                  i18n.language === "en"
-                    ? "How do you feel when using this system? Does it bring lots of values for you? Which are those?"
-                    : "Bạn cảm thấy như thế nào khi sử dụng hệ thống? Nó có mang lại nhiều giá trị cho bạn không? Những giá trị đó là gì?"
-                }
-                onChange={(e) => setSystem(e.target.value)}
-              />
+                  value={system}
+                  rows="4"
+                  name="feedback"
+                  placeholder={
+                    i18n.language === "en"
+                      ? "How do you feel when using this system? Does it bring lots of values for you? Which are those?"
+                      : "Bạn cảm thấy như thế nào khi sử dụng hệ thống? Nó có mang lại nhiều giá trị cho bạn không? Những giá trị đó là gì?"
+                  }
+                  onChange={(e) => setSystem(e.target.value)}
+                />
+              </div>
+              <div className="feedback_system mt-4 flex-1 flex flex-col items-start justify-start gap-2 py-2 relative">
+                <label className="w-[280px] font-semibold text-headingColor max-w-[280px] flex items-start justify-start gap-1.5">
+                  <BsHouseGear className="text-xl" />{" "}
+                  {i18n.language === "en"
+                    ? "About infrastructure of school:"
+                    : "Về cơ sở vật chất của nhà trường:"}
+                </label>
+                <textarea
+                  autoComplete="false"
+                  className={` w-full shadow-sm bg-gray-50 border border-gray-400 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-2 py-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light
+                                      `}
+                  value={infrastructure}
+                  rows="4"
+                  name="feedback_infrastructure"
+                  placeholder={
+                    i18n.language === "en"
+                      ? "About infrastructure of school? Do those meet your needs for education?"
+                      : "Về cơ sở vật chất của nhà trường? Chúng có đáp ứng được các yêu cầu học tập của bạn?"
+                  }
+                  onChange={(e) => setInfrastructure(e.target.value)}
+                />
+              </div>
             </div>
-            <div className="feedback_system mt-4 w-full flex flex-col items-start justify-start gap-2 py-2 relative">
-              <label className="w-[280px] font-semibold text-headingColor max-w-[280px] flex items-start justify-start gap-1.5">
-                <BsHouseGear className="text-xl" />{" "}
-                {i18n.language === "en"
-                  ? "About infrastructure of school:"
-                  : "Về cơ sở vật chất của nhà trường:"}
-              </label>
-              <textarea
-                autoComplete="false"
-                className={` flex-1 shadow-sm bg-gray-50 border border-gray-400 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-2 py-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light
+            <div className="w-full flex items-start justify-start gap-10">
+              <div className="feedback_system mt-4 flex-1 flex flex-col items-start justify-start gap-2 py-2 relative">
+                <label className="w-[280px] font-semibold text-headingColor max-w-[280px] flex items-start justify-start gap-1.5">
+                  <BiBookAlt className="text-xl" />{" "}
+                  {i18n.language === "en"
+                    ? "Educational quality of school:"
+                    : "Chất lượng giáo dục của nhà trường:"}
+                </label>
+                <textarea
+                  autoComplete="false"
+                  className={` w-full shadow-sm bg-gray-50 border border-gray-400 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-2 py-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light
                                       `}
-                value={infrastructure}
-                rows="4"
-                name="feedback_infrastructure"
-                placeholder={
-                  i18n.language === "en"
-                    ? "About infrastructure of school? Do those meet your needs for education?"
-                    : "Về cơ sở vật chất của nhà trường? Chúng có đáp ứng được các yêu cầu học tập của bạn?"
-                }
-                onChange={(e) => setInfrastructure(e.target.value)}
-              />
-            </div>
-            <div className="feedback_system mt-4 w-full flex flex-col items-start justify-start gap-2 py-2 relative">
-              <label className="w-[280px] font-semibold text-headingColor max-w-[280px] flex items-start justify-start gap-1.5">
-                <BiBookAlt className="text-xl" />{" "}
-                {i18n.language === "en"
-                  ? "Educational quality of school:"
-                  : "Chất lượng giáo dục của nhà trường:"}
-              </label>
-              <textarea
-                autoComplete="false"
-                className={` flex-1 shadow-sm bg-gray-50 border border-gray-400 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-2 py-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light
+                  value={educationQuality}
+                  rows="4"
+                  name="feedback_quality_education"
+                  placeholder={
+                    i18n.language === "en"
+                      ? "Your feeling about courses system, educational quality and supported platform for your study?"
+                      : "Cảm nhận của bạn về hệ thống các môn học, chất lượng giảng dạy và các nền tảng hỗ trợ việc học của bạn?"
+                  }
+                  onChange={(e) => setEducationQuality(e.target.value)}
+                />
+              </div>
+              <div className="feedback_system mt-4 flex-1 flex flex-col items-start justify-start gap-2 py-2 relative">
+                <label className="w-[280px] font-semibold text-headingColor max-w-[280px] flex items-start justify-start gap-1.5">
+                  <BiMicrophone className="text-xl" />{" "}
+                  {i18n.language === "en"
+                    ? "Your common feeling about UET:"
+                    : "Cảm nhận chung của bạn về UET:"}
+                </label>
+                <textarea
+                  autoComplete="false"
+                  className={` w-full shadow-sm bg-gray-50 border border-gray-400 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-2 py-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light
                                       `}
-                value={educationQuality}
-                rows="4"
-                name="feedback_quality_education"
-                placeholder={
-                  i18n.language === "en"
-                    ? "Your feeling about courses system, educational quality and supported platform for your study?"
-                    : "Cảm nhận của bạn về hệ thống các môn học, chất lượng giảng dạy và các nền tảng hỗ trợ việc học của bạn?"
-                }
-                onChange={(e) => setEducationQuality(e.target.value)}
-              />
-            </div>
-            <div className="feedback_system mt-4 w-full flex flex-col items-start justify-start gap-2 py-2 relative">
-              <label className="w-[280px] font-semibold text-headingColor max-w-[280px] flex items-start justify-start gap-1.5">
-                <BiMicrophone className="text-xl" />{" "}
-                {i18n.language === "en"
-                  ? "Your common feeling about UET:"
-                  : "Cảm nhận chung của bạn về UET:"}
-              </label>
-              <textarea
-                autoComplete="false"
-                className={` flex-1 shadow-sm bg-gray-50 border border-gray-400 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-2 py-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light
-                                      `}
-                value={schoolActivities}
-                rows="4"
-                name="feedback_school"
-                placeholder={
-                  i18n.language === "en"
-                    ? "Your personal feeling when you are a student of UET? This session will be shown into 'Student Opinion' of system."
-                    : "Cảm nghĩ của bản thân bạn khi là sinh viên UET? Phần này sẽ được hiển thị trong phần 'Ý kiến sinh viên' của hệ thống đó."
-                }
-                onChange={(e) => setSchoolActivities(e.target.value)}
-              />
+                  value={schoolActivities}
+                  rows="4"
+                  name="feedback_school"
+                  placeholder={
+                    i18n.language === "en"
+                      ? "Your personal feeling when you are a student of UET? This session will be shown into 'Student Opinion' of system."
+                      : "Cảm nghĩ của bản thân bạn khi là sinh viên UET? Phần này sẽ được hiển thị trong phần 'Ý kiến sinh viên' của hệ thống đó."
+                  }
+                  onChange={(e) => setSchoolActivities(e.target.value)}
+                />
+              </div>
             </div>
             <div className="flex items-center justify-between">
               <button
@@ -318,14 +330,6 @@ const SurveyOpinion = () => {
                 className="absolute top-4 right-2 text-blurThemeColor text-3xl cursor-pointer opacity-80 hover:opacity-100 transition-all duration-300"
               /> */}
           </div>
-        </div>
-        <div className="w-[20%] bg-blurThemeColor font-semibold text-white rounded-lg py-[8px] px-[12px] mt-4">
-          <p className="text-white text-md flex items-center justify-start gap-1.5">
-            <FaStreetView className="text-white text-xl" />
-            {`${
-              i18n.language === "en" ? "Total of opinion:" : "Tổng số ý kiến:"
-            } ${totalFeedBack}`}
-          </p>
         </div>
       </div>
     </div>

@@ -12,6 +12,7 @@ import MdEditor from "react-markdown-editor-lite";
 import MarkdownIt from "markdown-it";
 import HomeFooter from "../HomeFooter";
 import moment from "moment";
+import nodata from "../../../assets/image/nodata.png";
 
 const NewsDetail = () => {
   const mdParser = new MarkdownIt(/* Markdown-it options */);
@@ -55,45 +56,59 @@ const NewsDetail = () => {
       )}
       <HomeHeader />
       <div className="w-full h-[100px]"></div>
-      {newsDetail?.title && (
-        <div
-          className="mt-[34px] pt-[20px] mb-[20px] mx-[10%] pr-[30px] pl-[65px]"
-          style={{
-            border: "1px solid #f2f2f2",
-            borderRadius: "3px",
-          }}
-        >
-          <div className=" relative mb-[30px]">
-            <h2
-              className="text-blurThemeColor font-semibold"
+      <div
+        className="mt-[34px] pt-[20px] mb-[20px] mx-[10%] pr-[30px] pl-[65px]"
+        style={{
+          border: "1px solid #f2f2f2",
+          borderRadius: "3px",
+          minHeight: "300px",
+        }}
+      >
+        {newsDetail?.title ? (
+          <>
+            <div className=" relative mb-[30px]">
+              <h2
+                className="text-blurThemeColor font-semibold"
+                style={{
+                  lineHeight: "1.36",
+                  fontSize: "30px",
+                }}
+              >
+                {newsDetail?.title}
+              </h2>
+            </div>
+            <div
+              className="pb-[15px]"
               style={{
-                lineHeight: "1.36",
-                fontSize: "30px",
+                borderBottom: "1px dashed #e3e3e3",
               }}
             >
-              {newsDetail?.title}
-            </h2>
-          </div>
-          <div
-            className="pb-[15px]"
-            style={{
-              borderBottom: "1px dashed #e3e3e3",
-            }}
-          >
-            {moment(newsDetail?.updatedAt).format("DD/MM/YYYY")}
-          </div>
+              {moment(newsDetail?.updatedAt).format("DD/MM/YYYY")}
+            </div>
 
-          <div
-            className="mt-[20px] mb-[20px]"
-            dangerouslySetInnerHTML={{
-              __html: newsDetail?.contentHtml,
-            }}
+            <div
+              className="mt-[20px] mb-[20px]"
+              dangerouslySetInnerHTML={{
+                __html: newsDetail?.contentHtml,
+              }}
+              style={{
+                fontSize: "16px",
+              }}
+            ></div>
+          </>
+        ) : (
+          <img
+            src={nodata}
+            alt=""
             style={{
-              fontSize: "16px",
+              height: "300px",
+              width: "70%",
+              objectFit: "cover",
+              margin: "0 auto",
             }}
-          ></div>
-        </div>
-      )}
+          />
+        )}
+      </div>
       <HomeFooter />
     </div>
   );

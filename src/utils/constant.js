@@ -1,32 +1,23 @@
 export const path = {
+  //system + manager
   LOGIN_SYSTEM: "login",
   LOG_OUT: "logout?",
+
+  //system
   SYSTEM: "/system",
-  MANAGER: "/manager",
-
-  scheduleManager: "scheduleManager",
-  studentManager: "studentManager",
-
+  createScheduleSystem: "create-schedule",
+  scheduleAndQuestionSystem: "schedule-question",
   adminManager: "adminManager",
-
-  departmentManager: "departmentManager",
-  departmentDescription: "departmentDescription",
-
-  facultyManager: "facultyManager",
-  facultyDescription: "facultyDescription",
-
-  teacherManager: "teacherManager",
-  teacherDescription: "teacherDescription",
-
-  healthStudentManager: "healthStudentManager",
-  healthStudentDescription: "healthStudentDescription",
-  dashboardManager: "dashboardManager",
-  notificationManager: "notificationManager",
-  newsManager: "newsManager",
-
-  // student: "student",
+  departmentSystem: "department",
+  facultySystem: "faculty",
+  teacherSystem: "teacher",
+  healthStudentSystem: "health-student",
+  dashboardSystem: "dashboard",
+  notificationSystem: "notification",
+  newsSystem: "news",
 
   //manager
+  MANAGER: "/manager",
   dashboard: "dashboard",
   notification: "notification",
   schedule: "schedule",

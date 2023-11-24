@@ -28,6 +28,11 @@ import moment from "moment";
 
 import { socket } from "../../../index";
 import { toast, ToastContainer } from "react-toastify";
+import {
+  getNotiFy,
+  updateNotifyToOld,
+} from "../../../services/notificationService";
+import { setCountNewNotifyManager } from "../../../redux/countNewNotifySlice";
 // import { getNotiFy } from "../../../services/notificationService";
 // import { getAllNotify } from "../../../redux/notificationSlice";
 
@@ -35,8 +40,13 @@ const HeaderUser = () => {
   const { t, i18n } = useTranslation();
   const [openModelUser, setOpenModelUser] = useState(false);
   const currentUser = useSelector((state) => state.authReducer);
+  const countNewNotificationRedux = useSelector(
+    (state) => state.countNewNotifyReducer.countNewNotifyManager
+  );
   const [socketNotify, setSocketNotify] = useState(false);
   // const notify = useSelector((state) => state.notificationReducer.notify);
+  const [countNewNotificationManager, setCountNotificationManager] =
+    useState(0);
   const dispatch = useDispatch();
 
   // let count = 0;
@@ -53,6 +63,7 @@ const HeaderUser = () => {
 
   useEffect(() => {
     const listenNewBookingFromBackend = (data) => {
+      console.log("1");
       const { managerId, roleManager, action } = data;
       if (managerId === currentUser?.id && roleManager === currentUser?.role) {
         if (action === "A1") {
@@ -65,7 +76,7 @@ const HeaderUser = () => {
                   new Date()
                 ).calendar()}).`,
             {
-              autoClose: false,
+              autoClose: 5000,
               theme: "colored",
               position: "bottom-right",
             }
@@ -80,17 +91,20 @@ const HeaderUser = () => {
                   new Date()
                 ).calendar()}).`,
             {
-              autoClose: false,
+              autoClose: 5000,
               theme: "colored",
               position: "bottom-right",
             }
           );
         }
         setSocketNotify(true);
+        dispatch(setCountNewNotifyManager(countNewNotificationRedux + 1));
       }
     };
 
     const listenNewNotifyFromSystem = (data) => {
+      console.log("2");
+
       const { dataRoleManager, time } = data;
       const checkRole = dataRoleManager.includes(currentUser?.role);
       if (checkRole) {
@@ -103,12 +117,13 @@ const HeaderUser = () => {
                 time
               ).calendar()}).`,
           {
-            autoClose: false,
+            autoClose: 5000,
             theme: "colored",
             position: "bottom-right",
           }
         );
         setSocketNotify(true);
+        dispatch(setCountNewNotifyManager(countNewNotificationRedux + 1));
       }
     };
 
@@ -121,6 +136,22 @@ const HeaderUser = () => {
       socket.off("new_booking", listenNewBookingFromBackend);
       socket.off("new_notification_system", listenNewNotifyFromSystem);
     };
+  }, []);
+
+  useEffect(() => {
+    //getCountNewNotify
+    getNotiFy
+      .getCountNewNotify({
+        type: "manager",
+        managerId: currentUser?.id,
+        roleManager: currentUser?.role,
+      })
+      .then((data) => {
+        if (data?.codeNumber === 0) {
+          console.log("header_user");
+          dispatch(setCountNewNotifyManager(data?.countNewNotify));
+        }
+      });
   }, []);
 
   const navigate = useNavigate();
@@ -137,11 +168,26 @@ const HeaderUser = () => {
     i18n.changeLanguage(language);
   };
 
+  const handleResetNotify = async () => {
+    if (+countNewNotificationRedux > 0) {
+      updateNotifyToOld({
+        type: "manager",
+        managerId: currentUser?.id,
+        roleManager: currentUser?.role,
+      }).then((data) => {
+        setSocketNotify(false);
+        navigate(`${path.MANAGER}/${path.notification}`);
+      });
+    } else {
+      navigate(`${path.MANAGER}/${path.notification}`);
+    }
+  };
+
   return (
     <div className="system-header-container fixed top-0 left-0 right-0 flex items-center justify-between shadow-md backdrop-blur-md shadow-blurColor">
       <div className="system-header-item-left flex items-center justify-start">
         <NavLink
-          to={path.dashboard}
+          to={`${path.MANAGER}/${path.dashboard}`}
           className="system-header-text relative text-blurColor font-semibold text-lg w-1/5 h-full flex items-center gap-1
        justify-center cursor-pointer pl-3 hover:text-white transition-all duration-200"
           style={({ isActive }) => ({
@@ -168,7 +214,7 @@ const HeaderUser = () => {
             }}
           >
             <NavLink
-              to={path.schedule}
+              to={`${path.MANAGER}/${path.schedule}`}
               className="system-header-option text-lg"
               style={({ isActive }) =>
                 isActive
@@ -189,7 +235,7 @@ const HeaderUser = () => {
               </li>
             </NavLink>
             <NavLink
-              to={path.student}
+              to={`${path.MANAGER}/${path.student}`}
               className="system-header-option text-lg"
               style={({ isActive }) =>
                 isActive
@@ -209,21 +255,24 @@ const HeaderUser = () => {
           </ul>
         </div>
         <NavLink
-          to={path.notification}
+          to={`${path.MANAGER}/${path.notification}`}
           className={`system-header-text relative font-semibold text-lg w-1/5 h-full flex items-center gap-1
        justify-center cursor-pointer pl-3 transition-all duration-200`}
           style={({ isActive }) => ({
             color: isActive ? "#fff" : "rgb(195, 181, 181)",
           })}
-          onClick={() => setSocketNotify(false)}
+          onClick={() => handleResetNotify()}
         >
-          <div className="flex items-center justify-center gap-0.5">
-            {socketNotify && (
-              <TbBellRinging className={`text-xl bell text-white`} />
+          <div className="relative flex items-center justify-center gap-2">
+            {socketNotify && <TbBellRinging className={`text-2xl bell`} />}
+            {!socketNotify && <MdNotificationsNone className="text-2xl" />}
+            {+countNewNotificationRedux > 0 && (
+              <div className="absolute -right-[9px] -top-[12px] flex items-center justify-center w-6 h-5 p-1 text-white bg-red-600 rounded-full">
+                <span className="text-xs">{`${countNewNotificationRedux}+`}</span>
+              </div>
             )}
-            {!socketNotify && <MdNotificationsNone className="text-xl" />}
           </div>
-          <span>Thông báo</span>
+          <span>{i18n.language === "en" ? "Notification" : "Thông báo"}</span>
         </NavLink>
       </div>
       <div className="system-header-item-right flex items-center justify-items-end gap-8">
@@ -325,8 +374,8 @@ const HeaderAdmin = () => {
     <div className="system-header-container fixed top-0 left-0 right-0 flex items-center justify-between shadow-md backdrop-blur-md shadow-blurColor">
       <div className="system-header-item-left flex items-center justify-start">
         <NavLink
-          to={path.dashboardManager}
-          className="system-header-text relative text-blurColor font-semibold text-lg w-1/5 h-full flex items-center gap-1
+          to={path.dashboardSystem}
+          className="system-header-text relative text-blurColor font-semibold text-lg w-1/6 h-full flex items-center gap-1
        justify-center cursor-pointer pl-3 hover:text-white transition-all duration-200"
           style={({ isActive }) => ({
             color: isActive ? "#fff" : "rgb(195, 181, 181)",
@@ -336,7 +385,7 @@ const HeaderAdmin = () => {
           <span>{i18n.language === "en" ? "Dashboard" : "Tổng quan"}</span>
         </NavLink>
         <div
-          className="system-header-text relative text-blurColor font-semibold text-lg w-1/5 h-full flex items-center gap-1
+          className="system-header-text relative text-blurColor font-semibold text-lg w-1/6 h-full flex items-center gap-1
        justify-center cursor-pointer pl-3 hover:text-white transition-all duration-200"
         >
           <span>
@@ -344,7 +393,7 @@ const HeaderAdmin = () => {
           </span>
           <IoIosArrowDown className="text-lg relative" style={{ top: "1px" }} />
           <ul
-            className="absolute left-0 list-none flex flex-col justify-center w-300"
+            className="absolute system-header-dropdown left-0 list-none flex flex-col justify-center w-300"
             style={{
               top: "50px",
               backgroundColor: "#fff",
@@ -353,7 +402,7 @@ const HeaderAdmin = () => {
             }}
           >
             <NavLink
-              to={path.scheduleManager}
+              to={path.createScheduleSystem}
               className="system-header-option text-lg"
               style={({ isActive }) =>
                 isActive
@@ -375,7 +424,7 @@ const HeaderAdmin = () => {
               </li>
             </NavLink>
             <NavLink
-              to={path.studentManager}
+              to={path.scheduleAndQuestionSystem}
               className="system-header-option text-lg"
               style={({ isActive }) =>
                 isActive
@@ -392,7 +441,7 @@ const HeaderAdmin = () => {
             >
               <li>
                 {i18n.language === "en"
-                  ? "Schedule & Question Management"
+                  ? "Schedule/Question Management"
                   : "Quản lý lịch và câu hỏi"}
               </li>
             </NavLink>
@@ -403,10 +452,12 @@ const HeaderAdmin = () => {
           className={`system-header-text relative text-blurColor font-semibold text-lg w-1/6 h-full flex items-center gap-1
        justify-center cursor-pointer hover:text-white transition-all duration-200`}
         >
-          <span>{t("system.header.department")}</span>
+          <span>
+            {i18n.language === "en" ? "User Management" : "Quản lý người dùng"}
+          </span>
           <IoIosArrowDown className="text-lg relative" style={{ top: "1px" }} />
           <ul
-            className="absolute left-0 list-none flex flex-col justify-center w-300"
+            className="system-header-dropdown absolute left-0 list-none flex items-center justify-center gap-4 min-w-[750px]"
             style={{
               top: "50px",
               backgroundColor: "#fff",
@@ -415,8 +466,8 @@ const HeaderAdmin = () => {
             }}
           >
             <NavLink
-              to={path.departmentManager}
-              className="system-header-option text-lg"
+              to={path.departmentSystem}
+              className="system-header-option text-lg relative"
               style={({ isActive }) =>
                 isActive
                   ? {
@@ -430,11 +481,15 @@ const HeaderAdmin = () => {
                   : {}
               }
             >
-              <li>{t("system.header.manager-department")}</li>
+              <li>{t("system.header.department")}</li>
+              <IoIosArrowDown
+                className="text-lg relative"
+                style={{ top: "1px" }}
+              />
             </NavLink>
             <NavLink
-              to={path.departmentDescription}
-              className="system-header-option text-lg"
+              to={path.facultySystem}
+              className="system-header-option text-lg relative"
               style={({ isActive }) =>
                 isActive
                   ? {
@@ -448,186 +503,72 @@ const HeaderAdmin = () => {
                   : {}
               }
             >
-              <li>{t("system.header.desc-department")}</li>
+              <li>{t("system.header.faculty")}</li>
+              <IoIosArrowDown
+                className="text-lg relative"
+                style={{ top: "1px" }}
+              />
+            </NavLink>
+            <NavLink
+              to={path.teacherSystem}
+              className="system-header-option text-lg relative"
+              style={({ isActive }) =>
+                isActive
+                  ? {
+                      color: "#004aac",
+                      backgroundColor: "#d3ecfc",
+                      transition: "background-color 0.1s",
+                      fontWeight: "600",
+                      lineHeight: "20px",
+                      padding: "10px 15px",
+                    }
+                  : {}
+              }
+            >
+              <li>{t("system.header.teacher")}</li>
+              <IoIosArrowDown
+                className="text-lg relative"
+                style={{ top: "1px" }}
+              />
+            </NavLink>
+            <NavLink
+              to={path.healthStudentSystem}
+              className="system-header-option text-lg relative"
+              style={({ isActive }) =>
+                isActive
+                  ? {
+                      color: "#004aac",
+                      backgroundColor: "#d3ecfc",
+                      transition: "background-color 0.1s",
+                      fontWeight: "600",
+                      lineHeight: "20px",
+                      padding: "10px 15px",
+                    }
+                  : {}
+              }
+            >
+              <li>{t("system.header.health-student")}</li>
+              <IoIosArrowDown
+                className="text-lg relative"
+                style={{ top: "1px" }}
+              />
             </NavLink>
           </ul>
         </div>
 
         <div
-          className={`system-header-text relative text-blurColor font-semibold text-lg w-1/6 h-full flex items-center gap-1
-       justify-center cursor-pointer hover:text-white transition-all duration-200`}
-        >
-          <span>{t("system.header.faculty")}</span>
-          <IoIosArrowDown className="text-lg relative" style={{ top: "1px" }} />
-          <ul
-            className="absolute left-0 list-none flex flex-col justify-center w-300"
-            style={{
-              top: "50px",
-              backgroundColor: "#fff",
-              border: "1px solid #cccdc9",
-              padding: "15px",
-            }}
-          >
-            <NavLink
-              to={path.facultyManager}
-              className="system-header-option text-lg"
-              style={({ isActive }) =>
-                isActive
-                  ? {
-                      color: "#004aac",
-                      backgroundColor: "#d3ecfc",
-                      transition: "background-color 0.1s",
-                      fontWeight: "600",
-                      lineHeight: "20px",
-                      padding: "10px 15px",
-                    }
-                  : {}
-              }
-            >
-              <li>{t("system.header.manager-faculty")}</li>
-            </NavLink>
-            <NavLink
-              to={path.facultyDescription}
-              className="system-header-option text-lg"
-              style={({ isActive }) =>
-                isActive
-                  ? {
-                      color: "#004aac",
-                      backgroundColor: "#d3ecfc",
-                      transition: "background-color 0.1s",
-                      fontWeight: "600",
-                      lineHeight: "20px",
-                      padding: "10px 15px",
-                    }
-                  : {}
-              }
-            >
-              <li>{t("system.header.desc-faculty")}</li>
-            </NavLink>
-          </ul>
-        </div>
-
-        <div
-          className={`system-header-text relative text-blurColor font-semibold text-lg w-1/6 h-full flex items-center gap-1
-       justify-center cursor-pointer hover:text-white transition-all duration-200`}
-        >
-          <span>{t("system.header.teacher")}</span>
-          <IoIosArrowDown className="text-lg relative" style={{ top: "1px" }} />
-          <ul
-            className="absolute left-0 list-none flex flex-col justify-center w-300"
-            style={{
-              top: "50px",
-              backgroundColor: "#fff",
-              border: "1px solid #cccdc9",
-              padding: "15px",
-            }}
-          >
-            <NavLink
-              to={path.teacherManager}
-              className="system-header-option text-lg"
-              style={({ isActive }) =>
-                isActive
-                  ? {
-                      color: "#004aac",
-                      backgroundColor: "#d3ecfc",
-                      transition: "background-color 0.1s",
-                      fontWeight: "600",
-                      lineHeight: "20px",
-                      padding: "10px 15px",
-                    }
-                  : {}
-              }
-            >
-              <li>{t("system.header.manager-teacher")}</li>
-            </NavLink>
-            <NavLink
-              to={path.teacherDescription}
-              className="system-header-option text-lg"
-              style={({ isActive }) =>
-                isActive
-                  ? {
-                      color: "#004aac",
-                      backgroundColor: "#d3ecfc",
-                      transition: "background-color 0.1s",
-                      fontWeight: "600",
-                      lineHeight: "20px",
-                      padding: "10px 15px",
-                    }
-                  : {}
-              }
-            >
-              <li>{t("system.header.desc-teacher")}</li>
-            </NavLink>
-          </ul>
-        </div>
-
-        <div
-          className={`system-header-text relative text-blurColor font-semibold text-lg w-1/4 h-full flex items-center gap-1
-       justify-center cursor-pointer hover:text-white transition-all duration-200`}
-        >
-          <span>{t("system.header.health-student")}</span>
-          <IoIosArrowDown className="text-lg relative" style={{ top: "1px" }} />
-          <ul
-            className="absolute left-0 list-none flex flex-col justify-center w-300"
-            style={{
-              top: "50px",
-              backgroundColor: "#fff",
-              border: "1px solid #cccdc9",
-              padding: "15px",
-            }}
-          >
-            <NavLink
-              to={path.healthStudentManager}
-              className="system-header-option text-lg"
-              style={({ isActive }) =>
-                isActive
-                  ? {
-                      color: "#004aac",
-                      backgroundColor: "#d3ecfc",
-                      transition: "background-color 0.1s",
-                      fontWeight: "600",
-                      lineHeight: "20px",
-                      padding: "10px 15px",
-                    }
-                  : {}
-              }
-            >
-              <li>{t("system.header.manager-health-student")}</li>
-            </NavLink>
-            <NavLink
-              to={path.healthStudentDescription}
-              className="system-header-option text-lg"
-              style={({ isActive }) =>
-                isActive
-                  ? {
-                      color: "#004aac",
-                      backgroundColor: "#d3ecfc",
-                      transition: "background-color 0.1s",
-                      fontWeight: "600",
-                      lineHeight: "20px",
-                      padding: "10px 15px",
-                    }
-                  : {}
-              }
-            >
-              <li>{t("system.header.desc-health-student")}</li>
-            </NavLink>
-          </ul>
-        </div>
-
-        <div
-          className="system-header-text relative text-blurColor font-semibold text-lg w-1/5 h-full flex items-center gap-1
+          className="system-header-text relative text-blurColor font-semibold text-lg w-1/6 h-full flex items-center gap-1
        justify-center cursor-pointer pl-3 hover:text-white transition-all duration-200"
         >
           <MdOutlineNotificationAdd className="text-lg" />
           <span>
             {i18n.language === "en"
-              ? "Notify And News"
+              ? "Notification And News"
               : "Tin tức và thông báo"}
           </span>
           <IoIosArrowDown className="text-lg relative" style={{ top: "1px" }} />
           <ul
-            className="absolute left-0 list-none flex flex-col justify-center w-300"
+            className="absolute system-header-dropdown left-0 list-none flex flex-col justify-center w-[220px]"
             style={{
               top: "50px",
               backgroundColor: "#fff",
@@ -636,7 +577,7 @@ const HeaderAdmin = () => {
             }}
           >
             <NavLink
-              to={path.notificationManager}
+              to={path.notificationSystem}
               className="system-header-option text-lg"
               style={({ isActive }) =>
                 isActive
@@ -654,7 +595,7 @@ const HeaderAdmin = () => {
               <li>{i18n.language === "en" ? "Notification" : "Thông báo"}</li>
             </NavLink>
             <NavLink
-              to={path.newsManager}
+              to={path.newsSystem}
               className="system-header-option text-lg"
               style={({ isActive }) =>
                 isActive

@@ -66,12 +66,12 @@
   }
 }
 
-.action_dropdown,
+.survey_dropdown,
 .student_dropdown {
   display: none;
 }
 
-.action_dropdown::before,
+.survey_dropdown::before,
 .student_dropdown::before {
   content: "";
   position: absolute;
@@ -82,7 +82,7 @@
   background-color: transparent;
 }
 
-.action_header:hover .action_dropdown,
+.survey_header:hover .survey_dropdown,
 .student_header:hover .student_dropdown {
   display: block;
 }
@@ -130,4 +130,12 @@
     -webkit-transform: rotate(0deg);
     transform: rotate(0deg);
   }
+}
+
+.modal-update-password-overlay {
+  z-index: 101;
+}
+
+.modal-update-password-dropdown {
+  z-index: 102;
 }

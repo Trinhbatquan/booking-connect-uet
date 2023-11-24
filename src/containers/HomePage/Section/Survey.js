@@ -5,10 +5,11 @@ import { useTranslation } from "react-i18next";
 import { NextArrow, PrevArrow } from "./ArrowCustom";
 import { getFeedback } from "../../../services/student_feedback";
 import convertBufferToBase64 from "../../../utils/convertBufferToBase64";
+import SurveySkeleton from "./SkeletonSection/SurveySkeleton";
 
 const Survey = ({ settings }) => {
   const { t, i18n } = useTranslation();
-  const [feelingStudent, setFeelingStudent] = useState("");
+  const [feelingStudent, setFeelingStudent] = useState([]);
 
   const [currentSlice, setCurrentSlice] = useState(1);
 
@@ -108,9 +109,9 @@ const Survey = ({ settings }) => {
           </button> */}
         </div>
         <div className="w-full">
-          <Slider {...studentSetting}>
-            {feelingStudent?.length > 0 &&
-              feelingStudent.map((item, index) => {
+          {feelingStudent?.length > 0 ? (
+            <Slider {...studentSetting}>
+              {feelingStudent.map((item, index) => {
                 return (
                   <div key={index} className={`section-item-contact w-[391px]`}>
                     <div
@@ -229,7 +230,10 @@ const Survey = ({ settings }) => {
                   </div>
                 );
               })}
-          </Slider>
+            </Slider>
+          ) : (
+            <SurveySkeleton />
+          )}
         </div>
       </div>
     </div>

@@ -37,26 +37,32 @@ const contentNotify = (type, data) => {
     content.vn = () => (
       <>
         <p>Bạn có một lịch hẹn mới từ sinh viên</p>
-        <p>{`Lý do: ${data.bookingData?.reason}`}</p>
         <p>
-          {`Thời gian: 
-          ${moment(data.bookingData?.date).format(
-            dateFormat.SEND_TO_SERVER
-          )} lúc
-          ${timeDataVn[index]}`}
+          {`Lý do của lịch hẹn: `} <u>{data?.bookingData?.reason}</u>
+        </p>
+        <p>
+          {`Thời gian gặp mặt: `}{" "}
+          <u>
+            {`${moment(data?.bookingData?.date).format("dddd - DD/MM/YYYY")} lúc
+            ${timeDataVn[index]}`}
+          </u>
         </p>
       </>
     );
     content.en = () => (
       <>
         <p>You have a appointment with student</p>
-        <p>{`Reason: ${data.bookingData?.reason}`}</p>
         <p>
-          {`Time: 
-          ${moment(data.bookingData?.date).format(
-            dateFormat.SEND_TO_SERVER
-          )} lúc
-          ${timeDataEn[index]}`}
+          {`Reason: `} <u>{data?.bookingData?.reason}</u>
+        </p>
+        <p>
+          {`Appointment Time: `}{" "}
+          <u>
+            {`${moment(data?.bookingData?.date)
+              .locale("en")
+              .format("dddd - DD/MM/YYYY")} at
+            ${timeDataEn[index]}`}
+          </u>
         </p>
       </>
     );
@@ -64,13 +70,33 @@ const contentNotify = (type, data) => {
     content.vn = () => (
       <>
         <p>Bạn có một câu hỏi mới từ sinh viên</p>
-        <p>{`Chủ đề: ${data.bookingData?.subject}`}</p>
+        <p>
+          {`Chủ đề câu hỏi: `} <u>{data?.bookingData?.subject}</u>
+        </p>
+        <p>
+          {`Thời gian đặt câu hỏi: `}{" "}
+          <u>
+            {`${moment(data?.bookingData?.createdAt).format(
+              "dddd - DD/MM/YYYY"
+            )}`}
+          </u>
+        </p>
       </>
     );
     content.en = () => (
       <>
         <p>You have a new question with student</p>
-        <p>{`Title: ${data.bookingData?.subject}`}</p>
+        <p>
+          {`Question Subject: `} <u>{data?.bookingData?.subject}</u>
+        </p>
+        <p>
+          {`Question Making Time: `}{" "}
+          <u>
+            {`${moment(data?.bookingData?.createdAt)
+              .locale("en")
+              .format("dddd - DD/MM/YYYY")}`}
+          </u>
+        </p>
       </>
     );
   } else if (type === "check_event") {
@@ -79,9 +105,14 @@ const contentNotify = (type, data) => {
         <p>Bạn có một lịch hẹn sắp diễn ra</p>
         <p>{`Lý do: ${data.bookingData?.reason}`}</p>
         <p>
-          {`Thời gian: $
-          {moment(data.bookingData?.date).format(dateFormat.SEND_TO_SERVER)} lúc
-          ${timeDataVn[index]}`}
+          {`Lý do của lịch hẹn: `} <u>{data?.bookingData?.reason}</u>
+        </p>
+        <p>
+          {`Thời gian gặp mặt: `}{" "}
+          <u>
+            {`${moment(data?.bookingData?.date).format("dddd - DD/MM/YYYY")} lúc
+            ${timeDataVn[index]}`}
+          </u>
         </p>
         <p>
           Vui lòng kiểm tra lại thời gian và địa điểm để tiến hành lịch họp. Xin
@@ -92,11 +123,17 @@ const contentNotify = (type, data) => {
     content.en = () => (
       <>
         <p>You have a appointment that is going to be take place</p>
-        <p>{`Reason: ${data.bookingData?.reason}`}</p>
         <p>
-          {`Time: $
-          {moment(data.bookingData?.date).format(dateFormat.SEND_TO_SERVER)} lúc
-          ${timeDataEn[index]}`}
+          {`Reason: `} <u>{data?.bookingData?.reason}</u>
+        </p>
+        <p>
+          {`Appointment Time: `}{" "}
+          <u>
+            {`${moment(data?.bookingData?.date)
+              .locale("en")
+              .format("dddd - DD/MM/YYYY")} at
+            ${timeDataEn[index]}`}
+          </u>
         </p>
         <p>Please examine time and place to conduct a appointment. Thanks.</p>
       </>

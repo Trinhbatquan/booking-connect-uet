@@ -6,7 +6,11 @@ import { useTranslation } from "react-i18next";
 import { HiOutlinePencilAlt } from "react-icons/hi";
 import { path, select_faculty } from "../../../utils/constant";
 import convertFileToBase64 from "../../../utils/convertFileToBase64";
-import { getAllCodeApi, logOutApi } from "../../../services/userService";
+import {
+  getAllCodeApi,
+  logOutApi,
+  logOutHomePageApi,
+} from "../../../services/userService";
 import { getStudent, updateStudent } from "../../../services/studentService";
 import { handleMessageFromBackend } from "../../../utils/handleMessageFromBackend";
 import { useDispatch, useSelector } from "react-redux";
@@ -66,11 +70,11 @@ const UpdateProfile = () => {
         });
         if (data?.codeNumber === -2) {
           setTimeout(() => {
-            logOutApi.logoutUser({}).then((data) => {
+            logOutHomePageApi.logoutUser({}).then((data) => {
               if (data?.codeNumber === 0) {
                 dispatch(logOutUser());
                 navigate(
-                  `${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`
+                  `${path.HOMEPAGE}/${path.login_homepage}?redirect=/homepage`
                 );
               }
             });
@@ -116,11 +120,11 @@ const UpdateProfile = () => {
             });
             if (data?.codeNumber === -2) {
               setTimeout(() => {
-                logOutApi.logoutUser({}).then((data) => {
+                logOutHomePageApi.logoutUser({}).then((data) => {
                   if (data?.codeNumber === 0) {
                     dispatch(logOutUser());
                     navigate(
-                      `${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`
+                      `${path.HOMEPAGE}/${path.login_homepage}?redirect=/homepage`
                     );
                   }
                 });
@@ -136,13 +140,29 @@ const UpdateProfile = () => {
     let data = e.target.files;
     let file = data[0];
     if (file) {
-      let urlAvatar = URL.createObjectURL(file);
-      setPreviewAvatar(urlAvatar);
-      try {
-        const base64File = await convertFileToBase64(file);
-        setAvatar(base64File);
-      } catch (e) {
-        console.log("base64 file " + e);
+      if (file?.size > 400000) {
+        inputFileRef.current.value = "";
+        toast.error(
+          `${
+            i18n.language === "en"
+              ? "This image is too big, please use image size < 400KB"
+              : "Ảnh hiện tại quá lớn. Vui lòng sử dụng ảnh dưới 400KB"
+          }`,
+          {
+            autoClose: 3000,
+            theme: "colored",
+            position: "bottom-right",
+          }
+        );
+      } else {
+        let urlAvatar = URL.createObjectURL(file);
+        setPreviewAvatar(urlAvatar);
+        try {
+          const base64File = await convertFileToBase64(file);
+          setAvatar(base64File);
+        } catch (e) {
+          console.log("base64 file " + e);
+        }
       }
     }
   };
@@ -299,11 +319,11 @@ const UpdateProfile = () => {
             });
             if (res?.codeNumber === -2) {
               setTimeout(() => {
-                logOutApi.logoutUser({}).then((data) => {
+                logOutHomePageApi.logoutUser({}).then((data) => {
                   if (data?.codeNumber === 0) {
                     dispatch(logOutUser());
                     navigate(
-                      `${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`
+                      `${path.HOMEPAGE}/${path.login_homepage}?redirect=/homepage`
                     );
                   }
                 });
@@ -534,6 +554,7 @@ const UpdateProfile = () => {
                 className="block w-full text-sm text-gray-900 border border-gray-400 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
                 id="file_input"
                 type="file"
+                accept=".jpg, .png, *.jpg, *.jpeg, .jpeg"
                 onChange={(e) => handleChangeAndPreviewImage(e)}
                 onFocus={() => setNotifyCheckState("")}
                 ref={inputFileRef}

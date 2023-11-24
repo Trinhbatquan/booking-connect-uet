@@ -267,10 +267,12 @@ const FacultyDetail = () => {
       });
       if (data?.codeNumber === -2) {
         setTimeout(() => {
-          logOutApi.logoutUser({}).then((data) => {
+          logOutHomePageApi.logoutUser({}).then((data) => {
             if (data?.codeNumber === 0) {
               dispatch(logOutUser());
-              navigate(`${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`);
+              navigate(
+                `${path.HOMEPAGE}/${path.login_homepage}?redirect=/homepage`
+              );
             }
           });
         }, 5000);
@@ -328,11 +330,11 @@ const FacultyDetail = () => {
         });
         if (data?.codeNumber === -2) {
           setTimeout(() => {
-            logOutApi.logoutUser({}).then((data) => {
+            logOutHomePageApi.logoutUser({}).then((data) => {
               if (data?.codeNumber === 0) {
                 dispatch(logOutUser());
                 navigate(
-                  `${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`
+                  `${path.HOMEPAGE}/${path.login_homepage}?redirect=/homepage`
                 );
               }
             });
@@ -356,7 +358,12 @@ const FacultyDetail = () => {
           </div>
         ) : (
           <>
-            <div className="detail-container detail-teacher-container">
+            <div
+              className="detail-container detail-teacher-container"
+              style={{
+                minHeight: "300px",
+              }}
+            >
               <div className="detail-teacher">
                 <div
                   className="detail-teacher-avatar flex-3"
@@ -438,27 +445,27 @@ const FacultyDetail = () => {
               ></div>
             </div>
 
-            <div
-              className="list-teacher flex flex-col gap-3 items-center justify-start py-[15px]"
-              style={{ width: "100%", backgroundColor: "#eee" }}
-            >
-              <div className="w-full px-[15%] mx-auto flex flex-col items-start justify-start gap-4">
-                <div
-                  className="p-[10px] round-sm"
-                  style={{
-                    color: "blue",
-                    backgroundColor: "#fff",
-                    border: "1pz solid #ced4da",
-                    fontSize: "18px",
-                    fontWeight: "bold",
-                  }}
-                >
-                  {i18n.language === "en"
-                    ? "Teacher List"
-                    : "Danh sách giảng viên"}
-                </div>
-                {teacherFaculty?.length > 0 &&
-                  teacherFaculty.map((item, index) => {
+            {teacherFaculty?.length > 0 && (
+              <div
+                className="list-teacher flex flex-col gap-3 items-center justify-start py-[15px]"
+                style={{ width: "100%", backgroundColor: "#eee" }}
+              >
+                <div className="w-full px-[15%] mx-auto flex flex-col items-start justify-start gap-4">
+                  <div
+                    className="p-[10px] round-sm"
+                    style={{
+                      color: "blue",
+                      backgroundColor: "#fff",
+                      border: "1pz solid #ced4da",
+                      fontSize: "18px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {i18n.language === "en"
+                      ? "Teacher List"
+                      : "Danh sách giảng viên"}
+                  </div>
+                  {teacherFaculty.map((item, index) => {
                     return (
                       <div
                         className="w-full flex items-center justify-start gap-1 flex-1 p-[15px]"
@@ -478,8 +485,9 @@ const FacultyDetail = () => {
                       </div>
                     );
                   })}
+                </div>
               </div>
-            </div>
+            )}
             <HomeFooter />
           </>
         )}

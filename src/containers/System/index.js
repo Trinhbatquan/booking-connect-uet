@@ -1,16 +1,19 @@
 export { default as RootSystem } from "./RootSystem";
 
-export { default as ScheduleManager } from "./ScheduleManager/ScheduleManager";
+export { default as DashboardSystem } from "./DashboardSystem/DashboardSystem";
 
-export { default as DepartmentManager } from "./DepartmentManager/DepartmentManager";
-export { default as DepartmentDescription } from "./DepartmentManager/DepartmentDescription";
+export { default as CreateScheduleSystem } from "./CreateScheduleSystem/CreateScheduleSystem";
 
-export { default as FacultyManager } from "./FacultyManager/FacultyManager";
-export { default as FacultyDescription } from "./FacultyManager/FacultyDescription";
+export { default as ScheduleAndQuestionSystem } from "./ScheduleAndQuestionSystem/ScheduleAndQuestion";
 
-export { default as TeacherManager } from "./TeacherManager/TeacherManager";
-export { default as TeacherDescription } from "./TeacherManager/TeacherDescription";
+export { default as RootDepartment } from "./DepartmentSystem/RootDepartment";
 
-export { default as HealthStudentManager } from "./HealthStudentManager/HealthStudentManager";
-export { default as HealthStudentDescription } from "./HealthStudentManager/HealthStudentDescription";
+export { default as RootFaculty } from "./FacultySystem/RootFaculty";
+
+export { default as RootTeacher } from "./TeacherSystem/RootTeacher";
+
+export { default as RootHealthStudentSystem } from "./HealthStudentSystem/RootHealthStudent";
+
 export { default as NotificationSystem } from "./NotificationSystem/NotificationSystem";
+
+export { default as NewSystem } from "./News/NewsSystem";

@@ -13,6 +13,7 @@ import MarkdownIt from "markdown-it";
 import HomeFooter from "../HomeFooter";
 import moment from "moment";
 import { getNotiFy } from "../../../services/notificationService";
+import nodata from "../../../assets/image/nodata.png";
 
 const NotificationDetail = () => {
   const mdParser = new MarkdownIt(/* Markdown-it options */);
@@ -54,45 +55,59 @@ const NotificationDetail = () => {
       )}
       <HomeHeader />
       <div className="w-full h-[100px]"></div>
-      {notifyDetail?.title && (
-        <div
-          className="mt-[34px] pt-[20px] mb-[20px] mx-[10%] pr-[30px] pl-[65px]"
-          style={{
-            border: "1px solid #f2f2f2",
-            borderRadius: "3px",
-          }}
-        >
-          <div className=" relative mb-[30px]">
-            <h2
-              className="text-blurThemeColor font-semibold"
+      <div
+        className="mt-[34px] pt-[20px] mb-[20px] mx-[10%] pr-[30px] pl-[65px]"
+        style={{
+          border: "1px solid #f2f2f2",
+          borderRadius: "3px",
+          minHeight: "300px",
+        }}
+      >
+        {notifyDetail?.title ? (
+          <>
+            <div className=" relative mb-[30px]">
+              <h2
+                className="text-blurThemeColor font-semibold"
+                style={{
+                  lineHeight: "1.36",
+                  fontSize: "30px",
+                }}
+              >
+                {notifyDetail?.title}
+              </h2>
+            </div>
+            <div
+              className="pb-[15px]"
               style={{
-                lineHeight: "1.36",
-                fontSize: "30px",
+                borderBottom: "1px dashed #e3e3e3",
               }}
             >
-              {notifyDetail?.title}
-            </h2>
-          </div>
-          <div
-            className="pb-[15px]"
-            style={{
-              borderBottom: "1px dashed #e3e3e3",
-            }}
-          >
-            {moment(notifyDetail?.updatedAt).format("DD/MM/YYYY")}
-          </div>
+              {moment(notifyDetail?.updatedAt).format("DD/MM/YYYY")}
+            </div>
 
-          <div
-            className="mt-[20px] mb-[20px]"
-            dangerouslySetInnerHTML={{
-              __html: notifyDetail?.contentHtml,
-            }}
+            <div
+              className="mt-[20px] mb-[20px]"
+              dangerouslySetInnerHTML={{
+                __html: notifyDetail?.contentHtml,
+              }}
+              style={{
+                fontSize: "16px",
+              }}
+            ></div>
+          </>
+        ) : (
+          <img
+            src={nodata}
+            alt=""
             style={{
-              fontSize: "16px",
+              height: "300px",
+              width: "70%",
+              objectFit: "cover",
+              margin: "0 auto",
             }}
-          ></div>
-        </div>
-      )}
+          />
+        )}
+      </div>
       <HomeFooter />
     </div>
   );

@@ -5,7 +5,7 @@ import moment from "moment";
 import { FiEdit } from "react-icons/fi";
 import { AiOutlineDelete } from "react-icons/ai";
 import { ToastContainer, toast } from "react-toastify";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 
 import { motion, AnimatePresence } from "framer-motion";
@@ -25,7 +25,7 @@ import {
 
 import { useTranslation } from "react-i18next";
 import "moment/locale/vi";
-import DeleteModal from "../../System/Modal/DeleteModal";
+import DeleteModal from "../Modal/DeleteModal";
 import { logOutUser } from "../../../redux/authSlice";
 import { getTeacherHomePageAPI } from "../../../services/teacherService";
 
@@ -37,19 +37,20 @@ import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { Ripple } from "primereact/ripple";
 import { Dropdown } from "primereact/dropdown";
 import { classNames } from "primereact/utils";
-import Header from "../../System/Header/Header";
+import Loading from "../../../utils/Loading";
 
-const ScheduleManager = () => {
-  // const [selectedOptionObject, setSelectedOptionObject] = useState({});
-  // const [selectedOption, setSelectedOption] = useState({});
+const CreateScheduleSystem = () => {
+  const [selectedOptionObject, setSelectedOptionObject] = useState({});
+  const [selectedOption, setSelectedOption] = useState({});
   const [startDate, setStartDate] = useState(
     new Date().setDate(new Date().getDate() + 1)
   );
 
-  // const [userData, setUserData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [userData, setUserData] = useState([]);
   const [timeData, setTimeData] = useState([]);
   const [timeUserSelected, setTimeUserSelected] = useState([]);
-  // const [optionSelected, setOptionSelected] = useState();
+  const [optionSelected, setOptionSelected] = useState();
 
   const [isUpdate, setIsUpdate] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
@@ -59,7 +60,6 @@ const ScheduleManager = () => {
   console.log({ timeData });
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const currentUser = useSelector((state) => state.authReducer);
 
   //dataTable
   // const [filters1, setFilters1] = useState(null);
@@ -330,111 +330,114 @@ const ScheduleManager = () => {
             }));
           }
           setTimeData(allCode);
+          setLoading(false);
         }
       });
-      await getScheduleSystem
-        .get({ managerId: currentUser?.id, roleManager: currentUser?.role })
-        .then((data) => {
-          if (data?.codeNumber === 0 && data?.schedule_user?.length > 0) {
-            //sort by id
-            data.schedule_user.sort((a, b) => a.id - b.id);
-            let timeScheduleData = [];
-            while (data.schedule_user.length > 1) {
-              const arr = data.schedule_user;
-              let filterArr = [];
-              let indexArr = [];
-              for (let i = 0; i < arr.length; i++) {
-                if (arr[i].date === arr[0].date) {
-                  filterArr.push(arr[i]);
-                  indexArr.push(i);
-                }
-              }
-              data.schedule_user = data.schedule_user.filter((item, index) => {
-                return !indexArr.includes(index);
-              });
-              timeScheduleData.push(filterArr);
-            }
-            if (data.schedule_user.length === 1) {
-              timeScheduleData.push([data.schedule_user[0]]);
-            }
-            timeScheduleData.sort((a, b) =>
-              moment(a[0].date)
-                .format(dateFormat.SEND_TO_SERVER)
-                .localeCompare(
-                  moment(b[0].date).format(dateFormat.SEND_TO_SERVER)
-                )
-            );
-            setTimeUserSelected(timeScheduleData);
-          } else {
-            setTimeUserSelected([]);
-          }
-        });
-      setStartDate(new Date().setDate(new Date().getDate() + 1));
-      timeData.forEach((time) => {
-        time.isSelected = false;
-      });
-      // setTimeData(timeData);
-      setIsUpdate(false);
-      // setSelectedOption(e);
     }
-    // const handleChangeSelect_detail = async (e) => {
-    // console.log(selectedOptionObject);
-
-    // };
     fetchData();
-
-    // initFilters1();
   }, []);
 
   //option-general select
-  // let option_general = [
-  //   {
-  //     value: "R2",
-  //     label: `${t("system.schedule.department")}`,
-  //   },
-  //   { value: "R4", label: `${t("system.schedule.faculty")}` },
-  //   { value: "R5", label: `${t("system.schedule.teacher")}` },
-  //   { value: "R6", label: `${t("system.schedule.health")}` },
-  // ];
+  let option_general = [
+    {
+      value: "R2",
+      label: `${t("system.schedule.department")}`,
+    },
+    { value: "R4", label: `${t("system.schedule.faculty")}` },
+    { value: "R5", label: `${t("system.schedule.teacher")}` },
+    { value: "R6", label: `${t("system.schedule.health")}` },
+  ];
 
   //option-detail select
-  // let options_detail = [];
-  // if (userData.length > 0) {
-  //   userData.forEach((user, index) => {
-  //     options_detail.push({ value: user?.id, label: user?.fullName });
-  //   });
-  // }
+  let options_detail = [];
+  if (userData.length > 0) {
+    userData.forEach((user, index) => {
+      options_detail.push({ value: user?.id, label: user?.fullName });
+    });
+  }
 
   //handle change select
-  // const handleChangeSelect_general = async (e) => {
-  //   if (e?.value === "R5") {
-  //     await getTeacherHomePageAPI.getTeacher({}).then((data) => {
-  //       if (data?.codeNumber === 0) {
-  //         setUserData(data.teacher);
-  //       }
-  //     });
-  //   } else {
-  //     await getUserApi.getUserByRole({ role: e?.value }).then((data) => {
-  //       if (data?.codeNumber === 0) {
-  //         setUserData(data?.user);
-  //       }
-  //     });
-  //   }
-  //   option_general.forEach((item, index) => {
-  //     if (item?.value === e?.value) {
-  //       setOptionSelected(index);
-  //     }
-  //   });
-  //   setSelectedOption({});
-  //   setTimeUserSelected([]);
-  //   setStartDate(new Date().setDate(new Date().getDate() + 1));
-  //   timeData.forEach((time) => {
-  //     time.isSelected = false;
-  //   });
-  //   setTimeData(timeData);
-  //   setSelectedOptionObject(e);
-  //   setIsUpdate(false);
-  // };
+  const handleChangeSelect_general = async (e) => {
+    setLoading(true);
+    if (e?.value === "R5") {
+      await getTeacherHomePageAPI.getTeacher({}).then((data) => {
+        if (data?.codeNumber === 0) {
+          setUserData(data.teacher);
+        }
+      });
+    } else {
+      await getUserApi.getUserByRole({ role: e?.value }).then((data) => {
+        if (data?.codeNumber === 0) {
+          setUserData(data?.user);
+        }
+      });
+    }
+    option_general.forEach((item, index) => {
+      if (item?.value === e?.value) {
+        setOptionSelected(index);
+      }
+    });
+    setSelectedOption({});
+    setTimeUserSelected([]);
+    setStartDate(new Date().setDate(new Date().getDate() + 1));
+    timeData.forEach((time) => {
+      time.isSelected = false;
+    });
+    setTimeData(timeData);
+    setSelectedOptionObject(e);
+    setIsUpdate(false);
+    setLoading(false);
+  };
+
+  const handleChangeSelect_detail = async (e) => {
+    console.log(selectedOptionObject);
+    setLoading(true);
+    await getScheduleSystem
+      .get({ managerId: e?.value, roleManager: selectedOptionObject?.value })
+      .then((data) => {
+        if (data?.codeNumber === 0 && data?.schedule_user?.length > 0) {
+          //sort by id
+          data.schedule_user.sort((a, b) => a.id - b.id);
+          let timeScheduleData = [];
+          while (data.schedule_user.length > 1) {
+            const arr = data.schedule_user;
+            let filterArr = [];
+            let indexArr = [];
+            for (let i = 0; i < arr.length; i++) {
+              if (arr[i].date === arr[0].date) {
+                filterArr.push(arr[i]);
+                indexArr.push(i);
+              }
+            }
+            data.schedule_user = data.schedule_user.filter((item, index) => {
+              return !indexArr.includes(index);
+            });
+            timeScheduleData.push(filterArr);
+          }
+          if (data.schedule_user.length === 1) {
+            timeScheduleData.push([data.schedule_user[0]]);
+          }
+          timeScheduleData.sort((a, b) =>
+            moment(a[0].date)
+              .format(dateFormat.SEND_TO_SERVER)
+              .localeCompare(
+                moment(b[0].date).format(dateFormat.SEND_TO_SERVER)
+              )
+          );
+          setTimeUserSelected(timeScheduleData);
+        } else {
+          setTimeUserSelected([]);
+        }
+      });
+    setStartDate(new Date().setDate(new Date().getDate() + 1));
+    timeData.forEach((time) => {
+      time.isSelected = false;
+    });
+    setTimeData(timeData);
+    setIsUpdate(false);
+    setSelectedOption(e);
+    setLoading(false);
+  };
 
   //handle change date picker
   const handleChangeDatePicker = (date) => {
@@ -488,14 +491,14 @@ const ScheduleManager = () => {
 
   //handleCheckNull
   const handleCheckNull = () => {
-    // if (!selectedOption?.value) {
-    //   toast.error("Please choose department", {
-    //     autoClose: 2000,
-    //     position: "bottom-right",
-    //     theme: "colored",
-    //   });
-    //   return false;
-    // }
+    if (!selectedOption?.value) {
+      toast.error("Please choose department", {
+        autoClose: 2000,
+        position: "bottom-right",
+        theme: "colored",
+      });
+      return false;
+    }
     if (!startDate) {
       toast.error("please choose date", {
         autoClose: 2000,
@@ -519,8 +522,8 @@ const ScheduleManager = () => {
     }
     selectedTimeArr.forEach((selectedTime, index) => {
       output.push({
-        managerId: currentUser?.id,
-        roleManager: currentUser?.role,
+        managerId: selectedOption?.value,
+        roleManager: selectedOptionObject?.value,
         date: moment(startDate).format(dateFormat.SEND_TO_SERVER),
         timeType: selectedTime?.keyMap,
       });
@@ -551,15 +554,18 @@ const ScheduleManager = () => {
     if (!handleCheckNull()) {
       return;
     }
+    setLoading(true);
+
     const action = isUpdate ? "update" : "create";
     const body = {
-      email: currentUser?.email,
       scheduleData: handleCheckNull(),
       action,
     };
     const data = await createSchedule.create({}, body);
     if (data?.codeNumber === 0) {
       if (data?.message === "create") {
+        setLoading(false);
+
         toast.success(`${t("system.notification.create")}`, {
           autoClose: 2000,
           position: "bottom-right",
@@ -568,6 +574,8 @@ const ScheduleManager = () => {
         //   setSelectedOption({});
         setSelectedProducts8(null);
       } else {
+        setLoading(false);
+
         toast.success(`${t("system.notification.update")}`, {
           autoClose: 2000,
           position: "bottom-right",
@@ -625,12 +633,16 @@ const ScheduleManager = () => {
           }
         });
     } else if (data?.codeNumber === -1) {
+      setLoading(false);
+
       toast.error(`${t("system.notification.fail")}`, {
         autoClose: 2000,
         position: "bottom-right",
         theme: "colored",
       });
     } else if (data?.codeNumber === -2) {
+      setLoading(false);
+
       toast.error(`${t("system.token.mess")}`, {
         autoClose: 3000,
         position: "bottom-right",
@@ -645,6 +657,8 @@ const ScheduleManager = () => {
         });
       }, 3000);
     } else if (data?.codeNumber === 1) {
+      setLoading(false);
+
       toast.error(data?.message, {
         autoClose: 2000,
         position: "bottom-right",
@@ -673,8 +687,10 @@ const ScheduleManager = () => {
   };
   const deleteSchedule = async (managerId, date, roleManager) => {
     console.log(date);
+    setLoading(true);
+
     deleteScheduleByIdAndDate
-      .delete({ managerId, date, roleManager }, { email: currentUser?.email })
+      .delete({ managerId, date, roleManager })
       .then((res) => {
         if (res?.codeNumber === 0) {
           setIsDelete(false);
@@ -719,7 +735,10 @@ const ScheduleManager = () => {
                   )
               );
               setTimeUserSelected(timeScheduleData);
+              setLoading(false);
             } else {
+              setLoading(false);
+
               setTimeUserSelected([]);
             }
             setSelectedProducts8([]);
@@ -744,139 +763,185 @@ const ScheduleManager = () => {
 
   return (
     <Fragment>
+      <div className="w-full" style={{ height: "100px" }}></div>
+      {loading && (
+        <div className="fixed loading-overlay top-0 bottom-0 flex items-center justify-center mx-auto left-0 right-0 w-full max-h-full bg-black bg-opacity-25">
+          <div className="absolute">
+            <Loading />
+          </div>
+        </div>
+      )}
       <ToastContainer />
-      <Header />
-      <div className="w-full" style={{ height: "110px" }}></div>
       <div
         className="mt-3 flex flex-col items-start mx-auto pb-5 gap-8"
         style={{ maxWidth: "80%", width: "80%" }}
       >
         <p className="mx-auto text-2xl text-blue-600 font-semibold">
-          {/* {t("system.schedule.manager")} */}
-          Tạo lịch hẹn mới
+          {t("system.schedule.manager")}
         </p>
         <div className="flex items-start justify-between w-full gap-10">
-          <motion.div
-            initial={{ opacity: 0, translateX: 50 }}
-            animate={{ opacity: 1, translateX: 0 }}
-            exit={{ opacity: 0, translateX: 50 }}
-            transition={{ duration: 0.3, delay: 0.1 }}
-            className="flex-1 flex flex-col justify-center gap-1"
-          >
+          <div className="flex-1 flex flex-col justify-center gap-1">
             <label className="text-lg text-opacity-60 text-black">
-              {t("system.schedule.date")}
+              {t("system.schedule.choose")}
             </label>
-            <DatePicker
-              value={moment(startDate).format(dateFormat.SEND_TO_SERVER)}
-              onChange={(date) => handleChangeDatePicker(date)}
-              minDate={new Date().setDate(new Date().getDate() + 1)}
-              className="w-full border-opacity-60 border-blurColor rounded-sm"
+            <Select
+              value={selectedOptionObject}
+              onChange={(e) => handleChangeSelect_general(e)}
+              options={option_general}
+              className="w-full"
             />
-          </motion.div>
+          </div>
+
+          {selectedOptionObject?.value && (
+            <div className="w-[70%] flex items-start justify-between gap-10">
+              <div className="flex-1 flex flex-col justify-center gap-1">
+                <label className="text-lg text-opacity-60 text-black">
+                  {`${t("system.schedule.mess")} ${
+                    option_general[optionSelected]?.label
+                  }`}
+                </label>
+                <Select
+                  value={selectedOption}
+                  onChange={(e) => handleChangeSelect_detail(e)}
+                  options={options_detail}
+                  className="w-full"
+                />
+              </div>
+              <AnimatePresence>
+                {selectedOption?.value && (
+                  <motion.div
+                    initial={{ opacity: 0, translateX: 50 }}
+                    animate={{ opacity: 1, translateX: 0 }}
+                    exit={{ opacity: 0, translateX: 50 }}
+                    transition={{ duration: 0.3, delay: 0.1 }}
+                    className="flex-1 flex flex-col justify-center gap-1"
+                  >
+                    <label className="text-lg text-opacity-60 text-black">
+                      {t("system.schedule.date")}
+                    </label>
+                    <DatePicker
+                      value={moment(startDate).format(
+                        dateFormat.SEND_TO_SERVER
+                      )}
+                      onChange={(date) => handleChangeDatePicker(date)}
+                      minDate={new Date().setDate(new Date().getDate() + 1)}
+                      className="w-full border-opacity-60 border-blurColor rounded-sm"
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          )}
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, translateX: 50 }}
-          animate={{ opacity: 1, translateX: 0 }}
-          exit={{ opacity: 0, translateX: 50 }}
-          transition={{ duration: 0.3, delay: 0.1 }}
-          className="w-full"
-        >
-          <div className="flex flex-col justify-center items-start gap-1 mb-5">
-            <label className="text-lg text-opacity-60 text-black">
-              {t("system.schedule.time")}
-            </label>
-            <div className="flex items-center justify-start gap-5 flex-wrap">
-              {timeData.length > 0 &&
-                timeData.map((time, index) => (
-                  <Button
-                    key={index}
-                    text={
-                      i18n.language === "vi" ? time?.valueVn : time?.valueEn
-                    }
-                    value={time?.keyMap}
-                    isSelected={time?.isSelected}
-                    click={() => clickButton(time)}
-                  />
-                ))}
-            </div>
-          </div>
+        <AnimatePresence>
+          {selectedOption?.value && (
+            <motion.div
+              initial={{ opacity: 0, translateX: 50 }}
+              animate={{ opacity: 1, translateX: 0 }}
+              exit={{ opacity: 0, translateX: 50 }}
+              transition={{ duration: 0.3, delay: 0.1 }}
+              className="w-full"
+            >
+              <div className="flex flex-col justify-center items-start gap-1 mb-5">
+                <label className="text-lg text-opacity-60 text-black">
+                  {t("system.schedule.time")}
+                </label>
+                <div className="flex items-center justify-start gap-5 flex-wrap">
+                  {timeData.length > 0 &&
+                    timeData.map((time, index) => (
+                      <Button
+                        key={index}
+                        text={
+                          i18n.language === "vi" ? time?.valueVn : time?.valueEn
+                        }
+                        value={time?.keyMap}
+                        isSelected={time?.isSelected}
+                        click={() => clickButton(time)}
+                      />
+                    ))}
+                </div>
+              </div>
 
-          <div className="flex items-center justify-start gap-3">
-            <Button
-              text={`${
-                isUpdate
-                  ? t("system.schedule.update")
-                  : t("system.schedule.save")
-              }`}
-              type={`${isUpdate ? "update" : "save"}`}
-              click={handleSaveOrUpdateSchedule}
-            />
-            {isUpdate && (
-              <button
-                className={` text-white mb-2 py-2 px-1 font-semibold rounded-md shadow backdrop-blur-md bg-opacity-100 hover:bg-opacity-80 bg-blue-500`}
-                style={{ maxWidth: "10%", width: "10%" }}
-                onClick={() => handleCloseUpdateSchedule()}
-              >
-                {t("system.department.close")}
-              </button>
-            )}
-          </div>
-        </motion.div>
+              <div className="flex items-center justify-start gap-3">
+                <Button
+                  text={`${
+                    isUpdate
+                      ? t("system.schedule.update")
+                      : t("system.schedule.save")
+                  }`}
+                  type={`${isUpdate ? "update" : "save"}`}
+                  click={handleSaveOrUpdateSchedule}
+                />
+                {isUpdate && (
+                  <button
+                    className={` text-white mb-2 py-2 px-1 font-semibold rounded-md shadow backdrop-blur-md bg-opacity-100 hover:bg-opacity-80 bg-blue-500`}
+                    style={{ maxWidth: "10%", width: "10%" }}
+                    onClick={() => handleCloseUpdateSchedule()}
+                  >
+                    {t("system.department.close")}
+                  </button>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
       <div
         className="flex items-start mx-auto pb-16"
         style={{ maxWidth: "80%", width: "80%" }}
       >
-        {timeUserSelected?.length === 0 ? null : (
-          <div className="w-full mt-8">
-            <DataTable
-              value={timeUserSelected}
-              paginator
-              responsiveLayout="scroll"
-              paginatorTemplate={template1}
-              first={first1}
-              rows={rows1}
-              onPage={onCustomPage1}
-              rowsPerPageOptions={[4, 8, 12]}
-              paginatorLeft={paginatorLeft}
-              paginatorRight={paginatorRight}
-              // filters={filters1}
-              filterDisplay="menu"
-              // globalFilterFields={[""]}
-              header={header1}
-              // emptyMessage="No customers found."
-              selectionMode="checkbox"
-              selection={selectedProducts8}
-              onSelectionChange={(e) => setSelectedProducts8(e.value)}
-              resizableColumns
-              columnResizeMode="fit"
-              showGridlines
-              onAllRowsSelect={(e) => setAllRowSelected(e)}
-              onAllRowsUnselect={() => setAllRowSelected(false)}
-              // dataKey="id"
-            >
-              <Column
-                selectionMode="multiple"
-                headerStyle={{ width: "3em" }}
-              ></Column>
-              <Column
-                header={t("system.schedule.table.date")}
-                body={dateTemplate}
-              ></Column>
-              <Column
-                header={t("system.schedule.table.time")}
-                body={timeTemplate}
-              ></Column>
-              {selectedProducts8 && selectedProducts8?.length === 1 && (
+        {selectedOption?.value ? (
+          timeUserSelected?.length === 0 ? null : (
+            <div className="w-full mt-8">
+              <DataTable
+                value={timeUserSelected}
+                paginator
+                responsiveLayout="scroll"
+                paginatorTemplate={template1}
+                first={first1}
+                rows={rows1}
+                onPage={onCustomPage1}
+                rowsPerPageOptions={[4, 8, 12]}
+                paginatorLeft={paginatorLeft}
+                paginatorRight={paginatorRight}
+                // filters={filters1}
+                filterDisplay="menu"
+                // globalFilterFields={[""]}
+                header={header1}
+                // emptyMessage="No customers found."
+                selectionMode="checkbox"
+                selection={selectedProducts8}
+                onSelectionChange={(e) => setSelectedProducts8(e.value)}
+                resizableColumns
+                columnResizeMode="fit"
+                showGridlines
+                onAllRowsSelect={(e) => setAllRowSelected(e)}
+                onAllRowsUnselect={() => setAllRowSelected(false)}
+                // dataKey="id"
+              >
                 <Column
-                  body={actionTemplate}
-                  header={t("system.table.action")}
+                  selectionMode="multiple"
+                  headerStyle={{ width: "3em" }}
                 ></Column>
-              )}
-            </DataTable>
-          </div>
-        )}
+                <Column
+                  header={t("system.schedule.table.date")}
+                  body={dateTemplate}
+                ></Column>
+                <Column
+                  header={t("system.schedule.table.time")}
+                  body={timeTemplate}
+                ></Column>
+                {selectedProducts8 && selectedProducts8?.length === 1 && (
+                  <Column
+                    body={actionTemplate}
+                    header={t("system.table.action")}
+                  ></Column>
+                )}
+              </DataTable>
+            </div>
+          )
+        ) : null}
       </div>
 
       {isDelete && (
@@ -894,4 +959,4 @@ const ScheduleManager = () => {
   );
 };
 
-export default ScheduleManager;
+export default CreateScheduleSystem;

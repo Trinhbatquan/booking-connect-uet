@@ -17,7 +17,11 @@ import { dateFormat, path } from "../../../utils/constant";
 import avatar from "../../../assets/image/uet.png";
 import { ToastContainer, toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
-import { getUserApi, logOutApi } from "../../../services/userService";
+import {
+  getUserApi,
+  logOutApi,
+  logOutHomePageApi,
+} from "../../../services/userService";
 import {
   createBookingScheduleService,
   createQuestionService,
@@ -266,10 +270,12 @@ const Detail = ({ codeUrlTeacher, roleTeacher, type }) => {
       });
       if (data?.codeNumber === -2) {
         setTimeout(() => {
-          logOutApi.logoutUser({}).then((data) => {
+          logOutHomePageApi.logoutUser({}).then((data) => {
             if (data?.codeNumber === 0) {
               dispatch(logOutUser());
-              navigate(`${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`);
+              navigate(
+                `${path.HOMEPAGE}/${path.login_homepage}?redirect=/homepage`
+              );
             }
           });
         }, 5000);
@@ -326,11 +332,11 @@ const Detail = ({ codeUrlTeacher, roleTeacher, type }) => {
         });
         if (data?.codeNumber === -2) {
           setTimeout(() => {
-            logOutApi.logoutUser({}).then((data) => {
+            logOutHomePageApi.logoutUser({}).then((data) => {
               if (data?.codeNumber === 0) {
                 dispatch(logOutUser());
                 navigate(
-                  `${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`
+                  `${path.HOMEPAGE}/${path.login_homepage}?redirect=/homepage`
                 );
               }
             });

@@ -22,9 +22,8 @@ import { Dropdown } from "primereact/dropdown";
 import { classNames } from "primereact/utils";
 import { Tooltip } from "primereact/tooltip";
 import { useDispatch, useSelector } from "react-redux";
-import { logOutApi } from "../../../services/userService";
-import { logOutUser } from "../../../redux/authSlice";
-import { useNavigate } from "react-router";
+import { logOutApi, logOutHomePageApi } from "../../../services/userService";
+import { useLocation, useNavigate } from "react-router";
 import "moment/locale/vi";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -48,11 +47,15 @@ import { getAnswerById } from "../../../services/answerService";
 import ConfirmSentDirectly from "./ConfirmSentDirectly";
 import { handleMessageFromBackend } from "../../../utils/handleMessageFromBackend";
 import { path } from "../../../utils/constant";
+import nodata from "../../../assets/image/nodata.png";
+import { logOutUser } from "../../../redux/studentSlice";
 
 const ProcessBooking = () => {
+  const actionParam = useLocation()?.search?.split("?")[1];
+
   const { i18n, t } = useTranslation();
   const [loading, setLoading] = useState(false);
-  const [action, setAction] = useState("A1");
+  const [action, setAction] = useState(actionParam || "A1");
   const currentUser = useSelector((state) => state.studentReducer);
   const [dataBooking, setDataBooking] = useState([]);
   const [isOpenDetailBooking, setIsOpenDetailBooking] = useState(false);
@@ -293,11 +296,11 @@ const ProcessBooking = () => {
         });
         if (data?.codeNumber === -2) {
           setTimeout(() => {
-            logOutApi.logoutUser({}).then((data) => {
+            logOutHomePageApi.logoutUser({}).then((data) => {
               if (data?.codeNumber === 0) {
                 dispatch(logOutUser());
                 navigate(
-                  `${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`
+                  `${path.HOMEPAGE}/${path.login_homepage}?redirect=/homepage`
                 );
               }
             });
@@ -622,11 +625,7 @@ const ProcessBooking = () => {
   };
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-      }}
-    >
+    <div>
       {console.log(dataBooking)}
       <ToastContainer />
       {loading && (
@@ -642,6 +641,7 @@ const ProcessBooking = () => {
         className="relative mt-[34px] pt-[20px] mb-[20px] mx-[10%] pr-[30px] pl-[65px]"
         style={{
           border: "1px solid rgb(242, 242, 242)",
+          minHeight: "300px",
         }}
       >
         <div className="mb-[30px] relative">
@@ -694,18 +694,20 @@ const ProcessBooking = () => {
                 </span>
               </button>
             </div>
-            <button
-              class={`process-booking-refresh px-5 py-1.5 flex  items-center justify-center gap-2 overflow-hidden text-sm bg-gray-200 text-headingColor hover:text-white hover:bg-blue-500 transition-all duration-200 rounded-2xl
+            {dataBooking?.length > 0 && (
+              <button
+                class={`process-booking-refresh px-5 py-1.5 flex  items-center justify-center gap-2 overflow-hidden text-sm bg-gray-200 text-headingColor hover:text-white hover:bg-blue-500 transition-all duration-200 rounded-2xl
                  `}
-              onClick={() => handleRefresh()}
-            >
-              <IoReload className="rotating text-2xl text-headingColor hover:text-white transition-all duration-200" />
-              <span class="">
-                {i18n.language === "en" ? "Refresh" : "Cập nhật"}
-              </span>
-            </button>
+                onClick={() => handleRefresh()}
+              >
+                <IoReload className="rotating text-2xl text-headingColor hover:text-white transition-all duration-200" />
+                <span class="">
+                  {i18n.language === "en" ? "Refresh" : "Cập nhật"}
+                </span>
+              </button>
+            )}
           </div>
-          {dataBooking?.length > 0 && (
+          {dataBooking?.length > 0 ? (
             <div className="w-full mt-8">
               <DataTable
                 value={dataBooking}
@@ -1189,6 +1191,17 @@ const ProcessBooking = () => {
                 )}
               </AnimatePresence>
             </div>
+          ) : (
+            <img
+              src={nodata}
+              alt=""
+              style={{
+                height: "300px",
+                width: "70%",
+                objectFit: "cover",
+                margin: "0 auto",
+              }}
+            />
           )}
         </div>
       </div>

@@ -1,11 +1,12 @@
 import React, { Fragment, useEffect, useRef, useState } from "react";
 
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { FaBars } from "react-icons/fa";
 import { MdContactSupport } from "react-icons/md";
 import { useTranslation } from "react-i18next";
 import { IoIosArrowDown } from "react-icons/io";
 import { AiFillHome } from "react-icons/ai";
+import { RiDeleteBack2Line } from "react-icons/ri";
 
 import "./HomeHeader.scss";
 import { path } from "../../utils/constant";
@@ -41,11 +42,14 @@ import {
   getNotiFy,
   updateNotifyToOld,
 } from "../../services/notificationService";
+import { setCountNewNotifyHomePage } from "../../redux/countNewNotifySlice";
+import surveyImage from "../../assets/image/survey.png";
 
 const HomeHeader = ({ action }) => {
   const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const pathName = useLocation()?.pathname;
 
   //update password
   const [isUpdatePassword, setIsUpdatePassword] = useState(false);
@@ -56,8 +60,12 @@ const HomeHeader = ({ action }) => {
   const [countNewNotification, setCountNewNotification] = useState(0);
   const [socketNotify, setSocketNotify] = useState(false);
   const [eye, setEye] = useState(false);
+  const [isOpenMentalSurvey, setIsOpenMentalSurvey] = useState(false);
   console.log(socketNotify);
   const currentUser = useSelector((state) => state.studentReducer);
+  const countNewNotificationRedux = useSelector(
+    (state) => state.countNewNotifyReducer.countNewNotifyHomePage
+  );
 
   const languageDropDownRef = useRef();
   const languageDivRef = useRef();
@@ -128,7 +136,7 @@ const HomeHeader = ({ action }) => {
                     new Date()
                   ).calendar()})`,
               {
-                autoClose: false,
+                autoClose: 5000,
                 theme: "colored",
                 position: "bottom-right",
               }
@@ -145,7 +153,7 @@ const HomeHeader = ({ action }) => {
                     new Date()
                   ).calendar()})`,
               {
-                autoClose: false,
+                autoClose: 5000,
                 theme: "colored",
                 position: "bottom-right",
               }
@@ -160,7 +168,7 @@ const HomeHeader = ({ action }) => {
                     new Date()
                   ).calendar()})`,
               {
-                autoClose: false,
+                autoClose: 5000,
                 theme: "colored",
                 position: "bottom-right",
               }
@@ -175,7 +183,7 @@ const HomeHeader = ({ action }) => {
                     new Date()
                   ).calendar()})`,
               {
-                autoClose: false,
+                autoClose: 5000,
                 theme: "colored",
                 position: "bottom-right",
               }
@@ -183,19 +191,23 @@ const HomeHeader = ({ action }) => {
           }
         }
         setSocketNotify(true);
-        setCountNewNotification(countNewNotification + 1);
+        dispatch(setCountNewNotifyHomePage(countNewNotificationRedux + 1));
       }
     };
 
-    socket.on("new_notification_for_student_about_update_booking", (data) =>
-      listenNewUpdateBookingFromBackend(data)
-    );
+    if (pathName && pathName !== "/trang-sinh-vien/danh-sach-thong-bao") {
+      socket.on("new_notification_for_student_about_update_booking", (data) =>
+        listenNewUpdateBookingFromBackend(data)
+      );
+    }
 
     return () => {
-      socket.off(
-        "new_notification_for_student_about_update_booking",
-        listenNewUpdateBookingFromBackend
-      );
+      if (pathName && pathName !== "/trang-sinh-vien/danh-sach-thong-bao") {
+        socket.off(
+          "new_notification_for_student_about_update_booking",
+          listenNewUpdateBookingFromBackend
+        );
+      }
     };
   }, []);
 
@@ -208,7 +220,8 @@ const HomeHeader = ({ action }) => {
       })
       .then((data) => {
         if (data?.codeNumber === 0) {
-          setCountNewNotification(data?.countNewNotify);
+          // setCountNewNotification(data?.countNewNotify);
+          dispatch(setCountNewNotifyHomePage(data?.countNewNotify));
         }
       });
   }, []);
@@ -302,11 +315,11 @@ const HomeHeader = ({ action }) => {
           });
           if (data?.codeNumber === -2) {
             setTimeout(() => {
-              logOutApi.logoutUser({}).then((data) => {
+              logOutHomePageApi.logoutUser({}).then((data) => {
                 if (data?.codeNumber === 0) {
                   dispatch(logOutUser());
                   navigate(
-                    `${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`
+                    `${path.HOMEPAGE}/${path.login_homepage}?redirect=/homepage`
                   );
                 }
               });
@@ -317,7 +330,7 @@ const HomeHeader = ({ action }) => {
   };
 
   const handleResetNotify = async () => {
-    if (countNewNotification > 0) {
+    if (countNewNotificationRedux > 0) {
       updateNotifyToOld({
         type: "student",
         studentId: currentUser?.id,
@@ -330,6 +343,11 @@ const HomeHeader = ({ action }) => {
     }
   };
 
+  const handlePrePsyChologicalSurvey = () => {
+    setIsOpenMentalSurvey(true);
+  };
+
+  console.log("homepage header");
   return (
     <Fragment>
       <div className="homepage-header-container flex items-center">
@@ -362,9 +380,9 @@ const HomeHeader = ({ action }) => {
               ) : (
                 <GoBell className="text-blurThemeColor text-xl relative -top-[1px]" />
               )}
-              {+countNewNotification > 0 && (
+              {+countNewNotificationRedux > 0 && (
                 <div className="absolute right-[68px] -top-[12px] flex items-center justify-center w-6 h-5 p-1 text-white bg-red-600 rounded-full">
-                  <span className="text-xs">{`${countNewNotification}+`}</span>
+                  <span className="text-xs">{`${countNewNotificationRedux}+`}</span>
                 </div>
               )}
               <span className="text-sm">
@@ -638,51 +656,6 @@ const HomeHeader = ({ action }) => {
             >
               <span>{i18n.language === "en" ? "News" : "Tin tức"}</span>
             </NavLink>
-            {/* <div className="action_header navigation cursor-pointer text-md text-black hover:text-blue-700 hover:opacity-100 relative">
-              <span className="flex items-center justify-center gap-1">
-                {t("header.Action")}{" "}
-                <IoMdArrowDropdown className="hover:text-blue-700" />
-              </span>
-              <ul
-                className="action_dropdown absolute profile-user-homepage avatar-modal"
-                style={{
-                  padding: ".5rem 0",
-                  margin: 0,
-                  marginTop: "0px",
-                  fontSize: "1rem",
-                  color: "#212529",
-                  textAlign: "left",
-                  listStyle: "none",
-                  backgroundColor: "#fff",
-                  backgroundClip: "padding-box",
-                  border: "1px solid rgba(0,0,0,.15)",
-                  borderRadius: ".25rem",
-                  minWidth: "160px",
-                  top: "40px",
-                }}
-              >
-                <li>
-                  <div
-                    className={`cursor-pointer hover:bg-gray-100 transition-all duration-300 p-[10px] pl-[20px]
-                     text-headingColor border-none block w-full font-normal`}
-                    style={{ fontSize: "16px" }}
-                    onClick={() => navigate(`${path.HOMEPAGE}/${path.news}`)}
-                  >
-                    {i18n.language === "en" ? "News" : "Tin tức"}
-                  </div>
-                </li>
-                <li>
-                  <div
-                    className={`cursor-pointer hover:bg-gray-100 transition-all duration-300 p-[10px] pl-[20px]
-                     text-headingColor border-none block w-full font-normal`}
-                    style={{ fontSize: "16px" }}
-                    onClick={() => navigate(`${path.HOMEPAGE}/${path.notify}`)}
-                  >
-                    {i18n.language === "en" ? "Notification" : "Thông báo"}
-                  </div>
-                </li>
-              </ul>
-            </div> */}
 
             <div
               className="relative navigation text-md text-black hover:text-blue-700"
@@ -734,7 +707,56 @@ const HomeHeader = ({ action }) => {
             >
               <span>{t("header.contact")}</span>
             </NavLink>
-            <NavLink
+            <div className="survey_header navigation cursor-pointer text-md text-black hover:text-blue-700 hover:opacity-100 relative">
+              <span className="flex items-center justify-center gap-1">
+                {i18n.language === "en" ? "SURVEY" : "KHẢO SÁT"}
+                <IoMdArrowDropdown className="hover:text-blue-700" />
+              </span>
+              <ul
+                className="survey_dropdown absolute profile-user-homepage avatar-modal"
+                style={{
+                  padding: ".5rem 0",
+                  margin: 0,
+                  marginTop: "0px",
+                  fontSize: "1rem",
+                  color: "#212529",
+                  textAlign: "left",
+                  listStyle: "none",
+                  backgroundColor: "#fff",
+                  backgroundClip: "padding-box",
+                  border: "1px solid rgba(0,0,0,.15)",
+                  borderRadius: ".25rem",
+                  minWidth: "182px",
+                  top: "40px",
+                }}
+              >
+                <li>
+                  <div
+                    className={`cursor-pointer hover:bg-gray-100 transition-all duration-300 p-[10px] pl-[20px]
+                     text-headingColor border-none block w-full font-normal`}
+                    style={{ fontSize: "16px" }}
+                    onClick={() => handlePrePsyChologicalSurvey()}
+                  >
+                    {i18n.language === "en"
+                      ? "Pre-psychological survey"
+                      : "Tiền khảo sát tâm lý"}
+                  </div>
+                </li>
+                <li>
+                  <div
+                    className={`cursor-pointer hover:bg-gray-100 transition-all duration-300 p-[10px] pl-[20px]
+                     text-headingColor border-none block w-full font-normal`}
+                    style={{ fontSize: "16px" }}
+                    onClick={() => navigate(`${path.HOMEPAGE}/${path.survey}`)}
+                  >
+                    {i18n.language === "en"
+                      ? "Student Opinion"
+                      : "Ý kiến sinh viên"}
+                  </div>
+                </li>
+              </ul>
+            </div>
+            {/* <NavLink
               to={`${path.HOMEPAGE}/${path.survey}`}
               className={`navigation text-md uppercase text-black hover:text-blue-700`}
               style={({ isActive }) =>
@@ -746,13 +768,13 @@ const HomeHeader = ({ action }) => {
               }
             >
               <span>{t("header.survey")}</span>
-            </NavLink>
+            </NavLink> */}
           </div>
         </div>
 
         {/* update Password Student */}
         {isUpdatePassword && (
-          <div className="fixed loading-overlay top-0 bottom-0 flex items-center justify-center mx-auto left-0 right-0 w-full max-h-full bg-black bg-opacity-25"></div>
+          <div className="fixed modal-update-password-overlay top-0 bottom-0 flex items-center justify-center mx-auto left-0 right-0 w-full max-h-full bg-black bg-opacity-25"></div>
         )}
 
         <AnimatePresence>
@@ -762,7 +784,7 @@ const HomeHeader = ({ action }) => {
               animate={{ opacity: 1, translateY: 0 }}
               exit={{ opacity: 0, translateY: -50 }}
               transition={{ duration: 0.4, delay: 0.1 }}
-              className="modal-setting fixed top-1 w-[60%] flex flex-col h-auto bg-white rounded-lg shadow backdrop-blur-md mx-auto mt-16 py-3 px-5 overflow-hidden"
+              className="modal-update-password-dropdown fixed top-1 w-[60%] flex flex-col h-auto bg-white rounded-lg shadow backdrop-blur-md mx-auto mt-16 py-3 px-5 overflow-hidden"
               style={{ left: "20%" }}
             >
               <p className="text-lg text-blurThemeColor font-semibold border-b-2 border-gray-200 py-2">
@@ -862,6 +884,68 @@ const HomeHeader = ({ action }) => {
             </motion.div>
           )}
         </AnimatePresence>
+
+        {isOpenMentalSurvey && (
+          <AnimatePresence>
+            <motion.div
+              initial={{ opacity: 0, translateY: -50 }}
+              animate={{ opacity: 1, translateY: 0 }}
+              exit={{ opacity: 0, translateY: -50 }}
+              transition={{ duration: 0.4, delay: 0.1 }}
+              className="fixed modal-update-password-overlay top-0 bottom-0 flex items-center justify-center mx-auto left-0 right-0 w-full max-h-full bg-black bg-opacity-25"
+            >
+              <div
+                className="flex items-center justify-center"
+                style={{
+                  width: "70%",
+                  height: "55vh",
+                }}
+              >
+                {/* <div
+                style={{
+                  background: `url(${surveyImage}) no-repeat`,
+                  borderRadius: "15px",
+                  // width: "80%",
+                  // height: "80vh",
+                  backgroundSize: "contain",
+                }}
+              ></div> */}
+                <div
+                  style={{
+                    // objectFit: "contain",
+                    borderRadius: "15px",
+                    overflow: "hidden",
+                    backgroundImage: `url(${surveyImage})`,
+                    backgroundRepeat: "no-repeat",
+                    backgroundSize: "contain",
+                    // objectFit: "contain",
+                    width: "100%",
+                    paddingTop: "45%",
+                    // scale: height = 1/2 width auto proportion
+                    position: "relative",
+                  }}
+                >
+                  <div className="absolute top-[60%] left-[53.8%] w-[40.2%] flex flex-col justify-center items-center gap-5">
+                    <button
+                      class={`flex gap-1 px-5 w-[60%] py-1.5 transition-all ease-in duration-150 items-center justify-center overflow-hidden text-md font-semibold border border-blue-500 bg-blue-500 text-white rounded-2xl hover:bg-blue-600 
+            `}
+                      // onClick={() => handleRefreshNotification()}
+                    >
+                      <span class="">Khảo sát ngay</span>
+                    </button>
+                    <button
+                      class={`flex gap-1 px-5 w-[60%] py-1.5 transition-all ease-in duration-150 items-center justify-center overflow-hidden text-md font-semibold border border-blue-500 bg-blue-500 text-white rounded-2xl hover:bg-blue-600 
+            `}
+                      onClick={() => setIsOpenMentalSurvey(false)}
+                    >
+                      <span class="">Để sau</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </AnimatePresence>
+        )}
       </div>
     </Fragment>
   );

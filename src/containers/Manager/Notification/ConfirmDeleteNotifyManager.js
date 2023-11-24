@@ -6,7 +6,11 @@ import moment from "moment";
 import { dateFormat } from "../../../utils/constant";
 import { useTranslation } from "react-i18next";
 
-const ConfirmSentDirectly = ({ closeConfirm, confirmSentDirectly }) => {
+const ConfirmDeleteNotifyManager = ({
+  closeConfirm,
+  confirmDeleteNotify,
+  action,
+}) => {
   const { i18n } = useTranslation();
 
   return (
@@ -22,20 +26,24 @@ const ConfirmSentDirectly = ({ closeConfirm, confirmSentDirectly }) => {
         <div className="bg-blue-600 px-3 py-2 w-full">
           <span className="text-white font-semibold">
             {i18n.language === "en"
-              ? "Confirm Send Directly"
-              : "Xác nhận gửi trực tiếp"}
+              ? "Confirm Delete Notification"
+              : "Xác nhận xoá thông báo"}
           </span>
         </div>
         <div className="pt-1 pb-4 px-3 flex flex-col justify-center items-center w-full">
           <span>{`${
             i18n.language === "en"
-              ? `Automatic answer doesn't suit your need. Do you want to send this question directly?`
-              : "Câu trả lời tự động không thoả mãn yêu cầu của bạn? Bạn muốn gửi câu hỏi trực tiếp?"
+              ? action === "all"
+                ? `Are you sure to delete all notification?`
+                : "Are you sure to delete this notification?"
+              : action === "all"
+              ? `Bạn có chắc chắn xoá tất cả thông báo?`
+              : "Bạn có chắc chắn xoá thông báo này?"
           }`}</span>
           <div className="mx-auto flex items-center justify-center gap-10 mt-4">
             <button
               className="outline-none py-1 px-5 w-fit  flex items-center justify-center focus:outline-none border-none bg-red-500 text-white rounded-lg overflow-hidden shadow-sm backdrop-blur-sm"
-              onClick={confirmSentDirectly}
+              onClick={confirmDeleteNotify}
             >
               {i18n.language === "en" ? "Approve" : "Chấp nhận"}
             </button>
@@ -56,4 +64,4 @@ const ConfirmSentDirectly = ({ closeConfirm, confirmSentDirectly }) => {
   );
 };
 
-export default ConfirmSentDirectly;
+export default ConfirmDeleteNotifyManager;
