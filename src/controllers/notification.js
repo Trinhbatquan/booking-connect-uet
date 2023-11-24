@@ -31,7 +31,7 @@ const getCountNewNotifyController = async (req, res) => {
   }
 };
 
-//manager
+//system
 const getNotificationController = async (req, res) => {
   try {
     const { managerId, roleManager, page, type } = req.query;
@@ -51,7 +51,7 @@ const getNotificationController = async (req, res) => {
   }
 };
 
-//system + homepage
+//system
 const getAllNotifyByTypeController = async (req, res) => {
   try {
     const { type } = req.query;
@@ -66,14 +66,17 @@ const getAllNotifyByTypeController = async (req, res) => {
   }
 };
 
-//homepage get notify student by id (both system + booking)
+//homepage + manager get notify by id (both system + booking)
 const getNotificationHomePageLimited = async (req, res) => {
   try {
-    const { page, studentId, typeNotification } = req.query;
+    const { page, studentId, typeNotification, managerId, roleManager } =
+      req.query;
     const data = await getNotifyHomePageLimitedService({
       page,
       studentId,
       typeNotification,
+      managerId,
+      roleManager,
     });
     return res.status(200).json(data);
   } catch (e) {

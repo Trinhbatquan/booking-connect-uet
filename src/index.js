@@ -97,12 +97,16 @@ connectDatabase();
 //     //send email and add notification
 //     data.forEach(async (item) => {
 //       //add
-//       await db.Notification.create({
+//       await db.Notification.bulkCreate([{
+//         studentId: item.studentId,
+//         type_notification: "check_event",
+//         bookingId: item.id,
+//       },{
 //         managerId: item.managerId,
 //         roleManager: item.roleManager,
 //         type_notification: "check_event",
 //         bookingId: item.id,
-//       });
+//       }]);
 
 //       //get data
 //       let managerData = [];
@@ -166,8 +170,8 @@ connectDatabase();
 //           reason: item?.reason,
 //           date: moment(item?.date).format("dddd - DD/MM/YYYY"),
 //           timeType: item?.timeDataBooking.valueVn,
-//           address: managerData.address,
 //         },
+//           address: managerData.address,
 //       });
 
 //       //send email to student

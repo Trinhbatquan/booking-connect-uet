@@ -39,7 +39,7 @@ const getCountNewNotifyService = ({
   });
 };
 
-//manager + system
+//system
 const getNotificationService = ({ managerId, roleManager, page, type }) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -112,6 +112,7 @@ const getNotificationService = ({ managerId, roleManager, page, type }) => {
         notify: data,
         pageCurrent,
         pageTotal: Math.ceil(totalDocument / pageSize),
+        countsNotify: totalDocument,
       });
     } catch (e) {
       console.log(e);
@@ -120,7 +121,7 @@ const getNotificationService = ({ managerId, roleManager, page, type }) => {
   });
 };
 
-//system
+//system count for roleId
 const getAllNotifyByTypeService = (type_select) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -164,32 +165,52 @@ const getNotifyHomePageLimitedService = ({
   page,
   studentId,
   typeNotification,
+  managerId,
+  roleManager,
 }) => {
   return new Promise(async (resolve, reject) => {
     try {
       const pageSize = 2;
       const pageCurrent = page || 1;
       const totalDocument = await db.Notification.count({
-        where:
-          typeNotification === "system"
+        where: !managerId
+          ? typeNotification === "system"
             ? {
                 type_notification: "system",
                 roleManager: "R3", //student notification
               }
             : {
                 studentId,
-              },
+              }
+          : typeNotification === "system"
+          ? {
+              type_notification: "system",
+              roleManager, //manager notification
+            }
+          : {
+              managerId,
+              roleManager,
+            },
       });
       const notify = await db.Notification.findAll({
-        where:
-          typeNotification === "system"
+        where: !managerId
+          ? typeNotification === "system"
             ? {
                 type_notification: "system",
                 roleManager: "R3", //student notification
               }
             : {
                 studentId,
-              },
+              }
+          : typeNotification === "system"
+          ? {
+              type_notification: "system",
+              roleManager, //manager notification
+            }
+          : {
+              managerId,
+              roleManager,
+            },
         include: [
           {
             model: db.Booking,
@@ -206,7 +227,7 @@ const getNotifyHomePageLimitedService = ({
         nest: true,
         raw: true,
         order: [
-          ["updatedAt", "DESC"],
+          // ["updatedAt", "DESC"],
           ["createdAt", "DESC"],
         ],
       });
