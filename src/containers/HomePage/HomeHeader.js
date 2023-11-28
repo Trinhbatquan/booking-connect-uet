@@ -42,8 +42,15 @@ import {
   getNotiFy,
   updateNotifyToOld,
 } from "../../services/notificationService";
-import { setCountNewNotifyHomePage } from "../../redux/countNewNotifySlice";
+import {
+  setChangeNotifyButton,
+  setChangeNotifyIcon,
+  setCountNewNotifyHomePage,
+  setPathNameOfNotifySeeAll,
+} from "../../redux/socketNotifyHomePage";
 import surveyImage from "../../assets/image/survey.png";
+
+//connect_socket_backend
 
 const HomeHeader = ({ action }) => {
   const { t, i18n } = useTranslation();
@@ -57,14 +64,23 @@ const HomeHeader = ({ action }) => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [notifyCheckState, setNotifyCheckState] = useState("");
-  const [countNewNotification, setCountNewNotification] = useState(0);
-  const [socketNotify, setSocketNotify] = useState(false);
   const [eye, setEye] = useState(false);
   const [isOpenMentalSurvey, setIsOpenMentalSurvey] = useState(false);
-  console.log(socketNotify);
   const currentUser = useSelector((state) => state.studentReducer);
   const countNewNotificationRedux = useSelector(
-    (state) => state.countNewNotifyReducer.countNewNotifyHomePage
+    (state) => state.socketNotifyHomepageReducer.countNewNotifyHomePage
+  );
+  const changeNotifyIcon = useSelector(
+    (state) => state.socketNotifyHomepageReducer.changeNotifyIcon
+  );
+  // const pathNameOfNotifySeeAll = useSelector(
+  //   (state) => state.socketNotifyHomepageReducer.pathNameOfNotifySeeAll
+  // );
+
+  const [isPathNameOfNotifySeeAll, setIsPathNameOfNotifySeeAll] =
+    useState(false);
+  const [countNewNotification, setCountNewNotification] = useState(
+    countNewNotificationRedux
   );
 
   const languageDropDownRef = useRef();
@@ -72,11 +88,21 @@ const HomeHeader = ({ action }) => {
   const profileDivRef = useRef();
   const profileDropDownRef = useRef();
 
-  useEffect(() => {
-    console.log("check State");
-    const divLanguage = document.querySelector(".header_homepage_language");
-    const divProfile = document.querySelector(".header_homepage_profile");
+  //check pathName Current
 
+  if (
+    pathName === `${path.HOMEPAGE}/${path.notify}` &&
+    isPathNameOfNotifySeeAll === false
+  ) {
+    setIsPathNameOfNotifySeeAll(true);
+  } else if (
+    pathName !== `${path.HOMEPAGE}/${path.notify}` &&
+    isPathNameOfNotifySeeAll === true
+  ) {
+    setIsPathNameOfNotifySeeAll(false);
+  }
+  useEffect(() => {
+    let divProfile, divLanguage;
     const handleClickDivLanguage = () => {
       languageDropDownRef.current.classList.toggle("appear");
     };
@@ -93,7 +119,7 @@ const HomeHeader = ({ action }) => {
         languageDropDownRef.current.classList.remove("appear");
       }
 
-      if (!action) {
+      if (JSON.parse(localStorage.getItem("auth-bookingCare-UET_student"))) {
         if (
           event.target !== profileDivRef.current &&
           event.target !== profileDivRef.current.childNodes[0] &&
@@ -104,10 +130,12 @@ const HomeHeader = ({ action }) => {
         }
       }
     }
-
+    divLanguage = document.querySelector(".header_homepage_language");
     divLanguage.addEventListener("click", handleClickDivLanguage);
     document.addEventListener("click", handleClickOutDiv);
-    if (!action) {
+    if (JSON.parse(localStorage.getItem("auth-bookingCare-UET_student"))) {
+      divProfile = document.querySelector(".header_homepage_profile");
+
       divProfile.addEventListener("click", handleClickDivProfile);
     }
 
@@ -115,14 +143,18 @@ const HomeHeader = ({ action }) => {
       console.log("running");
       document.removeEventListener("click", handleClickOutDiv);
       divLanguage.removeEventListener("click", handleClickDivLanguage);
-      if (!action) {
-        divProfile.removeEventListener("click", handleClickDivProfile);
+      if (JSON.parse(localStorage.getItem("auth-bookingCare-UET_student"))) {
+        if (divProfile) {
+          divProfile.removeEventListener("click", handleClickDivProfile);
+        }
       }
     };
   }, []);
 
   useEffect(() => {
     const listenNewUpdateBookingFromBackend = (data) => {
+      console.log("action" + JSON.stringify(data));
+
       const { studentId, type, actionId } = data;
       if (studentId === currentUser?.id) {
         if (actionId === "A2") {
@@ -190,40 +222,58 @@ const HomeHeader = ({ action }) => {
             );
           }
         }
-        setSocketNotify(true);
-        dispatch(setCountNewNotifyHomePage(countNewNotificationRedux + 1));
+        dispatch(setChangeNotifyIcon(true));
+        setCountNewNotification((previousState) => {
+          dispatch(setCountNewNotifyHomePage(previousState + 1));
+          return previousState + 1;
+        });
+        // if () {
+        //   console.log("oo hay");
+        //   dispatch(setChangeNotifyButton(true));
+        // }
+        setIsPathNameOfNotifySeeAll((previousState) => {
+          if (previousState === true) {
+            dispatch(setChangeNotifyButton(true));
+          }
+          return previousState;
+        });
       }
     };
-
-    if (pathName && pathName !== "/trang-sinh-vien/danh-sach-thong-bao") {
+    if (
+      JSON.parse(localStorage.getItem("auth-bookingCare-UET_student")) &&
+      !socket.hasListeners("new_notification_for_student_about_update_booking")
+    ) {
+      console.log("listen");
       socket.on("new_notification_for_student_about_update_booking", (data) =>
         listenNewUpdateBookingFromBackend(data)
       );
     }
 
     return () => {
-      if (pathName && pathName !== "/trang-sinh-vien/danh-sach-thong-bao") {
-        socket.off(
-          "new_notification_for_student_about_update_booking",
-          listenNewUpdateBookingFromBackend
-        );
-      }
+      console.log("cleanup");
+      socket.off(
+        "new_notification_for_student_about_update_booking",
+        listenNewUpdateBookingFromBackend
+      );
     };
   }, []);
 
   useEffect(() => {
     //getCountNewNotify
-    getNotiFy
-      .getCountNewNotify({
-        type: "student",
-        studentId: currentUser?.id,
-      })
-      .then((data) => {
-        if (data?.codeNumber === 0) {
-          // setCountNewNotification(data?.countNewNotify);
-          dispatch(setCountNewNotifyHomePage(data?.countNewNotify));
-        }
-      });
+    if (JSON.parse(localStorage.getItem("auth-bookingCare-UET_student"))) {
+      getNotiFy
+        .getCountNewNotify({
+          type: "student",
+          studentId: currentUser?.id,
+        })
+        .then((data) => {
+          if (data?.codeNumber === 0) {
+            // setCountNewNotification(data?.countNewNotify);
+            dispatch(setCountNewNotifyHomePage(data?.countNewNotify));
+            setCountNewNotification(data?.countNewNotify);
+          }
+        });
+    }
   }, []);
 
   const handleChangeLanguages = (language) => {
@@ -234,9 +284,7 @@ const HomeHeader = ({ action }) => {
     logOutHomePageApi.logoutUser({}).then((data) => {
       if (data?.codeNumber === 0) {
         dispatch(logOutUser());
-        console.log("logout");
         navigate(`${path.HOMEPAGE}/${path.login_homepage}?redirect=/homepage`);
-        console.log("logout2");
       } else {
       }
     });
@@ -335,7 +383,9 @@ const HomeHeader = ({ action }) => {
         type: "student",
         studentId: currentUser?.id,
       }).then((data) => {
-        setSocketNotify(false);
+        dispatch(setCountNewNotifyHomePage(0));
+        setCountNewNotification(0);
+        dispatch(setChangeNotifyIcon(false));
         navigate(`${path.HOMEPAGE}/${path.notify}`);
       });
     } else {
@@ -347,7 +397,6 @@ const HomeHeader = ({ action }) => {
     setIsOpenMentalSurvey(true);
   };
 
-  console.log("homepage header");
   return (
     <Fragment>
       <div className="homepage-header-container flex items-center">
@@ -371,24 +420,28 @@ const HomeHeader = ({ action }) => {
         </div>
         <div className="homepage-herder-right">
           <div className="homepage-herder-right-up">
-            <div
-              className="relative cursor-pointer pr-2 flex items-center justify-center gap-2"
-              onClick={() => handleResetNotify()}
-            >
-              {socketNotify ? (
-                <TbBellRinging className="bell relative -top-[1px] text-blurThemeColor text-xl" />
-              ) : (
-                <GoBell className="text-blurThemeColor text-xl relative -top-[1px]" />
-              )}
-              {+countNewNotificationRedux > 0 && (
-                <div className="absolute right-[68px] -top-[12px] flex items-center justify-center w-6 h-5 p-1 text-white bg-red-600 rounded-full">
-                  <span className="text-xs">{`${countNewNotificationRedux}+`}</span>
-                </div>
-              )}
-              <span className="text-sm">
-                {i18n.language === "en" ? "Notification" : "Thông báo"}
-              </span>
-            </div>
+            {JSON.parse(
+              localStorage.getItem("auth-bookingCare-UET_student")
+            ) && (
+              <div
+                className="relative cursor-pointer pr-2 flex items-center justify-center gap-2"
+                onClick={() => handleResetNotify()}
+              >
+                {changeNotifyIcon ? (
+                  <TbBellRinging className="bell relative -top-[1px] text-blurThemeColor text-xl" />
+                ) : (
+                  <GoBell className="text-blurThemeColor text-xl relative -top-[1px]" />
+                )}
+                {+countNewNotificationRedux > 0 && (
+                  <div className="absolute right-[68px] -top-[12px] flex items-center justify-center w-6 h-5 p-1 text-white bg-red-600 rounded-full">
+                    <span className="text-xs">{`${countNewNotificationRedux}+`}</span>
+                  </div>
+                )}
+                <span className="text-sm">
+                  {i18n.language === "en" ? "Notification" : "Thông báo"}
+                </span>
+              </div>
+            )}
             <div className="relative">
               {i18n.language === "vi" ? (
                 <div
@@ -602,76 +655,77 @@ const HomeHeader = ({ action }) => {
               </div>
             )}
           </div>
-          <div className="homepage-herder-right-down">
-            <NavLink
-              to={path.HOMEPAGE}
-              className="text-blue-700 text-3xl cursor-pointer rounded-full p-1"
-              style={{ backgroundColor: "#edf5ff" }}
-            >
-              <AiFillHome
+          {JSON.parse(localStorage.getItem("auth-bookingCare-UET_student")) && (
+            <div className="homepage-herder-right-down">
+              <NavLink
+                to={path.HOMEPAGE}
                 className="text-blue-700 text-3xl cursor-pointer rounded-full p-1"
                 style={{ backgroundColor: "#edf5ff" }}
-              />
-            </NavLink>
-            <NavLink
-              to={`${path.HOMEPAGE}/${path.inform}`}
-              className="navigation text-md uppercase text-black hover:text-blue-700"
-              style={({ isActive }) =>
-                isActive
-                  ? {
-                      color: "#1d5193",
-                    }
-                  : {}
-              }
-            >
-              <span>{t("header.inform")}</span>
-            </NavLink>
-            <NavLink
-              to={`${path.HOMEPAGE}/${path.processBooking}`}
-              className={`navigation text-md uppercase text-black hover:text-blue-700`}
-              style={({ isActive }) =>
-                isActive
-                  ? {
-                      color: "#1d5193",
-                    }
-                  : {}
-              }
-            >
-              <span>
-                {i18n.language === "en"
-                  ? "Process Management"
-                  : "Quản lý tiến trình"}
-              </span>
-            </NavLink>
-            <NavLink
-              to={`${path.HOMEPAGE}/${path.news}`}
-              className={`navigation text-md uppercase text-black hover:text-blue-700`}
-              style={({ isActive }) =>
-                isActive
-                  ? {
-                      color: "#1d5193",
-                    }
-                  : {}
-              }
-            >
-              <span>{i18n.language === "en" ? "News" : "Tin tức"}</span>
-            </NavLink>
+              >
+                <AiFillHome
+                  className="text-blue-700 text-3xl cursor-pointer rounded-full p-1"
+                  style={{ backgroundColor: "#edf5ff" }}
+                />
+              </NavLink>
+              <NavLink
+                to={`${path.HOMEPAGE}/${path.inform}`}
+                className="navigation text-md uppercase text-black hover:text-blue-700"
+                style={({ isActive }) =>
+                  isActive
+                    ? {
+                        color: "#1d5193",
+                      }
+                    : {}
+                }
+              >
+                <span>{t("header.inform")}</span>
+              </NavLink>
+              <NavLink
+                to={`${path.HOMEPAGE}/${path.processBooking}`}
+                className={`navigation text-md uppercase text-black hover:text-blue-700`}
+                style={({ isActive }) =>
+                  isActive
+                    ? {
+                        color: "#1d5193",
+                      }
+                    : {}
+                }
+              >
+                <span>
+                  {i18n.language === "en"
+                    ? "Process Management"
+                    : "Quản lý tiến trình"}
+                </span>
+              </NavLink>
+              <NavLink
+                to={`${path.HOMEPAGE}/${path.news}`}
+                className={`navigation text-md uppercase text-black hover:text-blue-700`}
+                style={({ isActive }) =>
+                  isActive
+                    ? {
+                        color: "#1d5193",
+                      }
+                    : {}
+                }
+              >
+                <span>{i18n.language === "en" ? "News" : "Tin tức"}</span>
+              </NavLink>
 
-            <div
-              className="relative navigation text-md text-black hover:text-blue-700"
-              // style={({ isActive }) =>
-              //   isActive
-              //     ? {
-              //         color: "#1d5193",
-              //       }
-              //     : { color: "#000" }
-              // }
-            >
-              {/* <span className="flex items-center justify-center gap-1">
+              <div
+                className="relative navigation text-md text-black hover:text-blue-700"
+                // style={({ isActive }) =>
+                //   isActive
+                //     ? {
+                //         color: "#1d5193",
+                //       }
+                //     : { color: "#000" }
+                // }
+              >
+                {/* <span className="flex items-center justify-center gap-1">
                 {i18n.language === "en" ? "STUDENT HANDBOOK" : "SỔ TAY SINH VIÊN"}
                 <IoMdArrowDropdown className="hover:text-blue-700" />
               </span> */}
-              {/* <a
+                {/* <a
                 href="http://handbook.uet.vnu.edu.vn/"
                 className="text-md text-headingColor hover:text-blue-700"
                 style={{ fontSize: "16px" }}
@@ -683,80 +737,82 @@ const HomeHeader = ({ action }) => {
                   ? "STUDENT HANDBOOK"
                   : "SỔ TAY SINH VIÊN"}
               </a> */}
-              <Link
-                className="navigation text-md uppercase hover:text-blue-700 text-black"
-                to="http://handbook.uet.vnu.edu.vn/"
-                target="_blank"
-                rel="noopener noreferrer"
+                <Link
+                  className="navigation text-md uppercase hover:text-blue-700 text-black"
+                  to="http://handbook.uet.vnu.edu.vn/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {i18n.language === "en"
+                    ? "STUDENT HANDBOOK"
+                    : "SỔ TAY SINH VIÊN"}
+                </Link>
+              </div>
+              <NavLink
+                to={`${path.HOMEPAGE}/${path.contact}`}
+                className="navigation text-md uppercase hover:text-blue-700"
+                style={({ isActive }) =>
+                  isActive
+                    ? {
+                        color: "#1d5193",
+                      }
+                    : { color: "#000" }
+                }
               >
-                {i18n.language === "en"
-                  ? "STUDENT HANDBOOK"
-                  : "SỔ TAY SINH VIÊN"}
-              </Link>
-            </div>
-            <NavLink
-              to={`${path.HOMEPAGE}/${path.contact}`}
-              className="navigation text-md uppercase hover:text-blue-700"
-              style={({ isActive }) =>
-                isActive
-                  ? {
-                      color: "#1d5193",
-                    }
-                  : { color: "#000" }
-              }
-            >
-              <span>{t("header.contact")}</span>
-            </NavLink>
-            <div className="survey_header navigation cursor-pointer text-md text-black hover:text-blue-700 hover:opacity-100 relative">
-              <span className="flex items-center justify-center gap-1">
-                {i18n.language === "en" ? "SURVEY" : "KHẢO SÁT"}
-                <IoMdArrowDropdown className="hover:text-blue-700" />
-              </span>
-              <ul
-                className="survey_dropdown absolute profile-user-homepage avatar-modal"
-                style={{
-                  padding: ".5rem 0",
-                  margin: 0,
-                  marginTop: "0px",
-                  fontSize: "1rem",
-                  color: "#212529",
-                  textAlign: "left",
-                  listStyle: "none",
-                  backgroundColor: "#fff",
-                  backgroundClip: "padding-box",
-                  border: "1px solid rgba(0,0,0,.15)",
-                  borderRadius: ".25rem",
-                  minWidth: "182px",
-                  top: "40px",
-                }}
-              >
-                <li>
-                  <div
-                    className={`cursor-pointer hover:bg-gray-100 transition-all duration-300 p-[10px] pl-[20px]
+                <span>{t("header.contact")}</span>
+              </NavLink>
+              <div className="survey_header navigation cursor-pointer text-md text-black hover:text-blue-700 hover:opacity-100 relative">
+                <span className="flex items-center justify-center gap-1">
+                  {i18n.language === "en" ? "SURVEY" : "KHẢO SÁT"}
+                  <IoMdArrowDropdown className="hover:text-blue-700" />
+                </span>
+                <ul
+                  className="survey_dropdown absolute profile-user-homepage avatar-modal"
+                  style={{
+                    padding: ".5rem 0",
+                    margin: 0,
+                    marginTop: "0px",
+                    fontSize: "1rem",
+                    color: "#212529",
+                    textAlign: "left",
+                    listStyle: "none",
+                    backgroundColor: "#fff",
+                    backgroundClip: "padding-box",
+                    border: "1px solid rgba(0,0,0,.15)",
+                    borderRadius: ".25rem",
+                    minWidth: "182px",
+                    top: "40px",
+                  }}
+                >
+                  <li>
+                    <div
+                      className={`cursor-pointer hover:bg-gray-100 transition-all duration-300 p-[10px] pl-[20px]
                      text-headingColor border-none block w-full font-normal`}
-                    style={{ fontSize: "16px" }}
-                    onClick={() => handlePrePsyChologicalSurvey()}
-                  >
-                    {i18n.language === "en"
-                      ? "Pre-psychological survey"
-                      : "Tiền khảo sát tâm lý"}
-                  </div>
-                </li>
-                <li>
-                  <div
-                    className={`cursor-pointer hover:bg-gray-100 transition-all duration-300 p-[10px] pl-[20px]
+                      style={{ fontSize: "16px" }}
+                      onClick={() => handlePrePsyChologicalSurvey()}
+                    >
+                      {i18n.language === "en"
+                        ? "Pre-psychological survey"
+                        : "Tiền khảo sát tâm lý"}
+                    </div>
+                  </li>
+                  <li>
+                    <div
+                      className={`cursor-pointer hover:bg-gray-100 transition-all duration-300 p-[10px] pl-[20px]
                      text-headingColor border-none block w-full font-normal`}
-                    style={{ fontSize: "16px" }}
-                    onClick={() => navigate(`${path.HOMEPAGE}/${path.survey}`)}
-                  >
-                    {i18n.language === "en"
-                      ? "Student Opinion"
-                      : "Ý kiến sinh viên"}
-                  </div>
-                </li>
-              </ul>
-            </div>
-            {/* <NavLink
+                      style={{ fontSize: "16px" }}
+                      onClick={() =>
+                        navigate(`${path.HOMEPAGE}/${path.survey}`)
+                      }
+                    >
+                      {i18n.language === "en"
+                        ? "Student Opinion"
+                        : "Ý kiến sinh viên"}
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              {/* <NavLink
               to={`${path.HOMEPAGE}/${path.survey}`}
               className={`navigation text-md uppercase text-black hover:text-blue-700`}
               style={({ isActive }) =>
@@ -769,7 +825,8 @@ const HomeHeader = ({ action }) => {
             >
               <span>{t("header.survey")}</span>
             </NavLink> */}
-          </div>
+            </div>
+          )}
         </div>
 
         {/* update Password Student */}

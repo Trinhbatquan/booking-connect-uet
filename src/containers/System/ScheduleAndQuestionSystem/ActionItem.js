@@ -7,6 +7,7 @@ import { FaEye } from "react-icons/fa";
 import { FaRunning } from "react-icons/fa";
 import { GrRefresh } from "react-icons/gr";
 import { BiMessageSquareEdit } from "react-icons/bi";
+import { IoReload } from "react-icons/io5";
 import {
   getAllBooking,
   updateStatusBookingSchedule,
@@ -36,9 +37,10 @@ import { logOutApi } from "../../../services/userService";
 import { logOutUser } from "../../../redux/authSlice";
 import { useNavigate } from "react-router";
 import GetCancelReason from "./GetCancelReason";
-import ConfirmAnswer from "./ConfirmAnswer";
+import ConfirmAction from "./ConfirmAction";
 import convertBufferToBase64 from "../../../utils/convertBufferToBase64";
 import { emit_new_notification_update_booking_for_student } from "../../../utils/socket_client";
+import { getAnswerById } from "../../../services/answerService";
 
 const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
   const [loading, setLoading] = useState(false);
@@ -58,14 +60,13 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
   const [dataBookingSelect, setDataBookingSelect] = useState([]);
   const [answer, setAnswer] = useState(false);
   const [dataAnswer, setDataAnswer] = useState("");
-  const [
-    isOpenModalAnswerQuestionConfirm,
-    setIsOpenModalAnswerQuestionConfirm,
-  ] = useState(false);
-  const [dataConfirmAnswer, setDataConfirmAnswer] = useState([]);
+  const [isOpenModalConfirmAction, setIsOpenModalConfirmAction] =
+    useState(false);
+  const [dataConfirmAction, setDataConfirmAction] = useState([]);
   const [isOpenModelCancel, setIsOpenModelCancel] = useState(false);
   const [dataModalCancel, setDataModelCancel] = useState([]);
-
+  const [answerDataForDoneQuestion, setAnswerDataForDoneQuestion] =
+    useState("");
   console.log(dataBookingSelect);
 
   const { t, i18n } = useTranslation();
@@ -77,13 +78,14 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
   const [filters1, setFilters1] = useState(null);
   const [globalFilterValue1, setGlobalFilterValue1] = useState("");
   const [selectedProducts8, setSelectedProducts8] = useState(null);
-  const [allRowSelected, setAllRowSelected] = useState(false);
   // const [currentPage, setCurrentPage] = useState();
   const [first1, setFirst1] = useState(0);
-  const [rows1, setRows1] = useState(4);
+  const [rows1, setRows1] = useState(8);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageInputTooltip, setPageInputTooltip] = useState(
-    "Press 'Enter' key to go to this page."
+    i18n.language === "en"
+      ? "Press 'Enter' key to go to this page."
+      : "Sử dụng phím Enter để di chuyển trang."
   );
 
   console.log(selectedProducts8);
@@ -108,13 +110,19 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
       const page = parseInt(currentPage);
       if (page < 1 || page > options.totalPages) {
         setPageInputTooltip(
-          `Value must be between 1 and ${options.totalPages}.`
+          i18n.language === "en"
+            ? `Value must be between 1 and ${options.totalPages}.`
+            : `Giá trị phải nằm từ 1 đến ${options.totalPages}.`
         );
       } else {
         const first = currentPage ? options.rows * (page - 1) : 0;
 
         setFirst1(first);
-        setPageInputTooltip("Press 'Enter' key to go to this page.");
+        setPageInputTooltip(
+          i18n.language === "en"
+            ? "Press 'Enter' key to go to this page."
+            : "Sử dụng phím Enter để di chuyển trang."
+        );
       }
     }
   };
@@ -133,7 +141,9 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
             textAlign: "center",
           }}
         >
-          {`Hiển thị ${options.first} - ${options.last} của ${options.totalRecords}`}
+          {i18n.language === "en"
+            ? `Show ${options.first} - ${options.last} of ${options.totalRecords}`
+            : `Hiển thị ${options.first} - ${options.last} của ${options.totalRecords}`}
         </span>
       );
     },
@@ -145,7 +155,9 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
           onClick={options.onClick}
           disabled={options.disabled}
         >
-          <span className="p-3">Trước</span>
+          <span className="p-3">
+            {i18n.language === "en" ? "Previous" : "Trước"}
+          </span>
           <Ripple />
         </button>
       );
@@ -158,7 +170,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
           onClick={options.onClick}
           disabled={options.disabled}
         >
-          <span className="p-3">Sau</span>
+          <span className="p-3">{i18n.language === "en" ? "Next" : "Sau"}</span>
           <Ripple />
         </button>
       );
@@ -192,10 +204,12 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
     },
     RowsPerPageDropdown: (options) => {
       const dropdownOptions = [
-        { label: 4, value: 4 },
         { label: 8, value: 8 },
         { label: 12, value: 12 },
-        { label: "All", value: options.totalRecords },
+        {
+          label: i18n.language === "en" ? "All" : "Tất cả",
+          value: options.totalRecords,
+        },
       ];
 
       return (
@@ -254,7 +268,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
           <Button
             type="button"
             icon="pi pi-filter-slash"
-            label="Clear"
+            label={i18n.language === "en" ? "Clear" : "Đặt lại"}
             className="p-button-outlined"
             onClick={() => {
               clearFilter1();
@@ -265,7 +279,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
             <Button
               type="button"
               // icon="pi pi-filter-slash"
-              label="Delete"
+              label={i18n.language === "en" ? "Delete" : "Xoá"}
               className={`p-button-outlined ${
                 selectedProducts8?.length >= 1 ? "" : "disabled"
               }`}
@@ -280,7 +294,11 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
             onChange={onGlobalFilterChange1}
             placeholder={`${
               action === "schedule"
-                ? "Tìm kiếm theo tên, email, ngày hoặc trạng thái"
+                ? i18n.language === "en"
+                  ? "Search by name, email or status"
+                  : "Tìm kiếm theo tên, email, ngày hoặc trạng thái"
+                : i18n.language === "en"
+                ? "Search by name, email, time or status"
                 : "Tìm kiếm theo tên, email, thời gian hoặc trạng thái"
             }`}
             style={{ width: "100%" }}
@@ -295,7 +313,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
       <>
         <div className="flex items-center justify-center gap-5">
           <Button
-            tooltip="See detail"
+            tooltip={i18n.language === "en" ? "See Detail" : "Chi tiết"}
             tooltipOptions={{ position: "top" }}
             style={{
               color: "#812222",
@@ -312,7 +330,11 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
           </Button>
           {status === "process" && (
             <Button
-              tooltip="Confirm appointment completion"
+              tooltip={
+                i18n.language === "en"
+                  ? "Confirm appointment completion"
+                  : "Xác nhận lịch đã hoàn thành"
+              }
               tooltipOptions={{ position: "top" }}
               style={{
                 color: "green",
@@ -322,8 +344,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                 borderRadius: "25px",
               }}
               onClick={() => {
-                //  setDataBookingSelect(rowData);
-                acceptOrCancelSchedule("done", rowData);
+                HandleDetailBooking(rowData);
               }}
             >
               <BsCheck2Square
@@ -336,7 +357,11 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
             (action === "schedule" ? (
               <>
                 <Button
-                  tooltip="Accept this schedule"
+                  tooltip={
+                    i18n.language === "en"
+                      ? "Accept this schedule"
+                      : "Chấp nhận lịch hẹn"
+                  }
                   tooltipOptions={{ position: "top" }}
                   style={{
                     color: "blue",
@@ -346,14 +371,17 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                     borderRadius: "25px",
                   }}
                   onClick={() => {
-                    // setDataBookingSelect(rowData);
-                    acceptOrCancelSchedule("process", rowData);
+                    HandleDetailBooking(rowData);
                   }}
                 >
                   <BsCheck2Square className="text-xl " />
                 </Button>
                 <Button
-                  tooltip="Cancel this schedule"
+                  tooltip={
+                    i18n.language === "en"
+                      ? "Cancel this schedule"
+                      : "Huỷ bỏ lịch hẹn"
+                  }
                   tooltipOptions={{ position: "top" }}
                   style={{
                     color: "red",
@@ -364,7 +392,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                   }}
                   onClick={() => {
                     // setDataBookingSelect(rowData);
-                    acceptOrCancelSchedule("cancel", rowData);
+                    acceptOrCancelSchedule(rowData, "cancel");
                   }}
                 >
                   <BsXCircle className="text-xl " />
@@ -372,7 +400,11 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
               </>
             ) : (
               <Button
-                tooltip="Answer this question"
+                tooltip={
+                  i18n.language === "en"
+                    ? "Answer this question"
+                    : "Trả lời câu hỏi"
+                }
                 tooltipOptions={{ position: "top" }}
                 style={{
                   color: "blue",
@@ -388,7 +420,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                 />
               </Button>
             ))}
-          {(status === "cancel" || status === "done") && (
+          {/* {(status === "cancel" || status === "done") && (
             <Button
               tooltip="Remove this schedule to database"
               tooltipOptions={{ position: "top" }}
@@ -402,7 +434,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
             >
               <AiOutlineDelete className="text-xl" />
             </Button>
-          )}
+          )} */}
         </div>
       </>
     );
@@ -419,13 +451,13 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
   const statusTemplate = (rowData) => {
     let value = "";
     if (rowData.statusId === "S1") {
-      value = "New";
+      value = i18n.language === "en" ? "New" : "Mới";
     } else if (rowData.statusId === "S2") {
-      value = "In Process";
+      value = i18n.language === "en" ? "In Process" : "Đang tiến hành";
     } else if (rowData.statusId === "S3") {
-      value = "Done";
+      value = i18n.language === "en" ? "Done" : "Hoàn thành";
     } else if (rowData.statusId === "S4") {
-      value = "Cancel";
+      value = i18n.language === "en" ? "Cancel" : "Bị huỷ";
     }
     return <span>{value}</span>;
   };
@@ -478,12 +510,13 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
         }
       });
       setLoading(false);
-    }, 1000);
+    }, 0);
     initFilters1();
     setSelectedProducts8(null);
     setDetail(false);
     setAnswer(false);
     setDataBookingSelect([]);
+    setAnswerDataForDoneQuestion("");
   }, [action, status]);
 
   console.log(dataBookingFilter, action);
@@ -506,50 +539,60 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
     });
   }
 
-  const handleRefresh = () => {
-    if (status === "total") {
+  const handleRefresh = (statusId) => {
+    if (!statusId || status === "total") {
       const params = {
         managerId,
         roleManager,
         actionId: action === "schedule" ? "A1" : "A2",
         statusId: ["S1", "S2", "S3", "S4"],
       };
-      setTimeout(() => {
-        getAllBooking.getByManagerAndAction(params).then((res) => {
-          if (res?.codeNumber === 0) {
-            if (res?.allBooking?.length > 0) {
-              console.log(res?.allBooking);
-              res?.allBooking?.forEach((item) => {
-                console.log(item);
-                item.date = moment(item?.date).format(
-                  dateFormat.LABEL_SCHEDULE
-                );
-              });
-            }
-            setDataBookingFilter(res?.allBooking);
-            setDataBookingTotal(res?.allBooking);
+      getAllBooking.getByManagerAndAction(params).then((res) => {
+        if (res?.codeNumber === 0) {
+          if (res?.allBooking?.length > 0) {
+            console.log(res?.allBooking);
+            res?.allBooking?.forEach((item) => {
+              console.log(item);
+              item.date = moment(item?.date).format(dateFormat.LABEL_SCHEDULE);
+            });
           }
-        });
-      }, 1000);
+          setDataBookingFilter(res?.allBooking);
+          setDataBookingTotal(res?.allBooking);
+        }
+      });
       setDetail(false);
       setAnswer(false);
       setDataBookingSelect([]);
       setSelectedProducts8(null);
-    } else {
+      setDataConfirmAction([]);
+      setAnswerDataForDoneQuestion("");
       setStatus("total");
+    } else {
+      setStatus(statusId);
     }
   };
 
-  const HandleDetailBooking = (data, action) => {
+  const HandleDetailBooking = (data, actionId) => {
     setDetail(true);
     setDataBookingSelect(data);
     setSelectedProducts8([data]);
-    if (action === "answer") {
+    if (actionId === "answer") {
       setAnswer(true);
     } else {
       setAnswer(false);
     }
     setDataAnswer("");
+    if (action === "question" && status === "done") {
+      setLoading(true);
+      getAnswerById({
+        questionId: data?.id,
+      }).then((res) => {
+        if (res?.codeNumber === 0) {
+          setAnswerDataForDoneQuestion(res?.answerData);
+        }
+        setLoading(false);
+      });
+    }
   };
 
   //handle question
@@ -557,24 +600,25 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
     setAnswer(true);
   };
 
-  const isOpenModalConfirmAnswer = () => {
-    if (!dataAnswer) {
+  const openModalConfirmAction = (data, type) => {
+    if (type === "answer" && !dataAnswer) {
       toast.error(t("system.notification.miss"), {
         autoClose: 3000,
         position: "bottom-right",
         theme: "colored",
       });
+      return;
     } else {
       console.log(dataBookingSelect);
       console.log(dataAnswer);
-      setIsOpenModalAnswerQuestionConfirm(true);
-      setDataConfirmAnswer(dataBookingSelect);
+      setIsOpenModalConfirmAction(true);
+      setDataConfirmAction(dataBookingSelect);
     }
   };
 
-  const closeModalConfirmAnswer = () => {
-    setIsOpenModalAnswerQuestionConfirm();
-    setDataConfirmAnswer([]);
+  const closeModalConfirmAction = () => {
+    setIsOpenModalConfirmAction(false);
+    setDataConfirmAction([]);
   };
 
   const confirmAnswerQuestion = async (data) => {
@@ -602,7 +646,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
         setLoadingFull(false);
 
         toast.error(`${t("system.token.mess")}`, {
-          autoClose: 3000,
+          autoClose: 5000,
           position: "bottom-right",
           theme: "colored",
         });
@@ -613,11 +657,11 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
               navigate(`${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`);
             }
           });
-        }, 3000);
+        }, 5000);
       } else if (res?.codeNumber === 1) {
         setLoadingFull(false);
 
-        toast.error(res?.message, {
+        toast.error(`${t("system.notification.fail")}`, {
           autoClose: 2000,
           position: "bottom-right",
           theme: "colored",
@@ -626,17 +670,22 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
         const clearData = async () => {
           setDetail(false);
           setDataBookingSelect([]);
-          setIsOpenModalAnswerQuestionConfirm(false);
+          setIsOpenModalConfirmAction(false);
           setDataModelCancel([]);
           setDataAnswer("");
           setSelectedProducts8(null);
-          await handleRefresh();
+          await handleRefresh("done");
           setLoadingFull(false);
-          toast.success(`${t("system.notification.create")}`, {
-            autoClose: 2000,
-            position: "bottom-right",
-            theme: "colored",
-          });
+          toast.success(
+            i18n.language === "en"
+              ? "Answer Question Successfully."
+              : "Trả lời câu hỏi thành công.",
+            {
+              autoClose: 2000,
+              position: "bottom-right",
+              theme: "colored",
+            }
+          );
         };
         clearData();
 
@@ -651,12 +700,12 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
   };
 
   //handle schedule
-  const acceptOrCancelSchedule = async (type, rowData) => {
-    setSelectedProducts8([rowData]);
+  const acceptOrCancelSchedule = async (data, type) => {
+    // setSelectedProducts8([data]);
     if (type === "process" || type === "done") {
       if (type === "done") {
         const currentDate = moment(new Date()).format("DD/MM/YYYY");
-        const dateSchedule = rowData.date.split("-")[1].trim();
+        const dateSchedule = data.date.split("-")[1].trim();
         if (currentDate < dateSchedule) {
           toast.error(
             `${
@@ -673,7 +722,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
           return;
         } else {
           const currentHour = new Date().getHours();
-          const hourShedule = rowData?.timeDataBooking.valueVn
+          const hourShedule = data?.timeDataBooking.valueVn
             .split("-")[1]
             .trim()
             .split(":")[0];
@@ -695,17 +744,17 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
         }
       }
       setLoadingFull(true);
-      let dateFormat = rowData.date.split("-")[1].trim().split("/");
+      let dateFormat = data.date.split("-")[1].trim().split("/");
       dateFormat = new Date(+dateFormat[2], +dateFormat[1] - 1, +dateFormat[0]);
       const body = {
         email: currentUser?.email,
-        managerId: rowData?.managerId,
-        roleManager: rowData?.roleManager,
-        studentId: rowData?.studentData?.id,
+        managerId: data?.managerId,
+        roleManager: data?.roleManager,
+        studentId: data?.studentData?.id,
         actionId: "A1",
         date: dateFormat,
-        timeType: rowData?.timeType,
-        time: rowData?.timeDataBooking?.valueVn,
+        timeType: data?.timeType,
+        time: data?.timeDataBooking?.valueVn,
         type,
       };
       console.log(body);
@@ -722,7 +771,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
           setLoadingFull(false);
 
           toast.error(`${t("system.token.mess")}`, {
-            autoClose: 3000,
+            autoClose: 5000,
             position: "bottom-right",
             theme: "colored",
           });
@@ -735,11 +784,11 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                 );
               }
             });
-          }, 3000);
+          }, 5000);
         } else if (res?.codeNumber === 1) {
           setLoadingFull(false);
 
-          toast.error(res?.message, {
+          toast.error(`${t("system.notification.fail")}`, {
             autoClose: 2000,
             position: "bottom-right",
             theme: "colored",
@@ -748,18 +797,32 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
           const clearData = async () => {
             setDetail(false);
             setDataBookingSelect([]);
-            await handleRefresh();
+            setIsOpenModalConfirmAction(false);
+            if (type === "process") {
+              await handleRefresh("process");
+            } else {
+              await handleRefresh("done");
+            }
             setLoadingFull(false);
-            toast.success(`${t("system.notification.create")}`, {
-              autoClose: 2000,
-              position: "bottom-right",
-              theme: "colored",
-            });
+            toast.success(
+              i18n.language === "en"
+                ? type === "done"
+                  ? "Confirm Completion Successfully."
+                  : "Approve Schedule Successfully."
+                : type === "done"
+                ? "Xác nhận hoàn thành thành công."
+                : "Chấp nhận lịch hẹn thành công.",
+              {
+                autoClose: 2000,
+                position: "bottom-right",
+                theme: "colored",
+              }
+            );
           };
           clearData();
           //socket notify to student
           emit_new_notification_update_booking_for_student({
-            studentId: rowData?.studentData?.id,
+            studentId: data?.studentData?.id,
             actionId: "A1",
             type,
           });
@@ -767,7 +830,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
       });
     } else if (type === "cancel") {
       setIsOpenModelCancel(true);
-      setDataModelCancel(dataBookingSelect);
+      setDataModelCancel(data);
     }
   };
   const closeModalCancel = () => {
@@ -793,7 +856,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
         actionId: "A1",
         date: dateFormat,
         timeType: data?.timeType,
-        time: dataBookingSelect?.timeDataBooking?.valueVn,
+        time: data?.timeDataBooking?.valueVn,
         type: "cancel",
         reasonCancel: reason,
       };
@@ -810,7 +873,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
           setLoadingFull(false);
 
           toast.error(`${t("system.token.mess")}`, {
-            autoClose: 3000,
+            autoClose: 5000,
             position: "bottom-right",
             theme: "colored",
           });
@@ -823,7 +886,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                 );
               }
             });
-          }, 3000);
+          }, 5000);
         } else if (res?.codeNumber === 1) {
           setLoadingFull(false);
 
@@ -838,13 +901,18 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
             setDataBookingSelect([]);
             setIsOpenModelCancel(false);
             setDataModelCancel([]);
-            await handleRefresh();
+            await handleRefresh("cancel");
             setLoadingFull(false);
-            toast.success(`${t("system.notification.create")}`, {
-              autoClose: 2000,
-              position: "bottom-right",
-              theme: "colored",
-            });
+            toast.success(
+              i18n.language === "en"
+                ? "Cancel Schedule Successfully."
+                : "Huỷ lịch hẹn thành công.",
+              {
+                autoClose: 2000,
+                position: "bottom-right",
+                theme: "colored",
+              }
+            );
           };
           clearData();
           //socket notify to student
@@ -874,7 +942,13 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
           >
             <BsBox />
             {`${
-              action === "schedule" ? "Tổng số lịch hẹn:" : "Tổng số câu hỏi:"
+              action === "schedule"
+                ? i18n.language === "en"
+                  ? "Total of schedule:"
+                  : "Tổng số lịch hẹn:"
+                : i18n.language === "en"
+                ? "Total of question"
+                : "Tổng số câu hỏi:"
             }`}{" "}
             <span className="text">
               {dataBookingTotal?.length ? dataBookingTotal.length : 0}
@@ -890,7 +964,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                }`}
             onClick={() => setStatus("new")}
           >
-            <FaRunning /> Mới:
+            <FaRunning /> {i18n.language === "en" ? "New:" : "Mới:"}
             <span className="text">{countNew ? countNew : 0}</span>
           </button>
           {action === "schedule" && (
@@ -904,7 +978,8 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                   }`}
               onClick={() => setStatus("process")}
             >
-              <FaRunning /> Đang tiến hành:
+              <FaRunning />{" "}
+              {i18n.language === "en" ? "In Process:" : "Đang tiến hành:"}
               <span className="text">{countProcess ? countProcess : 0}</span>
             </button>
           )}
@@ -918,7 +993,8 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                }`}
             onClick={() => setStatus("done")}
           >
-            <AiOutlineFileDone /> Hoàn thành:
+            <AiOutlineFileDone />
+            {i18n.language === "en" ? "Completed:" : "Hoàn thành:"}
             <span className="text">{countDone ? countDone : 0}</span>
           </button>
           {action === "schedule" && (
@@ -932,18 +1008,20 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                   }`}
               onClick={() => setStatus("cancel")}
             >
-              <AiOutlineFileDone /> Bị huỷ:
+              <AiOutlineFileDone />
+
+              {i18n.language === "en" ? "Canceled:" : "Bị huỷ:"}
               <span className="text">{countCancel ? countCancel : 0}</span>
             </button>
           )}
           <button
             type="button"
             onClick={() => handleRefresh()}
-            class={`hover:bg-blue-800 flex text-gray-400 bg-white border border-gray-600 items-center justify-center gap-1 transition-all duration-500 flex-1 hover:text-white rounded-lg focus:ring-4 focus:ring-blue-300 font-medium  text-md px-5 py-2.5 mr-2 mb-2 focus:outline-none
+            class={`system-button-refresh hover:bg-blue-800 flex text-gray-400 bg-white border border-gray-600 items-center justify-center gap-1 transition-all duration-500 flex-1 hover:text-white rounded-lg focus:ring-4 focus:ring-blue-300 font-medium  text-md px-5 py-2.5 mr-2 mb-2 focus:outline-none
                 `}
           >
-            {/* <GrRefresh className="text-xl text-white" /> */}
-            Tải lại trang
+            <IoReload className="system-button-refresh-icon rotating text-2xl text-gray-400 hover:text-white transition-all duration-500" />
+            {i18n.language === "en" ? "Refresh" : "Cập nhật"}
           </button>
         </div>
 
@@ -987,16 +1065,14 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                   }
                   header={header1}
                   emptyMessage="No customers found."
-                  selectionMode={`${
-                    status === "cancel" || status === "done"
-                      ? "checkbox"
-                      : "single"
-                  }`}
+                  // selectionMode={`${
+                  //   status === "cancel" || status === "done"
+                  //     ? "checkbox"
+                  //     : "single"
+                  // }`}
+                  selectionMode="single"
                   selection={selectedProducts8}
-                  onSelectionChange={(e) =>
-                    (status === "cancel" || status === "done") &&
-                    setSelectedProducts8(e.value)
-                  }
+                  onSelectionChange={(e) => setSelectedProducts8(e.value)}
                   resizableColumns
                   columnResizeMode="fit"
                   showGridlines
@@ -1004,12 +1080,12 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                   // onAllRowsUnselect={() => setAllRowSelected(false)}
                   // dataKey="id"
                 >
-                  {(status === "cancel" || status === "done") && (
+                  {/* {(status === "cancel" || status === "done") && (
                     <Column
                       selectionMode="multiple"
                       headerStyle={{ width: "3em" }}
                     ></Column>
-                  )}
+                  )} */}
                   <Column
                     header={t("system.table.name")}
                     field="studentData.fullName"
@@ -1065,7 +1141,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                             htmlFor="helper-text"
                             class="block mb-2 text-md font-medium text-gray-900 dark:text-white"
                           >
-                            Tên đầy đủ
+                            {i18n.language === "en" ? "FullName" : "Tên đầy đủ"}
                           </label>
                           <input
                             type="text"
@@ -1095,7 +1171,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                             htmlFor="helper-text"
                             class="block mb-2 text-md font-medium text-gray-900 dark:text-white"
                           >
-                            Ngành
+                            {i18n.language === "en" ? "Faculties" : "Khoa/Viện"}
                           </label>
                           <input
                             type="text"
@@ -1112,7 +1188,9 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                             htmlFor="helper-text"
                             class="block mb-2 text-md font-medium text-gray-900 dark:text-white"
                           >
-                            Ngày, tháng, năm
+                            {i18n.language === "en"
+                              ? "Schedule Date"
+                              : "Ngày hẹn"}
                           </label>
                           <input
                             type="text"
@@ -1127,7 +1205,9 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                             htmlFor="helper-text"
                             class="block mb-2 text-md font-medium text-gray-900 dark:text-white"
                           >
-                            Thời gian
+                            {i18n.language === "en"
+                              ? "Schedule Time"
+                              : "Thời gian hẹn"}
                           </label>
                           <input
                             type="text"
@@ -1142,7 +1222,9 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                             htmlFor="helper-text"
                             class="block mb-2 text-md font-medium text-gray-900 dark:text-white"
                           >
-                            Số điện thoại
+                            {i18n.language === "en"
+                              ? "PhoneNumber"
+                              : "Số điện thoại"}
                           </label>
                           <input
                             type="text"
@@ -1158,9 +1240,11 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                           htmlFor="helper-text"
                           class="block mb-2 text-md font-medium text-gray-900 dark:text-white"
                         >
-                          Lý do
+                          {i18n.language === "en"
+                            ? "Schedule Reason"
+                            : "Lý do buổi hẹn"}
                         </label>
-                        <input
+                        <textarea
                           type="text"
                           id="helper-text"
                           value={dataBookingSelect?.reason}
@@ -1168,6 +1252,25 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                           class="bg-gray-50 border border-gray-300 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                         />
                       </div>
+                      {dataBookingSelect?.reasonCancelSchedule && (
+                        <div className="w-full">
+                          <label
+                            htmlFor="helper-text"
+                            class="block mb-2 text-md font-medium text-gray-900 dark:text-white"
+                          >
+                            {i18n.language === "en"
+                              ? "Schedule Cancelation Reason"
+                              : "Lý do huỷ buổi hẹn"}
+                          </label>
+                          <textarea
+                            type="text"
+                            id="helper-text"
+                            value={dataBookingSelect?.reasonCancelSchedule}
+                            disabled
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                          />
+                        </div>
+                      )}
 
                       <div className="flex items-center justify-start gap-6 py-4 w-full">
                         {status === "process" && (
@@ -1176,10 +1279,12 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                             class={`border border-blue-600 hover:bg-blue-600 hover:text-white bg-white text-blue-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-md px-5 py-2 mr-2 mb-2 focus:outline-none
                     `}
                             onClick={() =>
-                              acceptOrCancelSchedule("done", dataBookingSelect)
+                              openModalConfirmAction(dataBookingSelect, "done")
                             }
                           >
-                            Xác nhận hoàn thành
+                            {i18n.language === "en"
+                              ? "Confirm completion"
+                              : "Xác nhận hoàn thành"}
                           </button>
                         )}
                         {status === "new" && (
@@ -1189,13 +1294,13 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                               class={`border border-blue-600 hover:bg-blue-600 hover:text-white bg-white text-blue-600  focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-md px-5 py-2 mr-2 mb-2 focus:outline-none
                     `}
                               onClick={() =>
-                                acceptOrCancelSchedule(
-                                  "process",
-                                  dataBookingSelect
+                                openModalConfirmAction(
+                                  dataBookingSelect,
+                                  "process"
                                 )
                               }
                             >
-                              Chấp nhận
+                              {i18n.language === "en" ? "Approve" : "Chấp nhận"}
                             </button>
                             <button
                               type="submit"
@@ -1203,12 +1308,12 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                     `}
                               onClick={() =>
                                 acceptOrCancelSchedule(
-                                  "cancel",
-                                  dataBookingSelect
+                                  dataBookingSelect,
+                                  "cancel"
                                 )
                               }
                             >
-                              Huỷ bỏ
+                              {i18n.language === "en" ? "Cancel" : "Huỷ bỏ"}
                             </button>
                           </>
                         )}
@@ -1222,7 +1327,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                             setSelectedProducts8(null);
                           }}
                         >
-                          Đóng
+                          {i18n.language === "en" ? "Close" : "Đóng"}
                         </button>
                       </div>
                     </div>
@@ -1234,7 +1339,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                             htmlFor="helper-text"
                             class="block mb-2 text-md font-medium text-gray-900 dark:text-white"
                           >
-                            Tên đầy đủ
+                            {i18n.language === "en" ? "FullName" : "Tên đầy đủ"}
                           </label>
                           <input
                             type="text"
@@ -1266,7 +1371,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                             htmlFor="helper-text"
                             class="block mb-2 text-md font-medium text-gray-900 dark:text-white"
                           >
-                            Ngành
+                            {i18n.language === "en" ? "Faculties" : "Khoa/Viện"}
                           </label>
                           <input
                             type="text"
@@ -1281,7 +1386,9 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                             htmlFor="helper-text"
                             class="block mb-2 text-md font-medium text-gray-900 dark:text-white"
                           >
-                            Thời gian
+                            {i18n.language === "en"
+                              ? "Question Making Time"
+                              : "Thời gian đặt câu hỏi"}
                           </label>
                           <input
                             type="text"
@@ -1298,7 +1405,9 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                             htmlFor="helper-text"
                             class="block mb-2 text-md font-medium text-gray-900 dark:text-white"
                           >
-                            Chủ đề
+                            {i18n.language === "en"
+                              ? "Question Subject"
+                              : "Chủ đề câu hỏi"}
                           </label>
                           <input
                             type="text"
@@ -1314,7 +1423,9 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                               htmlFor="helper-text"
                               class="block mb-2 text-md font-medium text-gray-900 dark:text-white"
                             >
-                              Ảnh kèm theo câu hỏi
+                              {i18n.language === "en"
+                                ? "Image"
+                                : "Ảnh kèm theo câu hỏi"}
                             </label>
                             <div className="w-full h-48 flex-1 relative">
                               <div
@@ -1338,7 +1449,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                           htmlFor="helper-text"
                           class="block mb-2 text-md font-medium text-gray-900 dark:text-white"
                         >
-                          Nội dung
+                          {i18n.language === "en" ? "Question" : " Nội dung"}
                         </label>
                         <textarea
                           type="text"
@@ -1348,13 +1459,36 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                           class="bg-gray-50 border border-gray-300 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                         />
                       </div>
+                      {answerDataForDoneQuestion ? (
+                        <div className="w-full">
+                          <label
+                            htmlFor="helper-text"
+                            class="block mb-2 text-md font-medium text-gray-900 dark:text-white"
+                          >
+                            {i18n.language === "en"
+                              ? "Answer for question"
+                              : "Câu trả lời cho câu hỏi trên"}
+                          </label>
+                          <textarea
+                            type="text"
+                            id="helper-text"
+                            value={answerDataForDoneQuestion?.answer}
+                            disabled
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                          />
+                        </div>
+                      ) : (
+                        ""
+                      )}
                       {answer && (
                         <div className="w-full">
                           <label
                             htmlFor="helper-text"
                             class="block mb-2 text-md font-medium text-gray-900 dark:text-white"
                           >
-                            Answer question
+                            {i18n.language === "en"
+                              ? "Answer Question"
+                              : " Trả lời câu hỏi"}
                           </label>
                           <textarea
                             type="text"
@@ -1376,10 +1510,20 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                             onClick={
                               !answer
                                 ? handleAnswerQuestion
-                                : isOpenModalConfirmAnswer
+                                : () =>
+                                    openModalConfirmAction(
+                                      dataBookingSelect,
+                                      "answer"
+                                    )
                             }
                           >
-                            {answer ? "Confirm Answer" : "Answer"}
+                            {answer
+                              ? i18n.language === "en"
+                                ? "Confirm Answer"
+                                : "Xác nhận trả lời"
+                              : i18n.language === "en"
+                              ? "Answer"
+                              : "Trả lời"}
                           </button>
                         )}
                         <button
@@ -1390,9 +1534,10 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                             setDetail(false);
                             setDataBookingSelect([]);
                             setSelectedProducts8(null);
+                            setAnswerDataForDoneQuestion("");
                           }}
                         >
-                          Đóng
+                          {i18n.language === "en" ? "Close" : "Đóng"}
                         </button>
                       </div>
                     </div>
@@ -1404,7 +1549,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
         )}
       </div>
 
-      {(isOpenModelCancel || isOpenModalAnswerQuestionConfirm) && (
+      {(isOpenModelCancel || isOpenModalConfirmAction) && (
         <div className="fixed z-50 top-0 bottom-0 left-0 right-0 w-full max-h-full bg-black bg-opacity-25"></div>
       )}
       {isOpenModelCancel && (
@@ -1415,16 +1560,20 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
         />
       )}
 
-      {isOpenModalAnswerQuestionConfirm && (
-        <ConfirmAnswer
-          dataAnswerQuestion={dataConfirmAnswer}
-          isClose={closeModalConfirmAnswer}
-          confirmAnswer={confirmAnswerQuestion}
+      {isOpenModalConfirmAction && (
+        <ConfirmAction
+          data={dataConfirmAction}
+          isClose={closeModalConfirmAction}
+          confirm={
+            dataConfirmAction?.actionId === "A2"
+              ? confirmAnswerQuestion
+              : acceptOrCancelSchedule
+          }
         />
       )}
 
       {loadingFull && (
-        <div className="fixed z-50 top-0 bottom-0 flex items-center justify-center mx-auto left-0 right-0 w-full max-h-full bg-black bg-opacity-25">
+        <div className="fixed loading-overlay top-0 bottom-0 flex items-center justify-center mx-auto left-0 right-0 w-full max-h-full bg-black bg-opacity-25">
           <div className="absolute">
             <Loading />
           </div>

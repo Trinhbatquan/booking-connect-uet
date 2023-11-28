@@ -111,37 +111,39 @@ const ProcessBooking = () => {
   };
 
   useEffect(() => {
-    setLoading(true);
-    getAllBookingStudentByIdAndAction
-      .get({
-        studentId: currentUser?.id,
-        actionId: action,
-      })
-      .then((data) => {
-        if (data?.codeNumber === 0) {
-          console.log(data?.studentBooking);
-          if (data?.studentBooking?.length > 0) {
-            let dataBookingCustom = data.studentBooking;
-            dataBookingCustom = customDataBookingStudent(dataBookingCustom);
-            setDataBooking(dataBookingCustom);
-          }
-          setLoading(false);
-        } else {
-          setLoading(false);
-          toast.error(
-            i18n.language === "en" ? data?.message_en : data?.message_vn,
-            {
-              autoClose: 3000,
-              theme: "colored",
-              position: "bottom-right",
+    if (JSON.parse(localStorage.getItem("auth-bookingCare-UET_student"))) {
+      setLoading(true);
+      getAllBookingStudentByIdAndAction
+        .get({
+          studentId: currentUser?.id,
+          actionId: action,
+        })
+        .then((data) => {
+          if (data?.codeNumber === 0) {
+            console.log(data?.studentBooking);
+            if (data?.studentBooking?.length > 0) {
+              let dataBookingCustom = data.studentBooking;
+              dataBookingCustom = customDataBookingStudent(dataBookingCustom);
+              setDataBooking(dataBookingCustom);
             }
-          );
-        }
-      });
-    initFilters1();
-    setAnswerData([]);
-    setIsOpenDetailBooking(false);
-    setSelectedProducts8([]);
+            setLoading(false);
+          } else {
+            setLoading(false);
+            toast.error(
+              i18n.language === "en" ? data?.message_en : data?.message_vn,
+              {
+                autoClose: 3000,
+                theme: "colored",
+                position: "bottom-right",
+              }
+            );
+          }
+        });
+      initFilters1();
+      setAnswerData([]);
+      setIsOpenDetailBooking(false);
+      setSelectedProducts8([]);
+    }
   }, [action, i18n.language]);
 
   const handleRefresh = () => {
@@ -319,10 +321,12 @@ const ProcessBooking = () => {
   const [allRowSelected, setAllRowSelected] = useState(false);
   // const [currentPage, setCurrentPage] = useState();
   const [first1, setFirst1] = useState(0);
-  const [rows1, setRows1] = useState(4);
+  const [rows1, setRows1] = useState(8);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageInputTooltip, setPageInputTooltip] = useState(
-    "Press 'Enter' key to go to this page."
+    i18n.language === "en"
+      ? "Press 'Enter' key to go to this page."
+      : "Sử dụng phím Enter để di chuyển trang."
   );
 
   console.log(selectedProducts8);
@@ -355,13 +359,19 @@ const ProcessBooking = () => {
       const page = parseInt(currentPage);
       if (page < 1 || page > options.totalPages) {
         setPageInputTooltip(
-          `Value must be between 1 and ${options.totalPages}.`
+          i18n.language === "en"
+            ? `Value must be between 1 and ${options.totalPages}.`
+            : `Giá trị phải nằm từ 1 đến ${options.totalPages}.`
         );
       } else {
         const first = currentPage ? options.rows * (page - 1) : 0;
 
         setFirst1(first);
-        setPageInputTooltip("Press 'Enter' key to go to this page.");
+        setPageInputTooltip(
+          i18n.language === "en"
+            ? "Press 'Enter' key to go to this page."
+            : "Sử dụng phím Enter để di chuyển trang."
+        );
       }
     }
   };
@@ -443,7 +453,6 @@ const ProcessBooking = () => {
     },
     RowsPerPageDropdown: (options) => {
       const dropdownOptions = [
-        { label: 4, value: 4 },
         { label: 8, value: 8 },
         { label: 12, value: 12 },
         { label: "All", value: options.totalRecords },
@@ -515,7 +524,7 @@ const ProcessBooking = () => {
           <Button
             type="button"
             icon="pi pi-filter-slash"
-            label="Clear"
+            label={i18n.language === "en" ? "Clear" : "Đặt lại"}
             className="p-button-outlined"
             onClick={() => {
               clearFilter1();
@@ -635,8 +644,7 @@ const ProcessBooking = () => {
           </div>
         </div>
       )}
-      <HomeHeader />
-      <div className="w-full h-[100px]"></div>
+
       <div
         className="relative mt-[34px] pt-[20px] mb-[20px] mx-[10%] pr-[30px] pl-[65px]"
         style={{
@@ -879,6 +887,23 @@ const ProcessBooking = () => {
                             />
                           </div>
                         </div>
+                        <div className="w-full">
+                          <label
+                            htmlFor="helper-text"
+                            class="block mb-2 text-md font-medium text-gray-900 dark:text-white"
+                          >
+                            {i18n.language === "en"
+                              ? "Schedule Reason"
+                              : "Lý do buổi hẹn"}
+                          </label>
+                          <textarea
+                            type="text"
+                            id="helper-text"
+                            value={selectedProducts8[0]?.reason}
+                            disabled
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                          />
+                        </div>
                         <div className="flex items-center justify-start gap-5 w-full">
                           <div className="flex-1">
                             <label
@@ -955,6 +980,25 @@ const ProcessBooking = () => {
                             />
                           </div>
                         </div>
+                        {selectedProducts8[0]?.reasonCancelSchedule && (
+                          <div className="w-full">
+                            <label
+                              htmlFor="helper-text"
+                              class="block mb-2 text-md font-medium text-gray-900 dark:text-white"
+                            >
+                              {i18n.language === "en"
+                                ? "Schedule Cancelation Reason"
+                                : "Lý do huỷ buổi hẹn"}
+                            </label>
+                            <textarea
+                              type="text"
+                              id="helper-text"
+                              value={selectedProducts8[0].reasonCancelSchedule}
+                              disabled
+                              class="bg-gray-50 border border-gray-300 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            />
+                          </div>
+                        )}
 
                         <div className="flex items-center justify-start gap-6 py-4 w-full">
                           <button

@@ -7,8 +7,6 @@ const Inform = () => {
   const { i18n } = useTranslation();
   return (
     <div>
-      <HomeHeader />
-      <div className="w-full h-[100px]"></div>
       <div className="content-inform py-[20px] my-[5px] px-[10%] mx-auto">
         <h2 className="text-blurThemeColor font-semibold text-3xl pb-[19px] border-b-2 border-gray-300">
           {i18n.language === "en" ? "Information" : "Giới thiệu"}

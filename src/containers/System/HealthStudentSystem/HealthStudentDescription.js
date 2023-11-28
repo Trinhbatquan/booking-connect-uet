@@ -35,19 +35,17 @@ const HealthStudentDescription = () => {
 
   useEffect(() => {
     setLoading(true);
-    setTimeout(async () => {
-      await getUserApi.getUserByRole({ role: "R6" }).then((data) => {
-        if (data?.codeNumber === 0) {
-          setDepartment(data.user);
-        }
-      });
-      // await getUserApi.getUserByRole({ role: "R6" }).then((data) => {
-      //   if (data?.codeNumber === 0) {
-      //     setFaculties(data.user);
-      //   }
-      // });
-      setLoading(false);
-    }, 1000);
+    getUserApi.getUserByRole({ role: "R6" }).then((data) => {
+      if (data?.codeNumber === 0) {
+        setDepartment(data.user);
+      }
+    });
+    // await getUserApi.getUserByRole({ role: "R6" }).then((data) => {
+    //   if (data?.codeNumber === 0) {
+    //     setFaculties(data.user);
+    //   }
+    // });
+    setLoading(false);
   }, []);
 
   let optionsDepartment = [];
@@ -143,62 +141,60 @@ const HealthStudentDescription = () => {
       //   note,
       //   action: isUpdate ? "update" : "create",
       // };
-      setTimeout(async () => {
-        await createMarkDown.create({}, dataMarkDown).then((res) => {
-          // createTeacherInfo.create({}, dataTeacherInfo).then((data) => {
-          if (res?.codeNumber === -1) {
-            toast.error(`${t("system.notification.fail")}`, {
+      createMarkDown.create({}, dataMarkDown).then((res) => {
+        // createTeacherInfo.create({}, dataTeacherInfo).then((data) => {
+        if (res?.codeNumber === -1) {
+          toast.error(`${t("system.notification.fail")}`, {
+            autoClose: 2000,
+            position: "bottom-right",
+            theme: "colored",
+          });
+          setLoading(false);
+        } else if (res?.codeNumber === -2) {
+          toast.error(`${t("system.token.mess")}`, {
+            autoClose: 5000,
+            position: "bottom-right",
+            theme: "colored",
+          });
+          setTimeout(() => {
+            logOutApi.logoutUser({}).then((data) => {
+              if (data?.codeNumber === 0) {
+                dispatch(logOutUser());
+                navigate(
+                  `${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`
+                );
+              }
+            });
+          }, 5000);
+        } else if (res?.codeNumber === 1) {
+          toast.error(res?.message, {
+            autoClose: 2000,
+            position: "bottom-right",
+            theme: "colored",
+          });
+          setLoading(false);
+        } else {
+          if (res?.message === "create") {
+            toast.success(`${t("system.notification.create")}`, {
               autoClose: 2000,
               position: "bottom-right",
               theme: "colored",
             });
-            setLoading(false);
-          } else if (res?.codeNumber === -2) {
-            toast.error(`${t("system.token.mess")}`, {
-              autoClose: 3000,
-              position: "bottom-right",
-              theme: "colored",
-            });
-            setTimeout(() => {
-              logOutApi.logoutUser({}).then((data) => {
-                if (data?.codeNumber === 0) {
-                  dispatch(logOutUser());
-                  navigate(
-                    `${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`
-                  );
-                }
-              });
-            }, 3000);
-          } else if (res?.codeNumber === 1) {
-            toast.error(res?.message, {
-              autoClose: 2000,
-              position: "bottom-right",
-              theme: "colored",
-            });
-            setLoading(false);
           } else {
-            if (res?.message === "create") {
-              toast.success(`${t("system.notification.create")}`, {
-                autoClose: 2000,
-                position: "bottom-right",
-                theme: "colored",
-              });
-            } else {
-              toast.success(`${t("system.notification.update")}`, {
-                autoClose: 2000,
-                position: "bottom-right",
-                theme: "colored",
-              });
-            }
-            setDescription("");
-            setSelectedOption(null);
-            setMarkdownHtml("");
-            setMarkdownText("");
-            setLoading(false);
-            setIsUpdate(false);
+            toast.success(`${t("system.notification.update")}`, {
+              autoClose: 2000,
+              position: "bottom-right",
+              theme: "colored",
+            });
           }
-        });
-      }, 1000);
+          setDescription("");
+          setSelectedOption(null);
+          setMarkdownHtml("");
+          setMarkdownText("");
+          setLoading(false);
+          setIsUpdate(false);
+        }
+      });
     } else {
       setNotifyCheckState(`${t("system.notification.miss")}`);
     }
@@ -222,24 +218,8 @@ const HealthStudentDescription = () => {
           </div>
         </div>
       )}
-      <div
-        className={`flex items-center justify-center mt-3 gap-1 py-2 px-1 text-white font-semibold rounded-md  
-        bg-blue-600 mb-1
-        `}
-        // type="text"
-        // onClick={() => setIsCreateUser(true)}
-        style={{ maxWidth: "25%", width: "25%" }}
-      >
-        <BsPersonPlusFill
-          className="mr-1 ml-2"
-          style={{ fontSize: "16px" }}
-          modal
-        />
-        {isUpdate
-          ? t("system.health-student.update-description")
-          : t("system.health-student.create-description")}
-      </div>
-      <div className="bg-slate-200 shadow-gray-300 mt-2 mb-1 pt-1 pb-4 px-3">
+
+      <div className="bg-slate-200 shadow-gray-300 mt-2 mb-1 pt-1 pb-4 px-3 rounded-lg">
         <div
           className="mx-auto text-red-500 mb-2 text-center text-xl"
           style={notifyCheckState ? { opacity: "1" } : { opacity: "0" }}

@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { BsEyeSlash } from "react-icons/bs";
 import { IoMdEye } from "react-icons/io";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import Loading from "../../../utils/Loading";
-import { loginHomePageApi } from "../../../services/userService";
+import { loginApi, loginHomePageApi } from "../../../services/userService";
 import { toast } from "react-toastify";
-import HomeHeader from "../HomeHeader";
 import { useTranslation } from "react-i18next";
+import banner from "../../../assets/image/June.png";
+import { path } from "../../../utils/constant";
 
-const UpdatePassword = () => {
+const UpdatePasswordSystem = () => {
+  const navigate = useNavigate();
   const param = useParams();
   const [isLoading, setIsLoading] = useState(false);
   const [focusPassword_login, setFocusPassword_login] = useState(false);
@@ -77,10 +79,16 @@ const UpdatePassword = () => {
     if (checkAdvancedRegister()) {
       setIsLoading(true);
       setMessageLogin("");
-      loginHomePageApi
+      loginApi
         .updatePass_forgot(
           {},
-          { email: email_login, token: param.token, password: password_login }
+          {
+            email: email_login,
+            token: param.token,
+            password: password_login,
+            userId: param.userId,
+            roleId: param.roleId,
+          }
         )
         .then((data) => {
           if (data?.codeNumber === 2) {
@@ -88,6 +96,9 @@ const UpdatePassword = () => {
             setMessageLogin(
               i18n.language === "en" ? data?.message_en : data?.message_vn
             );
+            setTimeout(() => {
+              navigate(`${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`);
+            }, 3000);
             setDisableButton(true);
           } else if (data?.codeNumber === 3) {
             setColor(false);
@@ -106,7 +117,7 @@ const UpdatePassword = () => {
   const handleSendAgainLink = () => {
     setIsLoading(true);
     setMessageLogin("");
-    loginHomePageApi.forgot({ email: email_login }).then((data) => {
+    loginApi.forgot({ email: email_login }).then((data) => {
       if (data?.codeNumber === 2) {
         setMessageLogin(
           i18n.language === "en" ? data?.message_en : data?.message_vn
@@ -138,7 +149,6 @@ const UpdatePassword = () => {
           </div>
         </div>
       )}
-      <HomeHeader action="preventDefault_checkClickDropDown" />
       <div
         className="container h-[550px] w-[65%] mx-auto flex overflow-hidden bg-white"
         style={{
@@ -147,23 +157,16 @@ const UpdatePassword = () => {
             "rgba(0, 0, 0, 0.25) 0px 14px 28px,rgba(0, 0, 0, 0.22) 0px 10px 10px",
         }}
       >
-        <div
-          class="overlay w-[50%] flex items-center justify-center"
-          style={{ backgroundColor: "#6741ff" }}
-        >
-          <div class="text-center">
-            <h3 style={{ color: "#fff", fontSize: "30px" }}>
-              {i18n.language === "en" ? "Update Password" : "Cập nhật mật khẩu"}
-            </h3>
-            <p
-              className="font-semibold text-white"
-              style={{ fontSize: "16px" }}
-            >
-              {i18n.language === "en"
-                ? " Let's follow instruction to finish."
-                : "Vui lòng làm theo hướng dẫn để kết thúc."}
-            </p>
-          </div>
+        <div class="overlay w-[50%] flex items-center justify-center">
+          <div
+            style={{
+              background: `url(${banner})`,
+              width: "100%",
+              height: "100%",
+              backgroundSize: "cover",
+              backgroundRepeat: "no-repeat",
+            }}
+          ></div>
         </div>
         <div className="w-[50%] flex flex-col items-center justify-center">
           <p className="w-[80%] text-center mx-auto text-blue-700 text-lg mt-16 flex flex-col items-center justify-center gap-0.5">
@@ -292,4 +295,4 @@ const UpdatePassword = () => {
   );
 };
 
-export default UpdatePassword;
+export default UpdatePasswordSystem;

@@ -34,7 +34,11 @@ import {
 } from "../../../services/userService";
 import { logOutUser } from "../../../redux/studentSlice";
 import { socket } from "../../..";
-import { setCountNewNotifyHomePage } from "../../../redux/countNewNotifySlice";
+import {
+  setChangeNotifyButton,
+  setChangeNotifyIcon,
+  setCountNewNotifyHomePage,
+} from "../../../redux/socketNotifyHomePage";
 import nodata from "../../../assets/image/nodata.png";
 
 const NotificationSeeAll = () => {
@@ -42,7 +46,6 @@ const NotificationSeeAll = () => {
   const [notifyData, setNotifyData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState(0);
-  const [appearButtonRefresh, setAppearButtonRefresh] = useState(false);
   const navigate = useNavigate();
   const { i18n } = useTranslation();
   const mdParser = new MarkdownIt(/* Markdown-it options */);
@@ -51,7 +54,13 @@ const NotificationSeeAll = () => {
   const [actionDeleteNotify, setActionDeleteNotify] = useState("");
   const currentUser = useSelector((state) => state.studentReducer);
   const countNewNotificationRedux = useSelector(
-    (state) => state.countNewNotifyReducer.countNewNotifyHomePage
+    (state) => state.socketNotifyHomepageReducer.countNewNotifyHomePage
+  );
+  const changeNotifyIcon = useSelector(
+    (state) => state.socketNotifyHomepageReducer.changeNotifyIcon
+  );
+  const changeNotifyButton = useSelector(
+    (state) => state.socketNotifyHomepageReducer.changeNotifyButton
   );
 
   const dispatch = useDispatch();
@@ -100,128 +109,138 @@ const NotificationSeeAll = () => {
       });
   };
   useEffect(() => {
-    setLoading(true);
-    getNotiFy
-      .getHomePageLimited({
-        page: currentPage,
-        studentId: currentUser?.id,
-        typeNotification,
-      })
-      .then((data) => {
-        if (data?.codeNumber === 0) {
-          console.log(data);
-          const { notify, pageCurrent, countsNotify } = data;
-          if (notify?.length > 0) {
-            for (let i = 0; i < notify.length; i++) {
-              if (notify[i]?.image?.data) {
-                notify[i].image.data = convertBufferToBase64(
-                  notify[i].image.data
-                );
+    if (JSON.parse(localStorage.getItem("auth-bookingCare-UET_student"))) {
+      setLoading(true);
+      getNotiFy
+        .getHomePageLimited({
+          page: currentPage,
+          studentId: currentUser?.id,
+          typeNotification,
+        })
+        .then((data) => {
+          if (data?.codeNumber === 0) {
+            console.log(data);
+            const { notify, pageCurrent, countsNotify } = data;
+            if (notify?.length > 0) {
+              for (let i = 0; i < notify.length; i++) {
+                if (notify[i]?.image?.data) {
+                  notify[i].image.data = convertBufferToBase64(
+                    notify[i].image.data
+                  );
+                }
               }
             }
+            setNotifyData(notify);
+            setCurrentPage(+pageCurrent);
+            setTotalPage(+countsNotify);
+            setLoading(false);
+          } else {
+            setLoading(false);
+            toast.error(
+              i18n.language === "en" ? data?.message_en : data?.message_vn,
+              {
+                autoClose: 3000,
+                theme: "colored",
+                position: "bottom-right",
+              }
+            );
           }
-          setNotifyData(notify);
-          setCurrentPage(+pageCurrent);
-          setTotalPage(+countsNotify);
-          setLoading(false);
-        } else {
-          setLoading(false);
-          toast.error(
-            i18n.language === "en" ? data?.message_en : data?.message_vn,
-            {
-              autoClose: 3000,
-              theme: "colored",
-              position: "bottom-right",
-            }
-          );
-        }
-      });
+        });
+    }
   }, []);
 
-  useEffect(() => {
-    const listenNewUpdateBookingFromBackend = (data) => {
-      const { studentId, type, actionId } = data;
-      if (studentId === currentUser?.id) {
-        if (actionId === "A2") {
-          if (type === "done") {
-            toast.info(
-              i18n.language === "en"
-                ? `A question has recently answered. Check now! (${moment(
-                    new Date()
-                  ).calendar()})`
-                : `Một câu hỏi của bạn vừa được trả lời. Kiểm tra ngay! (${moment(
-                    new Date()
-                  ).calendar()})`,
-              {
-                autoClose: 5000,
-                theme: "colored",
-                position: "bottom-right",
-              }
-            );
-          }
-        } else if (actionId === "A1") {
-          if (type === "process") {
-            toast.info(
-              i18n.language === "en"
-                ? `A appointment has recently approved. Check now! (${moment(
-                    new Date()
-                  ).calendar()})`
-                : `Một lịch hẹn của bạn vừa được chấp nhận. Kiểm tra ngay! (${moment(
-                    new Date()
-                  ).calendar()})`,
-              {
-                autoClose: 5000,
-                theme: "colored",
-                position: "bottom-right",
-              }
-            );
-          } else if (type === "done") {
-            toast.info(
-              i18n.language === "en"
-                ? `A appointment has recently finished. Thanks for your using! (${moment(
-                    new Date()
-                  ).calendar()})`
-                : `Một lịch hẹn của bạn vừa được xác nhận hoàn thành. Cảm ơn vì đã sử dụng dịch vụ! (${moment(
-                    new Date()
-                  ).calendar()})`,
-              {
-                autoClose: 5000,
-                theme: "colored",
-                position: "bottom-right",
-              }
-            );
-          } else if (type === "cancel") {
-            toast.info(
-              i18n.language === "en"
-                ? `Ohhh! A appointment has recently canceled. Please find the reason of the cancelation. (${moment(
-                    new Date()
-                  ).calendar()})`
-                : `Ohhh! Một lịch hẹn của bạn vừa bị huỷ. Vui lòng tìm hiểu lý do huỷ. (${moment(
-                    new Date()
-                  ).calendar()})`,
-              {
-                autoClose: 5000,
-                theme: "colored",
-                position: "bottom-right",
-              }
-            );
-          }
-        }
-        setAppearButtonRefresh(true);
-        dispatch(setCountNewNotifyHomePage(countNewNotificationRedux + 1));
-      }
-    };
-    socket.on("new_notification_for_student_about_update_booking", (data) =>
-      listenNewUpdateBookingFromBackend(data)
-    );
+  // useEffect(() => {
+  //   const listenNewUpdateBookingFromBackend = (data) => {
+  //     const { studentId, type, actionId } = data;
+  //     if (studentId === currentUser?.id) {
+  //       if (actionId === "A2") {
+  //         if (type === "done") {
+  //           toast.info(
+  //             i18n.language === "en"
+  //               ? `A question has recently answered. Check now! (${moment(
+  //                   new Date()
+  //                 ).calendar()})`
+  //               : `Một câu hỏi của bạn vừa được trả lời. Kiểm tra ngay! (${moment(
+  //                   new Date()
+  //                 ).calendar()})`,
+  //             {
+  //               autoClose: 5000,
+  //               theme: "colored",
+  //               position: "bottom-right",
+  //             }
+  //           );
+  //         }
+  //       } else if (actionId === "A1") {
+  //         if (type === "process") {
+  //           toast.info(
+  //             i18n.language === "en"
+  //               ? `A appointment has recently approved. Check now! (${moment(
+  //                   new Date()
+  //                 ).calendar()})`
+  //               : `Một lịch hẹn của bạn vừa được chấp nhận. Kiểm tra ngay! (${moment(
+  //                   new Date()
+  //                 ).calendar()})`,
+  //             {
+  //               autoClose: 5000,
+  //               theme: "colored",
+  //               position: "bottom-right",
+  //             }
+  //           );
+  //         } else if (type === "done") {
+  //           toast.info(
+  //             i18n.language === "en"
+  //               ? `A appointment has recently finished. Thanks for your using! (${moment(
+  //                   new Date()
+  //                 ).calendar()})`
+  //               : `Một lịch hẹn của bạn vừa được xác nhận hoàn thành. Cảm ơn vì đã sử dụng dịch vụ! (${moment(
+  //                   new Date()
+  //                 ).calendar()})`,
+  //             {
+  //               autoClose: 5000,
+  //               theme: "colored",
+  //               position: "bottom-right",
+  //             }
+  //           );
+  //         } else if (type === "cancel") {
+  //           toast.info(
+  //             i18n.language === "en"
+  //               ? `Ohhh! A appointment has recently canceled. Please find the reason of the cancelation. (${moment(
+  //                   new Date()
+  //                 ).calendar()})`
+  //               : `Ohhh! Một lịch hẹn của bạn vừa bị huỷ. Vui lòng tìm hiểu lý do huỷ. (${moment(
+  //                   new Date()
+  //                 ).calendar()})`,
+  //             {
+  //               autoClose: 5000,
+  //               theme: "colored",
+  //               position: "bottom-right",
+  //             }
+  //           );
+  //         }
+  //       }
+  //       setAppearButtonRefresh(true);
+  //       dispatch(setCountNewNotifyHomePage(countNewNotificationRedux + 1));
+  //     }
+  //   };
+  //   if (
+  //     socket.hasListeners("new_notification_for_student_about_update_booking")
+  //   ) {
+  //     socket.off(
+  //       "new_notification_for_student_about_update_booking",
+  //       listenNewUpdateBookingFromBackend
+  //     );
+  //     socket.on("new_notification_for_student_about_update_booking", (data) =>
+  //       listenNewUpdateBookingFromBackend(data)
+  //     );
+  //   }
 
-    return () => {
-      socket.off(
-        "new_notification_for_student_about_update_booking",
-        listenNewUpdateBookingFromBackend
-      );
-    };
-  }, []);
+  //   return () => {
+  //     socket.off(
+  //       "new_notification_for_student_about_update_booking",
+  //       listenNewUpdateBookingFromBackend
+  //     );
+  //   };
+  // }, []);
 
   const handleCallAPIWhenChangePage = (page) => {
     fetchDataNotify({
@@ -307,7 +326,8 @@ const NotificationSeeAll = () => {
   };
 
   const handleRefreshNotification = async () => {
-    setAppearButtonRefresh(false);
+    dispatch(setChangeNotifyButton(false));
+    dispatch(setChangeNotifyIcon(false));
     dispatch(setCountNewNotifyHomePage(0));
     await fetchDataNotify({ option: "booking", page: +1 });
     if (countNewNotificationRedux > 0) {
@@ -317,7 +337,7 @@ const NotificationSeeAll = () => {
       }).then((data) => {});
     }
   };
-
+  console.log("notify");
   return (
     <div style={{}}>
       <ToastContainer />
@@ -328,8 +348,7 @@ const NotificationSeeAll = () => {
           </div>
         </div>
       )}
-      <HomeHeader />
-      <div className="w-full h-[100px]"></div>
+
       <div
         className="relative mt-[34px] pt-[20px] mb-[20px] mx-[10%] pr-[30px] pl-[65px]"
         style={{
@@ -706,7 +725,7 @@ const NotificationSeeAll = () => {
           confirmDeleteNotify={deleteNotify}
         />
       )}
-      {appearButtonRefresh && (
+      {changeNotifyButton && (
         <button
           class={`fixed modal-confirm-schedule-overplay flex gap-1 top-44 px-5 py-1.5 left-[50%] -translate-x-[50%]  transition-all ease-in duration-150 items-center justify-center overflow-hidden text-md font-semibold border border-blue-500 bg-blue-500 text-white rounded-2xl hover:bg-blue-600 
             `}

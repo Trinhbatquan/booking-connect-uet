@@ -21,36 +21,31 @@ const EmailVerify = () => {
   const { i18n, t } = useTranslation();
 
   useEffect(() => {
-    setTimeout(() => {
-      try {
-        loginHomePageApi
-          .verifyEmailUrl({ id: param.id, token: param.token })
-          .then((data) => {
-            if (data?.codeNumber === 0) {
-              setValidUrl(true);
-              dispatch(loginUserSucceed(data?.user));
-              navigate(path.HOMEPAGE);
-            } else {
-              setValidUrl(false);
-              dispatch(loginUserFailed());
-            }
-            setLoading(false);
-          });
-      } catch (e) {
-        console.log("verify email uel error /n" + e);
-      }
-    }, 3000);
+    try {
+      loginHomePageApi
+        .verifyEmailUrl({ id: param.id, token: param.token })
+        .then((data) => {
+          if (data?.codeNumber === 0) {
+            setValidUrl(true);
+            dispatch(loginUserSucceed(data?.user));
+            navigate(path.HOMEPAGE);
+          } else {
+            setValidUrl(false);
+            dispatch(loginUserFailed());
+          }
+          setLoading(false);
+        });
+    } catch (e) {
+      console.log("verify email uel error /n" + e);
+    }
   }, []);
 
   return (
-    <div
-      className=" flex items-center justify-center"
-      style={{ width: "100vw", height: "100vh" }}
-    >
-      <HomeHeader />
+    <div className="">
+      <HomeHeader action="preventDefault_checkClickDropDown" />
       <div className="w-full h-[100px]"></div>
       {loading ? (
-        <div className="fixed z-50 top-0 bottom-0 flex items-center justify-center mx-auto left-0 right-0 w-full max-h-full bg-black bg-opacity-25">
+        <div className="fixed loading-overlay top-0 bottom-0 flex items-center justify-center mx-auto left-0 right-0 w-full max-h-full bg-black bg-opacity-25">
           <div className="absolute top-[50%] left-[50%]">
             <Loading />
           </div>
@@ -58,14 +53,16 @@ const EmailVerify = () => {
       ) : validUrl ? (
         ""
       ) : (
-        <div className="flex flex-col items-center justify-center gap-2">
-          <p className="text-black font-semibold text-2xl">Oh oh...</p>
-          <p className="text-black opacity-80 text-md">
-            {t("system.notification.fail")}
-          </p>
-          <NavLink to={`${path.HOMEPAGE}/${path.login_homepage}`}>
-            <Button text="Login" />
-          </NavLink>
+        <div className="flex items-center justify-center w-full min-h-[500px]">
+          <div className="flex flex-col items-center justify-center gap-2">
+            <p className="text-black font-semibold text-2xl">Oh oh...</p>
+            <p className="text-black opacity-80 text-md">
+              {t("system.notification.fail")}
+            </p>
+            <NavLink to={`${path.HOMEPAGE}/${path.login_homepage}`}>
+              <Button text="Login" />
+            </NavLink>
+          </div>
         </div>
       )}
     </div>

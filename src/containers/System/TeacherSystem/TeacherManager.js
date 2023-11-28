@@ -83,10 +83,12 @@ const TeacherManager = () => {
   const [allRowSelected, setAllRowSelected] = useState(false);
   // const [currentPage, setCurrentPage] = useState();
   const [first1, setFirst1] = useState(0);
-  const [rows1, setRows1] = useState(4);
+  const [rows1, setRows1] = useState(8);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageInputTooltip, setPageInputTooltip] = useState(
-    "Press 'Enter' key to go to this page."
+    i18n.language === "en"
+      ? "Press 'Enter' key to go to this page."
+      : "Sử dụng phím Enter để di chuyển trang."
   );
 
   //pagination
@@ -109,13 +111,19 @@ const TeacherManager = () => {
       const page = parseInt(currentPage);
       if (page < 1 || page > options.totalPages) {
         setPageInputTooltip(
-          `Value must be between 1 and ${options.totalPages}.`
+          i18n.language === "en"
+            ? `Value must be between 1 and ${options.totalPages}.`
+            : `Giá trị phải nằm từ 1 đến ${options.totalPages}.`
         );
       } else {
         const first = currentPage ? options.rows * (page - 1) : 0;
 
         setFirst1(first);
-        setPageInputTooltip("Press 'Enter' key to go to this page.");
+        setPageInputTooltip(
+          i18n.language === "en"
+            ? "Press 'Enter' key to go to this page."
+            : "Sử dụng phím Enter để di chuyển trang."
+        );
       }
     }
   };
@@ -130,7 +138,9 @@ const TeacherManager = () => {
           onClick={options.onClick}
           disabled={options.disabled}
         >
-          <span className="p-3">Previous</span>
+          <span className="p-3">
+            {i18n.language === "en" ? "Previous" : "Trước"}
+          </span>
           <Ripple />
         </button>
       );
@@ -143,7 +153,7 @@ const TeacherManager = () => {
           onClick={options.onClick}
           disabled={options.disabled}
         >
-          <span className="p-3">Next</span>
+          <span className="p-3">{i18n.language === "en" ? "Next" : "Sau"}</span>
           <Ripple />
         </button>
       );
@@ -177,10 +187,12 @@ const TeacherManager = () => {
     },
     RowsPerPageDropdown: (options) => {
       const dropdownOptions = [
-        { label: 4, value: 4 },
         { label: 8, value: 8 },
         { label: 12, value: 12 },
-        { label: "All", value: options.totalRecords },
+        {
+          label: i18n.language === "en" ? "All" : "Tất cả",
+          value: options.totalRecords,
+        },
       ];
 
       return (
@@ -197,7 +209,8 @@ const TeacherManager = () => {
           className="mx-3"
           style={{ color: "var(--text-color)", userSelect: "none" }}
         >
-          Go to{" "}
+          {i18n.language === "en" ? `Go to ` : `Đến `}
+
           <InputText
             size="2"
             className="ml-1"
@@ -241,7 +254,7 @@ const TeacherManager = () => {
           <Button
             type="button"
             icon="pi pi-filter-slash"
-            label="Clear"
+            label={i18n.language === "en" ? "Clear" : "Đặt lại"}
             className="p-button-outlined"
             onClick={() => {
               clearFilter1();
@@ -252,7 +265,7 @@ const TeacherManager = () => {
             <Button
               type="button"
               // icon="pi pi-filter-slash"
-              label="Delete"
+              label={i18n.language === "en" ? "Delete" : "Xoá"}
               className={`p-button-outlined ${
                 selectedProducts8?.length >= 1 ? "" : "disabled"
               }`}
@@ -265,7 +278,11 @@ const TeacherManager = () => {
           <InputText
             value={globalFilterValue1}
             onChange={onGlobalFilterChange1}
-            placeholder="Search By Name..."
+            placeholder={
+              i18n.language === "en"
+                ? "Search By Name..."
+                : "Tìm kiếm theo tên..."
+            }
           />
         </span>
       </div>
@@ -302,14 +319,42 @@ const TeacherManager = () => {
       <div className="flex items-center justify-center gap-6">
         {rowData?.fullName === selectedProducts8[0]?.fullName && (
           <>
-            <FiEdit
-              className="cursor-pointer text-inputColor"
-              onClick={() => isOpenUpdateUser(rowData)}
-            />
-            <AiOutlineDelete
+            <Button
+              tooltip={i18n.language === "en" ? "Update" : "Cập nhật"}
+              tooltipOptions={{ position: "top" }}
+              style={{
+                color: "#812222",
+                backgroundColor: "transparent",
+                padding: "2px",
+                border: "none",
+                borderRadius: "25px",
+              }}
+            >
+              <FiEdit
+                className="cursor-pointer text-inputColor"
+                onClick={() => isOpenUpdateUser(rowData)}
+              />
+            </Button>
+            {/* <AiOutlineDelete
               className="cursor-pointer text-blue-600"
               onClick={() => isOpenModalDeleteUser(rowData)}
-            />
+            /> */}
+            <Button
+              tooltip={i18n.language === "en" ? "Delete" : "Xoá bỏ"}
+              tooltipOptions={{ position: "top" }}
+              style={{
+                color: "#812222",
+                backgroundColor: "transparent",
+                padding: "2px",
+                border: "none",
+                borderRadius: "25px",
+              }}
+            >
+              <AiOutlineDelete
+                className="cursor-pointer text-blue-600"
+                onClick={() => isOpenModalDeleteUser(rowData)}
+              />
+            </Button>
           </>
         )}
       </div>
@@ -344,7 +389,7 @@ const TeacherManager = () => {
       });
       setLoading(false);
       initFilters1();
-    }, 1500);
+    }, 0);
   }, []);
 
   let optionsFaculties = [];
@@ -391,13 +436,29 @@ const TeacherManager = () => {
     let data = e.target.files;
     let file = data[0];
     if (file) {
-      let urlAvatar = URL.createObjectURL(file);
-      setPreviewAvatar(urlAvatar);
-      try {
-        const base64File = await convertFileToBase64(file);
-        setAvatar(base64File);
-      } catch (e) {
-        console.log("base64 file " + e);
+      if (file?.size > 400000) {
+        inputFileRef.current.value = "";
+        toast.error(
+          `${
+            i18n.language === "en"
+              ? "This image is too big, please use image size < 400KB"
+              : "Ảnh hiện tại quá lớn. Vui lòng sử dụng ảnh dưới 400KB"
+          }`,
+          {
+            autoClose: 3000,
+            theme: "colored",
+            position: "bottom-right",
+          }
+        );
+      } else {
+        let urlAvatar = URL.createObjectURL(file);
+        setPreviewAvatar(urlAvatar);
+        try {
+          const base64File = await convertFileToBase64(file);
+          setAvatar(base64File);
+        } catch (e) {
+          console.log("base64 file " + e);
+        }
       }
     }
   };
@@ -510,7 +571,7 @@ const TeacherManager = () => {
           setLoading(false);
         } else if (data?.codeNumber === -2) {
           toast.error(`${t("system.token.mess")}`, {
-            autoClose: 3000,
+            autoClose: 5000,
             position: "bottom-right",
             theme: "colored",
           });
@@ -523,7 +584,7 @@ const TeacherManager = () => {
                 );
               }
             });
-          }, 3000);
+          }, 5000);
         } else if (data?.codeNumber === 1) {
           toast.error(data?.message, {
             autoClose: 2000,
@@ -667,67 +728,63 @@ const TeacherManager = () => {
       image: avatar,
       type: ascertain_user.teacher,
     };
-    setTimeout(() => {
-      updateUserApi.update({}, body).then(async (data) => {
-        if (data?.codeNumber === -1) {
-          toast.error(`${t("system.notification.fail")}`, {
-            autoClose: 2000,
-            position: "bottom-right",
-            theme: "colored",
-          });
-          setLoading(false);
-        } else if (data?.codeNumber === -2) {
-          toast.error(`${t("system.token.mess")}`, {
-            autoClose: 3000,
-            position: "bottom-right",
-            theme: "colored",
-          });
-          setTimeout(() => {
-            logOutApi.logoutUser({}).then((data) => {
-              if (data?.codeNumber === 0) {
-                dispatch(logOutUser());
-                navigate(
-                  `${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`
-                );
-              }
-            });
-          }, 3000);
-        } else if (data?.codeNumber === 1) {
-          toast.error(data?.message, {
-            autoClose: 2000,
-            position: "bottom-right",
-            theme: "colored",
-          });
-          setLoading(false);
-        } else {
-          await getTeacherHomePageAPI.getTeacher({}).then((data) => {
+    updateUserApi.update({}, body).then(async (data) => {
+      if (data?.codeNumber === -1) {
+        toast.error(`${t("system.notification.fail")}`, {
+          autoClose: 2000,
+          position: "bottom-right",
+          theme: "colored",
+        });
+        setLoading(false);
+      } else if (data?.codeNumber === -2) {
+        toast.error(`${t("system.token.mess")}`, {
+          autoClose: 5000,
+          position: "bottom-right",
+          theme: "colored",
+        });
+        setTimeout(() => {
+          logOutApi.logoutUser({}).then((data) => {
             if (data?.codeNumber === 0) {
-              setUsers(data.teacher);
+              dispatch(logOutUser());
+              navigate(`${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`);
             }
           });
-          toast.success(`${t("system.notification.update")}`, {
-            autoClose: 2000,
-            position: "bottom-right",
-            theme: "colored",
-          });
-          setEmail("");
-          setPassword("");
-          setFullName("");
-          setPhoneNumber("");
-          setAddress("");
-          setPosition("");
-          setGender("");
-          setIsUpdateUser(false);
-          setDataUserUpdate("");
-          setFaculty("");
-          setNote("");
-          setPreviewAvatar("");
-          inputFileRef.current.value = "";
-          setAvatar("");
-          setLoading(false);
-        }
-      });
-    }, 2000);
+        }, 5000);
+      } else if (data?.codeNumber === 1) {
+        toast.error(data?.message, {
+          autoClose: 2000,
+          position: "bottom-right",
+          theme: "colored",
+        });
+        setLoading(false);
+      } else {
+        await getTeacherHomePageAPI.getTeacher({}).then((data) => {
+          if (data?.codeNumber === 0) {
+            setUsers(data.teacher);
+          }
+        });
+        toast.success(`${t("system.notification.update")}`, {
+          autoClose: 2000,
+          position: "bottom-right",
+          theme: "colored",
+        });
+        setEmail("");
+        setPassword("");
+        setFullName("");
+        setPhoneNumber("");
+        setAddress("");
+        setPosition("");
+        setGender("");
+        setIsUpdateUser(false);
+        setDataUserUpdate("");
+        setFaculty("");
+        setNote("");
+        setPreviewAvatar("");
+        inputFileRef.current.value = "";
+        setAvatar("");
+        setLoading(false);
+      }
+    });
   };
 
   const handleCloseUpdateUser = () => {
@@ -757,61 +814,59 @@ const TeacherManager = () => {
   };
   const deleteUser = async (idData) => {
     setLoading(true);
-    setTimeout(() => {
-      deleteUserApi
-        .delete({
-          id: idData,
-          type: ascertain_user.teacher,
-        })
-        .then((data) => {
-          if (data?.codeNumber === -1) {
-            toast.error(`${t("system.notification.fail")}`, {
-              autoClose: 2000,
-              position: "bottom-right",
-              theme: "colored",
-            });
-            setLoading(false);
-          } else if (data?.codeNumber === -2) {
-            toast.error(`${t("system.token.mess")}`, {
-              autoClose: 3000,
-              position: "bottom-right",
-              theme: "colored",
-            });
-            setTimeout(() => {
-              logOutApi.logoutUser({}).then((data) => {
-                if (data?.codeNumber === 0) {
-                  dispatch(logOutUser());
-                  navigate(
-                    `${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`
-                  );
-                }
-              });
-            }, 3000);
-          } else if (data?.codeNumber === 1) {
-            toast.error(data?.message, {
-              autoClose: 2000,
-              position: "bottom-right",
-              theme: "colored",
-            });
-            setLoading(false);
-          } else {
-            getTeacherHomePageAPI.getTeacher({}).then((data) => {
+    deleteUserApi
+      .delete({
+        id: idData,
+        type: ascertain_user.teacher,
+      })
+      .then((data) => {
+        if (data?.codeNumber === -1) {
+          toast.error(`${t("system.notification.fail")}`, {
+            autoClose: 2000,
+            position: "bottom-right",
+            theme: "colored",
+          });
+          setLoading(false);
+        } else if (data?.codeNumber === -2) {
+          toast.error(`${t("system.token.mess")}`, {
+            autoClose: 5000,
+            position: "bottom-right",
+            theme: "colored",
+          });
+          setTimeout(() => {
+            logOutApi.logoutUser({}).then((data) => {
               if (data?.codeNumber === 0) {
-                setUsers(data.teacher);
-                setLoading(false);
-                setIsDeleteUser(false);
-                setDataUserDelete("");
-                toast.success(`${t("system.notification.delete")}`, {
-                  autoClose: 2000,
-                  position: "bottom-right",
-                  theme: "colored",
-                });
-                setSelectedProducts8([]);
+                dispatch(logOutUser());
+                navigate(
+                  `${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`
+                );
               }
             });
-          }
-        });
-    }, 1000);
+          }, 5000);
+        } else if (data?.codeNumber === 1) {
+          toast.error(data?.message, {
+            autoClose: 2000,
+            position: "bottom-right",
+            theme: "colored",
+          });
+          setLoading(false);
+        } else {
+          getTeacherHomePageAPI.getTeacher({}).then((data) => {
+            if (data?.codeNumber === 0) {
+              setUsers(data.teacher);
+              setLoading(false);
+              setIsDeleteUser(false);
+              setDataUserDelete("");
+              toast.success(`${t("system.notification.delete")}`, {
+                autoClose: 2000,
+                position: "bottom-right",
+                theme: "colored",
+              });
+              setSelectedProducts8([]);
+            }
+          });
+        }
+      });
   };
   const handleDeleteManyData = () => {
     console.log(selectedProducts8);
@@ -832,23 +887,6 @@ const TeacherManager = () => {
     <Fragment>
       <ToastContainer />
       <div className="flex flex-col mx-auto pb-10 w-full">
-        <div
-          className={`flex items-center justify-center mt-3 gap-1 py-2 text-white font-semibold rounded-md  ${
-            isUpdateUser ? "bg-backColor" : "bg-blue-700"
-          }`}
-          // type="text"
-          // onClick={() => setIsCreateUser(true)}
-          style={{ maxWidth: "14%", width: "14%" }}
-        >
-          <BsPersonPlusFill
-            className="mr-1 ml-2"
-            style={{ fontSize: "16px" }}
-            modal
-          />
-          {isUpdateUser
-            ? t("system.teacher.update")
-            : t("system.teacher.create")}
-        </div>
         {loading && (
           <div className="fixed loading-overlay top-0 bottom-0 flex items-center justify-center mx-auto left-0 right-0 w-full max-h-full bg-black bg-opacity-25">
             <div className="absolute">
@@ -1095,6 +1133,7 @@ const TeacherManager = () => {
                   className="block w-full text-sm text-gray-900 border border-gray-400 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
                   id="file_input"
                   type="file"
+                  accept=".jpg, .png, *.jpg, *.jpeg, .jpeg"
                   onChange={(e) => handleChangeAndPreviewImage(e)}
                   onFocus={() => setNotifyCheckState("")}
                   ref={inputFileRef}

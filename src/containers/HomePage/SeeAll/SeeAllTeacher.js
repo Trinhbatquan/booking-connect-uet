@@ -21,39 +21,41 @@ const SeeAllTeacher = () => {
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
   useEffect(() => {
-    getTeacherHomePageAPI
-      .getTeacherHomePage({ page: pageCurrent })
-      .then((data) => {
-        if (data.codeNumber === 0) {
-          console.log(data);
-          const { totalTeacher, currentPage, teacherData, markDownTeacher } =
-            data;
-          if (teacherData?.length > 0) {
-            for (let i = 0; i < teacherData.length; i++) {
-              if (teacherData[i]?.image?.data) {
-                teacherData[i].image.data = convertBufferToBase64(
-                  teacherData[i].image.data
-                );
+    if (JSON.parse(localStorage.getItem("auth-bookingCare-UET_student"))) {
+      getTeacherHomePageAPI
+        .getTeacherHomePage({ page: pageCurrent })
+        .then((data) => {
+          if (data.codeNumber === 0) {
+            console.log(data);
+            const { totalTeacher, currentPage, teacherData, markDownTeacher } =
+              data;
+            if (teacherData?.length > 0) {
+              for (let i = 0; i < teacherData.length; i++) {
+                if (teacherData[i]?.image?.data) {
+                  teacherData[i].image.data = convertBufferToBase64(
+                    teacherData[i].image.data
+                  );
+                }
               }
             }
+            setTeacher(teacher.concat(teacherData));
+            setPageCurrent(+currentPage);
+            setTotalPage(+totalTeacher);
+            setDescriptionTeacher(descriptionTeacher.concat(markDownTeacher));
+            setLoading(false);
+          } else {
+            setLoading(false);
+            toast.error(
+              i18n.language === "en" ? data?.message_en : data?.message_vn,
+              {
+                autoClose: 3000,
+                position: "bottom-right",
+                theme: "colored",
+              }
+            );
           }
-          setTeacher(teacher.concat(teacherData));
-          setPageCurrent(+currentPage);
-          setTotalPage(+totalTeacher);
-          setDescriptionTeacher(descriptionTeacher.concat(markDownTeacher));
-          setLoading(false);
-        } else {
-          setLoading(false);
-          toast.error(
-            i18n.language === "en" ? data?.message_en : data?.message_vn,
-            {
-              autoClose: 3000,
-              position: "bottom-right",
-              theme: "colored",
-            }
-          );
-        }
-      });
+        });
+    }
   }, [pageCurrent]);
 
   const handleOnChangeSearch = (e) => {
@@ -138,8 +140,7 @@ const SeeAllTeacher = () => {
           </div>
         </div>
       )}
-      <HomeHeader />
-      <div className="w-full h-[100px]"></div>
+
       <div
         className="flex items-center justify-between pb-[19px] mt-[34px] mb-[20px] py-[20px] mx-[10%] px-[30px]"
         style={{

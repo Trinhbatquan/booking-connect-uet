@@ -219,7 +219,6 @@ const Notification = () => {
           </div>
         </div>
       )}
-      <Header />
       <div className="w-full" style={{ height: "110px" }}></div>
       <div
         className="relative pt-[20px] mb-[20px] mx-[10%] pr-[30px] pl-[65px]"

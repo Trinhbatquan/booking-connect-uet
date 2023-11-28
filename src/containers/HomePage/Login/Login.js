@@ -294,7 +294,7 @@ const Login = () => {
     <div className="login-register-homepage-container">
       {console.log("render")}
       {loading && (
-        <div className="fixed loading-overlay z-50 top-0 bottom-0 flex items-center justify-center mx-auto left-0 right-0 w-full max-h-full bg-black bg-opacity-25">
+        <div className="fixed loading-overlay top-0 bottom-0 flex items-center justify-center mx-auto left-0 right-0 w-full max-h-full bg-black bg-opacity-25">
           <div className="absolute top-[50%] left-[50%]">
             <Loading />
           </div>
@@ -398,7 +398,10 @@ const Login = () => {
                 {t("login_register.signin")}
               </button>
             </div>
-            <NavLink to="/forgot-pass" className="mt-2 w-full">
+            <NavLink
+              to={`${path.HOMEPAGE}/forgot-pass`}
+              className="mt-2 w-full"
+            >
               <span className="login-forgot pl-1 cursor-pointer">
                 {t("login_register.forgotPassword")}
               </span>

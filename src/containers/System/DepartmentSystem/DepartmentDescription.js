@@ -35,19 +35,17 @@ const DepartmentDescription = () => {
 
   useEffect(() => {
     setLoading(true);
-    setTimeout(async () => {
-      await getUserApi.getUserByRole({ role: "R2" }).then((data) => {
-        if (data?.codeNumber === 0) {
-          setDepartment(data.user);
-        }
-      });
-      // await getUserApi.getUserByRole({ role: "R4" }).then((data) => {
-      //   if (data?.codeNumber === 0) {
-      //     setFaculties(data.user);
-      //   }
-      // });
-      setLoading(false);
-    }, 1000);
+    getUserApi.getUserByRole({ role: "R2" }).then((data) => {
+      if (data?.codeNumber === 0) {
+        setDepartment(data.user);
+      }
+    });
+    // await getUserApi.getUserByRole({ role: "R4" }).then((data) => {
+    //   if (data?.codeNumber === 0) {
+    //     setFaculties(data.user);
+    //   }
+    // });
+    setLoading(false);
   }, []);
 
   let optionsDepartment = [];
@@ -155,7 +153,7 @@ const DepartmentDescription = () => {
             setLoading(false);
           } else if (res?.codeNumber === -2) {
             toast.error(`${t("system.token.mess")}`, {
-              autoClose: 3000,
+              autoClose: 5000,
               position: "bottom-right",
               theme: "colored",
             });
@@ -168,7 +166,7 @@ const DepartmentDescription = () => {
                   );
                 }
               });
-            }, 3000);
+            }, 5000);
           } else if (res?.codeNumber === 1) {
             toast.error(res?.message, {
               autoClose: 2000,
@@ -222,9 +220,9 @@ const DepartmentDescription = () => {
           </div>
         </div>
       )}
-      <div
+      {/* <div
         className={`flex items-center justify-center mt-3 gap-1 py-2 px-1 text-white font-semibold rounded-md  
-        bg-blue-600 mb-1
+        bg-blue-500 mb-1
         `}
         // type="text"
         // onClick={() => setIsCreateUser(true)}
@@ -238,8 +236,8 @@ const DepartmentDescription = () => {
         {isUpdate
           ? t("system.department.update-description")
           : t("system.department.create-description")}
-      </div>
-      <div className="bg-slate-200 shadow-gray-300 mt-2 mb-1 pt-1 pb-4 px-3">
+      </div> */}
+      <div className="bg-slate-200 shadow-gray-300 mt-2 mb-1 pt-1 pb-4 px-3 rounded-lg">
         <div
           className="mx-auto text-red-500 mb-2 text-center text-xl"
           style={notifyCheckState ? { opacity: "1" } : { opacity: "0" }}

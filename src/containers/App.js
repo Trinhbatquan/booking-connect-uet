@@ -39,7 +39,6 @@ import UpdateProfile from "./HomePage/UpdateProfile";
 import Inform from "./HomePage/Inform";
 import Contact from "./HomePage/Contact";
 import SurveyOpinion from "./HomePage/Survey Opinion";
-import NewsSystem from "./System/News/NewsSystem";
 import SeeAllTeacher from "./HomePage/SeeAll/SeeAllTeacher";
 import NewsSeeAll from "./HomePage/SeeAll/NewsSeeAll";
 import NewsDetail from "./HomePage/Detail/NewsDetail";
@@ -47,6 +46,9 @@ import NotificationSeeAll from "./HomePage/SeeAll/NotificationSeeAll";
 import NotificationDetail from "./HomePage/Detail/NotificationDetail";
 import HealthSeeAll from "./HomePage/SeeAll/HealthSeeAll";
 import ProcessBooking from "./HomePage/ProcessBooking/ProcessBooking";
+import UpdatePasswordSystem from "./Auth/Login/UpdatePasswordSystem";
+import ForgotPasswordSystem from "./Auth/Login/ForgotPasswordSystem";
+import RootHomePage from "./HomePage/RootHomePage";
 
 function App() {
   const [appearScrollTop, setAppearScrollTop] = useState(false);
@@ -91,72 +93,64 @@ function App() {
         {/* homepage */}
         <Route path="/" element={<Navigate to={path.HOMEPAGE} replace />} />
 
-        <Route path={path.HOMEPAGE} element={<HomePage />} />
-        <Route
-          path={`${path.HOMEPAGE}/:code_url/ids-role/:roleId`}
-          element={<Detail />}
-        />
-        <Route
-          path={`${path.HOMEPAGE}/${path.detail_id}/:code_url/ids-role/:roleId`}
-          element={<FacultyDetail />}
-        />
         <Route
           path={`${path.HOMEPAGE}/${path.login_homepage}`}
           element={<LoginHomePage />}
         />
-        <Route path="/users/:id/verify/:token" element={<EmailVerify />} />
-        <Route path="/forgot-pass" element={<ForgotPassword />} />
         <Route
-          path="/updatePass/:email/verify/:token"
+          path={`${path.HOMEPAGE}/users/:id/verify/:token`}
+          element={<EmailVerify />}
+        />
+        <Route
+          path={`${path.HOMEPAGE}/forgot-pass`}
+          element={<ForgotPassword />}
+        />
+        <Route
+          path={`${path.HOMEPAGE}/updatePass/:email/verify/:token`}
           element={<UpdatePassword />}
         />
+        <Route path={path.HOMEPAGE} element={<RootHomePage />}>
+          <Route path={path.HOMEPAGE} element={<HomePage />} />
+          <Route path={`:code_url/ids-role/:roleId`} element={<Detail />} />
+          <Route
+            path={`${path.detail_id}/:code_url/ids-role/:roleId`}
+            element={<FacultyDetail />}
+          />
 
-        <Route
-          path={`${path.HOMEPAGE}/${path.update_profile}`}
-          element={<UpdateProfile />}
-        />
-        <Route path={`${path.HOMEPAGE}/${path.inform}`} element={<Inform />} />
-        <Route
-          path={`${path.HOMEPAGE}/${path.survey}`}
-          element={<SurveyOpinion />}
-        />
-        <Route
-          path={`${path.HOMEPAGE}/${path.contact}`}
-          element={<Contact />}
-        />
-        <Route
-          path={`${path.HOMEPAGE}/${path.teacher}`}
-          element={<SeeAllTeacher />}
-        />
-        <Route
-          path={`${path.HOMEPAGE}/${path.news}`}
-          element={<NewsSeeAll />}
-        />
-        <Route
-          path={`${path.HOMEPAGE}/${path.notify}`}
-          element={<NotificationSeeAll />}
-        />
-        <Route
-          path={`${path.HOMEPAGE}/${path.detail_news}/:code_url`}
-          element={<NewsDetail />}
-        />
-        <Route
-          path={`${path.HOMEPAGE}/${path.detail_notify}/:code_url`}
-          element={<NotificationDetail />}
-        />
-        <Route
-          path={`${path.HOMEPAGE}/${path.health}`}
-          element={<HealthSeeAll />}
-        />
-        <Route
-          path={`${path.HOMEPAGE}/${path.processBooking}?`}
-          element={<ProcessBooking />}
-        />
+          <Route path={`${path.update_profile}`} element={<UpdateProfile />} />
+          <Route path={`${path.inform}`} element={<Inform />} />
+          <Route path={`${path.survey}`} element={<SurveyOpinion />} />
+          <Route path={`${path.contact}`} element={<Contact />} />
+          <Route path={`${path.teacher}`} element={<SeeAllTeacher />} />
+          <Route path={`${path.news}`} element={<NewsSeeAll />} />
+          <Route path={`${path.notify}`} element={<NotificationSeeAll />} />
+          <Route
+            path={`${path.detail_news}/:code_url`}
+            element={<NewsDetail />}
+          />
+          <Route
+            path={`${path.detail_notify}/:code_url`}
+            element={<NotificationDetail />}
+          />
+          <Route path={`${path.health}`} element={<HealthSeeAll />} />
+          <Route
+            path={`${path.processBooking}?`}
+            element={<ProcessBooking />}
+          />
+        </Route>
 
         {/* system */}
         <Route
           path={`${path.SYSTEM}/${path.LOGIN_SYSTEM}`}
           element={<Login />}
+        />
+        <Route
+          path={`${path.SYSTEM}/forgot-pass`}
+          element={<ForgotPasswordSystem />}
+        />
+        <Route
+          path={`${path.SYSTEM}/updatePass/:userId/:email/verify/:token/:roleId`}
+          element={<UpdatePasswordSystem />}
         />
 
         <Route path={path.SYSTEM} element={<RootSystem />}>

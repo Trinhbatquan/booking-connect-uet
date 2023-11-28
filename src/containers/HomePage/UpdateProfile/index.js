@@ -84,56 +84,60 @@ const UpdateProfile = () => {
     });
   };
   useEffect(() => {
-    const gender = "GENDER";
-    getAllCodeApi.getByType({ type: gender }).then((data) => {
-      if (data?.codeNumber === 0) {
-        setGenderAPI(data.allCode);
-        console.log(2);
+    if (JSON.parse(localStorage.getItem("auth-bookingCare-UET_student"))) {
+      const gender = "GENDER";
+      getAllCodeApi.getByType({ type: gender }).then((data) => {
+        if (data?.codeNumber === 0) {
+          setGenderAPI(data.allCode);
+          console.log(2);
 
-        getStudent({}, { email: currentUser?.email }).then((data) => {
-          if (data?.codeNumber === 0) {
-            const student = data?.student;
-            console.log(student);
-            setEmail(student?.email);
-            setFullName(student.fullName);
-            setPhoneNumber(student.phoneNumber);
-            setMssv(student?.email.split("@")[0]);
-            setFaculty(student?.faculty);
-            setClassroom(student?.classroom);
-            setGender(student?.gender);
-            if (student?.image?.data) {
-              student.image.data = convertBufferToBase64(student?.image?.data);
-              setPreviewAvatar(student.image.data);
+          getStudent({}, { email: currentUser?.email }).then((data) => {
+            if (data?.codeNumber === 0) {
+              const student = data?.student;
+              console.log(student);
+              setEmail(student?.email);
+              setFullName(student.fullName);
+              setPhoneNumber(student.phoneNumber);
+              setMssv(student?.email.split("@")[0]);
+              setFaculty(student?.faculty);
+              setClassroom(student?.classroom);
+              setGender(student?.gender);
+              if (student?.image?.data) {
+                student.image.data = convertBufferToBase64(
+                  student?.image?.data
+                );
+                setPreviewAvatar(student.image.data);
+              }
+              setAddress(student.address);
+              setLoading(false);
+            } else {
+              setLoading(false);
+              const response = handleMessageFromBackend(
+                data?.codeNumber,
+                i18n.language
+              );
+              toast.error(response, {
+                autoClose: 3000,
+                theme: "colored",
+                position: "bottom-right",
+              });
+              if (data?.codeNumber === -2) {
+                setTimeout(() => {
+                  logOutHomePageApi.logoutUser({}).then((data) => {
+                    if (data?.codeNumber === 0) {
+                      dispatch(logOutUser());
+                      navigate(
+                        `${path.HOMEPAGE}/${path.login_homepage}?redirect=/homepage`
+                      );
+                    }
+                  });
+                }, 5000);
+              }
             }
-            setAddress(student.address);
-            setLoading(false);
-          } else {
-            setLoading(false);
-            const response = handleMessageFromBackend(
-              data?.codeNumber,
-              i18n.language
-            );
-            toast.error(response, {
-              autoClose: 3000,
-              theme: "colored",
-              position: "bottom-right",
-            });
-            if (data?.codeNumber === -2) {
-              setTimeout(() => {
-                logOutHomePageApi.logoutUser({}).then((data) => {
-                  if (data?.codeNumber === 0) {
-                    dispatch(logOutUser());
-                    navigate(
-                      `${path.HOMEPAGE}/${path.login_homepage}?redirect=/homepage`
-                    );
-                  }
-                });
-              }, 5000);
-            }
-          }
-        });
-      }
-    });
+          });
+        }
+      });
+    }
   }, []);
 
   const handleChangeAndPreviewImage = async (e) => {
@@ -346,8 +350,7 @@ const UpdateProfile = () => {
           </div>
         </div>
       )}
-      <HomeHeader />
-      <div className="w-full h-[100px]"></div>
+
       <div className="update-profile py-[20px] my-[5px] px-[10%] mx-auto">
         <h2 className="text-blurThemeColor font-semibold pb-[19px] border-b-2 border-gray-300">
           {i18n.language === "en"

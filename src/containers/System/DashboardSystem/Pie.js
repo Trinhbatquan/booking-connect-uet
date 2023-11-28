@@ -71,7 +71,11 @@ const Pie = ({ data, type }) => {
     <div className="flex flex-col items-center justify-start gap-2 w-full">
       <h3 className="" style={{ color: "rgb(123, 128, 154)" }}>
         {type === "schedule"
-          ? "Bảng cơ cấu về lịch hẹn của sinh viên"
+          ? i18n.language === "en"
+            ? "Structure table of student appointment"
+            : "Bảng cơ cấu về lịch hẹn của sinh viên"
+          : i18n.language === "en"
+          ? "Structure table of student question"
           : "Bảng cơ cấu về câu hỏi của sinh viên"}
       </h3>
       <div className="px-4 flex items-center justify-center w-[70%]">

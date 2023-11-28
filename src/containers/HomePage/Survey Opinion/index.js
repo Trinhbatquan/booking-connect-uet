@@ -39,21 +39,23 @@ const SurveyOpinion = () => {
   //student survey
 
   useEffect(() => {
-    getFeedback().then((data) => {
-      if (data?.codeNumber === 0) {
-        setTotalFeedback(data?.count);
-      } else {
-        toast.error(
-          i18n.language === "en" ? data?.message_en : data?.message_vn,
-          {
-            autoClose: 3000,
-            theme: "colored",
-            position: "bottom-right",
-          }
-        );
-      }
-      setLoading(false);
-    });
+    if (JSON.parse(localStorage.getItem("auth-bookingCare-UET_student"))) {
+      getFeedback().then((data) => {
+        if (data?.codeNumber === 0) {
+          setTotalFeedback(data?.count);
+        } else {
+          toast.error(
+            i18n.language === "en" ? data?.message_en : data?.message_vn,
+            {
+              autoClose: 3000,
+              theme: "colored",
+              position: "bottom-right",
+            }
+          );
+        }
+        setLoading(false);
+      });
+    }
   }, []);
 
   const handleClearFeedback = () => {
@@ -187,8 +189,7 @@ const SurveyOpinion = () => {
         </div>
       )}
       <ToastContainer />
-      <HomeHeader />
-      <div className="w-full h-[100px]"></div>
+
       <div className="content-inform py-[20px] my-[5px] px-[10%] mx-auto flex items-start justify-center gap-6">
         <div className="mx-auto w-full">
           <h2 className="text-blurThemeColor font-semibold text-3xl pb-[19px] border-b-2 border-gray-300">

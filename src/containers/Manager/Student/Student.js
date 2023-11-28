@@ -31,14 +31,15 @@ const ScheduleManager = () => {
   return (
     <Fragment>
       <ToastContainer />
-      <Header />
       <div className="w-full" style={{ height: "110px" }}></div>
       <div
         className="mt-3 flex flex-col items-start mx-auto pb-5 gap-8"
         style={{ maxWidth: "80%", width: "80%" }}
       >
         <p className="mx-auto text-2xl text-blue-600 font-semibold">
-          Quản lý thông tin
+          {i18n.language === "en"
+            ? "Schedule & Question Management"
+            : "Quản lý lịch hẹn và câu hỏi"}
         </p>
 
         <div className="flex items-center justify-between gap-10 w-full">
@@ -52,7 +53,9 @@ const ScheduleManager = () => {
                 }`}
             onClick={() => setAction("schedule")}
           >
-            Quản lý lịch hẹn của sinh viên
+            {i18n.language === "en"
+              ? "About Schedule From Student"
+              : "Về lịch hẹn từ sinh viên"}
           </button>
           <button
             type="button"
@@ -64,7 +67,9 @@ const ScheduleManager = () => {
                 }`}
             onClick={() => setAction("question")}
           >
-            Quản lý câu hỏi từ sinh viên
+            {i18n.language === "en"
+              ? "About Question From Student"
+              : "Về câu hỏi từ sinh viên"}
           </button>
         </div>
 

@@ -41,7 +41,7 @@ const GetCancelReason = ({ dataModalCancel, isClose, confirmCancel }) => {
             id="helper-text"
             autoFocus
             value={reason}
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+            class="bg-gray-50 mt-3 border border-gray-300 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             onChange={(e) => setReason(e.target.value)}
           />
           <div className="mx-auto flex items-center justify-center gap-10 mt-4">

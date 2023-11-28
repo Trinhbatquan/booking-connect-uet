@@ -39,13 +39,14 @@ import Pie from "./../../System/DashboardSystem/Pie";
 import { useSelector } from "react-redux";
 import Chart from "./../../System/DashboardSystem/Chart";
 import Header from "../../System/Header/Header";
+import { useTranslation } from "react-i18next";
 
 const DashBoard = () => {
   // const [dbUser, setDbUser] = useState("total");
   const [dbTime, setDbTime] = useState("month");
   const [loading, setLoading] = useState(true);
   const currentUser = useSelector((state) => state.authReducer);
-
+  const { i18n } = useTranslation();
   // let userSelected;
   // if (dbUser === "total") {
   //   userSelected = "Tất cả";
@@ -92,30 +93,28 @@ const DashBoard = () => {
   useEffect(() => {
     setLoading(true);
     //call api
-    setTimeout(() => {
-      getDashboardByUserAndTime
-        .get({
-          managerId: currentUser.id,
-          roleManager: currentUser.role,
-          time: dbTime,
-        })
-        .then((res) => {
-          if (res?.codeNumber === 0) {
-            setDataDashboardByUserAndTime(res?.dashboard);
-            getDashboardByMonths
-              .get({
-                managerId: currentUser.id,
-                roleManager: currentUser.role,
-              })
-              .then((data) => {
-                if (data?.codeNumber === 0) {
-                  setDataDashBoardByMonth(data?.dashboardMonths);
-                  setLoading(false);
-                }
-              });
-          }
-        });
-    }, 1500);
+    getDashboardByUserAndTime
+      .get({
+        managerId: currentUser.id,
+        roleManager: currentUser.role,
+        time: dbTime,
+      })
+      .then((res) => {
+        if (res?.codeNumber === 0) {
+          setDataDashboardByUserAndTime(res?.dashboard);
+          getDashboardByMonths
+            .get({
+              managerId: currentUser.id,
+              roleManager: currentUser.role,
+            })
+            .then((data) => {
+              if (data?.codeNumber === 0) {
+                setDataDashBoardByMonth(data?.dashboardMonths);
+                setLoading(false);
+              }
+            });
+        }
+      });
   }, [dbTime]);
 
   return (
@@ -128,7 +127,6 @@ const DashBoard = () => {
       }}
     >
       <ToastContainer />
-      <Header />
       <div className="w-full" style={{ height: "110px" }}></div>
 
       {/* <div className="w-full h-[60px]"></div> */}
@@ -298,7 +296,7 @@ const DashBoard = () => {
           <div className="flex items-center bg-transparent justify-start gap-1">
             <AiOutlineFieldTime className="text-3xl text-white" />
             <span className="font-semibold text-white text-lg">
-              Thống kê theo
+              {i18n.language === "en" ? "Statistics follow" : "Thống kê theo"}
             </span>
           </div>
           <hr
@@ -326,7 +324,9 @@ const DashBoard = () => {
               onClick={() => setDbTime("month")}
             >
               <BsFillCalendarMonthFill className="text-white text-2xl" />
-              <span className="text-md text-white">Tháng hiện tại</span>
+              <span className="text-md text-white">
+                {i18n.language === "en" ? "Current Month" : "Tháng hiện tại"}
+              </span>
             </div>
           </div>
 
@@ -342,7 +342,9 @@ const DashBoard = () => {
               onClick={() => setDbTime("week")}
             >
               <BiCalendarWeek className="text-white text-2xl" />
-              <span className="text-md text-white">Tuần hiện tại</span>
+              <span className="text-md text-white">
+                {i18n.language === "en" ? "Current Week" : "Tuần hiện tại"}
+              </span>
             </div>
           </div>
 
@@ -358,7 +360,11 @@ const DashBoard = () => {
               onClick={() => setDbTime("3month")}
             >
               <BsCalendarDay className="text-white text-2xl" />
-              <span className="text-md text-white">3 tháng gần đây</span>
+              <span className="text-md text-white">
+                {i18n.language === "en"
+                  ? "The last 3 months"
+                  : "3 tháng gần đây"}
+              </span>
             </div>
           </div>
 
@@ -374,7 +380,9 @@ const DashBoard = () => {
               onClick={() => setDbTime("3week")}
             >
               <BsCalendarDay className="text-white text-2xl" />
-              <span className="text-md text-white">3 tuần gần đây</span>
+              <span className="text-md text-white">
+                {i18n.language === "en" ? "The last 3 weeks" : "3 tuần gần đây"}
+              </span>
             </div>
           </div>
         </ul>
@@ -390,26 +398,34 @@ const DashBoard = () => {
       >
         <div className="w-full text-blurThemeColor flex flex-col items-center justify-center">
           <p className="text-xl font-semibold uppercase">
-            Trang thống kê lịch hẹn và câu hỏi của sinh viên
+            {i18n.language === "en"
+              ? "Appointment and student questions statistics page"
+              : "Trang thống kê lịch hẹn và câu hỏi của sinh viên"}
           </p>
           {/* <p className="text-lg">
             {` Đối tượng: ${userSelected} ---- Thời gian: ${timeSelected}`}
           </p> */}
         </div>
         {loading ? (
-          <Loading />
+          <div className="fixed loading-overlay top-0 bottom-0 flex items-center justify-center mx-auto left-0 right-0 w-full max-h-full bg-black bg-opacity-25">
+            <div className="absolute">
+              <Loading />
+            </div>
+          </div>
         ) : (
           <div className="flex flex-col items-start justify-center gap-1 w-full">
             <div className="p-[24px] flex flex-col items-start w-full gap-2">
               <div className="flex items-center w-full justify-start gap-2">
                 <RxComponentNone className="text-blurThemeColor text-2xl" />
                 <p className="font-semibold text-lg text-blurThemeColor">
-                  Theo các thành phần
+                  {i18n.language === "en"
+                    ? "According to components"
+                    : "Theo các thành phần"}
                 </p>
               </div>
               <div className="cart w-full grid grid-cols-4 gap-3">
                 <Cart
-                  title="Lịch hẹn"
+                  title={i18n.language === "en" ? "Appointment" : "Lịch hẹn"}
                   number={customDataSchedule.new?.length}
                   Symbol=<RiSurveyLine className="text-2xl" />
                   styleSymbol={{
@@ -420,10 +436,14 @@ const DashBoard = () => {
                       "rgba(0, 0, 0, 0.14) 0rem 0.25rem 1.25rem 0rem, rgba(64, 64, 64, 0.4) 0rem 0.4375rem 0.625rem -0.3125rem",
                     borderRadius: "2.375rem",
                   }}
-                  time="Mới Từ Sinh Viên"
+                  time={
+                    i18n.language === "en"
+                      ? "New From Student"
+                      : "Mới Từ Sinh Viên"
+                  }
                 />
                 <Cart
-                  title="Lịch hẹn"
+                  title={i18n.language === "en" ? "Appointment" : "Lịch hẹn"}
                   number={customDataSchedule.process?.length}
                   Symbol=<VscRunAll className="text-2xl" />
                   styleSymbol={{
@@ -434,10 +454,12 @@ const DashBoard = () => {
                       "rgba(0, 0, 0, 0.14) 0rem 0.25rem 1.25rem 0rem, rgba(0, 187, 212, 0.4) 0rem 0.4375rem 0.625rem -0.3125rem",
                     borderRadius: "2.375rem",
                   }}
-                  time="Đang tiến hành"
+                  time={
+                    i18n.language === "en" ? "In Process" : "Đang tiến hành"
+                  }
                 />
                 <Cart
-                  title="Lịch hẹn"
+                  title={i18n.language === "en" ? "Appointment" : "Lịch hẹn"}
                   number={customDataSchedule.done?.length}
                   Symbol=<AiOutlineFileDone className="text-2xl" />
                   styleSymbol={{
@@ -448,10 +470,10 @@ const DashBoard = () => {
                       "rgba(0, 0, 0, 0.14) 0rem 0.25rem 1.25rem 0rem, rgba(76, 175, 79, 0.4) 0rem 0.4375rem 0.625rem -0.3125rem",
                     borderRadius: "2.375rem",
                   }}
-                  time="Đã hoàn thành"
+                  time={i18n.language === "en" ? "Completed" : "Đã hoàn thành"}
                 />
                 <Cart
-                  title="Lịch hẹn"
+                  title={i18n.language === "en" ? "Appointment" : "Lịch hẹn"}
                   number={customDataSchedule.cancel?.length}
                   Symbol=<TbClockCancel className="text-2xl" />
                   styleSymbol={{
@@ -462,10 +484,10 @@ const DashBoard = () => {
                       "rgba(0, 0, 0, 0.14) 0rem 0.25rem 1.25rem 0rem, rgba(233, 30, 98, 0.4) 0rem 0.4375rem 0.625rem -0.3125rem",
                     borderRadius: "2.375rem",
                   }}
-                  time="Đã bị huỷ"
+                  time={i18n.language === "en" ? "Canceled" : "Đã huỷ"}
                 />
                 <Cart
-                  title="Câu hỏi"
+                  title={i18n.language === "en" ? "Question" : "Câu hỏi"}
                   number={customDataQuestion.new?.length}
                   Symbol=<MdQuestionMark className="text-2xl" />
                   styleSymbol={{
@@ -476,10 +498,14 @@ const DashBoard = () => {
                       "rgba(0, 0, 0, 0.14) 0rem 0.25rem 1.25rem 0rem, rgba(64, 64, 64, 0.4) 0rem 0.4375rem 0.625rem -0.3125rem",
                     borderRadius: "2.375rem",
                   }}
-                  time="Mới từ sinh viên"
+                  time={
+                    i18n.language === "en"
+                      ? "New From Student"
+                      : "Mới Từ Sinh Viên"
+                  }
                 />
                 <Cart
-                  title="Câu hỏi"
+                  title={i18n.language === "en" ? "Question" : "Câu hỏi"}
                   number={customDataQuestion.done?.length}
                   Symbol=<MdSchedule className="text-2xl" />
                   styleSymbol={{
@@ -490,7 +516,7 @@ const DashBoard = () => {
                       "rgba(0, 0, 0, 0.14) 0rem 0.25rem 1.25rem 0rem, rgba(0, 187, 212, 0.4) 0rem 0.4375rem 0.625rem -0.3125rem",
                     borderRadius: "2.375rem",
                   }}
-                  time="Đã được trả lời"
+                  time={i18n.language === "en" ? "Answered" : "Đã trả lời"}
                 />
               </div>
             </div>
@@ -504,7 +530,9 @@ const DashBoard = () => {
               <div className="flex items-center w-full justify-start gap-2">
                 <BsPieChart className="text-blurThemeColor text-2xl" />
                 <p className="font-semibold text-lg text-blurThemeColor">
-                  Theo cơ cấu
+                  {i18n.language === "en"
+                    ? "According to structure"
+                    : "Theo cơ cấu"}
                 </p>
               </div>
               <div className="cart w-full grid grid-cols-2 gap-10">
@@ -541,7 +569,9 @@ const DashBoard = () => {
               <div className="flex items-center w-full justify-start gap-2">
                 <AiOutlineBarChart className="text-blurThemeColor text-2xl" />
                 <p className="font-semibold text-lg text-blurThemeColor">
-                  Tổng số theo các tháng
+                  {i18n.language === "en"
+                    ? "Total according to months"
+                    : "Tổng số theo các tháng"}
                 </p>
               </div>
               <div className="chart w-full grid grid-cols-2 gap-10">

@@ -76,10 +76,12 @@ const DepartmentManager = () => {
   const [allRowSelected, setAllRowSelected] = useState(false);
   // const [currentPage, setCurrentPage] = useState();
   const [first1, setFirst1] = useState(0);
-  const [rows1, setRows1] = useState(4);
+  const [rows1, setRows1] = useState(8);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageInputTooltip, setPageInputTooltip] = useState(
-    "Press 'Enter' key to go to this page."
+    i18n.language === "en"
+      ? "Press 'Enter' key to go to this page."
+      : "Sử dụng phím Enter để di chuyển trang."
   );
 
   //pagination
@@ -102,13 +104,19 @@ const DepartmentManager = () => {
       const page = parseInt(currentPage);
       if (page < 1 || page > options.totalPages) {
         setPageInputTooltip(
-          `Value must be between 1 and ${options.totalPages}.`
+          i18n.language === "en"
+            ? `Value must be between 1 and ${options.totalPages}.`
+            : `Giá trị phải nằm từ 1 đến ${options.totalPages}.`
         );
       } else {
         const first = currentPage ? options.rows * (page - 1) : 0;
 
         setFirst1(first);
-        setPageInputTooltip("Press 'Enter' key to go to this page.");
+        setPageInputTooltip(
+          i18n.language === "en"
+            ? "Press 'Enter' key to go to this page."
+            : "Sử dụng phím Enter để di chuyển trang."
+        );
       }
     }
   };
@@ -123,7 +131,9 @@ const DepartmentManager = () => {
           onClick={options.onClick}
           disabled={options.disabled}
         >
-          <span className="p-3">Previous</span>
+          <span className="p-3">
+            {i18n.language === "en" ? "Previous" : "Trước"}
+          </span>
           <Ripple />
         </button>
       );
@@ -136,7 +146,7 @@ const DepartmentManager = () => {
           onClick={options.onClick}
           disabled={options.disabled}
         >
-          <span className="p-3">Next</span>
+          <span className="p-3">{i18n.language === "en" ? "Next" : "Sau"}</span>
           <Ripple />
         </button>
       );
@@ -170,10 +180,12 @@ const DepartmentManager = () => {
     },
     RowsPerPageDropdown: (options) => {
       const dropdownOptions = [
-        { label: 4, value: 4 },
         { label: 8, value: 8 },
         { label: 12, value: 12 },
-        { label: "All", value: options.totalRecords },
+        {
+          label: i18n.language === "en" ? "All" : "Tất cả",
+          value: options.totalRecords,
+        },
       ];
 
       return (
@@ -190,7 +202,8 @@ const DepartmentManager = () => {
           className="mx-3"
           style={{ color: "var(--text-color)", userSelect: "none" }}
         >
-          Go to{" "}
+          {i18n.language === "en" ? `Go to ` : `Đến `}
+
           <InputText
             size="2"
             className="ml-1"
@@ -234,7 +247,7 @@ const DepartmentManager = () => {
           <Button
             type="button"
             icon="pi pi-filter-slash"
-            label="Clear"
+            label={i18n.language === "en" ? "Clear" : "Đặt lại"}
             className="p-button-outlined"
             onClick={() => {
               clearFilter1();
@@ -245,7 +258,7 @@ const DepartmentManager = () => {
             <Button
               type="button"
               // icon="pi pi-filter-slash"
-              label="Delete"
+              label={i18n.language === "en" ? "Delete" : "Xoá"}
               className={`p-button-outlined ${
                 selectedProducts8?.length >= 1 ? "" : "disabled"
               }`}
@@ -275,14 +288,46 @@ const DepartmentManager = () => {
       <div className="flex items-center justify-center gap-6">
         {rowData?.fullName === selectedProducts8[0]?.fullName && (
           <>
-            <FiEdit
+            {/* <FiEdit
               className="cursor-pointer text-inputColor"
               onClick={() => isOpenUpdateUser(rowData)}
-            />
-            <AiOutlineDelete
+            /> */}
+            <Button
+              tooltip={i18n.language === "en" ? "Update" : "Cập nhật"}
+              tooltipOptions={{ position: "top" }}
+              style={{
+                color: "#812222",
+                backgroundColor: "transparent",
+                padding: "2px",
+                border: "none",
+                borderRadius: "25px",
+              }}
+            >
+              <FiEdit
+                className="cursor-pointer text-inputColor"
+                onClick={() => isOpenUpdateUser(rowData)}
+              />
+            </Button>
+            {/* <AiOutlineDelete
               className="cursor-pointer text-blue-600"
               onClick={() => isOpenModalDeleteUser(rowData)}
-            />
+            /> */}
+            <Button
+              tooltip={i18n.language === "en" ? "Delete" : "Xoá bỏ"}
+              tooltipOptions={{ position: "top" }}
+              style={{
+                color: "#812222",
+                backgroundColor: "transparent",
+                padding: "2px",
+                border: "none",
+                borderRadius: "25px",
+              }}
+            >
+              <AiOutlineDelete
+                className="cursor-pointer text-blue-600"
+                onClick={() => isOpenModalDeleteUser(rowData)}
+              />
+            </Button>
           </>
         )}
       </div>
@@ -292,21 +337,19 @@ const DepartmentManager = () => {
   useEffect(() => {
     setLoading(true);
     // const gender = "GENDER";
-    setTimeout(async () => {
-      // await getAllCodeApi.getByType({ type: gender }).then((data) => {
-      //   if (data?.codeNumber === 0) {
-      //     setGenderAPI(data.allCode);
-      //   }
-      // });
+    // await getAllCodeApi.getByType({ type: gender }).then((data) => {
+    //   if (data?.codeNumber === 0) {
+    //     setGenderAPI(data.allCode);
+    //   }
+    // });
 
-      await getUserApi.getUserByRole({ role: "R2" }).then((data) => {
-        if (data?.codeNumber === 0) {
-          setUsers(data.user);
-        }
-      });
-      setLoading(false);
-      initFilters1();
-    }, 1500);
+    getUserApi.getUserByRole({ role: "R2" }).then((data) => {
+      if (data?.codeNumber === 0) {
+        setUsers(data.user);
+      }
+    });
+    setLoading(false);
+    initFilters1();
   }, []);
 
   const handleChangeEvent = (value, type) => {
@@ -444,7 +487,7 @@ const DepartmentManager = () => {
           setLoading(false);
         } else if (data?.codeNumber === -2) {
           toast.error(`${t("system.token.mess")}`, {
-            autoClose: 3000,
+            autoClose: 5000,
             position: "bottom-right",
             theme: "colored",
           });
@@ -457,7 +500,7 @@ const DepartmentManager = () => {
                 );
               }
             });
-          }, 3000);
+          }, 5000);
         } else if (data?.codeNumber === 1) {
           toast.error(data?.message, {
             autoClose: 2000,
@@ -594,64 +637,60 @@ const DepartmentManager = () => {
       type: ascertain_user.other,
       // image: avatar,
     };
-    setTimeout(() => {
-      updateUserApi.update({}, body).then(async (data) => {
-        if (data?.codeNumber === -1) {
-          toast.error(`${t("system.notification.fail")}`, {
-            autoClose: 2000,
-            position: "bottom-right",
-            theme: "colored",
-          });
-          setLoading(false);
-        } else if (data?.codeNumber === -2) {
-          toast.error(`${t("system.token.mess")}`, {
-            autoClose: 3000,
-            position: "bottom-right",
-            theme: "colored",
-          });
-          setTimeout(() => {
-            logOutApi.logoutUser({}).then((data) => {
-              if (data?.codeNumber === 0) {
-                dispatch(logOutUser());
-                navigate(
-                  `${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`
-                );
-              }
-            });
-          }, 3000);
-        } else if (data?.codeNumber === 1) {
-          toast.error(data?.message, {
-            autoClose: 2000,
-            position: "bottom-right",
-            theme: "colored",
-          });
-          setLoading(false);
-        } else {
-          await getUserApi.getUserByRole({ role: "R2" }).then((data) => {
+    updateUserApi.update({}, body).then(async (data) => {
+      if (data?.codeNumber === -1) {
+        toast.error(`${t("system.notification.fail")}`, {
+          autoClose: 2000,
+          position: "bottom-right",
+          theme: "colored",
+        });
+        setLoading(false);
+      } else if (data?.codeNumber === -2) {
+        toast.error(`${t("system.token.mess")}`, {
+          autoClose: 5000,
+          position: "bottom-right",
+          theme: "colored",
+        });
+        setTimeout(() => {
+          logOutApi.logoutUser({}).then((data) => {
             if (data?.codeNumber === 0) {
-              setUsers(data.user);
+              dispatch(logOutUser());
+              navigate(`${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`);
             }
           });
-          toast.success(`${t("system.notification.update")}`, {
-            autoClose: 2000,
-            position: "bottom-right",
-            theme: "colored",
-          });
-          setEmail("");
-          setPassword("");
-          setFullName("");
-          setPhoneNumber("");
-          setAddress("");
-          // setGender("");
-          setIsUpdateUser(false);
-          setDataUserUpdate("");
-          // setPreviewAvatar("");
-          // inputFileRef.current.value = "";
-          // setAvatar("");
-          setLoading(false);
-        }
-      });
-    }, 1000);
+        }, 5000);
+      } else if (data?.codeNumber === 1) {
+        toast.error(data?.message, {
+          autoClose: 2000,
+          position: "bottom-right",
+          theme: "colored",
+        });
+        setLoading(false);
+      } else {
+        await getUserApi.getUserByRole({ role: "R2" }).then((data) => {
+          if (data?.codeNumber === 0) {
+            setUsers(data.user);
+          }
+        });
+        toast.success(`${t("system.notification.update")}`, {
+          autoClose: 2000,
+          position: "bottom-right",
+          theme: "colored",
+        });
+        setEmail("");
+        setPassword("");
+        setFullName("");
+        setPhoneNumber("");
+        setAddress("");
+        // setGender("");
+        setIsUpdateUser(false);
+        setDataUserUpdate("");
+        // setPreviewAvatar("");
+        // inputFileRef.current.value = "";
+        // setAvatar("");
+        setLoading(false);
+      }
+    });
   };
 
   const handleCloseUpdateUser = () => {
@@ -679,59 +718,57 @@ const DepartmentManager = () => {
   const deleteUser = async (idData) => {
     setLoading(true);
     console.log(idData);
-    setTimeout(() => {
-      deleteUserApi
-        .delete({ id: idData, type: ascertain_user.other })
-        .then((data) => {
-          if (data?.codeNumber === -1) {
-            toast.error(`${t("system.notification.fail")}`, {
-              autoClose: 2000,
-              position: "bottom-right",
-              theme: "colored",
-            });
-            setLoading(false);
-          } else if (data?.codeNumber === -2) {
-            toast.error(`${t("system.token.mess")}`, {
-              autoClose: 3000,
-              position: "bottom-right",
-              theme: "colored",
-            });
-            setTimeout(() => {
-              logOutApi.logoutUser({}).then((data) => {
-                if (data?.codeNumber === 0) {
-                  dispatch(logOutUser());
-                  navigate(
-                    `${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`
-                  );
-                }
-              });
-            }, 3000);
-          } else if (data?.codeNumber === 1) {
-            toast.error(data?.message, {
-              autoClose: 2000,
-              position: "bottom-right",
-              theme: "colored",
-            });
-            setLoading(false);
-          } else {
-            getUserApi.getUserByRole({ role: "R2" }).then((data) => {
+    deleteUserApi
+      .delete({ id: idData, type: ascertain_user.other })
+      .then((data) => {
+        if (data?.codeNumber === -1) {
+          toast.error(`${t("system.notification.fail")}`, {
+            autoClose: 2000,
+            position: "bottom-right",
+            theme: "colored",
+          });
+          setLoading(false);
+        } else if (data?.codeNumber === -2) {
+          toast.error(`${t("system.token.mess")}`, {
+            autoClose: 5000,
+            position: "bottom-right",
+            theme: "colored",
+          });
+          setTimeout(() => {
+            logOutApi.logoutUser({}).then((data) => {
               if (data?.codeNumber === 0) {
-                setUsers(data.user);
-                setLoading(false);
-                setDataUserDelete("");
-                setIsDeleteUser(false);
-                setSelectedProducts8([]);
-                toast.success(`${t("system.notification.delete")}`, {
-                  autoClose: 2000,
-                  position: "bottom-right",
-                  theme: "colored",
-                });
-                setSelectedProducts8([]);
+                dispatch(logOutUser());
+                navigate(
+                  `${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`
+                );
               }
             });
-          }
-        });
-    }, 1000);
+          }, 5000);
+        } else if (data?.codeNumber === 1) {
+          toast.error(data?.message, {
+            autoClose: 2000,
+            position: "bottom-right",
+            theme: "colored",
+          });
+          setLoading(false);
+        } else {
+          getUserApi.getUserByRole({ role: "R2" }).then((data) => {
+            if (data?.codeNumber === 0) {
+              setUsers(data.user);
+              setLoading(false);
+              setDataUserDelete("");
+              setIsDeleteUser(false);
+              setSelectedProducts8([]);
+              toast.success(`${t("system.notification.delete")}`, {
+                autoClose: 2000,
+                position: "bottom-right",
+                theme: "colored",
+              });
+              setSelectedProducts8([]);
+            }
+          });
+        }
+      });
   };
   const handleDeleteManyData = () => {
     console.log(selectedProducts8);
@@ -750,10 +787,15 @@ const DepartmentManager = () => {
 
   return (
     <Fragment>
-      <div className="w-full flex flex-col mx-auto pb-10">
+      <div
+        className="w-full flex flex-col mx-auto pb-10"
+        style={{
+          fontSize: "14px",
+        }}
+      >
         <ToastContainer />
 
-        <div
+        {/* <div
           className={`flex  mt-3  items-center justify-center gap-1 py-2 px-1 text-white font-semibold rounded-md  ${
             isUpdateUser ? "bg-backColor" : "bg-blue-500"
           }`}
@@ -769,7 +811,7 @@ const DepartmentManager = () => {
           {isUpdateUser
             ? t("system.department.update")
             : t("system.department.create")}
-        </div>
+        </div> */}
         {loading && (
           <div className="fixed loading-overlay top-0 bottom-0 flex items-center justify-center mx-auto left-0 right-0 w-full max-h-full bg-black bg-opacity-25">
             <div className="absolute">

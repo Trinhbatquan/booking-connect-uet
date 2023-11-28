@@ -24,8 +24,6 @@ const Teacher = ({ settings }) => {
 
       getTeacherHomePageAPI.getTeacherHomePage({}).then((data) => {
         if (data?.codeNumber !== 0) {
-          alert(data?.message);
-          // dispatch(getTopTenTeacherFailed());
         } else {
           // dispatch(getTopTenTeacherSucceed(data?.teacher));
           console.log({ data });

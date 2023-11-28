@@ -27,6 +27,7 @@ import DeleteModal from "../Modal/DeleteModal";
 import { logOutUser } from "../../../redux/authSlice";
 import { getTeacherHomePageAPI } from "../../../services/teacherService";
 import ActionItem from "./ActionItem";
+import Loading from "../../../utils/Loading";
 
 const ScheduleManager = () => {
   const [selectedOptionObject, setSelectedOptionObject] = useState({});
@@ -126,349 +127,29 @@ const ScheduleManager = () => {
 
   const handleChangeSelect_detail = async (e) => {
     console.log(selectedOptionObject);
-    // await getScheduleSystem
-    //   .get({ managerId: e?.value, roleManager: selectedOptionObject?.value })
-    //   .then((data) => {
-    //     if (data?.codeNumber === 0 && data?.schedule_user?.length > 0) {
-    //       //sort by id
-    //       data.schedule_user.sort((a, b) => a.id - b.id);
-    //       let timeScheduleData = [];
-    //       while (data.schedule_user.length > 1) {
-    //         const arr = data.schedule_user;
-    //         let filterArr = [];
-    //         let indexArr = [];
-    //         for (let i = 0; i < arr.length; i++) {
-    //           if (arr[i].date === arr[0].date) {
-    //             filterArr.push(arr[i]);
-    //             indexArr.push(i);
-    //           }
-    //         }
-    //         data.schedule_user = data.schedule_user.filter((item, index) => {
-    //           return !indexArr.includes(index);
-    //         });
-    //         timeScheduleData.push(filterArr);
-    //       }
-    //       if (data.schedule_user.length === 1) {
-    //         timeScheduleData.push([data.schedule_user[0]]);
-    //       }
-    //       timeScheduleData.sort((a, b) =>
-    //         moment(a[0].date)
-    //           .format(dateFormat.SEND_TO_SERVER)
-    //           .localeCompare(
-    //             moment(b[0].date).format(dateFormat.SEND_TO_SERVER)
-    //           )
-    //       );
-    //       setTimeUserSelected(timeScheduleData);
-    //     } else {
-    //       setTimeUserSelected([]);
-    //     }
-    //   });
-    // setStartDate(new Date().setDate(new Date().getDate() + 1));
-    // timeData.forEach((time) => {
-    //   time.isSelected = false;
-    // });
-    // setTimeData(timeData);
-    // setIsUpdate(false);
+
     setSelectedOption(e);
-  };
-
-  //handle change date picker
-  const handleChangeDatePicker = (date) => {
-    let arrDateSelected = [];
-    const currentDate = moment(date).format(dateFormat.SEND_TO_SERVER);
-    setStartDate(date);
-    if (timeUserSelected && timeUserSelected?.length > 0) {
-      for (let i = 0; i < timeUserSelected.length; i++) {
-        if (
-          moment(timeUserSelected[i][0]?.date).format(
-            dateFormat.SEND_TO_SERVER
-          ) === currentDate
-        ) {
-          arrDateSelected = timeUserSelected[i];
-          break;
-        }
-      }
-      if (arrDateSelected?.length > 0) {
-        let dataDate = [];
-        arrDateSelected.forEach((item) => {
-          dataDate.push(item?.timeType);
-        });
-        setIsUpdate(true);
-        timeData.forEach((item) => {
-          if (dataDate.includes(item.keyMap)) {
-            item.isSelected = true;
-          } else {
-            item.isSelected = false;
-          }
-        });
-      } else {
-        setIsUpdate(false);
-        timeData.forEach((item) => {
-          item.isSelected = false;
-        });
-      }
-      setTimeData(timeData);
-    }
-  };
-
-  //handle click schedule button
-  const clickButton = (time) => {
-    const result = timeData.map((item, index) => {
-      if (item?.id === time?.id) {
-        item.isSelected = !item.isSelected;
-      }
-      return item;
-    });
-    setTimeData(result);
-  };
-
-  //handleCheckNull
-  const handleCheckNull = () => {
-    if (!selectedOption?.value) {
-      toast.error("Please choose department", {
-        autoClose: 2000,
-        position: "bottom-right",
-        theme: "colored",
-      });
-      return false;
-    }
-    if (!startDate) {
-      toast.error("please choose date", {
-        autoClose: 2000,
-        position: "bottom-right",
-        theme: "colored",
-      });
-      return false;
-    }
-    let selectedTimeArr = [];
-    let output = [];
-    selectedTimeArr = timeData.filter((time, index) => {
-      return time.isSelected === true;
-    });
-    if (selectedTimeArr?.length === 0) {
-      toast.error("please choose time", {
-        autoClose: 2000,
-        position: "bottom-right",
-        theme: "colored",
-      });
-      return false;
-    }
-    selectedTimeArr.forEach((selectedTime, index) => {
-      output.push({
-        managerId: selectedOption?.value,
-        roleManager: selectedOptionObject?.value,
-        date: moment(startDate).format(dateFormat.SEND_TO_SERVER),
-        timeType: selectedTime?.keyMap,
-      });
-    });
-    return output;
-  };
-
-  const handleUpdateData = (times) => {
-    console.log({ times });
-    setIsUpdate(true);
-    setStartDate(times[0].date);
-    let keyMapSelected = [];
-    times.forEach((time) => {
-      keyMapSelected.push(time?.timeType);
-    });
-    timeData.forEach((item) => {
-      if (keyMapSelected.includes(item.keyMap)) {
-        item.isSelected = true;
-      } else {
-        item.isSelected = false;
-      }
-    });
-    setTimeData(timeData);
-  };
-
-  //handle click save button
-  const handleSaveOrUpdateSchedule = async () => {
-    if (!handleCheckNull()) {
-      return;
-    }
-    const action = isUpdate ? "update" : "create";
-    const body = {
-      scheduleData: handleCheckNull(),
-      action,
-    };
-    const data = await createSchedule.create({}, body);
-    if (data?.codeNumber === 0) {
-      if (data?.message === "create") {
-        toast.success(`${t("system.notification.create")}`, {
-          autoClose: 2000,
-          position: "bottom-right",
-          theme: "colored",
-        });
-        //   setSelectedOption({});
-      } else {
-        toast.success(`${t("system.notification.update")}`, {
-          autoClose: 2000,
-          position: "bottom-right",
-          theme: "colored",
-        });
-        setIsUpdate(false);
-      }
-      setStartDate(new Date().setDate(new Date().getDate() + 1));
-      timeData.map((time) => {
-        time.isSelected = false;
-        return time;
-      });
-      setTimeData(timeData);
-      await getScheduleSystem
-        .get({
-          managerId: body.scheduleData[0].managerId,
-          roleManager: body.scheduleData[0].roleManager,
-        })
-        .then((data) => {
-          if (data?.codeNumber === 0 && data?.schedule_user?.length > 0) {
-            //sort by id
-            console.log(data.schedule_user);
-            data.schedule_user.sort((a, b) => a.id - b.id);
-            let timeScheduleData = [];
-            while (data.schedule_user.length > 1) {
-              const arr = data.schedule_user;
-              let filterArr = [];
-              let indexArr = [];
-              for (let i = 0; i < arr.length; i++) {
-                if (arr[i].date === arr[0].date) {
-                  filterArr.push(arr[i]);
-                  indexArr.push(i);
-                }
-              }
-              data.schedule_user = data.schedule_user.filter((item, index) => {
-                return !indexArr.includes(index);
-              });
-              timeScheduleData.push(filterArr);
-            }
-            if (data.schedule_user.length === 1) {
-              timeScheduleData.push([data.schedule_user[0]]);
-            }
-            console.log(timeScheduleData);
-            timeScheduleData.sort((a, b) =>
-              moment(a[0].date)
-                .format(dateFormat.SEND_TO_SERVER)
-                .localeCompare(
-                  moment(b[0].date).format(dateFormat.SEND_TO_SERVER)
-                )
-            );
-            setTimeUserSelected(timeScheduleData);
-          } else {
-            setTimeUserSelected([]);
-          }
-        });
-    } else if (data?.codeNumber === -1) {
-      toast.error(`${t("system.notification.fail")}`, {
-        autoClose: 2000,
-        position: "bottom-right",
-        theme: "colored",
-      });
-    } else if (data?.codeNumber === -2) {
-      toast.error(`${t("system.token.mess")}`, {
-        autoClose: 3000,
-        position: "bottom-right",
-        theme: "colored",
-      });
-      setTimeout(() => {
-        logOutApi.logoutUser({}).then((data) => {
-          if (data?.codeNumber === 0) {
-            dispatch(logOutUser());
-            navigate(`${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`);
-          }
-        });
-      }, 3000);
-    } else if (data?.codeNumber === 1) {
-      toast.error(data?.message, {
-        autoClose: 2000,
-        position: "bottom-right",
-        theme: "colored",
-      });
-    }
-  };
-
-  const handleCloseUpdateSchedule = () => {
-    setStartDate(new Date().setDate(new Date().getDate() + 1));
-    timeData.forEach((time) => {
-      time.isSelected = false;
-    });
-    setTimeData(timeData);
-    setIsUpdate(false);
-  };
-
-  //delete
-  const isOpenModalDeleteUser = (times) => {
-    setIsDelete(true);
-    setDataScheduleDelete(times);
-  };
-  const isCloseDeleteUserModal = () => {
-    setIsDelete(false);
-  };
-  const deleteSchedule = async (managerId, date, roleManager) => {
-    deleteScheduleByIdAndDate
-      .delete({ managerId, date, roleManager })
-      .then((res) => {
-        if (res?.codeNumber === 0) {
-          setIsDelete(false);
-          setIsUpdate(false);
-          setStartDate(new Date().setDate(new Date().getDate() + 1));
-          timeData.forEach((time) => {
-            time.isSelected = false;
-          });
-          setTimeData(timeData);
-
-          //load data
-          getScheduleSystem.get({ managerId, roleManager }).then((data) => {
-            if (data?.codeNumber === 0 && data?.schedule_user?.length > 0) {
-              //sort by id
-              data.schedule_user.sort((a, b) => a.id - b.id);
-              let timeScheduleData = [];
-              while (data.schedule_user.length > 1) {
-                const arr = data.schedule_user;
-                let filterArr = [];
-                let indexArr = [];
-                for (let i = 0; i < arr.length; i++) {
-                  if (arr[i].date === arr[0].date) {
-                    filterArr.push(arr[i]);
-                    indexArr.push(i);
-                  }
-                }
-                data.schedule_user = data.schedule_user.filter(
-                  (item, index) => {
-                    return !indexArr.includes(index);
-                  }
-                );
-                timeScheduleData.push(filterArr);
-              }
-              if (data.schedule_user.length === 1) {
-                timeScheduleData.push([data.schedule_user[0]]);
-              }
-              timeScheduleData.sort((a, b) =>
-                moment(a[0].date)
-                  .format(dateFormat.SEND_TO_SERVER)
-                  .localeCompare(
-                    moment(b[0].date).format(dateFormat.SEND_TO_SERVER)
-                  )
-              );
-              setTimeUserSelected(timeScheduleData);
-            } else {
-              setTimeUserSelected([]);
-            }
-          });
-        }
-      });
   };
 
   return (
     <Fragment>
       <div className="w-full" style={{ height: "100px" }}></div>
-
+      {loading && (
+        <div className="fixed loading-overlay top-0 bottom-0 flex items-center justify-center mx-auto left-0 right-0 w-full max-h-full bg-black bg-opacity-25">
+          <div className="absolute">
+            <Loading />
+          </div>
+        </div>
+      )}
       <ToastContainer />
       <div
         className="mt-3 flex flex-col items-start mx-auto pb-5 gap-8"
         style={{ maxWidth: "80%", width: "80%" }}
       >
         <p className="mx-auto text-2xl text-blue-600 font-semibold">
-          Quản lý lịch hẹn và câu hỏi
+          {i18n.language === "en"
+            ? "Schedule & Question Management"
+            : "Quản lý lịch hẹn và câu hỏi"}
         </p>
 
         <div className="flex items-start justify-between w-full gap-10">
@@ -516,7 +197,9 @@ const ScheduleManager = () => {
                 }`}
               onClick={() => setAction("schedule")}
             >
-              Lịch hẹn của sinh viên
+              {i18n.language === "en"
+                ? "About Schedule From Student"
+                : "Về lịch hẹn từ sinh viên"}
             </button>
             <button
               type="button"
@@ -528,7 +211,9 @@ const ScheduleManager = () => {
                 }`}
               onClick={() => setAction("question")}
             >
-              Câu hỏi của sinh viên
+              {i18n.language === "en"
+                ? "About Question From Student"
+                : "Về câu hỏi từ sinh viên"}
             </button>
           </div>
         )}

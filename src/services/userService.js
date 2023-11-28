@@ -6,6 +6,19 @@ const loginApi = {
     const url = "/api/system/login";
     return axiosClient.post(url, data, { params });
   },
+  forgot: (params) => {
+    const url = "/api/system/forgot-pass";
+    return axiosClient.get(url, { params });
+  },
+  updatePass_forgot: (params, data) => {
+    const url = "/api/system/update-pass-forgot";
+    return axiosClient.post(url, data, { params });
+  },
+};
+
+const updatePasswordSystem = (params, data) => {
+  const url = "/api/update-password-system";
+  return axiosClient.put(url, data, { params });
 };
 
 const logOutApi = {
@@ -98,4 +111,5 @@ export {
   deleteUserApi,
   updateUserApi,
   getAllCodeApi,
+  updatePasswordSystem,
 };

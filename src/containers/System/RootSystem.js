@@ -24,16 +24,16 @@ const RootSystem = () => {
   }, []);
 
   return (
-    // <ContextScrollTop.Provider value={{ isScroll: scrollToTop }}>
-    <div
-    // className="overflow-y-scroll"
-    // style={{ width: "100vw", height: "100vh" }}
-    >
-      <Header />
-      {/* <div className="w-full" style={{ height: "110px" }}></div> */}
-      <Outlet />
+    <div>
+      {!currentUser?.isLogin || currentUser?.role !== "R1" ? (
+        " "
+      ) : (
+        <>
+          <Header />
+          <Outlet />
+        </>
+      )}
     </div>
-    // </ContextScrollTop.Provider>
   );
 };
 

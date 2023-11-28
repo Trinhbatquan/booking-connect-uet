@@ -23,13 +23,15 @@ const HealthSeeAll = () => {
   ];
 
   useEffect(() => {
-    getUserApi.getUserByRole({ role: "R6" }).then((data) => {
-      console.log(data);
-      if (data?.codeNumber === 0) {
-        setHealthData(data.user);
-        setLoading(false);
-      }
-    });
+    if (JSON.parse(localStorage.getItem("auth-bookingCare-UET_student"))) {
+      getUserApi.getUserByRole({ role: "R6" }).then((data) => {
+        console.log(data);
+        if (data?.codeNumber === 0) {
+          setHealthData(data.user);
+          setLoading(false);
+        }
+      });
+    }
   }, []);
   useEffect(() => {
     const lazyLoadImg = () => {
@@ -42,7 +44,9 @@ const HealthSeeAll = () => {
         },
       }).observe();
     };
-    lazyLoadImg();
+    if (JSON.parse(localStorage.getItem("auth-bookingCare-UET_student"))) {
+      lazyLoadImg();
+    }
   }, [healthData]);
 
   const handleHealthDetail = (data) => {
@@ -58,8 +62,7 @@ const HealthSeeAll = () => {
           </div>
         </div>
       )}
-      <HomeHeader />
-      <div className="w-full h-[100px]"></div>
+
       <div className="content-inform py-[20px] my-[5px] px-[10%] mx-auto">
         <h2 className="text-blurThemeColor font-semibold text-3xl pb-[19px] border-b-2 border-gray-300">
           {i18n.language === "en" ? "Student Health" : "Sức khoẻ sinh viên"}

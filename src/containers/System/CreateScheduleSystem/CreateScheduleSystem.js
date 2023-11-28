@@ -68,10 +68,12 @@ const CreateScheduleSystem = () => {
   const [allRowSelected, setAllRowSelected] = useState(false);
   // const [currentPage, setCurrentPage] = useState();
   const [first1, setFirst1] = useState(0);
-  const [rows1, setRows1] = useState(4);
+  const [rows1, setRows1] = useState(8);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageInputTooltip, setPageInputTooltip] = useState(
-    "Press 'Enter' key to go to this page."
+    i18n.language === "en"
+      ? "Press 'Enter' key to go to this page."
+      : "Sử dụng phím Enter để di chuyển trang."
   );
 
   //pagination
@@ -102,13 +104,19 @@ const CreateScheduleSystem = () => {
       const page = parseInt(currentPage);
       if (page < 1 || page > options.totalPages) {
         setPageInputTooltip(
-          `Value must be between 1 and ${options.totalPages}.`
+          i18n.language === "en"
+            ? `Value must be between 1 and ${options.totalPages}.`
+            : `Giá trị phải nằm từ 1 đến ${options.totalPages}.`
         );
       } else {
         const first = currentPage ? options.rows * (page - 1) : 0;
 
         setFirst1(first);
-        setPageInputTooltip("Press 'Enter' key to go to this page.");
+        setPageInputTooltip(
+          i18n.language === "en"
+            ? "Press 'Enter' key to go to this page."
+            : "Sử dụng phím Enter để di chuyển trang."
+        );
       }
     }
   };
@@ -123,7 +131,9 @@ const CreateScheduleSystem = () => {
           onClick={options.onClick}
           disabled={options.disabled}
         >
-          <span className="p-3">Previous</span>
+          <span className="p-3">
+            {i18n.language === "en" ? "Previous" : "Trước"}
+          </span>
           <Ripple />
         </button>
       );
@@ -136,7 +146,7 @@ const CreateScheduleSystem = () => {
           onClick={options.onClick}
           disabled={options.disabled}
         >
-          <span className="p-3">Next</span>
+          <span className="p-3">{i18n.language === "en" ? "Next" : "Sau"}</span>
           <Ripple />
         </button>
       );
@@ -170,10 +180,12 @@ const CreateScheduleSystem = () => {
     },
     RowsPerPageDropdown: (options) => {
       const dropdownOptions = [
-        { label: 4, value: 4 },
         { label: 8, value: 8 },
         { label: 12, value: 12 },
-        { label: "All", value: options.totalRecords },
+        {
+          label: i18n.language === "en" ? "All" : "Tất cả",
+          value: options.totalRecords,
+        },
       ];
 
       return (
@@ -190,7 +202,7 @@ const CreateScheduleSystem = () => {
           className="mx-3"
           style={{ color: "var(--text-color)", userSelect: "none" }}
         >
-          Go to{" "}
+          {i18n.language === "en" ? `Go to ` : `Đến `}
           <InputText
             size="2"
             className="ml-1"
@@ -234,7 +246,7 @@ const CreateScheduleSystem = () => {
           <ButtonPrimeReact
             type="button"
             icon="pi pi-filter-slash"
-            label="Clear"
+            label={i18n.language === "en" ? "Clear" : "Đặt lại"}
             className="p-button-outlined"
             onClick={() => {
               // clearFilter1();
@@ -254,7 +266,7 @@ const CreateScheduleSystem = () => {
           <ButtonPrimeReact
             type="button"
             // icon="pi pi-filter-slash"
-            label="Delete"
+            label={i18n.language === "en" ? "Delete" : "Xoá"}
             className={`p-button-outlined ${
               selectedProducts8?.length >= 1 ? "" : "disabled"
             }`}
@@ -272,14 +284,42 @@ const CreateScheduleSystem = () => {
       <div className="flex items-center justify-center gap-6">
         {rowData[0]?.date === selectedProducts8[0][0]?.date && (
           <>
-            <FiEdit
-              className="cursor-pointer text-inputColor"
-              onClick={() => handleUpdateData(rowData)}
-            />
-            <AiOutlineDelete
+            <ButtonPrimeReact
+              tooltip={i18n.language === "en" ? "Update" : "Cập nhật"}
+              tooltipOptions={{ position: "top" }}
+              style={{
+                color: "#812222",
+                backgroundColor: "transparent",
+                padding: "2px",
+                border: "none",
+                borderRadius: "25px",
+              }}
+            >
+              <FiEdit
+                className="cursor-pointer text-inputColor"
+                onClick={() => handleUpdateData(rowData)}
+              />
+            </ButtonPrimeReact>
+            {/* <AiOutlineDelete
               className="cursor-pointer text-blue-600"
               onClick={() => isOpenModalDeleteUser(rowData)}
-            />
+            /> */}
+            <ButtonPrimeReact
+              tooltip={i18n.language === "en" ? "Delete" : "Xoá bỏ"}
+              tooltipOptions={{ position: "top" }}
+              style={{
+                color: "#812222",
+                backgroundColor: "transparent",
+                padding: "2px",
+                border: "none",
+                borderRadius: "25px",
+              }}
+            >
+              <AiOutlineDelete
+                className="cursor-pointer text-blue-600"
+                onClick={() => isOpenModalDeleteUser(rowData)}
+              />
+            </ButtonPrimeReact>
           </>
         )}
       </div>
@@ -644,7 +684,7 @@ const CreateScheduleSystem = () => {
       setLoading(false);
 
       toast.error(`${t("system.token.mess")}`, {
-        autoClose: 3000,
+        autoClose: 5000,
         position: "bottom-right",
         theme: "colored",
       });
@@ -655,15 +695,18 @@ const CreateScheduleSystem = () => {
             navigate(`${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`);
           }
         });
-      }, 3000);
+      }, 5000);
     } else if (data?.codeNumber === 1) {
       setLoading(false);
 
-      toast.error(data?.message, {
-        autoClose: 2000,
-        position: "bottom-right",
-        theme: "colored",
-      });
+      toast.error(
+        i18n.language === "en" ? data?.message_en : data?.message_vn,
+        {
+          autoClose: 2000,
+          position: "bottom-right",
+          theme: "colored",
+        }
+      );
     }
   };
 
@@ -743,6 +786,48 @@ const CreateScheduleSystem = () => {
             }
             setSelectedProducts8([]);
           });
+          toast.success(`${t("system.notification.delete")}`, {
+            autoClose: 2000,
+            position: "bottom-right",
+            theme: "colored",
+          });
+        } else if (res?.codeNumber === -1) {
+          setLoading(false);
+
+          toast.error(`${t("system.notification.fail")}`, {
+            autoClose: 2000,
+            position: "bottom-right",
+            theme: "colored",
+          });
+        } else if (res?.codeNumber === -2) {
+          setLoading(false);
+
+          toast.error(`${t("system.token.mess")}`, {
+            autoClose: 5000,
+            position: "bottom-right",
+            theme: "colored",
+          });
+          setTimeout(() => {
+            logOutApi.logoutUser({}).then((data) => {
+              if (data?.codeNumber === 0) {
+                dispatch(logOutUser());
+                navigate(
+                  `${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`
+                );
+              }
+            });
+          }, 5000);
+        } else if (res?.codeNumber === 1) {
+          setLoading(false);
+
+          toast.error(
+            i18n.language === "en" ? res?.message_en : res?.message_vn,
+            {
+              autoClose: 2000,
+              position: "bottom-right",
+              theme: "colored",
+            }
+          );
         }
       });
   };

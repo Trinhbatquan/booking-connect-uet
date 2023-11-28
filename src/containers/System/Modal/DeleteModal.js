@@ -7,7 +7,37 @@ import { dateFormat } from "../../../utils/constant";
 import { useTranslation } from "react-i18next";
 
 const DeleteModal = ({ dataUserDelete, isClose, deleteUser, type }) => {
-  console.log(dataUserDelete);
+  let dataName = "";
+  if (type === "user" && Array.isArray(dataUserDelete)) {
+    dataUserDelete.forEach((item, index) => {
+      if (index === dataUserDelete?.length - 1) {
+        dataName += `${item?.fullName}`;
+      } else {
+        dataName += `${item?.fullName}, `;
+      }
+    });
+  } else if (type === "user" && !Array.isArray(dataUserDelete)) {
+    dataName = dataUserDelete?.fullName;
+  } else {
+    if (dataUserDelete[0]?.date) {
+      dataName = `${moment(dataUserDelete[0]?.date).format(
+        dateFormat.LABEL_SCHEDULE
+      )}`;
+    } else {
+      dataUserDelete.forEach((item, index) => {
+        if (index === dataUserDelete?.length - 1) {
+          dataName += `${moment(item[0]?.date).format(
+            dateFormat.LABEL_SCHEDULE
+          )}`;
+        } else {
+          dataName += `${moment(item[0]?.date).format(
+            dateFormat.LABEL_SCHEDULE
+          )}, `;
+        }
+      });
+    }
+  }
+
   const { i18n } = useTranslation();
   const handleDeleteUser = (action) => {
     if (action === "cancel") {
@@ -54,30 +84,36 @@ const DeleteModal = ({ dataUserDelete, isClose, deleteUser, type }) => {
         animate={{ opacity: 1, translateY: 0 }}
         exit={{ opacity: 0, translateY: -50 }}
         transition={{ duration: 0.4, delay: 0.1 }}
-        className="z-50 fixed top-6 w-fit flex flex-col h-auto bg-white rounded-lg shadow backdrop-blur-md mx-auto mt-16 pb-3 overflow-hidden"
-        style={{ left: "40%" }}
+        className="z-50 fixed top-10 w-[60%] flex flex-col h-auto bg-white rounded-lg shadow backdrop-blur-md mx-auto mt-16 pb-3 overflow-hidden"
+        style={{ left: "20%" }}
       >
         <div className="bg-blue-600 px-3 py-2 w-full">
-          <span className="text-white font-semibold">Delete user</span>
+          <span className="text-white font-semibold">
+            {i18n.language === "en" ? "Delete user" : "Xoá bỏ người dùng"}
+          </span>
         </div>
         <div className="pt-1 pb-4 px-3 flex flex-col justify-center items-center w-full">
           <span>{`${
-            i18n.language === "en"
-              ? "Are you sure to delete? Be careful!"
-              : "Bạn có chắc chắn về hành động xoá này không?"
+            type === "user"
+              ? i18n.language === "en"
+                ? `Are you sure to delete? Users that you want to delete: (${dataName}).`
+                : `Bạn có chắc chắn về hành động xoá này không? Người dùng bạn muốn xoá: (${dataName}).`
+              : i18n.language === "en"
+              ? `Are you sure to delete? Schedules that you want to delete: (${dataName}).`
+              : `Bạn có chắc chắn về hành động xoá này không? Lịch mà bạn muốn xoá: (${dataName}).`
           }`}</span>
           <div className="mx-auto flex items-center justify-center gap-10 mt-4">
             <button
               className="outline-none py-1 px-5 w-fit  flex items-center justify-center focus:outline-none border-none bg-red-500 text-white rounded-lg overflow-hidden shadow-sm backdrop-blur-sm"
               onClick={() => handleDeleteUser("delete")}
             >
-              Yes
+              {i18n.language === "en" ? "Approve" : "Chấp nhận"}
             </button>
             <button
               className="outline-none py-1  w-fit px-5 flex items-center justify-center focus:outline-none border-none bg-blue-500 text-white rounded-lg overflow-hidden shadow-sm backdrop-blur-sm"
               onClick={() => handleDeleteUser("cancel")}
             >
-              Cancel
+              {i18n.language === "en" ? "Cancel" : "Huỷ bỏ"}
             </button>
           </div>
         </div>

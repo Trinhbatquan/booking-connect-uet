@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import Loading from "../../../utils/Loading";
-import { loginHomePageApi } from "../../../services/userService";
-import HomeHeader from "../HomeHeader";
+// import { loginHomePageApi } from "../../../services/userService";
 import { useTranslation } from "react-i18next";
+import banner from "../../../assets/image/June.png";
+import { loginApi } from "../../../services/userService";
 
-const ForgotPassword = () => {
+const ForgotPasswordSystem = () => {
   const [focusEmail_login, setFocusEmail_login] = useState(false);
   const [messageLogin, setMessageLogin] = useState("");
   const [email_login, setEmail_login] = useState("");
@@ -37,7 +38,7 @@ const ForgotPassword = () => {
     if (checkAdvancedRegister()) {
       setIsLoading(true);
       setMessageLogin("");
-      loginHomePageApi.forgot({ email: email_login }).then((data) => {
+      loginApi.forgot({ email: email_login }).then((data) => {
         if (data?.codeNumber === 2) {
           setMessageLogin(
             i18n.language === "en" ? data?.message_en : data?.message_vn
@@ -70,7 +71,6 @@ const ForgotPassword = () => {
           </div>
         </div>
       )}
-      <HomeHeader action="preventDefault_checkClickDropDown" />
       <div
         className="container h-[550px] w-[65%] mx-auto flex overflow-hidden bg-white"
         style={{
@@ -79,23 +79,16 @@ const ForgotPassword = () => {
             "rgba(0, 0, 0, 0.25) 0px 14px 28px,rgba(0, 0, 0, 0.22) 0px 10px 10px",
         }}
       >
-        <div
-          class="overlay w-[50%] flex items-center justify-center"
-          style={{ backgroundColor: "#6741ff" }}
-        >
-          <div class="text-center">
-            <h3 style={{ color: "#fff", fontSize: "30px" }}>
-              {i18n.language === "en" ? "Don't worry" : "Đừng lo lắng"}
-            </h3>
-            <p
-              className="font-semibold text-white"
-              style={{ fontSize: "16px" }}
-            >
-              {i18n.language === "en"
-                ? "You are going to get my account now."
-                : "Bạn sẽ lấy lại tài khoản ngay."}
-            </p>
-          </div>
+        <div class="overlay w-[50%] h-[100%] flex items-center justify-center">
+          <div
+            style={{
+              background: `url(${banner})`,
+              width: "100%",
+              height: "100%",
+              backgroundSize: "cover",
+              backgroundRepeat: "no-repeat",
+            }}
+          ></div>
         </div>
         <div className="w-[50%] flex flex-col items-center justify-center">
           <p
@@ -133,7 +126,7 @@ const ForgotPassword = () => {
             id="email"
             type="email"
             name="email"
-            placeholder="VD: 19020641@vnu.edu.vn"
+            placeholder=""
             onChange={(e) => setEmail_login(e.target.value)}
           />
           <div
@@ -159,4 +152,4 @@ const ForgotPassword = () => {
   );
 };
 
-export default ForgotPassword;
+export default ForgotPasswordSystem;

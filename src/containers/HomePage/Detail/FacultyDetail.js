@@ -94,65 +94,67 @@ const FacultyDetail = () => {
   };
 
   useEffect(() => {
-    setLoading(true);
-    setTimeout(async () => {
-      let res = await getUserApi.getUser({ code_url });
-      let managerId;
-      if (res?.codeNumber === 0) {
-        const { data } = res;
-        // console.log(data);
-        managerId = data?.id;
-        const image = data?.image?.data;
-        if (image) {
-          data.image = convertBufferToBase64(data?.image?.data);
-        }
-        setFacultyData(data);
-      }
-      const data = await getScheduleByIdAndDate.get({
-        managerId,
-        date: date_tomorrow,
-        roleManager: roleId,
-      });
-      if (data?.codeNumber === 0) {
-        if (data?.schedule?.length === 0) {
-          setTimeDataApi(
-            i18n.language === "en"
-              ? "Teacher don't have appointment at this day, please select another time."
-              : "Giảng viên không có lịch ngày hôm nay, vui lòng chọn thời gian khác."
-          );
-        } else {
-          let getTime = [];
-
-          data?.schedule.forEach((item) => {
-            getTime.push({
-              timeType: item?.timeType,
-              valueTimeVn: item?.timeData?.valueVn,
-              valueTimeEn: item?.timeData?.valueEn,
-            });
-          });
-          getTime = await getBookingScheduleNotSelected(
-            getTime,
-            managerId,
-            roleId,
-            currentStudent?.id,
-            date_tomorrow,
-            "A1"
-          );
-
-          // console.log(getTime);
-          setTimeDataApi(getTime);
-        }
-      }
-
-      await getTeacherFaculty.get({ facultyId: managerId }).then((res) => {
+    if (JSON.parse(localStorage.getItem("auth-bookingCare-UET_student"))) {
+      setLoading(true);
+      setTimeout(async () => {
+        let res = await getUserApi.getUser({ code_url });
+        let managerId;
         if (res?.codeNumber === 0) {
-          setTeacherFaculty(res?.teacherByFaculty);
-          setMarkDownTeacherData(res?.markDownTeacher);
+          const { data } = res;
+          // console.log(data);
+          managerId = data?.id;
+          const image = data?.image?.data;
+          if (image) {
+            data.image = convertBufferToBase64(data?.image?.data);
+          }
+          setFacultyData(data);
         }
-      });
+        const data = await getScheduleByIdAndDate.get({
+          managerId,
+          date: date_tomorrow,
+          roleManager: roleId,
+        });
+        if (data?.codeNumber === 0) {
+          if (data?.schedule?.length === 0) {
+            setTimeDataApi(
+              i18n.language === "en"
+                ? "Teacher don't have appointment at this day, please select another time."
+                : "Giảng viên không có lịch ngày hôm nay, vui lòng chọn thời gian khác."
+            );
+          } else {
+            let getTime = [];
 
-      setLoading(false);
-    }, 1000);
+            data?.schedule.forEach((item) => {
+              getTime.push({
+                timeType: item?.timeType,
+                valueTimeVn: item?.timeData?.valueVn,
+                valueTimeEn: item?.timeData?.valueEn,
+              });
+            });
+            getTime = await getBookingScheduleNotSelected(
+              getTime,
+              managerId,
+              roleId,
+              currentStudent?.id,
+              date_tomorrow,
+              "A1"
+            );
+
+            // console.log(getTime);
+            setTimeDataApi(getTime);
+          }
+        }
+
+        await getTeacherFaculty.get({ facultyId: managerId }).then((res) => {
+          if (res?.codeNumber === 0) {
+            setTeacherFaculty(res?.teacherByFaculty);
+            setMarkDownTeacherData(res?.markDownTeacher);
+          }
+        });
+
+        setLoading(false);
+      }, 0);
+    }
   }, []);
 
   useEffect(() => {}, []);
@@ -348,8 +350,6 @@ const FacultyDetail = () => {
     <>
       <div>
         <ToastContainer />
-        <HomeHeader />
-        <div className="w-full h-[100px]"></div>
         {loading ? (
           <div className="loading-overlay fixed top-0 bottom-0 flex items-center justify-center mx-auto left-0 right-0 w-full max-h-full bg-black bg-opacity-25">
             <div className="absolute">

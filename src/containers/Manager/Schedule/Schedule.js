@@ -38,6 +38,7 @@ import { Ripple } from "primereact/ripple";
 import { Dropdown } from "primereact/dropdown";
 import { classNames } from "primereact/utils";
 import Header from "../../System/Header/Header";
+import Loading from "../../../utils/Loading";
 
 const ScheduleManager = () => {
   // const [selectedOptionObject, setSelectedOptionObject] = useState({});
@@ -50,6 +51,7 @@ const ScheduleManager = () => {
   const [timeData, setTimeData] = useState([]);
   const [timeUserSelected, setTimeUserSelected] = useState([]);
   // const [optionSelected, setOptionSelected] = useState();
+  const [loading, setLoading] = useState(true);
 
   const [isUpdate, setIsUpdate] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
@@ -68,10 +70,12 @@ const ScheduleManager = () => {
   const [allRowSelected, setAllRowSelected] = useState(false);
   // const [currentPage, setCurrentPage] = useState();
   const [first1, setFirst1] = useState(0);
-  const [rows1, setRows1] = useState(4);
+  const [rows1, setRows1] = useState(8);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageInputTooltip, setPageInputTooltip] = useState(
-    "Press 'Enter' key to go to this page."
+    i18n.language === "en"
+      ? "Press 'Enter' key to go to this page."
+      : "Sử dụng phím Enter để di chuyển trang."
   );
 
   //pagination
@@ -102,13 +106,19 @@ const ScheduleManager = () => {
       const page = parseInt(currentPage);
       if (page < 1 || page > options.totalPages) {
         setPageInputTooltip(
-          `Value must be between 1 and ${options.totalPages}.`
+          i18n.language === "en"
+            ? `Value must be between 1 and ${options.totalPages}.`
+            : `Giá trị phải nằm từ 1 đến ${options.totalPages}.`
         );
       } else {
         const first = currentPage ? options.rows * (page - 1) : 0;
 
         setFirst1(first);
-        setPageInputTooltip("Press 'Enter' key to go to this page.");
+        setPageInputTooltip(
+          i18n.language === "en"
+            ? "Press 'Enter' key to go to this page."
+            : "Sử dụng phím Enter để di chuyển trang."
+        );
       }
     }
   };
@@ -123,7 +133,9 @@ const ScheduleManager = () => {
           onClick={options.onClick}
           disabled={options.disabled}
         >
-          <span className="p-3">Previous</span>
+          <span className="p-3">
+            {i18n.language === "en" ? "Previous" : "Trước"}
+          </span>
           <Ripple />
         </button>
       );
@@ -136,7 +148,7 @@ const ScheduleManager = () => {
           onClick={options.onClick}
           disabled={options.disabled}
         >
-          <span className="p-3">Next</span>
+          <span className="p-3">{i18n.language === "en" ? "Next" : "Sau"}</span>
           <Ripple />
         </button>
       );
@@ -170,10 +182,12 @@ const ScheduleManager = () => {
     },
     RowsPerPageDropdown: (options) => {
       const dropdownOptions = [
-        { label: 4, value: 4 },
         { label: 8, value: 8 },
         { label: 12, value: 12 },
-        { label: "All", value: options.totalRecords },
+        {
+          label: i18n.language === "en" ? "All" : "Tất cả",
+          value: options.totalRecords,
+        },
       ];
 
       return (
@@ -190,7 +204,7 @@ const ScheduleManager = () => {
           className="mx-3"
           style={{ color: "var(--text-color)", userSelect: "none" }}
         >
-          Go to{" "}
+          {i18n.language === "en" ? `Go to ` : `Đến `}
           <InputText
             size="2"
             className="ml-1"
@@ -234,7 +248,7 @@ const ScheduleManager = () => {
           <ButtonPrimeReact
             type="button"
             icon="pi pi-filter-slash"
-            label="Clear"
+            label={i18n.language === "en" ? "Clear" : "Đặt lại"}
             className="p-button-outlined"
             onClick={() => {
               // clearFilter1();
@@ -254,7 +268,7 @@ const ScheduleManager = () => {
           <ButtonPrimeReact
             type="button"
             // icon="pi pi-filter-slash"
-            label="Delete"
+            label={i18n.language === "en" ? "Delete" : "Xoá"}
             className={`p-button-outlined ${
               selectedProducts8?.length >= 1 ? "" : "disabled"
             }`}
@@ -272,14 +286,42 @@ const ScheduleManager = () => {
       <div className="flex items-center justify-center gap-6">
         {rowData[0]?.date === selectedProducts8[0][0]?.date && (
           <>
-            <FiEdit
-              className="cursor-pointer text-inputColor"
-              onClick={() => handleUpdateData(rowData)}
-            />
-            <AiOutlineDelete
+            <ButtonPrimeReact
+              tooltip={i18n.language === "en" ? "Update" : "Cập nhật"}
+              tooltipOptions={{ position: "top" }}
+              style={{
+                color: "#812222",
+                backgroundColor: "transparent",
+                padding: "2px",
+                border: "none",
+                borderRadius: "25px",
+              }}
+            >
+              <FiEdit
+                className="cursor-pointer text-inputColor"
+                onClick={() => handleUpdateData(rowData)}
+              />
+            </ButtonPrimeReact>
+            {/* <AiOutlineDelete
               className="cursor-pointer text-blue-600"
               onClick={() => isOpenModalDeleteUser(rowData)}
-            />
+            /> */}
+            <ButtonPrimeReact
+              tooltip={i18n.language === "en" ? "Delete" : "Xoá bỏ"}
+              tooltipOptions={{ position: "top" }}
+              style={{
+                color: "#812222",
+                backgroundColor: "transparent",
+                padding: "2px",
+                border: "none",
+                borderRadius: "25px",
+              }}
+            >
+              <AiOutlineDelete
+                className="cursor-pointer text-blue-600"
+                onClick={() => isOpenModalDeleteUser(rowData)}
+              />
+            </ButtonPrimeReact>
           </>
         )}
       </div>
@@ -365,8 +407,10 @@ const ScheduleManager = () => {
                 )
             );
             setTimeUserSelected(timeScheduleData);
+            setLoading(false);
           } else {
             setTimeUserSelected([]);
+            setLoading(false);
           }
         });
       setStartDate(new Date().setDate(new Date().getDate() + 1));
@@ -375,6 +419,7 @@ const ScheduleManager = () => {
       });
       // setTimeData(timeData);
       setIsUpdate(false);
+
       // setSelectedOption(e);
     }
     // const handleChangeSelect_detail = async (e) => {
@@ -551,6 +596,8 @@ const ScheduleManager = () => {
     if (!handleCheckNull()) {
       return;
     }
+    setLoading(true);
+
     const action = isUpdate ? "update" : "create";
     const body = {
       email: currentUser?.email,
@@ -560,6 +607,8 @@ const ScheduleManager = () => {
     const data = await createSchedule.create({}, body);
     if (data?.codeNumber === 0) {
       if (data?.message === "create") {
+        setLoading(false);
+
         toast.success(`${t("system.notification.create")}`, {
           autoClose: 2000,
           position: "bottom-right",
@@ -568,6 +617,8 @@ const ScheduleManager = () => {
         //   setSelectedOption({});
         setSelectedProducts8(null);
       } else {
+        setLoading(false);
+
         toast.success(`${t("system.notification.update")}`, {
           autoClose: 2000,
           position: "bottom-right",
@@ -625,14 +676,18 @@ const ScheduleManager = () => {
           }
         });
     } else if (data?.codeNumber === -1) {
+      setLoading(false);
+
       toast.error(`${t("system.notification.fail")}`, {
         autoClose: 2000,
         position: "bottom-right",
         theme: "colored",
       });
     } else if (data?.codeNumber === -2) {
+      setLoading(false);
+
       toast.error(`${t("system.token.mess")}`, {
-        autoClose: 3000,
+        autoClose: 5000,
         position: "bottom-right",
         theme: "colored",
       });
@@ -643,13 +698,18 @@ const ScheduleManager = () => {
             navigate(`${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`);
           }
         });
-      }, 3000);
+      }, 5000);
     } else if (data?.codeNumber === 1) {
-      toast.error(data?.message, {
-        autoClose: 2000,
-        position: "bottom-right",
-        theme: "colored",
-      });
+      setLoading(false);
+
+      toast.error(
+        i18n.language === "en" ? data?.message_en : data?.message_vn,
+        {
+          autoClose: 2000,
+          position: "bottom-right",
+          theme: "colored",
+        }
+      );
     }
   };
 
@@ -673,6 +733,8 @@ const ScheduleManager = () => {
   };
   const deleteSchedule = async (managerId, date, roleManager) => {
     console.log(date);
+    setLoading(true);
+
     deleteScheduleByIdAndDate
       .delete({ managerId, date, roleManager }, { email: currentUser?.email })
       .then((res) => {
@@ -719,11 +781,55 @@ const ScheduleManager = () => {
                   )
               );
               setTimeUserSelected(timeScheduleData);
+              setLoading(false);
             } else {
               setTimeUserSelected([]);
+              setLoading(false);
             }
             setSelectedProducts8([]);
           });
+          toast.success(`${t("system.notification.delete")}`, {
+            autoClose: 2000,
+            position: "bottom-right",
+            theme: "colored",
+          });
+        } else if (res?.codeNumber === -1) {
+          setLoading(false);
+
+          toast.error(`${t("system.notification.fail")}`, {
+            autoClose: 2000,
+            position: "bottom-right",
+            theme: "colored",
+          });
+        } else if (res?.codeNumber === -2) {
+          setLoading(false);
+
+          toast.error(`${t("system.token.mess")}`, {
+            autoClose: 5000,
+            position: "bottom-right",
+            theme: "colored",
+          });
+          setTimeout(() => {
+            logOutApi.logoutUser({}).then((data) => {
+              if (data?.codeNumber === 0) {
+                dispatch(logOutUser());
+                navigate(
+                  `${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`
+                );
+              }
+            });
+          }, 5000);
+        } else if (res?.codeNumber === 1) {
+          setLoading(false);
+
+          toast.error(
+            i18n.language === "en" ? res?.message_en : res?.message_vn,
+            {
+              autoClose: 2000,
+              position: "bottom-right",
+              theme: "colored",
+            }
+          );
         }
       });
   };
@@ -745,15 +851,21 @@ const ScheduleManager = () => {
   return (
     <Fragment>
       <ToastContainer />
-      <Header />
       <div className="w-full" style={{ height: "110px" }}></div>
+      {loading && (
+        <div className="fixed loading-overlay top-0 bottom-0 flex items-center justify-center mx-auto left-0 right-0 w-full max-h-full bg-black bg-opacity-25">
+          <div className="absolute">
+            <Loading />
+          </div>
+        </div>
+      )}
       <div
         className="mt-3 flex flex-col items-start mx-auto pb-5 gap-8"
         style={{ maxWidth: "80%", width: "80%" }}
       >
         <p className="mx-auto text-2xl text-blue-600 font-semibold">
           {/* {t("system.schedule.manager")} */}
-          Tạo lịch hẹn mới
+          {t("system.schedule.manager")}
         </p>
         <div className="flex items-start justify-between w-full gap-10">
           <motion.div

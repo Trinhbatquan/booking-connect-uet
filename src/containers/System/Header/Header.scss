@@ -2,7 +2,7 @@
   width: 100vw;
   height: 50px;
   background-color: rgb(72, 72, 237);
-  z-index: 101;
+  z-index: 40;
 
   .system-header-item-left {
     width: 85%;
@@ -52,41 +52,29 @@
   }
 }
 
-// .system-header-option ul {
-//   display: none;
-//   opacity: 0;
-//   transform: scale(0);
-//   -webkit-transform: scale(0);
-//   transform-origin: top left;
-//   animation-fill-mode: forwards;
-//   -webkit-transition: all 0.3s ease-in-out;
-//   transition: all 0.3s ease-in-out;
-// }
-// .system-header-option:hover ul {
-//   display: flex;
-//   opacity: 1;
-//   transform: scale(1);
-//   -webkit-transform: scale(1);
-// }
-// .system-header-sub-option {
-//   margin: 2px 0;
-//   color: #004aac;
-//   background-color: #fff;
-//   transition: background-color 0.1s;
-//   font-weight: 500;
-//   line-height: 20px;
-//   padding: 10px 15px;
-//   // overflow: hidden;
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-//   gap: 4px;
-// }
-// .system-header-sub-option:hover {
-//   color: #004aac;
-//   background-color: #d3ecfc;
-//   font-weight: 600;
-// }
+.div-profile-system .profile-system-dropdown {
+  display: none;
+}
+
+.div-profile-system.appear .profile-system-dropdown {
+  display: block;
+}
+
+.div-profile-system.appear span {
+  color: white;
+}
+
+.div-profile-system.appear :nth-child(1) {
+  color: white;
+}
+
+.modal-update-password-overlay {
+  z-index: 101;
+}
+
+.modal-update-password-dropdown {
+  z-index: 102;
+}
 
 .bell {
   animation-name: shake-animation;

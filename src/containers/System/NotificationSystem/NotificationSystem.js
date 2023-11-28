@@ -24,6 +24,7 @@ import { useNavigate } from "react-router";
 import { path } from "../../../utils/constant";
 import DeleteNotify from "./DeleteNotify";
 import { emit_new_notification_from_system } from "../../../utils/socket_client";
+import nodata from "../../../assets/image/nodata.png";
 
 const NotificationSystem = () => {
   const [loading, setLoading] = useState(true);
@@ -46,12 +47,19 @@ const NotificationSystem = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const mdParser = new MarkdownIt(/* Markdown-it options */);
-  const userPotions = [
+  const userPotions_en = [
     { value: "R3", label: "Student" },
     { value: "R2", label: "Department" },
     { value: "R4", label: "Faculty" },
     { value: "R5", label: "Teacher" },
-    { value: "R6", label: "Student Health Support" },
+    { value: "R6", label: "Student Health" },
+  ];
+  const userPotions_vn = [
+    { value: "R3", label: "Sinh viên" },
+    { value: "R2", label: "Phòng ban" },
+    { value: "R4", label: "Khoa/Viện" },
+    { value: "R5", label: "Giảng viên" },
+    { value: "R6", label: "Ban Sức khoẻ Sinh viên" },
   ];
 
   const inputFileRef = useRef();
@@ -112,13 +120,29 @@ const NotificationSystem = () => {
     let data = e.target.files;
     let file = data[0];
     if (file) {
-      let urlAvatar = URL.createObjectURL(file);
-      setPreviewImage(urlAvatar);
-      try {
-        const base64File = await convertFileToBase64(file);
-        setImage(base64File);
-      } catch (e) {
-        console.log("base64 file " + e);
+      if (file?.size > 400000) {
+        inputFileRef.current.value = "";
+        toast.error(
+          `${
+            i18n.language === "en"
+              ? "This image is too big, please use image size < 400KB"
+              : "Ảnh hiện tại quá lớn. Vui lòng sử dụng ảnh dưới 400KB"
+          }`,
+          {
+            autoClose: 3000,
+            theme: "colored",
+            position: "bottom-right",
+          }
+        );
+      } else {
+        let urlAvatar = URL.createObjectURL(file);
+        setPreviewImage(urlAvatar);
+        try {
+          const base64File = await convertFileToBase64(file);
+          setImage(base64File);
+        } catch (e) {
+          console.log("base64 file " + e);
+        }
       }
     }
   };
@@ -206,7 +230,7 @@ const NotificationSystem = () => {
           setLoading(false);
         } else if (res?.codeNumber === -2) {
           toast.error(`${t("system.token.mess")}`, {
-            autoClose: 3000,
+            autoClose: 5000,
             position: "bottom-right",
             theme: "colored",
           });
@@ -219,7 +243,7 @@ const NotificationSystem = () => {
                 );
               }
             });
-          }, 3000);
+          }, 5000);
         } else if (res?.codeNumber === 1) {
           toast.error(res?.message, {
             autoClose: 2000,
@@ -278,9 +302,9 @@ const NotificationSystem = () => {
   const handleOpenUpdateNotify = (data) => {
     setIsUpdateNotify(true);
     setDataUpdateNotify(data);
-    for (let i = 0; i < userPotions?.length; i++) {
-      if (userPotions[i]?.value === data.roleManager) {
-        setUser([userPotions[i]]);
+    for (let i = 0; i < userPotions_en?.length; i++) {
+      if (userPotions_en[i]?.value === data.roleManager) {
+        setUser([userPotions_en[i]]);
         break;
       }
     }
@@ -341,7 +365,7 @@ const NotificationSystem = () => {
           setLoading(false);
         } else if (res?.codeNumber === -2) {
           toast.error(`${t("system.token.mess")}`, {
-            autoClose: 3000,
+            autoClose: 5000,
             position: "bottom-right",
             theme: "colored",
           });
@@ -354,7 +378,7 @@ const NotificationSystem = () => {
                 );
               }
             });
-          }, 3000);
+          }, 5000);
         } else if (res?.codeNumber === 1) {
           toast.error(res?.message, {
             autoClose: 2000,
@@ -446,7 +470,7 @@ const NotificationSystem = () => {
         setLoading(false);
       } else if (res?.codeNumber === -2) {
         toast.error(`${t("system.token.mess")}`, {
-          autoClose: 3000,
+          autoClose: 5000,
           position: "bottom-right",
           theme: "colored",
         });
@@ -457,7 +481,7 @@ const NotificationSystem = () => {
               navigate(`${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`);
             }
           });
-        }, 3000);
+        }, 5000);
       } else if (res?.codeNumber === 1) {
         toast.error(res?.message, {
           autoClose: 2000,
@@ -526,17 +550,17 @@ const NotificationSystem = () => {
         <ToastContainer />
         <p className="mx-auto text-2xl text-blue-500 font-semibold">
           {/* {t("system.department.manager-department")} */}
-          Thông báo
+          {i18n.language === "en" ? "Notification" : "Thông báo"}
         </p>
         <div
-          className={`flex items-center justify-center mt-3 gap-1 py-2 px-1 text-white font-semibold rounded-md
-            bg-blue-500
+          className={`flex items-center justify-center mt-7 gap-1 py-2 px-1 text-white font-semibold rounded-lg
+            bg-blue-500 mx-auto
           }`}
           // type="text"
           // onClick={() => setIsCreateUser(true)}
-          style={{ maxWidth: "14%", width: "14%" }}
+          style={{ maxWidth: "20%", width: "20%" }}
         >
-          Tạo thông báo
+          {i18n.language === "en" ? "Create new notification" : "Tạo thông báo"}
         </div>
 
         <div className="flex flex-col h-auto bg-slate-200 rounded-lg shadow backdrop-blur-md shadow-gray-300 mt-2 mb-1 pb-6 px-3">
@@ -552,13 +576,15 @@ const NotificationSystem = () => {
                 for="users"
                 class="mb-1 text-headingColor opacity-80 flex items-center gap-1"
               >
-                Select a user
+                {i18n.language === "en" ? "Select a user" : "Chọn người gửi"}
               </label>
               <Select
                 isMulti={isUpdateNotify ? false : true}
                 value={user}
                 name="position"
-                options={userPotions}
+                options={
+                  i18n.language === "en" ? userPotions_en : userPotions_vn
+                }
                 className="w-full bg-gray-50 text-gray-900 text-md rounded-lg"
                 onChange={(e) => setUser(e)}
                 onFocus={() => setNotifyCheckState("")}
@@ -571,7 +597,7 @@ const NotificationSystem = () => {
                 htmlFor="title"
                 className="mb-1 text-headingColor opacity-80 flex items-center gap-1"
               >
-                Title
+                {i18n.language === "en" ? "Title" : "Chủ đề"}
               </label>
               <input
                 className={`shadow-sm bg-gray-50 border border-gray-400 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-2 py-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light 
@@ -588,12 +614,13 @@ const NotificationSystem = () => {
                 className="mb-1 text-headingColor opacity-80 flex items-center gap-1"
                 htmlFor="file_input"
               >
-                Image
+                {i18n.language === "en" ? "Image" : "Hình ảnh"}
               </label>
               <input
                 className="block w-full text-sm text-gray-900 border border-gray-400 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
                 id="file_input"
                 type="file"
+                accept=".jpg, .png, *.jpg, *.jpeg, .jpeg"
                 onFocus={() => setNotifyCheckState("")}
                 onChange={(e) => handleFileImage(e)}
                 ref={inputFileRef}
@@ -621,7 +648,7 @@ const NotificationSystem = () => {
                 htmlFor="detail"
                 className="mb-1 text-headingColor opacity-80 flex items-center gap-1"
               >
-                Detail
+                {i18n.language === "en" ? "Detail" : "Chi tiết"}
               </label>
               <MdEditor
                 value={detail}
@@ -666,27 +693,29 @@ const NotificationSystem = () => {
         </div>
 
         {loading && (
-          <div className="fixed z-50 top-0 bottom-0 flex items-center justify-center mx-auto left-0 right-0 w-full max-h-full bg-black bg-opacity-25">
+          <div className="fixed loading-overlay top-0 bottom-0 flex items-center justify-center mx-auto left-0 right-0 w-full max-h-full bg-black bg-opacity-25">
             <div className="absolute top-[50%] left-[50%]">
               <Loading />
             </div>
           </div>
         )}
         <div
-          className={`flex items-center justify-center mt-12 gap-1 py-2 px-1 text-white font-semibold rounded-md
-                  bg-blue-500
+          className={`flex items-center justify-center mt-12 gap-1 py-2 px-1 text-white font-semibold rounded-lg mx-auto
+                  bg-blurThemeColor
                 }`}
           // type="text"
           // onClick={() => setIsCreateUser(true)}
-          style={{ maxWidth: "14%", width: "14%" }}
+          style={{ maxWidth: "20%", width: "calc(20% - 1.25rem)" }}
         >
-          Quản lý thông báo
+          {i18n.language === "en"
+            ? "Notification Management"
+            : "Quản lý thông báo"}
         </div>
 
         <div className="w-full grid grid-cols-5 gap-5 mt-4">
           <button
             type="button"
-            class={`hover:bg-blue-800 transition-all duration-500  hover:text-white  focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-md px-5 py-2.5  mb-2 focus:outline-none
+            class={`hover:bg-blue-800 transition-all duration-500  hover:text-white  focus:ring-4 focus:ring-blue-300 font-medium rounded-lg px-5 py-2.5  mb-2 focus:outline-none
                       ${
                         action === "R3"
                           ? "text-white bg-blue-800"
@@ -694,11 +723,13 @@ const NotificationSystem = () => {
                       }`}
             onClick={() => setAction("R3")}
           >
-            {`Student (${countNotifyData[1]})`}
+            {i18n.language === "en"
+              ? `Student (${countNotifyData[1]})`
+              : `Sinh viên (${countNotifyData[1]})`}
           </button>
           <button
             type="button"
-            class={`hover:bg-blue-800 transition-all duration-500  hover:text-white  focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-md px-5 py-2.5  mb-2 focus:outline-none
+            class={`hover:bg-blue-800 transition-all duration-500  hover:text-white  focus:ring-4 focus:ring-blue-300 font-medium rounded-lg px-5 py-2.5  mb-2 focus:outline-none
                       ${
                         action === "R2"
                           ? "text-white bg-blue-800"
@@ -706,11 +737,13 @@ const NotificationSystem = () => {
                       }`}
             onClick={() => setAction("R2")}
           >
-            {`Department (${countNotifyData[0]})`}
+            {i18n.language === "en"
+              ? `Department (${countNotifyData[0]})`
+              : `Phòng ban (${countNotifyData[0]})`}
           </button>
           <button
             type="button"
-            class={`hover:bg-blue-800 transition-all duration-500  hover:text-white  focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-md px-5 py-2.5  mb-2 focus:outline-none
+            class={`hover:bg-blue-800 transition-all duration-500  hover:text-white  focus:ring-4 focus:ring-blue-300 font-medium rounded-lg px-5 py-2.5  mb-2 focus:outline-none
                       ${
                         action === "R4"
                           ? "text-white bg-blue-800"
@@ -718,11 +751,13 @@ const NotificationSystem = () => {
                       }`}
             onClick={() => setAction("R4")}
           >
-            {`Faculty (${countNotifyData[2]})`}
+            {i18n.language === "en"
+              ? `Faculty (${countNotifyData[2]})`
+              : `Khoa/Viện (${countNotifyData[2]})`}
           </button>
           <button
             type="button"
-            class={`hover:bg-blue-800 transition-all duration-500  hover:text-white  focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-md px-5 py-2.5  mb-2 focus:outline-none
+            class={`hover:bg-blue-800 transition-all duration-500  hover:text-white  focus:ring-4 focus:ring-blue-300 font-medium rounded-lg px-5 py-2.5  mb-2 focus:outline-none
                       ${
                         action === "R5"
                           ? "text-white bg-blue-800"
@@ -734,7 +769,7 @@ const NotificationSystem = () => {
           </button>
           <button
             type="button"
-            class={`hover:bg-blue-800 transition-all duration-500  hover:text-white  focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-md px-5 py-2.5  mb-2 focus:outline-none
+            class={`hover:bg-blue-800 transition-all duration-500  hover:text-white  focus:ring-4 focus:ring-blue-300 font-medium rounded-lg px-5 py-2.5  mb-2 focus:outline-none
                       ${
                         action === "R6"
                           ? "text-white bg-blue-800"
@@ -742,13 +777,15 @@ const NotificationSystem = () => {
                       }`}
             onClick={() => setAction("R6")}
           >
-            {`Health Support (${countNotifyData[4]})`}
+            {i18n.language === "en"
+              ? `Health Student (${countNotifyData[4]})`
+              : `Ban Sức Khoẻ Sinh Viên (${countNotifyData[4]})`}
           </button>
         </div>
 
         {action ? (
           <div className="notify w-full py-8 mx-auto flex flex-col items-start justify-start gap-8">
-            {notifyData?.notify?.length > 0 &&
+            {notifyData?.notify?.length > 0 ? (
               notifyData?.notify.map((item, index) => {
                 return (
                   <div
@@ -771,26 +808,24 @@ const NotificationSystem = () => {
                           position: "absolute",
                           top: 0,
                           left: "-53px",
-                          width: "50px",
-                          height: "50px",
                         }}
                       >
                         <div
-                          className="text-md"
+                          className=""
                           style={{
                             padding: "10px 10px",
                             fontSize: "12px",
                             lineHeight: "18px",
-                            minWidth: "30px",
+                            width: "50px",
                             backgroundColor: "#17376e",
                             borderRadius: "5px",
                           }}
                         >
-                          <div className="month text-white text-md text-center">
+                          <div className="month text-white text-center">
                             {`Th${new Date(item?.createdAt).getMonth() + 1}`}
                           </div>
                           <div
-                            className="day text-white text-lg text-center"
+                            className="day text-white text-center"
                             style={{
                               lineHeight: "18px",
                             }}
@@ -807,27 +842,27 @@ const NotificationSystem = () => {
                         margin: "17px 70px 0",
                       }}
                     >
-                      <h3
+                      <h4
                         style={{
                           marginBottom: "9px",
                           color: "#343434",
                         }}
                       >
                         {item?.title}
-                      </h3>
+                      </h4>
                       <div
-                        className="text-md"
+                        className=""
                         style={{
-                          marginTop: "25px",
-                          marginBottom: "22px",
+                          marginTop: "10px",
+                          marginBottom: "10px",
                           color: "#015198",
-                          height: "150px",
-                          maxHeight: "150px",
-                          lineHeight: "30px",
+                          height: "42px",
+                          maxHeight: "42px",
+                          lineHeight: "20px",
                           overflow: "hidden",
                           display: "-webkit-box",
                           WebkitBoxOrient: "vertical",
-                          WebkitLineClamp: 5,
+                          WebkitLineClamp: 2,
                         }}
                         dangerouslySetInnerHTML={{
                           __html: item?.contentHtml,
@@ -842,7 +877,7 @@ const NotificationSystem = () => {
                           color: "#015198",
                         }}
                       >
-                        <span>
+                        <span className="text-sm">
                           Bởi hệ thống{" "}
                           <span
                             style={{
@@ -854,7 +889,7 @@ const NotificationSystem = () => {
                             |
                           </span>
                         </span>
-                        <span>
+                        <span className="text-sm">
                           Tin sinh viên
                           <span
                             style={{
@@ -888,13 +923,26 @@ const NotificationSystem = () => {
                     </div>
                   </div>
                 );
-              })}
-
-            <Pagination
-              numberOfPage={notifyData?.pageCurrent}
-              pages={notifyData?.pageTotal}
-              handleNavigatePage={handleNavigatePage}
-            />
+              })
+            ) : (
+              <img
+                src={nodata}
+                alt=""
+                style={{
+                  height: "250px",
+                  width: "60%",
+                  objectFit: "cover",
+                  margin: "0 auto",
+                }}
+              />
+            )}
+            {notifyData?.notify?.length > 0 && (
+              <Pagination
+                numberOfPage={notifyData?.pageCurrent}
+                pages={notifyData?.pageTotal}
+                handleNavigatePage={handleNavigatePage}
+              />
+            )}
           </div>
         ) : null}
 

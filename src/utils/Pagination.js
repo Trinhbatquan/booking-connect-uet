@@ -4,7 +4,7 @@ const Pagination = ({ numberOfPage, pages, handleNavigatePage }) => {
   console.log({ numberOfPage, pages, handleNavigatePage });
   return (
     <nav aria-label="Page navigation example py-3">
-      <ul class="flex items-center -space-x-px h-104text-base">
+      <ul class="flex items-center -space-x-px h-104 text-sm">
         <li
           onClick={() =>
             +numberOfPage > 1 && handleNavigatePage(+numberOfPage - 1)
@@ -16,7 +16,7 @@ const Pagination = ({ numberOfPage, pages, handleNavigatePage }) => {
               +numberOfPage === 1 ? "cursor-text" : "cursor-pointer"
             }`}
           >
-            <span class="sr-only text-lg">Previous</span>
+            <span class="sr-only text-sm">Previous</span>
             <svg
               class="w-4 h-4"
               aria-hidden="true"
@@ -61,7 +61,7 @@ const Pagination = ({ numberOfPage, pages, handleNavigatePage }) => {
               +numberOfPage === +pages ? "cursor-text" : "cursor-pointer"
             }`}
           >
-            <span class="sr-only text-lg">Next</span>
+            <span class="sr-only text-sm">Next</span>
             <svg
               class="w-4 h-4"
               aria-hidden="true"

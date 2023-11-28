@@ -16,6 +16,8 @@ import { logOutUser } from "../../../redux/authSlice";
 import { news } from "../../../services/newsService";
 import { handleMessageFromBackend } from "../../../utils/handleMessageFromBackend";
 import DeleteNotify from "../NotificationSystem/DeleteNotify";
+import { FaStreetView } from "react-icons/fa";
+import nodata from "../../../assets/image/nodata.png";
 
 const NewsSystem = () => {
   const { i18n, t } = useTranslation();
@@ -438,8 +440,8 @@ const NewsSystem = () => {
           {i18n.language === "en" ? "News" : "Tin Tức"}
         </p>
         <div
-          className={`flex items-center justify-center mt-3 gap-1 py-2 px-1 text-white font-semibold rounded-md
-            bg-blue-500
+          className={`flex items-center justify-center mt-7 gap-1 py-2 px-1 text-white font-semibold rounded-lg
+            bg-blue-500 mx-auto
           }`}
           // type="text"
           // onClick={() => setIsCreateUser(true)}
@@ -555,29 +557,39 @@ const NewsSystem = () => {
           </div>
         </div>
         {loading && (
-          <div className="fixed z-50 top-0 bottom-0 flex items-center justify-center mx-auto left-0 right-0 w-full max-h-full bg-black bg-opacity-25">
+          <div className="fixed loading-overlay top-0 bottom-0 flex items-center justify-center mx-auto left-0 right-0 w-full max-h-full bg-black bg-opacity-25">
             <div className="absolute top-[50%] left-[50%]">
               <Loading />
             </div>
           </div>
         )}
-        <div
-          className={`flex items-center justify-center mt-12 gap-1 py-2 px-1 text-white font-semibold rounded-md
-                  bg-blue-500
+        <div className="mt-12 flex items-start justify-between">
+          <div
+            className={`flex items-center justify-center gap-1 py-2 px-1 text-white font-semibold rounded-md
+                  bg-blurThemeColor
                 }`}
-          // type="text"
-          // onClick={() => setIsCreateUser(true)}
-          style={{ maxWidth: "14%", width: "14%" }}
-        >
-          {i18n.language === "en" ? "News Management" : "Quản lý tin tức"}
+            // type="text"
+            // onClick={() => setIsCreateUser(true)}
+            style={{ maxWidth: "14%", width: "14%" }}
+          >
+            {i18n.language === "en" ? "News Management" : "Quản lý tin tức"}
+          </div>
+          <div className="w-fit bg-blurThemeColor font-semibold text-white rounded-lg py-[8px] px-[12px]">
+            <p className="text-white text-md flex items-center justify-start gap-1.5">
+              <FaStreetView className="text-white text-xl" />
+              {`${
+                i18n.language === "en" ? "Total of news:" : "Tổng số tin tức:"
+              } ${countNewsData}`}
+            </p>
+          </div>
         </div>
-        <p style={{ padding: "10px 26px" }}>
+        {/* <p style={{ padding: "10px 26px" }}>
           {`${
             i18n.language === "en" ? "Total of news:" : "Tổng số tin tức:"
           } ${countNewsData}`}
-        </p>
+        </p> */}
         <div className="notify w-full py-8 mx-auto flex flex-col items-start justify-start gap-8">
-          {newsData?.news?.length > 0 &&
+          {newsData?.news?.length > 0 ? (
             newsData?.news?.map((item, index) => {
               return (
                 <div
@@ -636,27 +648,27 @@ const NewsSystem = () => {
                       margin: "17px 70px 0",
                     }}
                   >
-                    <h3
+                    <h4
                       style={{
                         marginBottom: "9px",
                         color: "#343434",
                       }}
                     >
                       {item?.title}
-                    </h3>
+                    </h4>
                     <div
                       className="text-md"
                       style={{
-                        marginTop: "25px",
+                        marginTop: "10px",
                         marginBottom: "22px",
                         color: "#015198",
-                        height: "150px",
-                        maxHeight: "150px",
-                        lineHeight: "30px",
+                        height: "42px",
+                        maxHeight: "42px",
+                        lineHeight: "20px",
                         overflow: "hidden",
                         display: "-webkit-box",
                         WebkitBoxOrient: "vertical",
-                        WebkitLineClamp: 5,
+                        WebkitLineClamp: 2,
                       }}
                       dangerouslySetInnerHTML={{
                         __html: item?.contentHtml,
@@ -717,13 +729,26 @@ const NewsSystem = () => {
                   </div>
                 </div>
               );
-            })}
-
-          <Pagination
-            numberOfPage={newsData?.pageCurrent}
-            pages={newsData?.pageTotal}
-            handleNavigatePage={handleNavigatePage}
-          />
+            })
+          ) : (
+            <img
+              src={nodata}
+              alt=""
+              style={{
+                height: "250px",
+                width: "60%",
+                objectFit: "cover",
+                margin: "0 auto",
+              }}
+            />
+          )}
+          {newsData?.news?.length > 0 && (
+            <Pagination
+              numberOfPage={newsData?.pageCurrent}
+              pages={newsData?.pageTotal}
+              handleNavigatePage={handleNavigatePage}
+            />
+          )}
         </div>
         {isDeleteNews && (
           <div className="fixed z-50 top-0 bottom-0 left-0 right-0 w-full max-h-full bg-black bg-opacity-25"></div>

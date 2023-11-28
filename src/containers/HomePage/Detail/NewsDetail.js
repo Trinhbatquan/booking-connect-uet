@@ -22,27 +22,29 @@ const NewsDetail = () => {
   const { i18n } = useTranslation();
 
   useEffect(() => {
-    news.getOneNews({ code_url }).then((data) => {
-      if (data?.codeNumber === 0) {
-        const response = data?.news;
-        response.avatarNew.data = convertBufferToBase64(
-          response.avatarNew.data
-        );
-        setNewsDetail(response);
-        setLoading(false);
-      } else {
-        setLoading(false);
-        toast.error(
-          i18n.language === "en" ? data?.message_en : data?.message_vn,
-          {
-            autoClose: 3000,
-            position: "bottom-right",
-            theme: "colored",
-          }
-        );
-      }
-    });
-  });
+    if (JSON.parse(localStorage.getItem("auth-bookingCare-UET_student"))) {
+      news.getOneNews({ code_url }).then((data) => {
+        if (data?.codeNumber === 0) {
+          const response = data?.news;
+          response.avatarNew.data = convertBufferToBase64(
+            response.avatarNew.data
+          );
+          setNewsDetail(response);
+          setLoading(false);
+        } else {
+          setLoading(false);
+          toast.error(
+            i18n.language === "en" ? data?.message_en : data?.message_vn,
+            {
+              autoClose: 3000,
+              position: "bottom-right",
+              theme: "colored",
+            }
+          );
+        }
+      });
+    }
+  }, []);
 
   return (
     <div>
@@ -54,8 +56,7 @@ const NewsDetail = () => {
           </div>
         </div>
       )}
-      <HomeHeader />
-      <div className="w-full h-[100px]"></div>
+
       <div
         className="mt-[34px] pt-[20px] mb-[20px] mx-[10%] pr-[30px] pl-[65px]"
         style={{

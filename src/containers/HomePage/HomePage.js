@@ -16,6 +16,7 @@ import { NextArrow, PrevArrow } from "./Section/ArrowCustom";
 import Loading from "./../../utils/Loading";
 import { path } from "../../utils/constant";
 import Skeleton from "../../utils/Skeleton";
+import { useSelector } from "react-redux";
 
 const HomeHeader = lazy(() => import("./HomeHeader"));
 const HomeBanner = lazy(() => import("./HomeBanner"));
@@ -209,14 +210,6 @@ const HomePage = () => {
     },
   };
 
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!JSON.parse(localStorage.getItem("auth-bookingCare-UET_student"))) {
-      navigate(`${path.HOMEPAGE}/${path.login_homepage}redirect=/homepage`);
-    }
-  }, []);
-
   return (
     <Suspense
       fallback={
@@ -227,13 +220,8 @@ const HomePage = () => {
         </div>
       }
     >
-      <div
-      // style={{ width: "100vw",height: "100vh",overflow: "scroll" }}
-      >
-        <HomeHeader />
-
+      <div>
         <HomeBanner />
-
         <Departments settings={settingReactSlick} />
         <Faculties settings={settingReactSlick_faculty} />
         <Teacher settings={settingReactSlick} />

@@ -23,35 +23,37 @@ const NewsSeeAll = () => {
   const mdParser = new MarkdownIt(/* Markdown-it options */);
 
   useEffect(() => {
-    setLoading(true);
-    news.get({ page: currentPage }).then((data) => {
-      if (data?.codeNumber === 0) {
-        const { news, pageCurrent, countNews } = data;
-        if (news?.length > 0) {
-          for (let i = 0; i < news.length; i++) {
-            if (news[i]?.avatarNew?.data) {
-              news[i].avatarNew.data = convertBufferToBase64(
-                news[i].avatarNew.data
-              );
+    if (JSON.parse(localStorage.getItem("auth-bookingCare-UET_student"))) {
+      setLoading(true);
+      news.get({ page: currentPage }).then((data) => {
+        if (data?.codeNumber === 0) {
+          const { news, pageCurrent, countNews } = data;
+          if (news?.length > 0) {
+            for (let i = 0; i < news.length; i++) {
+              if (news[i]?.avatarNew?.data) {
+                news[i].avatarNew.data = convertBufferToBase64(
+                  news[i].avatarNew.data
+                );
+              }
             }
+            setNewsData(newsData.concat(news));
+            setCurrentPage(+pageCurrent);
+            setTotalPage(+countNews);
+            setLoading(false);
           }
-          setNewsData(newsData.concat(news));
-          setCurrentPage(+pageCurrent);
-          setTotalPage(+countNews);
+        } else {
           setLoading(false);
+          toast.error(
+            i18n.language === "en" ? data?.message_en : data?.message_vn,
+            {
+              autoClose: 3000,
+              theme: "colored",
+              position: "bottom-right",
+            }
+          );
         }
-      } else {
-        setLoading(false);
-        toast.error(
-          i18n.language === "en" ? data?.message_en : data?.message_vn,
-          {
-            autoClose: 3000,
-            theme: "colored",
-            position: "bottom-right",
-          }
-        );
-      }
-    });
+      });
+    }
   }, [currentPage]);
 
   return (
@@ -64,8 +66,7 @@ const NewsSeeAll = () => {
           </div>
         </div>
       )}
-      <HomeHeader />
-      <div className="w-full h-[100px]"></div>
+
       <div
         className="mt-[34px] pt-[20px] mb-[20px] mx-[10%] pr-[30px] pl-[65px]"
         style={{
@@ -166,14 +167,14 @@ const NewsSeeAll = () => {
                     </div>
                   </div>
                   <div className="flex-1">
-                    <h3
+                    <h4
                       style={{
                         margin: "0px",
                         color: "#343434",
                       }}
                     >
                       {item?.title}
-                    </h3>
+                    </h4>
                     <div
                       className="text-md"
                       style={{
