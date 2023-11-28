@@ -54,7 +54,8 @@ const getBookingScheduleController = async (req, res) => {
     if (!managerId || !roleManager || !date || !actionId) {
       return res.status(501).json({
         codeNumber: 1,
-        message: "Missing parameters",
+        message_en: "Error. Please contact with admin.",
+        message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên",
       });
     } else {
       const data = await getBookingScheduleService(
@@ -73,7 +74,8 @@ const getBookingScheduleController = async (req, res) => {
     console.log("get schedule booking " + e);
     res.status(501).json({
       codeNumber: -1,
-      message: "Not create booking schedule",
+      message_en: "Error. Please contact with admin.",
+      message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên",
     });
   }
 };
@@ -135,7 +137,8 @@ const getAllBookingByManagerAndAction = async (req, res) => {
     if (!managerId || !roleManager || !actionId || !statusId) {
       return res.status(501).json({
         codeNumber: 1,
-        message: "Missing parameters",
+        message_en: "Error. Please contact with admin.",
+        message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên",
       });
     }
     const data = await getAllBookingByManagerAndActionService(
@@ -149,8 +152,8 @@ const getAllBookingByManagerAndAction = async (req, res) => {
     console.log("get all booking schedule " + e);
     res.status(501).json({
       codeNumber: -1,
-      message:
-        "Not get all booking schedule by managerId, roleManager and actionId",
+      message_en: "Error. Please contact with admin.",
+      message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên",
     });
   }
 };
@@ -186,7 +189,8 @@ const updateStatusBookingScheduleByManagerController = async (req, res) => {
     console.log(e);
     res.status(501).json({
       codeNumber: -1,
-      message: "Not update status schedule booking by manager",
+      message_en: "Error. Please contact with admin.",
+      message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên",
     });
   }
 };

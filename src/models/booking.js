@@ -54,6 +54,7 @@ module.exports = (sequelize, DataTypes) => {
       statusId: DataTypes.STRING,
       image: DataTypes.BLOB("long"),
       questionSimilarityId: DataTypes.INTEGER,
+      reasonCancelSchedule: DataTypes.TEXT("long"),
     },
     {
       sequelize,

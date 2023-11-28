@@ -95,7 +95,7 @@ const deleteNewsService = ({ id }) => {
 const getNewsService = ({ page }) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const pageSize = 2;
+      const pageSize = 5;
       const pageCurrent = page || 1;
       const totalDocument = await db.New.count();
       const data = await db.New.findAll({

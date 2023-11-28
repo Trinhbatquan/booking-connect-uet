@@ -55,7 +55,8 @@ const updateProfileStudentController = async (req, res) => {
     console.log(e);
     res.status(501).json({
       codeNumber: -1,
-      message: "Not update student",
+      message_en: "Error. Please contact with admin.",
+      message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên",
     });
   }
 };
@@ -74,7 +75,8 @@ const updatePasswordStudentController = async (req, res) => {
     console.log(e);
     res.status(501).json({
       codeNumber: -1,
-      message: "Not update password student",
+      message_en: "Error. Please contact with admin.",
+      message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên",
     });
   }
 };

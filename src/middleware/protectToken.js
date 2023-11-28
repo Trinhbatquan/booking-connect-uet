@@ -102,12 +102,13 @@ const protectUserToken = async (req, res, next, action) => {
         where: {
           email,
         },
-        attributes: {
-          exclude: ["password"],
-        },
+        // attributes: {
+        //   exclude: ["password"],
+        // },
       });
       if (data) {
         req.admin = data;
+        req.user = data;
         next();
       } else {
         if (!req.body.email) {
@@ -120,9 +121,9 @@ const protectUserToken = async (req, res, next, action) => {
           where: {
             email,
           },
-          attributes: {
-            exclude: ["password"],
-          },
+          // attributes: {
+          //   exclude: ["password"],
+          // },
         });
         if (user && email === req.body.email) {
           req.user = user;
@@ -132,9 +133,9 @@ const protectUserToken = async (req, res, next, action) => {
             where: {
               email,
             },
-            attributes: {
-              exclude: ["password"],
-            },
+            // attributes: {
+            //   exclude: ["password"],
+            // },
           });
           if (!data || email !== req.body.email) {
             return res.status(501).json({

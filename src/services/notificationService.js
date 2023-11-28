@@ -160,7 +160,7 @@ const getAllNotifyByTypeService = (type_select) => {
   });
 };
 
-//homepage
+//homepage + manager
 const getNotifyHomePageLimitedService = ({
   page,
   studentId,
@@ -170,7 +170,7 @@ const getNotifyHomePageLimitedService = ({
 }) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const pageSize = 2;
+      const pageSize = 5;
       const pageCurrent = page || 1;
       const totalDocument = await db.Notification.count({
         where: !managerId

@@ -13,6 +13,9 @@ const {
   verificationEmailController,
   sendEmailToUpdatePassHomePageController,
   verifyAndUpdatePasswordHomePageController,
+  sendEmailToUpdatePassSystemController,
+  verifyAndUpdatePasswordSystemController,
+  updatePasswordSystemController,
 } = require("../controllers/userController");
 const { getAllCodeByType } = require("../controllers/allCodeController");
 const {
@@ -90,6 +93,17 @@ const initWebRoutes = (app) => {
   //login api
   router.post("/api/system/login", loginSystem);
   router.get("/api/system/logout", logoutSystemController);
+  router.get("/api/system/forgot-pass", sendEmailToUpdatePassSystemController);
+  router.post(
+    "/api/system/update-pass-forgot",
+    verifyAndUpdatePasswordSystemController
+  );
+  router.put(
+    "/api/update-password-system",
+    (req, res, next) => checkExpiredToken(req, res, next, "system"),
+    (req, res, next) => protectUserToken(req, res, next, "otherUser"),
+    updatePasswordSystemController
+  );
 
   //system administration api
   router.get("/api/user", getUserController); //other user

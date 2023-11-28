@@ -27,7 +27,8 @@ const createScheduleController = async (req, res) => {
     if (!check || !action) {
       return res.status(404).json({
         codeNumber: 1,
-        message: "Missing parameters",
+        message_en: "Error. Please contact with admin.",
+        message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên",
       });
     } else {
       try {
@@ -37,7 +38,8 @@ const createScheduleController = async (req, res) => {
         console.log(e);
         return res.status(200).json({
           codeNumber: -1,
-          message: "Not Create Schedule",
+          message_en: "Error. Please contact with admin.",
+          message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên",
         });
       }
     }
@@ -48,21 +50,22 @@ const getScheduleSystemController = async (req, res) => {
   if (!managerId || !roleManager) {
     return res.status(404).json({
       codeNumber: 1,
-      message: "Missing parameters",
+      message_en: "Error. Please contact with admin.",
+      message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên",
     });
   } else {
     try {
       const data = await getScheduleSystemService(managerId, roleManager);
       return res.status(200).json({
         codeNumber: 0,
-        message: "Get Schedule Succeed",
         schedule_user: data,
       });
     } catch (e) {
       console.log("error \n" + e);
       return res.status(200).json({
         codeNumber: -1,
-        message: "Not Get Schedule",
+        message_en: "Error. Please contact with admin.",
+        message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên",
       });
     }
   }
@@ -73,20 +76,21 @@ const deleteScheduleController = async (req, res) => {
   if (!managerId || !date || !roleManager) {
     return res.status(404).json({
       codeNumber: 1,
-      message: "Missing parameters",
+      message_en: "Error. Please contact with admin.",
+      message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên",
     });
   } else {
     try {
       await deleteScheduleService(managerId, date, roleManager);
       return res.status(200).json({
         codeNumber: 0,
-        message: "Delete Successfully",
       });
     } catch (e) {
       console.log(e);
       return res.status(200).json({
         codeNumber: -1,
-        message: "Not Get Schedule",
+        message_en: "Error. Please contact with admin.",
+        message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên",
       });
     }
   }
@@ -98,7 +102,8 @@ const getScheduleByIdAndDateController = async (req, res) => {
   if (!managerId || !date || !roleManager) {
     return res.status(404).json({
       codeNumber: 1,
-      message: "Missing parameters",
+      message_en: "Error. Please contact with admin.",
+      message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên",
     });
   } else {
     try {
@@ -109,14 +114,14 @@ const getScheduleByIdAndDateController = async (req, res) => {
       );
       return res.status(200).json({
         codeNumber: 0,
-        message: "Get Schedule Succeed",
         schedule: data,
       });
     } catch (e) {
       console.log("error \n" + e);
       return res.status(200).json({
         codeNumber: -1,
-        message: "Not Get Schedule",
+        message_en: "Error. Please contact with admin.",
+        message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên",
       });
     }
   }

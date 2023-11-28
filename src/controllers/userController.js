@@ -12,6 +12,9 @@ const {
   getUserByRoleService,
   sendEmailToUpdatePassHomePageService,
   verifyAndUpdatePassHomePageService,
+  sendEmailToUpdatePassSystemService,
+  verifyAndUpdatePassSystemService,
+  updatePasswordSystemService,
 } = require("../services/userSevice");
 
 const createTokenRandom = require("../middleware/createTokenRandom");
@@ -260,6 +263,28 @@ const sendEmailToUpdatePassHomePageController = async (req, res) => {
   }
 };
 
+const sendEmailToUpdatePassSystemController = async (req, res) => {
+  try {
+    const { email } = req.query;
+    if (!email) {
+      return res.status(200).json({
+        codeNumber: 1,
+        message_en: "Please enter email.",
+        message_vn: "Vui lòng nhập email của bạn.",
+      });
+    }
+
+    const data = await sendEmailToUpdatePassSystemService(email);
+    return res.status(200).json(data);
+  } catch (e) {
+    return res.status(200).json({
+      codeNumber: -1,
+      message_en: "Error. Please contact with admin.",
+      message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên",
+    });
+  }
+};
+
 const verifyAndUpdatePasswordHomePageController = async (req, res) => {
   try {
     const { email, token, password } = req.body;
@@ -275,6 +300,35 @@ const verifyAndUpdatePasswordHomePageController = async (req, res) => {
       email,
       token,
       password
+    );
+    return res.status(200).json(data);
+  } catch (e) {
+    console.log(e);
+    return res.status(200).json({
+      codeNumber: -1,
+      message_en: "Error. Please contact with admin.",
+      message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên",
+    });
+  }
+};
+
+const verifyAndUpdatePasswordSystemController = async (req, res) => {
+  try {
+    const { email, token, password, userId, roleId } = req.body;
+    if (!email || !token || !password || !userId || !roleId) {
+      return res.status(200).json({
+        codeNumber: 1,
+        message_en: "Error. Please contact with admin.",
+        message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên",
+      });
+    }
+
+    const data = await verifyAndUpdatePassSystemService(
+      email,
+      token,
+      password,
+      userId,
+      roleId
     );
     return res.status(200).json(data);
   } catch (e) {
@@ -371,6 +425,27 @@ const deleteUserController = async (req, res) => {
   }
 };
 
+const updatePasswordSystemController = async (req, res) => {
+  const { currentPassword, newPassword, roleId } = req.body;
+  const { user } = req;
+  try {
+    const data = await updatePasswordSystemService({
+      user,
+      currentPassword,
+      newPassword,
+      roleId,
+    });
+    return res.status(200).json(data);
+  } catch (e) {
+    console.log(e);
+    res.status(501).json({
+      codeNumber: -1,
+      message_en: "Error. Please contact with admin.",
+      message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên",
+    });
+  }
+};
+
 module.exports = {
   loginSystem,
   registerHomePage,
@@ -385,4 +460,7 @@ module.exports = {
   getUserByRoleController,
   sendEmailToUpdatePassHomePageController,
   verifyAndUpdatePasswordHomePageController,
+  sendEmailToUpdatePassSystemController,
+  verifyAndUpdatePasswordSystemController,
+  updatePasswordSystemController,
 };

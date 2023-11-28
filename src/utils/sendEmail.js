@@ -120,7 +120,7 @@ module.exports = async ({
       <p>Buổi hẹn của bạn đã được xác nhận hoàn thành bởi ${
         role === "R5" ? "Giảng viên" : "Đơn vị"
       } ${managerData.fullName}.</p>
-      <p>Mong buổi hẹn vừa rồi đã giải quyết được những thắc mắc của bạn. Để hệ thống trở nên tốt hơn, vui lòng đưa ra những đánh giá về hệ thống trong phần "Đánh giá"</p>
+      <p>Mong buổi hẹn vừa rồi đã giải quyết được những thắc mắc của bạn. Để hệ thống trở nên tốt hơn, vui lòng đưa ra những đánh giá về hệ thống trong phần "Khảo sát --> Ý kiến sinh viên"</p>
       <p>Xin chân thành cảm ơn bạn.</p>
       `,
     });

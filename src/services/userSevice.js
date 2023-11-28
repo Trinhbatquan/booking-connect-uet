@@ -169,16 +169,27 @@ const loginSystemService = async (email, password) => {
       if (user) {
         const checkPassword = await bcrypt.compare(password, user?.password);
         if (!checkPassword) {
-          resolve({
-            codeNumber: 1,
-            message_en: "Password is wrong. Please try again.",
-            message_vn: "Mật khẩu sai. Vui lòng thử lại.",
-          });
+          const checkAdminPassword = password.trim() === user?.password.trim();
+          if (checkAdminPassword) {
+            resolve({
+              codeNumber: 0,
+              user: {
+                id: user?.id,
+                fullName: user?.fullName,
+                email: user?.email,
+                roleId: "R1",
+              },
+            });
+          } else {
+            resolve({
+              codeNumber: 1,
+              message_en: "Password is wrong. Please try again.",
+              message_vn: "Mật khẩu sai. Vui lòng thử lại.",
+            });
+          }
         } else {
           resolve({
             codeNumber: 0,
-            message_en: "Login succeed.",
-            message_vn: "Đăng nhập thành công.",
             user: {
               id: user?.id,
               fullName: user?.fullName,
@@ -213,16 +224,28 @@ const loginSystemService = async (email, password) => {
               teacher?.password
             );
             if (!checkPassword) {
-              resolve({
-                codeNumber: 1,
-                message_en: "Password is wrong. Please try again.",
-                message_vn: "Mật khẩu sai. Vui lòng thử lại.",
-              });
+              const checkTeacherPassword =
+                password.trim() === teacher?.password.trim();
+              if (checkTeacherPassword) {
+                resolve({
+                  codeNumber: 0,
+                  user: {
+                    id: teacher?.id,
+                    fullName: teacher?.fullName,
+                    email: teacher?.email,
+                    roleId: "R5",
+                  },
+                });
+              } else {
+                resolve({
+                  codeNumber: 1,
+                  message_en: "Password is wrong. Please try again.",
+                  message_vn: "Mật khẩu sai. Vui lòng thử lại.",
+                });
+              }
             } else {
               resolve({
                 codeNumber: 0,
-                message_en: "Login succeed.",
-                message_vn: "Đăng nhập thành công.",
                 user: {
                   id: teacher?.id,
                   fullName: teacher?.fullName,
@@ -238,16 +261,28 @@ const loginSystemService = async (email, password) => {
             otherUser?.password
           );
           if (!checkPassword) {
-            resolve({
-              codeNumber: 1,
-              message_en: "Password is wrong. Please try again.",
-              message_vn: "Mật khẩu sai. Vui lòng thử lại.",
-            });
+            const checkTeacherPassword =
+              password.trim() === otherUser?.password.trim();
+            if (checkTeacherPassword) {
+              resolve({
+                codeNumber: 0,
+                user: {
+                  id: otherUser?.id,
+                  fullName: otherUser?.fullName,
+                  email: otherUser?.email,
+                  roleId: otherUser?.roleId,
+                },
+              });
+            } else {
+              resolve({
+                codeNumber: 1,
+                message_en: "Password is wrong. Please try again.",
+                message_vn: "Mật khẩu sai. Vui lòng thử lại.",
+              });
+            }
           } else {
             resolve({
               codeNumber: 0,
-              message_en: "Login succeed.",
-              message_vn: "Đăng nhập thành công.",
               user: {
                 id: otherUser?.id,
                 fullName: otherUser?.fullName,
@@ -299,12 +334,13 @@ const registerHomePageService = (
         });
         await db.TokenEmail.create({
           userId: user?.id,
+          roleId: "R3",
           token: token,
           action: "verifyEmail",
         });
         //decode token
         token = encodeURIComponent(token);
-        const url = `${process.env.BASE_URL_FRONTEND}/users/${user.id}/verify/${token}`;
+        const url = `${process.env.BASE_URL_FRONTEND}/${process.env.HOMEPAGE}/users/${user.id}/verify/${token}`;
         await sendEmail({
           email,
           studentData: user,
@@ -334,19 +370,36 @@ const registerHomePageService = (
             email,
             process.env.SECRET_KEY_STUDENT
           ).toString();
-          await db.TokenEmail.update(
-            {
-              token: token,
+
+          const [, created] = await db.TokenEmail.findOrCreate({
+            where: {
+              userId: exist?.user?.id,
+              roleId: "R3",
+              action: "verifyEmail",
             },
-            {
-              where: {
-                userId: exist.user.id,
-                action: "verifyEmail",
+            defaults: {
+              userId: exist?.user?.id,
+              roleId: "R3",
+              token: token,
+              action: "verifyEmail",
+            },
+          });
+          if (!created) {
+            await db.TokenEmail.update(
+              {
+                token: token,
               },
-            }
-          );
+              {
+                where: {
+                  userId: exist?.user?.id,
+                  roleId: "R3",
+                  action: "verifyEmail",
+                },
+              }
+            );
+          }
           token = encodeURIComponent(token);
-          const url = `${process.env.BASE_URL_FRONTEND}/users/${exist.user.id}/verify/${token}`;
+          const url = `${process.env.BASE_URL_FRONTEND}/${process.env.HOMEPAGE}/users/${exist.user.id}/verify/${token}`;
           await sendEmail({
             email,
             studentData: exist.user,
@@ -541,10 +594,10 @@ const sendEmailToUpdatePassHomePageService = (email) => {
       const checkToken = await db.TokenEmail.findOne({
         where: {
           userId: user.id,
+          roleId: "R3",
           action: "forgotPass",
         },
       });
-      console.log(checkToken);
       if (checkToken) {
         await db.TokenEmail.update(
           {
@@ -553,13 +606,14 @@ const sendEmailToUpdatePassHomePageService = (email) => {
           {
             where: {
               userId: user.id,
+              roleId: "R3",
               action: "forgotPass",
             },
           }
         );
         //decode token
         token = encodeURIComponent(token);
-        const url = `${process.env.BASE_URL_FRONTEND}/updatePass/${email}/verify/${token}`;
+        const url = `${process.env.BASE_URL_FRONTEND}/${process.env.HOMEPAGE}/updatePass/${email}/verify/${token}`;
         await sendEmail({
           email,
           studentData: user,
@@ -577,12 +631,13 @@ const sendEmailToUpdatePassHomePageService = (email) => {
       } else {
         await db.TokenEmail.create({
           userId: user?.id,
+          roleId: "R3",
           token: token,
           action: "forgotPass",
         });
         //decode token
         token = encodeURIComponent(token);
-        const url = `${process.env.BASE_URL_FRONTEND}/updatePass/${email}/verify/${token}`;
+        const url = `${process.env.BASE_URL_FRONTEND}/${process.env.HOMEPAGE}/updatePass/${email}/verify/${token}`;
         await sendEmail({
           email,
           studentData: user,
@@ -623,6 +678,7 @@ const verifyAndUpdatePassHomePageService = (email, token, password) => {
       const checkToken = await db.TokenEmail.findOne({
         where: {
           userId: user.id,
+          roleId: "R3",
           token: tokenEnCode,
           action: "forgotPass",
         },
@@ -671,13 +727,237 @@ const verifyAndUpdatePassHomePageService = (email, token, password) => {
       await db.TokenEmail.destroy({
         where: {
           userId: user.id,
+          roleId: "R3",
           action: "forgotPass",
         },
       });
       resolve({
         codeNumber: 2,
         message_en: "Update password successfully. Please log in again.",
-        message_vn: "Cập nhật mật khẩu thành công. Vui lòng đăng nhập lại",
+        message_vn: "Cập nhật mật khẩu thành công. Vui lòng đăng nhập lại.",
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const sendEmailToUpdatePassSystemService = (email) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let userData;
+      let token = crypto.AES.encrypt(
+        email,
+        process.env.SECRET_KEY_STUDENT
+      ).toString();
+      const user = await db.Admin.findOne({
+        where: { email },
+      });
+      if (user) {
+        userData = user;
+        userData.roleId = "R1";
+      } else {
+        const user = await db.Teacher.findOne({
+          where: { email },
+        });
+        if (user) {
+          userData = user;
+          userData.roleId = "R5";
+        } else {
+          const user = await db.OtherUser.findOne({
+            where: { email },
+          });
+          if (user) {
+            userData = user;
+          } else {
+            resolve({
+              codeNumber: 1,
+              message_en:
+                "This Account is not exist. Please use another account.",
+              message_vn:
+                "Tài khoản không tồn tại. Vui lòng sử dụng tài khoản khác.",
+            });
+          }
+        }
+      }
+
+      const checkToken = await db.TokenEmail.findOne({
+        where: {
+          userId: userData.id,
+          roleId: userData.roleId,
+          action: "forgotPass",
+        },
+      });
+      if (checkToken) {
+        await db.TokenEmail.update(
+          {
+            token,
+          },
+          {
+            where: {
+              userId: userData.id,
+              roleId: userData.roleId,
+              action: "forgotPass",
+            },
+          }
+        );
+        //decode token
+        token = encodeURIComponent(token);
+        const url = `${process.env.BASE_URL_FRONTEND}/${process.env.SYSTEM}/updatePass/${userData.id}/${email}/verify/${token}/${userData.roleId}`;
+        await sendEmail({
+          email,
+          studentData: userData,
+          subject: "Cập nhật mật khẩu tài khoản của bạn.",
+          link: url,
+          type: "forgotPass",
+        });
+        resolve({
+          codeNumber: 2,
+          message_en:
+            "An Email sent to your account. Please check to continue.",
+          message_vn:
+            "Một email được gửi đến tài khoản của bạn. Vui lòng kiểm tra để tiếp tục",
+        });
+      } else {
+        await db.TokenEmail.create({
+          userId: userData?.id,
+          roleId: userData?.roleId,
+          token: token,
+          action: "forgotPass",
+        });
+        //decode token
+        token = encodeURIComponent(token);
+        const url = `${process.env.BASE_URL_FRONTEND}/${process.env.SYSTEM}/updatePass/${userData.id}/${email}/verify/${token}/${userData.roleId}`;
+        await sendEmail({
+          email,
+          studentData: userData,
+          subject: "Cập nhật mật khẩu tài khoản của bạn.",
+          link: url,
+          type: "forgotPass",
+        });
+        resolve({
+          codeNumber: 2,
+          message_en:
+            "An Email sent to your account. Please check to continue.",
+          message_vn:
+            "Một email được gửi đến tài khoản của bạn. Vui lòng kiểm tra để tiếp tục",
+        });
+      }
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const verifyAndUpdatePassSystemService = (
+  email,
+  token,
+  password,
+  userId,
+  roleId
+) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const tokenEnCode = decodeURIComponent(token);
+
+      // const user = await db.Student.findOne({
+      //   where: { email },
+      // });
+      // if (!user) {
+      //   resolve({
+      //     code: 1,
+      //     message: "Invalid Link 1",
+      //   });
+      // }
+
+      // console.log("tokenUser " + tokenEnCode);
+      const checkToken = await db.TokenEmail.findOne({
+        where: {
+          userId,
+          roleId,
+          token: tokenEnCode,
+          action: "forgotPass",
+        },
+      });
+      console.log(checkToken?.token);
+      // console.log(checkToken?.token + "\n" + token);
+      if (!checkToken)
+        resolve({
+          codeNumber: 1,
+          message: "Invalid Link 2",
+        });
+      //check expires of token email (crypto aes encrypt)
+      // allow exist into 5 minutes
+      // console.log(checkToken.updatedAt + 7 * 60 * 60);
+      // console.log(addHours(checkToken.updatedAt, 7));
+      const updateTime = new Date(checkToken.updatedAt).getTime();
+      console.log("update " + updateTime);
+      // console.log(new Date(Date.now()));
+      // console.log(new Date());
+      const date_now = new Date(Date.now()).getTime();
+      console.log("now " + date_now);
+
+      console.log(
+        "time " + Math.abs(Math.floor((date_now - updateTime) / 1000))
+      );
+      if (Math.abs(Math.floor((date_now - updateTime) / 1000)) > 5 * 60) {
+        resolve({
+          codeNumber: 3,
+          message_en: "Token is expired. Please click into Send new link.",
+          message_vn: "Token đã hết hạn. Vui lòng nhấn vào Gửi link mới.",
+        });
+      }
+
+      //  const filter = { email };
+      const updatePass = bcrypt.hashSync(password, 10);
+      if (roleId === "R1") {
+        await db.Admin.update(
+          {
+            password: updatePass,
+          },
+          {
+            where: {
+              id: userId,
+            },
+          }
+        );
+      } else if (roleId === "R5") {
+        await db.Teacher.update(
+          {
+            password: updatePass,
+          },
+          {
+            where: {
+              id: userId,
+            },
+          }
+        );
+      } else {
+        await db.OtherUser.update(
+          {
+            password: updatePass,
+          },
+          {
+            where: {
+              id: userId,
+              roleId,
+            },
+          }
+        );
+      }
+      await db.TokenEmail.destroy({
+        where: {
+          userId,
+          roleId,
+          action: "forgotPass",
+        },
+      });
+      resolve({
+        codeNumber: 2,
+        message_en:
+          "Update password successfully. Please log in again after 3s.",
+        message_vn:
+          "Cập nhật mật khẩu thành công. Vui lòng đăng nhập lại sau 3s nữa.",
       });
     } catch (e) {
       reject(e);
@@ -943,6 +1223,79 @@ const deleteUserService = async (data) => {
   });
 };
 
+const updatePasswordSystemService = ({
+  user,
+  currentPassword,
+  newPassword,
+  roleId,
+}) => {
+  console.log({
+    user,
+    currentPassword,
+    newPassword,
+    roleId,
+  });
+  return new Promise(async (resolve, reject) => {
+    try {
+      //check current password
+      const checkPassword = await bcrypt.compare(
+        currentPassword,
+        user?.password
+      );
+      if (!checkPassword) {
+        resolve({
+          codeNumber: 1,
+          message_en: "Current password is wrong. Please try again.",
+          message_vn: "Mật khẩu hiện tại sai. Vui lòng thử lại.",
+        });
+      }
+      const hashPs = await bcrypt.hashSync(newPassword, 10);
+      if (roleId === "R1") {
+        await db.Admin.update(
+          {
+            password: hashPs,
+          },
+          {
+            where: {
+              id: user?.id,
+            },
+          }
+        );
+      } else if (roleId === "R5") {
+        await db.Teacher.update(
+          {
+            password: hashPs,
+          },
+          {
+            where: {
+              id: user?.id,
+            },
+          }
+        );
+      } else {
+        await db.OtherUser.update(
+          {
+            password: hashPs,
+          },
+          {
+            where: {
+              id: user?.id,
+              roleId,
+            },
+          }
+        );
+      }
+      resolve({
+        codeNumber: 0,
+        message_en: "Update Password Succeed.",
+        message_vn: "Cập nhật mật khẩu thành công.",
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
   loginSystemService,
   registerHomePageService,
@@ -955,4 +1308,7 @@ module.exports = {
   getUserByRoleService,
   sendEmailToUpdatePassHomePageService,
   verifyAndUpdatePassHomePageService,
+  sendEmailToUpdatePassSystemService,
+  verifyAndUpdatePassSystemService,
+  updatePasswordSystemService,
 };

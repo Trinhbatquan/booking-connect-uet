@@ -48,6 +48,9 @@ module.exports = {
       questionSimilarityId: {
         type: Sequelize.INTEGER,
       },
+      reasonCancelSchedule: {
+        type: Sequelize.TEXT("long"),
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

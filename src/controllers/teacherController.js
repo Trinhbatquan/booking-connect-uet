@@ -17,7 +17,8 @@ const getTeacherHomePageController = async (req, res) => {
     console.log(e);
     res.status(200).send({
       codeNumber: -1,
-      message: "Can not get teacher",
+      message_en: "Error. Please contact with admin.",
+      message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên",
     });
   }
 };
@@ -34,7 +35,8 @@ const getTeacherSystemController = async (req, res) => {
     console.log(e);
     res.status(200).send({
       codeNumber: -1,
-      message: "Can not get teacher",
+      message_en: "Error. Please contact with admin.",
+      message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên",
     });
   }
 };
@@ -48,7 +50,8 @@ const getTeacherBySearchController = async (req, res) => {
     console.log(e);
     res.status(200).send({
       codeNumber: -1,
-      message: "Can not get teacher",
+      message_en: "Error. Please contact with admin.",
+      message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên",
     });
   }
 };
@@ -68,7 +71,8 @@ const getOneTeacherController = async (req, res) => {
     console.log(e);
     res.status(200).send({
       codeNumber: -1,
-      message: "Can not get teacher by id",
+      message_en: "Error. Please contact with admin.",
+      message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên",
     });
   }
 };
@@ -79,7 +83,8 @@ const createTeacherInfoController = async (req, res) => {
   if (!teacherId || !facultyId || !action) {
     return res.status(400).send({
       codeNumber: 1,
-      message: "Missing parameter id teacher",
+      message_en: "Error. Please contact with admin.",
+      message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên",
     });
   } else {
     try {
@@ -94,7 +99,8 @@ const createTeacherInfoController = async (req, res) => {
       console.log(e);
       res.status(200).send({
         codeNumber: -1,
-        message: "Can not create teacher info",
+        message_en: "Error. Please contact with admin.",
+        message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên",
       });
     }
   }
@@ -105,7 +111,8 @@ const getTeacherInfoController = async (req, res) => {
   if (!id) {
     res.status(400).json({
       codeNumber: 1,
-      message: "Missing parameter id",
+      message_en: "Error. Please contact with admin.",
+      message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên",
     });
   } else {
     try {
@@ -114,7 +121,8 @@ const getTeacherInfoController = async (req, res) => {
     } catch (e) {
       res.status(200).json({
         codeNumber: -1,
-        message: "Can not get teacher info by id",
+        message_en: "Error. Please contact with admin.",
+        message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên",
       });
     }
   }
@@ -126,7 +134,8 @@ const getOneTeacherByFacultyController = async (req, res) => {
     if (!facultyId) {
       res.status(400).json({
         codeNumber: 1,
-        message: "Missing parameter faculty",
+        message_en: "Error. Please contact with admin.",
+        message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên",
       });
     } else {
       const data = await getTeacherByFacultyService(facultyId);
@@ -136,7 +145,8 @@ const getOneTeacherByFacultyController = async (req, res) => {
     console.log(e);
     res.status(200).json({
       codeNumber: -1,
-      message: "Can not get teacher by faculty",
+      message_en: "Error. Please contact with admin.",
+      message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên",
     });
   }
 };

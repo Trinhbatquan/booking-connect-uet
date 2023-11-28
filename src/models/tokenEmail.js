@@ -27,6 +27,7 @@ module.exports = (sequelize, DataTypes) => {
   TokenEmail.init(
     {
       userId: DataTypes.INTEGER,
+      roleId: DataTypes.STRING,
       token: DataTypes.STRING,
       action: DataTypes.STRING,
     },

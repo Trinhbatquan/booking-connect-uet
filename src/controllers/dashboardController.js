@@ -16,7 +16,8 @@ const getDashboardBookingDataController = async (req, res) => {
     console.log(e);
     res.status(200).send({
       codeNumber: -1,
-      message: "Not get dashboard",
+      message_en: "Error. Please contact with admin.",
+      message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên",
     });
   }
 };
@@ -33,7 +34,8 @@ const getDashboardBookingDataByMonthsController = async (req, res) => {
     console.log(e);
     res.status(200).send({
       codeNumber: -1,
-      message: "Not get dashboard by months",
+      message_en: "Error. Please contact with admin.",
+      message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên",
     });
   }
 };

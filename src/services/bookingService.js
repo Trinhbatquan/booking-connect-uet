@@ -602,6 +602,9 @@ const updateStatusBookingByManagerService = ({
       if (data) {
         data.statusId =
           type === "done" ? "S3" : type === "process" ? "S2" : "S4";
+        if (type === "cancel" && actionId === "A1") {
+          data.reasonCancelSchedule = reasonCancel;
+        }
         await data.save();
         if (actionId === "A2") {
           await db.Answer.create({ answer, questionId: data.id });
@@ -747,7 +750,11 @@ const updateStatusBookingByManagerService = ({
           codeNumber: 0,
         });
       } else {
-        resolve({ codeNumber: 1, message: "Error" });
+        resolve({
+          codeNumber: 1,
+          message_en: "Error. Please contact with admin.",
+          message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên",
+        });
       }
     } catch (e) {
       reject(e);
