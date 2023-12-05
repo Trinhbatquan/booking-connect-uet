@@ -124,6 +124,22 @@ const protectUserToken = async (req, res, next, action) => {
           // attributes: {
           //   exclude: ["password"],
           // },
+          // include: isDetail
+          //   ? [
+          //       {
+          //         model: db.AllCode,
+          //         as: "positionData",
+          //         attributes: ["valueEn", "valueVn"],
+          //       },
+          //       {
+          //         model: db.OtherUser,
+          //         as: "facultyData",
+          //         attributes: ["fullName"],
+          //       },
+          //     ]
+          //   : [],
+          raw: true,
+          nest: true, //fix result.get is not a function
         });
         if (user && email === req.body.email) {
           req.user = user;

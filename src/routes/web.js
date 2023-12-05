@@ -48,7 +48,9 @@ const {
 const {
   // updateStudentController,
   getStudentController,
+  getManagerController,
   updateProfileStudentController,
+  updateProfileManagerController,
   updatePasswordStudentController,
 } = require("../controllers/studentController");
 const {
@@ -65,6 +67,7 @@ const {
   deleteNotifySystemController,
   getNotificationHomePageLimited,
   getOneNotifyHomePageController,
+  getOneNotifyManagerController,
   getCountNewNotifyController,
   updateToOldNotifyController,
   deleteNotifyController,
@@ -209,6 +212,19 @@ const initWebRoutes = (app) => {
 
   //manager api
   router.get("/api/notification", getNotificationController);
+  router.get("/api/get-one-notify-manager", getOneNotifyManagerController);
+  router.post(
+    "/api/get-manager",
+    (req, res, next) => checkExpiredToken(req, res, next, "system"),
+    (req, res, next) => protectUserToken(req, res, next, "otherUser"),
+    getManagerController
+  );
+  router.put(
+    "/api/update-profile-manager",
+    (req, res, next) => checkExpiredToken(req, res, next, "system"),
+    (req, res, next) => protectUserToken(req, res, next, "otherUser"),
+    updateProfileManagerController
+  );
 
   //home page api
   router.post("/api/homepage/register", registerHomePage);

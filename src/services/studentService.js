@@ -116,8 +116,75 @@ const updatePasswordStudentService = ({
   });
 };
 
+const updateProfileManagerService = ({
+  id,
+  roleManager,
+  fullName,
+  phoneNumber,
+  address,
+  faculty,
+  position,
+  gender,
+  image,
+}) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (roleManager === "R5") {
+        await db.Teacher.update(
+          image
+            ? {
+                fullName,
+                phoneNumber,
+                address,
+                facultyId: faculty,
+                positionId: position,
+                gender,
+                image,
+              }
+            : {
+                fullName,
+                phoneNumber,
+                address,
+                facultyId: faculty,
+                positionId: position,
+                gender,
+              },
+          {
+            where: {
+              id,
+            },
+          }
+        );
+      } else {
+        await db.OtherUser.update(
+          {
+            fullName,
+            phoneNumber,
+            address,
+          },
+          {
+            where: {
+              id,
+              roleId: roleManager,
+            },
+          }
+        );
+      }
+
+      resolve({
+        codeNumber: 0,
+        message_vn: "Cập nhật thông tin thành công.",
+        message_en: "Update profile succeed.",
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
   // updateStudentService,
   updateProfileStudentService,
   updatePasswordStudentService,
+  updateProfileManagerService,
 };

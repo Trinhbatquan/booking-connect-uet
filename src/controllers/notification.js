@@ -6,6 +6,7 @@ const {
   deleteNotifySystemService,
   getNotifyHomePageLimitedService,
   getOneNotifyHomePageService,
+  getOneNotifyManagerService,
   getCountNewNotifyService,
   updateToOldNotifyService,
   deleteNotifyService,
@@ -92,6 +93,20 @@ const getOneNotifyHomePageController = async (req, res) => {
   try {
     const { code_url } = req.query;
     const data = await getOneNotifyHomePageService({ code_url });
+    return res.status(200).json(data);
+  } catch (e) {
+    console.log(e);
+    return res.status(200).json({
+      codeNumber: -1,
+      message: "Not get one notify",
+    });
+  }
+};
+
+const getOneNotifyManagerController = async (req, res) => {
+  try {
+    const { code_url, roleManager } = req.query;
+    const data = await getOneNotifyManagerService({ code_url, roleManager });
     return res.status(200).json(data);
   } catch (e) {
     console.log(e);
@@ -193,6 +208,7 @@ module.exports = {
   deleteNotifySystemController,
   getNotificationHomePageLimited,
   getOneNotifyHomePageController,
+  getOneNotifyManagerController,
   getCountNewNotifyController,
   updateToOldNotifyController,
   deleteNotifyController,

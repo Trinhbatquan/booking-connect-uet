@@ -2,6 +2,7 @@ const {
   // updateStudentService,
   updateProfileStudentService,
   updatePasswordStudentService,
+  updateProfileManagerService,
 } = require("../services/studentService");
 
 // const updateStudentController = async (req, res) => {
@@ -84,9 +85,63 @@ const updatePasswordStudentController = async (req, res) => {
 const getStudentController = async (req, res) => {
   try {
     const { user } = req;
+    user.password = "";
     return res.status(200).json({
       codeNumber: 0,
       student: user,
+    });
+  } catch (e) {
+    console.log("get student " + e);
+    res.status(200).send({
+      codeNumber: -1,
+      message_en: "Error. Please contact with admin.",
+      message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên",
+    });
+  }
+};
+
+const updateProfileManagerController = async (req, res) => {
+  try {
+    const { user } = req;
+    const {
+      fullName,
+      phoneNumber,
+      address,
+      faculty,
+      position,
+      gender,
+      image,
+      roleManager,
+    } = req.body;
+    const data = await updateProfileManagerService({
+      id: user?.id,
+      roleManager,
+      fullName,
+      phoneNumber,
+      address,
+      faculty,
+      position,
+      gender,
+      image,
+    });
+    return res.status(200).json(data);
+  } catch (e) {
+    console.log(e);
+    res.status(501).json({
+      codeNumber: -1,
+      message_en: "Error. Please contact with admin.",
+      message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên",
+    });
+  }
+};
+
+const getManagerController = async (req, res) => {
+  try {
+    const { user } = req;
+    user.password = "";
+    return res.status(200).json({
+      codeNumber: 0,
+      manager: user,
     });
   } catch (e) {
     console.log("get student " + e);
@@ -103,4 +158,6 @@ module.exports = {
   getStudentController,
   updateProfileStudentController,
   updatePasswordStudentController,
+  updateProfileManagerController,
+  getManagerController,
 };

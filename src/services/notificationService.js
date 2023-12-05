@@ -265,6 +265,28 @@ const getOneNotifyHomePageService = ({ code_url }) => {
   });
 };
 
+const getOneNotifyManagerService = ({ code_url, roleManager }) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const notify = await db.Notification.findOne({
+        where: {
+          type_notification: "system",
+          roleManager,
+          code_url,
+        },
+        nest: true,
+        raw: true,
+      });
+      resolve({
+        codeNumber: 0,
+        notify,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 const createNotifySystemService = (notifyData) => {
   console.log(notifyData);
   return new Promise(async (resolve, reject) => {
@@ -430,6 +452,7 @@ module.exports = {
   deleteNotifySystemService,
   getNotifyHomePageLimitedService,
   getOneNotifyHomePageService,
+  getOneNotifyManagerService,
   getCountNewNotifyService,
   updateToOldNotifyService,
   deleteNotifyService,
