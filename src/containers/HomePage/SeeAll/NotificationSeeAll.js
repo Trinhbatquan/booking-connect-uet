@@ -49,7 +49,12 @@ const NotificationSeeAll = () => {
   const navigate = useNavigate();
   const { i18n } = useTranslation();
   const mdParser = new MarkdownIt(/* Markdown-it options */);
-  const [typeNotification, setTypeNotification] = useState("booking");
+  const optionNotificationRedux = useSelector(
+    (state) => state.socketNotifyHomepageReducer.optionNotification
+  );
+  const [typeNotification, setTypeNotification] = useState(
+    optionNotificationRedux ? optionNotificationRedux : "booking"
+  );
   const [isOpenConfirmNotify, setIsOpenConfirmNotify] = useState(false);
   const [actionDeleteNotify, setActionDeleteNotify] = useState("");
   const currentUser = useSelector((state) => state.studentReducer);
@@ -329,7 +334,10 @@ const NotificationSeeAll = () => {
     dispatch(setChangeNotifyButton(false));
     dispatch(setChangeNotifyIcon(false));
     dispatch(setCountNewNotifyHomePage(0));
-    await fetchDataNotify({ option: "booking", page: +1 });
+    await fetchDataNotify({
+      option: optionNotificationRedux ? optionNotificationRedux : "booking",
+      page: +1,
+    });
     if (countNewNotificationRedux > 0) {
       updateNotifyToOld({
         type: "student",

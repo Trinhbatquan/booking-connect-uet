@@ -20,5 +20,13 @@ const getStudent = (params, data) => {
   const url = "/api/get-student";
   return axiosClient.post(url, data, { params });
 };
+const getManager = (params, data) => {
+  const url = "/api/get-manager";
+  return axiosClient.post(url, data, { params });
+};
+const updateProfileManager = (params, data) => {
+  const url = "/api/update-profile-manager";
+  return axiosClient.put(url, data, { params });
+};
 
-export { updateStudent, getStudent };
+export { updateStudent, getStudent, getManager, updateProfileManager };

@@ -436,13 +436,13 @@ const TeacherManager = () => {
     let data = e.target.files;
     let file = data[0];
     if (file) {
-      if (file?.size > 400000) {
+      if (file?.size > 500000) {
         inputFileRef.current.value = "";
         toast.error(
           `${
             i18n.language === "en"
-              ? "This image is too big, please use image size < 400KB"
-              : "Ảnh hiện tại quá lớn. Vui lòng sử dụng ảnh dưới 400KB"
+              ? "This image is too big, please use image size < 500KB"
+              : "Ảnh hiện tại quá lớn. Vui lòng sử dụng ảnh dưới 500KB"
           }`,
           {
             autoClose: 3000,

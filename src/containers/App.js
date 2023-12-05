@@ -49,6 +49,8 @@ import ProcessBooking from "./HomePage/ProcessBooking/ProcessBooking";
 import UpdatePasswordSystem from "./Auth/Login/UpdatePasswordSystem";
 import ForgotPasswordSystem from "./Auth/Login/ForgotPasswordSystem";
 import RootHomePage from "./HomePage/RootHomePage";
+import NotificationDetailManager from "./Manager/Notification/NotificationDetailManager";
+import UpdateProfileManager from "./Manager/Profile";
 
 function App() {
   const [appearScrollTop, setAppearScrollTop] = useState(false);
@@ -185,9 +187,17 @@ function App() {
         {/* manager */}
         <Route path={path.MANAGER} element={<RootManager />}>
           <Route path={path.schedule} element={<Schedule />} />
-          <Route path={path.student} element={<Student />} />
+          <Route path={`${path.student}`} element={<Student />} />
           <Route path={path.notification} element={<Notification />} />
+          <Route
+            path={`${path.detail}/:code_url`}
+            element={<NotificationDetailManager />}
+          />
           <Route path={path.dashboard} element={<Dashboard />} />
+          <Route
+            path={`${path.updateProfile}`}
+            element={<UpdateProfileManager />}
+          />
         </Route>
       </Routes>
       {appearScrollTop && (

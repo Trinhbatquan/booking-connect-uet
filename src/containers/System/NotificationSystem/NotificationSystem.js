@@ -254,10 +254,8 @@ const NotificationSystem = () => {
         } else {
           //websocket notify to manager
           const dataRoleManager = [];
-          for (let i = 0; i < user.length; i++) {
-            if (user[i]?.value !== "R3") {
-              dataRoleManager.push(user[i]?.value);
-            }
+          for (let i = 0; i < user?.length; i++) {
+            dataRoleManager.push(user[i]?.value);
           }
           console.log(dataRoleManager);
           console.log(user);
@@ -765,7 +763,9 @@ const NotificationSystem = () => {
                       }`}
             onClick={() => setAction("R5")}
           >
-            {`Teacher (${countNotifyData[3]})`}
+            {i18n.language === "en"
+              ? `Teacher (${countNotifyData[4]})`
+              : `Giảng viên (${countNotifyData[4]})`}
           </button>
           <button
             type="button"

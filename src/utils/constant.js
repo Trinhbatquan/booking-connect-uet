@@ -22,6 +22,8 @@ export const path = {
   notification: "notification",
   schedule: "schedule",
   student: "student?",
+  detail: "detail-notification",
+  updateProfile: "update-profile",
 
   //homepage
   UET: "https://uet.vnu.edu.vn",

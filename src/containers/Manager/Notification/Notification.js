@@ -11,10 +11,13 @@ import MarkdownIt from "markdown-it";
 import {
   deleteNotifyStudentAndManager,
   getNotiFy,
+  updateNotifyToOld,
 } from "../../../services/notificationService";
 import { BsThreeDots } from "react-icons/bs";
 import "./NotificationManager.scss";
 import { MdViewDay } from "react-icons/md";
+import { FaLongArrowAltUp } from "react-icons/fa";
+
 import { BsTrash3Fill } from "react-icons/bs";
 import avatarNotify from "../../../assets/image/notify.jpg";
 import moment from "moment";
@@ -25,20 +28,38 @@ import { handleMessageFromBackend } from "../../../utils/handleMessageFromBacken
 import { logOutApi } from "../../../services/userService";
 import { logOutUser } from "../../../redux/studentSlice";
 import Header from "../../System/Header/Header";
+import {
+  setChangeNotifyButton,
+  setChangeNotifyIcon,
+  setCountNewNotifyManager,
+  setPathNameOfNotifySeeAll,
+} from "../../../redux/socketNotifyManager";
 
 const Notification = () => {
+  const optionNotificationRedux = useSelector(
+    (state) => state.socketNotifyManagerReducer.optionNotification
+  );
   const [loading, setLoading] = useState(false);
   const [notifyData, setNotifyData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState(0);
   const navigate = useNavigate();
   const { i18n } = useTranslation();
-  const [typeNotification, setTypeNotification] = useState("booking");
+  const [typeNotification, setTypeNotification] = useState(
+    optionNotificationRedux ? optionNotificationRedux : "booking"
+  );
   const [isOpenConfirmNotify, setIsOpenConfirmNotify] = useState(false);
   const [actionDeleteNotify, setActionDeleteNotify] = useState("");
   const currentUser = useSelector((state) => state.authReducer);
 
   const dispatch = useDispatch();
+
+  const countNewNotificationRedux = useSelector(
+    (state) => state.socketNotifyManagerReducer.countNewNotifyManager
+  );
+  const changeNotifyButton = useSelector(
+    (state) => state.socketNotifyManagerReducer.changeNotifyButton
+  );
 
   const fetchDataNotify = ({ option, page, action }) => {
     setLoading(true);
@@ -142,11 +163,9 @@ const Notification = () => {
 
   const handleDetailNotify = (data) => {
     if (typeNotification === "system") {
-      // navigate(`${path.HOMEPAGE}/${path.detail_notify}/${data?.code_url}`);
+      navigate(`${path.MANAGER}/${path.detail}/${data?.code_url}`);
     } else {
-      // navigate(
-      //   `${path.HOMEPAGE}/${path.processBooking}/${data?.bookingData?.actionId}`
-      // );
+      navigate(`${path.MANAGER}/${path.student}${data?.type_notification}`);
     }
   };
 
@@ -207,6 +226,23 @@ const Notification = () => {
         }
       }
     });
+  };
+
+  const handleRefreshNotification = async () => {
+    dispatch(setChangeNotifyButton(false));
+    dispatch(setChangeNotifyIcon(false));
+    dispatch(setCountNewNotifyManager(0));
+    await fetchDataNotify({
+      option: optionNotificationRedux ? optionNotificationRedux : "booking",
+      page: +1,
+    });
+    if (countNewNotificationRedux > 0) {
+      updateNotifyToOld({
+        type: "manager",
+        managerId: currentUser?.id,
+        roleManager: currentUser?.role,
+      }).then((data) => {});
+    }
   };
 
   return (
@@ -588,6 +624,18 @@ const Notification = () => {
           closeConfirm={closeConfirm}
           confirmDeleteNotify={deleteNotify}
         />
+      )}
+      {changeNotifyButton && (
+        <button
+          class={`fixed modal-confirm-schedule-overplay flex gap-1 top-44 px-5 py-1.5 left-[50%] -translate-x-[50%]  transition-all ease-in duration-150 items-center justify-center overflow-hidden text-md font-semibold border border-blue-500 bg-blue-500 text-white rounded-2xl hover:bg-blue-600 
+            `}
+          onClick={() => handleRefreshNotification()}
+        >
+          <FaLongArrowAltUp className="text-2xl text-white" />
+          <span class="">
+            {i18n.language === "en" ? "New notifications" : "Thông báo mới"}
+          </span>
+        </button>
       )}
     </div>
   );

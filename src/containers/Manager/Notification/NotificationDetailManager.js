@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import Loading from "../../../utils/Loading";
-import HomeHeader from "../HomeHeader";
 import { useNavigate, useParams } from "react-router";
 import { news } from "../../../services/newsService";
 import convertBufferToBase64 from "../../../utils/convertBufferToBase64";
@@ -10,21 +9,23 @@ import { path } from "../../../utils/constant";
 import { RiArrowDownSLine } from "react-icons/ri";
 import MdEditor from "react-markdown-editor-lite";
 import MarkdownIt from "markdown-it";
-import HomeFooter from "../HomeFooter";
 import moment from "moment";
 import { getNotiFy } from "../../../services/notificationService";
 import nodata from "../../../assets/image/nodata.png";
+import { useSelector } from "react-redux";
 
-const NotificationDetail = () => {
+const NotificationDetailManager = () => {
   const mdParser = new MarkdownIt(/* Markdown-it options */);
   const code_url = useParams().code_url;
   const [loading, setLoading] = useState(true);
   const [notifyDetail, setNotifyDetail] = useState();
   const { i18n } = useTranslation();
+  const currentUser = useSelector((state) => state.authReducer);
 
   useEffect(() => {
-    if (JSON.parse(localStorage.getItem("auth-bookingCare-UET_student"))) {
-      getNotiFy.getOneNotifyHomePage({ code_url }).then((data) => {
+    getNotiFy
+      .getOneNotifyManager({ code_url, roleManager: currentUser?.role })
+      .then((data) => {
         if (data?.codeNumber === 0) {
           const response = data?.notify;
           if (response?.image?.data) {
@@ -44,7 +45,6 @@ const NotificationDetail = () => {
           );
         }
       });
-    }
   }, []);
 
   return (
@@ -57,6 +57,7 @@ const NotificationDetail = () => {
           </div>
         </div>
       )}
+      <div className="w-full" style={{ height: "110px" }}></div>
 
       <div
         className="mt-[34px] pt-[20px] mb-[20px] mx-[10%] pr-[30px] pl-[65px]"
@@ -111,9 +112,9 @@ const NotificationDetail = () => {
           />
         )}
       </div>
-      <HomeFooter />
+      {/* <HomeFooter /> */}
     </div>
   );
 };
 
-export default NotificationDetail;
+export default NotificationDetailManager;

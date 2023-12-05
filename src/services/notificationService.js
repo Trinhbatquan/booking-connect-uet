@@ -22,6 +22,10 @@ const getNotiFy = {
     const url = "/api/get-count-new-notify";
     return axiosClient.get(url, { params });
   },
+  getOneNotifyManager: (params) => {
+    const url = "/api/get-one-notify-manager";
+    return axiosClient.get(url, { params });
+  },
 };
 
 const createNotifySystem = (params, data) => {

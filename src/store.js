@@ -7,6 +7,7 @@ import studentReducer from "./redux/studentSlice";
 import notificationManagerReducer from "./redux/notificationManagerSlice";
 import searchHomePageReducer from "./redux/searchSlice";
 import socketNotifyHomepageReducer from "./redux/socketNotifyHomePage";
+import socketNotifyManagerReducer from "./redux/socketNotifyManager";
 const store = configureStore({
   reducer: {
     authReducer,
@@ -16,6 +17,7 @@ const store = configureStore({
     notificationManagerReducer,
     searchHomePageReducer,
     socketNotifyHomepageReducer,
+    socketNotifyManagerReducer,
   },
 });
 

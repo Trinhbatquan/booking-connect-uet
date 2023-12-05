@@ -17,6 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { logOutUser } from "../../../redux/studentSlice";
 import convertBufferToBase64 from "../../../utils/convertBufferToBase64";
+import HomeFooter from "../HomeFooter";
 
 const UpdateProfile = () => {
   const [loading, setLoading] = useState(true);
@@ -39,7 +40,7 @@ const UpdateProfile = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const currentUser = useSelector((state) => state.studentReducer);
-
+  console.log(faculty);
   const handleGetProfileUser = ({ type, message }) => {
     console.log(1);
     getStudent({}, { email: currentUser?.email }).then((data) => {
@@ -93,6 +94,7 @@ const UpdateProfile = () => {
 
           getStudent({}, { email: currentUser?.email }).then((data) => {
             if (data?.codeNumber === 0) {
+              console.log(data.student);
               const student = data?.student;
               console.log(student);
               setEmail(student?.email);
@@ -586,6 +588,7 @@ const UpdateProfile = () => {
           </div>
         </div>
       </div>
+      <HomeFooter />
     </div>
   );
 };

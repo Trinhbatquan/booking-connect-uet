@@ -14,15 +14,15 @@ const ScheduleManager = () => {
   const { t, i18n } = useTranslation();
 
   const location = useLocation();
-  const reviewFromNotify = location?.search.split("?")[1];
+  const reviewFromNotify = location?.search?.split("?")[1];
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const currentUser = useSelector((state) => state.authReducer);
   const [action, setAction] = useState(
     reviewFromNotify
-      ? reviewFromNotify === "new_ques"
-        ? "question"
-        : "schedule"
+      ? reviewFromNotify === "new_book" || reviewFromNotify === "check_event"
+        ? "schedule"
+        : "question"
       : ""
   );
 

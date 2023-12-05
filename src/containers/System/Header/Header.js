@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 
@@ -35,23 +35,47 @@ import {
   getNotiFy,
   updateNotifyToOld,
 } from "../../../services/notificationService";
-// import { setCountNewNotifyManager } from "../../../redux/socketNotifyHomePage";
 import { handleMessageFromBackend } from "../../../utils/handleMessageFromBackend";
-// import { getNotiFy } from "../../../services/notificationService";
-// import { getAllNotify } from "../../../redux/notificationSlice";
+import {
+  setChangeNotifyButton,
+  setChangeNotifyIcon,
+  setCountNewNotifyManager,
+  setOptionNotification,
+  setPathNameOfNotifySeeAll,
+} from "../../../redux/socketNotifyManager";
 
 const HeaderUser = ({ openModelUpdatePass }) => {
+  const pathName = useLocation()?.pathname;
+
   const { t, i18n } = useTranslation();
   const [openModelUser, setOpenModelUser] = useState(false);
   const currentUser = useSelector((state) => state.authReducer);
-  // const countNewNotificationRedux = useSelector(
-  //   (state) => state.countNewNotifyReducer.countNewNotifyManager
-  // );
   const [socketNotify, setSocketNotify] = useState(false);
-  // const notify = useSelector((state) => state.notificationReducer.notify);
-  const [countNewNotificationManager, setCountNotificationManager] =
-    useState(0);
   const dispatch = useDispatch();
+  const countNewNotificationRedux = useSelector(
+    (state) => state.socketNotifyManagerReducer.countNewNotifyManager
+  );
+  const changeNotifyIcon = useSelector(
+    (state) => state.socketNotifyManagerReducer.changeNotifyIcon
+  );
+
+  const [isPathNameOfNotifySeeAll, setIsPathNameOfNotifySeeAll] =
+    useState(false);
+  const [countNewNotification, setCountNewNotification] = useState(
+    countNewNotificationRedux
+  );
+
+  if (
+    pathName === `${path.MANAGER}/${path.notification}` &&
+    isPathNameOfNotifySeeAll === false
+  ) {
+    setIsPathNameOfNotifySeeAll(true);
+  } else if (
+    pathName !== `${path.MANAGER}/${path.notification}` &&
+    isPathNameOfNotifySeeAll === true
+  ) {
+    setIsPathNameOfNotifySeeAll(false);
+  }
 
   useEffect(() => {
     const listenNewBookingFromBackend = (data) => {
@@ -89,13 +113,28 @@ const HeaderUser = ({ openModelUpdatePass }) => {
             }
           );
         }
-        setSocketNotify(true);
-        // dispatch(setCountNewNotifyManager(countNewNotificationRedux + 1));
+        dispatch(setChangeNotifyIcon(true));
+        setCountNewNotification((previousState) => {
+          dispatch(setCountNewNotifyManager(previousState + 1));
+          return previousState + 1;
+        });
+        // if () {
+        //   console.log("oo hay");
+        //   dispatch(setChangeNotifyButton(true));
+        // }
+        setIsPathNameOfNotifySeeAll((previousState) => {
+          if (previousState === true) {
+            dispatch(setChangeNotifyButton(true));
+          }
+          return previousState;
+        });
+        dispatch(setOptionNotification("booking"));
       }
     };
 
     const listenNewNotifyFromSystem = (data) => {
       console.log("2");
+      console.log(data);
 
       const { dataRoleManager, time } = data;
       const checkRole = dataRoleManager.includes(currentUser?.role);
@@ -114,19 +153,82 @@ const HeaderUser = ({ openModelUpdatePass }) => {
             position: "bottom-right",
           }
         );
-        setSocketNotify(true);
-        // dispatch(setCountNewNotifyManager(countNewNotificationRedux + 1));
+        dispatch(setChangeNotifyIcon(true));
+        setCountNewNotification((previousState) => {
+          dispatch(setCountNewNotifyManager(previousState + 1));
+          return previousState + 1;
+        });
+        // if () {
+        //   console.log("oo hay");
+        //   dispatch(setChangeNotifyButton(true));
+        // }
+        setIsPathNameOfNotifySeeAll((previousState) => {
+          if (previousState === true) {
+            dispatch(setChangeNotifyButton(true));
+          }
+          return previousState;
+        });
+        dispatch(setOptionNotification("system"));
       }
     };
 
-    socket.on("new_booking", (data) => listenNewBookingFromBackend(data));
-    socket.on("new_notification_system", (data) =>
-      listenNewNotifyFromSystem(data)
-    );
+    const listenCheckEventBookingScheduleComingFromBackend = (data) => {
+      const { managerId, roleManager } = data;
+      if (managerId === currentUser?.id && roleManager === currentUser?.role) {
+        toast.info(
+          i18n.language === "en"
+            ? `You have an appointment with a student tomorrow. Check now! (${moment(
+                new Date()
+              ).calendar()})`
+            : `Bạn có một lịch hẹn với sinh viên vào ngày mai. Kiểm tra ngay! (${moment(
+                new Date()
+              ).calendar()})`,
+          {
+            autoClose: 5000,
+            theme: "colored",
+            position: "bottom-right",
+          }
+        );
+        dispatch(setChangeNotifyIcon(true));
+        setCountNewNotification((previousState) => {
+          dispatch(setCountNewNotifyManager(previousState + 1));
+          return previousState + 1;
+        });
+        // if () {
+        //   console.log("oo hay");
+        //   dispatch(setChangeNotifyButton(true));
+        // }
+        setIsPathNameOfNotifySeeAll((previousState) => {
+          if (previousState === true) {
+            dispatch(setChangeNotifyButton(true));
+          }
+          return previousState;
+        });
+        dispatch(setOptionNotification("booking"));
+      }
+    };
+
+    if (!socket.hasListeners("new_booking")) {
+      socket.on("new_booking", (data) => listenNewBookingFromBackend(data));
+    }
+    if (!socket.hasListeners("new_notification_system")) {
+      socket.on("new_notification_system", (data) =>
+        listenNewNotifyFromSystem(data)
+      );
+    }
+    if (!socket.hasListeners("check_event_booking_schedule_coming")) {
+      socket.on("check_event_booking_schedule_coming", (data) =>
+        listenCheckEventBookingScheduleComingFromBackend(data)
+      );
+    }
 
     return () => {
       socket.off("new_booking", listenNewBookingFromBackend);
       socket.off("new_notification_system", listenNewNotifyFromSystem);
+      socket.off(
+        "check_event_booking_schedule_coming",
+        listenCheckEventBookingScheduleComingFromBackend
+      );
     };
   }, []);
 
@@ -141,7 +243,8 @@ const HeaderUser = ({ openModelUpdatePass }) => {
       .then((data) => {
         if (data?.codeNumber === 0) {
           console.log("header_user");
-          // dispatch(setCountNewNotifyManager(data?.countNewNotify));
+          dispatch(setCountNewNotifyManager(data?.countNewNotify));
+          setCountNewNotification(data?.countNewNotify);
         }
       });
   }, []);
@@ -204,18 +307,20 @@ const HeaderUser = ({ openModelUpdatePass }) => {
   };
 
   const handleResetNotify = async () => {
-    // if (+countNewNotificationRedux > 0) {
-    //   updateNotifyToOld({
-    //     type: "manager",
-    //     managerId: currentUser?.id,
-    //     roleManager: currentUser?.role,
-    //   }).then((data) => {
-    //     setSocketNotify(false);
-    //     navigate(`${path.MANAGER}/${path.notification}`);
-    //   });
-    // } else {
-    //   navigate(`${path.MANAGER}/${path.notification}`);
-    // }
+    if (+countNewNotificationRedux > 0) {
+      updateNotifyToOld({
+        type: "manager",
+        managerId: currentUser?.id,
+        roleManager: currentUser?.role,
+      }).then((data) => {
+        dispatch(setCountNewNotifyManager(0));
+        setCountNewNotification(0);
+        dispatch(setChangeNotifyIcon(false));
+        navigate(`${path.MANAGER}/${path.notification}`);
+      });
+    } else {
+      navigate(`${path.MANAGER}/${path.notification}`);
+    }
   };
 
   return (
@@ -305,13 +410,13 @@ const HeaderUser = ({ openModelUpdatePass }) => {
           onClick={() => handleResetNotify()}
         >
           <div className="relative flex items-center justify-center gap-2">
-            {socketNotify && <TbBellRinging className={`text-2xl bell`} />}
-            {!socketNotify && <MdNotificationsNone className="text-2xl" />}
-            {/* {+countNewNotificationRedux > 0 && (
+            {changeNotifyIcon && <TbBellRinging className={`text-2xl bell`} />}
+            {!changeNotifyIcon && <MdNotificationsNone className="text-2xl" />}
+            {+countNewNotificationRedux > 0 && (
               <div className="absolute -right-[9px] -top-[12px] flex items-center justify-center w-6 h-5 p-1 text-white bg-red-600 rounded-full">
                 <span className="text-xs">{`${countNewNotificationRedux}+`}</span>
               </div>
-            )} */}
+            )}
           </div>
           <span>{i18n.language === "en" ? "Notification" : "Thông báo"}</span>
         </NavLink>
@@ -363,7 +468,12 @@ const HeaderUser = ({ openModelUpdatePass }) => {
             </div>
             <ul className="py-2 profile-user-manager text-gray-200 border-t border-b border-slate-400">
               <li>
-                <div className="flex items-center gap-1 px-4 py-2 hover:bg-blue-600 hover:text-white">
+                <div
+                  className="flex items-center gap-1 px-4 py-2 hover:bg-blue-600 hover:text-white"
+                  onClick={() =>
+                    navigate(`${path.MANAGER}/${path.updateProfile}`)
+                  }
+                >
                   <AiFillEdit /> <span>{t("system.header.edit-profile")}</span>
                 </div>
               </li>

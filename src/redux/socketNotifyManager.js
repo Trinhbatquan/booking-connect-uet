@@ -2,22 +2,22 @@ import { createSlice } from "@reduxjs/toolkit";
 // import { T_i18n } from "../containers/HomePage/HomeHeader";
 import { current } from "@reduxjs/toolkit";
 
-const socketNotifyHomePageInitial = {
-  countNewNotifyHomePage: 0,
+const socketNotifyManagerInitial = {
+  countNewNotifyManager: 0,
   changeNotifyIcon: false,
   changeNotifyButton: false,
   pathNameOfNotifySeeAll: false,
   optionNotification: "",
 };
 
-const socketNotifyHomePage = createSlice({
-  name: "newNotify",
-  initialState: socketNotifyHomePageInitial,
+const socketNotifyManager = createSlice({
+  name: "newNotifyManager",
+  initialState: socketNotifyManagerInitial,
   reducers: {
-    setCountNewNotifyHomePage: (state, action) => {
+    setCountNewNotifyManager: (state, action) => {
       return {
         ...current(state),
-        countNewNotifyHomePage: action.payload,
+        countNewNotifyManager: action.payload,
       };
     },
     setChangeNotifyIcon: (state, action) => {
@@ -47,9 +47,9 @@ const socketNotifyHomePage = createSlice({
   },
 });
 
-const { actions, reducer } = socketNotifyHomePage;
+const { actions, reducer } = socketNotifyManager;
 export const {
-  setCountNewNotifyHomePage,
+  setCountNewNotifyManager,
   setChangeNotifyIcon,
   setChangeNotifyButton,
   setPathNameOfNotifySeeAll,

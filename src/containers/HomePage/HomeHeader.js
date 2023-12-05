@@ -46,6 +46,7 @@ import {
   setChangeNotifyButton,
   setChangeNotifyIcon,
   setCountNewNotifyHomePage,
+  setOptionNotification,
   setPathNameOfNotifySeeAll,
 } from "../../redux/socketNotifyHomePage";
 import surveyImage from "../../assets/image/survey.png";
@@ -73,6 +74,10 @@ const HomeHeader = ({ action }) => {
   const changeNotifyIcon = useSelector(
     (state) => state.socketNotifyHomepageReducer.changeNotifyIcon
   );
+  const optionNotificationRedux = useSelector(
+    (state) => state.socketNotifyHomepageReducer.optionNotification
+  );
+
   // const pathNameOfNotifySeeAll = useSelector(
   //   (state) => state.socketNotifyHomepageReducer.pathNameOfNotifySeeAll
   // );
@@ -237,8 +242,83 @@ const HomeHeader = ({ action }) => {
           }
           return previousState;
         });
+        dispatch(setOptionNotification("booking"));
       }
     };
+
+    const listenCheckEventBookingScheduleComingFromBackend = (data) => {
+      const { studentId } = data;
+      if (studentId && studentId === currentUser?.id) {
+        toast.info(
+          i18n.language === "en"
+            ? `You have an appointment tomorrow. Check now! (${moment(
+                new Date()
+              ).calendar()})`
+            : `Bạn có một lịch hẹn vào ngày mai. Kiểm tra ngay! (${moment(
+                new Date()
+              ).calendar()})`,
+          {
+            autoClose: 5000,
+            theme: "colored",
+            position: "bottom-right",
+          }
+        );
+        dispatch(setChangeNotifyIcon(true));
+        setCountNewNotification((previousState) => {
+          dispatch(setCountNewNotifyHomePage(previousState + 1));
+          return previousState + 1;
+        });
+        // if () {
+        //   console.log("oo hay");
+        //   dispatch(setChangeNotifyButton(true));
+        // }
+        setIsPathNameOfNotifySeeAll((previousState) => {
+          if (previousState === true) {
+            dispatch(setChangeNotifyButton(true));
+          }
+          return previousState;
+        });
+        dispatch(setOptionNotification("booking"));
+      }
+    };
+
+    const listenNewNotifyFromSystem = (data) => {
+      const { dataRoleManager, time } = data;
+      const checkRole = dataRoleManager.includes(currentUser?.role);
+      if (checkRole) {
+        toast.info(
+          i18n.language === "en"
+            ? `You recently had a new notification from system (${moment(
+                time
+              ).calendar()}).`
+            : `Bạn vừa có một thông báo mới từ hệ thống (${moment(
+                time
+              ).calendar()}).`,
+          {
+            autoClose: 5000,
+            theme: "colored",
+            position: "bottom-right",
+          }
+        );
+        dispatch(setChangeNotifyIcon(true));
+        setCountNewNotification((previousState) => {
+          dispatch(setCountNewNotifyHomePage(previousState + 1));
+          return previousState + 1;
+        });
+        // if () {
+        //   console.log("oo hay");
+        //   dispatch(setChangeNotifyButton(true));
+        // }
+        setIsPathNameOfNotifySeeAll((previousState) => {
+          if (previousState === true) {
+            dispatch(setChangeNotifyButton(true));
+          }
+          return previousState;
+        });
+        dispatch(setOptionNotification("system"));
+      }
+    };
+
     if (
       JSON.parse(localStorage.getItem("auth-bookingCare-UET_student")) &&
       !socket.hasListeners("new_notification_for_student_about_update_booking")
@@ -249,12 +329,36 @@ const HomeHeader = ({ action }) => {
       );
     }
 
+    if (
+      JSON.parse(localStorage.getItem("auth-bookingCare-UET_student")) &&
+      !socket.hasListeners("check_event_booking_schedule_coming")
+    ) {
+      console.log("listen1");
+      socket.on("check_event_booking_schedule_coming", (data) =>
+        listenCheckEventBookingScheduleComingFromBackend(data)
+      );
+    }
+
+    if (
+      JSON.parse(localStorage.getItem("auth-bookingCare-UET_student")) &&
+      !socket.hasListeners("new_notification_system")
+    ) {
+      socket.on("new_notification_system", (data) =>
+        listenNewNotifyFromSystem(data)
+      );
+    }
+
     return () => {
       console.log("cleanup");
       socket.off(
         "new_notification_for_student_about_update_booking",
         listenNewUpdateBookingFromBackend
       );
+      socket.off(
+        "check_event_booking_schedule_coming",
+        listenCheckEventBookingScheduleComingFromBackend
+      );
+      socket.off("new_notification_system", listenNewNotifyFromSystem);
     };
   }, []);
 
