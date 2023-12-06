@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React,{ useEffect,useState } from "react";
 import "./Health.scss";
 import lozad from "lozad";
 
@@ -6,31 +6,47 @@ import { useTranslation } from "react-i18next";
 
 import bgFour from "../../../assets/image/other.jpg";
 import bgThree from "../../../assets/image/test.jpg";
-import { useDispatch } from "react-redux";
+import { useDispatch,useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { getUserApi } from "../../../services/userService";
 import HealthStudentSkeleton from "./SkeletonSection/HealthStudentSkeleton";
 import { Link } from "react-router-dom";
 import Instruction from "./Instruction";
+import { setListSearchHealthStudent } from "../../../redux/listSearchBannerSlice";
 
 const Health = () => {
-  const { t, i18n } = useTranslation();
-  const [loading, setLoading] = useState(true);
-  const [healthData, setHealthData] = useState([]);
+  const { t,i18n } = useTranslation();
+  const [loading,setLoading] = useState(true);
+  const [healthData,setHealthData] = useState([]);
+  const healthStudentRedux = useSelector((state) => state.listSearchBannerReducer.healthStudent)
+
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
 
   useEffect(() => {
     getUserApi.getUserByRole({ role: "R6" }).then((data) => {
       console.log(data);
       if (data?.codeNumber === 0) {
         setHealthData(data.user);
+        if (healthStudentRedux?.length === 0) {
+          let healthStudentCustom = [];
+          healthStudentCustom = data.user.map((item,index) => {
+            return {
+              fullName: item?.fullName,
+              roleManager: "R6",
+              code_url: item?.code_url
+            }
+          })
+          dispatch(setListSearchHealthStudent(healthStudentCustom))
+        }
         setLoading(false);
       }
     });
-  }, []);
+  },[]);
   useEffect(() => {
     const lazyLoadImg = () => {
-      lozad(".lozad", {
+      lozad(".lozad",{
         load: function (el) {
           el.src = el.dataset.src;
           el.onload = function () {
@@ -40,7 +56,7 @@ const Health = () => {
       }).observe();
     };
     lazyLoadImg();
-  }, [healthData]);
+  },[healthData]);
 
   const handleHealthDetail = (data) => {
     navigate(`${data?.code_url}/ids-role/R6`);
@@ -65,7 +81,7 @@ const Health = () => {
 
         <div className="flex items-center justify-center gap-5 mx-auto">
           {loading ? (
-            new Array(4).fill(0).map((item, index) => {
+            new Array(4).fill(0).map((item,index) => {
               return <HealthStudentSkeleton key={index} />;
             })
           ) : (

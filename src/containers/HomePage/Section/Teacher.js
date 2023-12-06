@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React,{ useEffect,useState } from "react";
 import Slider from "react-slick";
 import { useNavigate } from "react-router";
 
@@ -9,25 +9,30 @@ import { useTranslation } from "react-i18next";
 import TeacherSkeleton from "./SkeletonSection/TeacherSkeleton";
 import lozad from "lozad";
 import { path } from "../../../utils/constant";
+import { useDispatch,useSelector } from "react-redux";
+import { setListSearchTeacher } from "../../../redux/listSearchBannerSlice";
 
 const Teacher = ({ settings }) => {
-  const [loading, setLoading] = useState(true);
-  const [topTeacher, setTopTeacher] = useState([]);
+  const [loading,setLoading] = useState(true);
+  const [topTeacher,setTopTeacher] = useState([]);
+  const teacherRedux = useSelector((state) => state.listSearchBannerReducer.teacher)
 
   const { t } = useTranslation();
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
 
   useEffect(() => {
     const getAPI = () => {
       console.log(2);
 
-      getTeacherHomePageAPI.getTeacherHomePage({}).then((data) => {
+      getTeacherHomePageAPI.getTeacherHomePage({ limit: 50 }).then((data) => {
         if (data?.codeNumber !== 0) {
         } else {
           // dispatch(getTopTenTeacherSucceed(data?.teacher));
           console.log({ data });
-          const teacherData = data?.teacherData;
+          const teacherData = data?.teacherData.slice(0,6);
           if (teacherData?.length > 0) {
             for (let i = 0; i < teacherData.length; i++) {
               if (teacherData[i]?.image?.data) {
@@ -38,18 +43,29 @@ const Teacher = ({ settings }) => {
             }
           }
           setTopTeacher(teacherData);
+          if (teacherRedux?.length === 0) {
+            let teacherCustom = [];
+            teacherCustom = data?.teacherData.map((item,index) => {
+              return {
+                fullName: item?.fullName,
+                roleManager: "R5",
+                code_url: item?.code_url
+              }
+            })
+            dispatch(setListSearchTeacher(teacherCustom))
+          }
           setLoading(false);
         }
       });
     };
 
     getAPI();
-  }, []);
+  },[]);
 
   useEffect(() => {
     console.log(1);
     const lazyLoadImg = () => {
-      lozad(".lozad", {
+      lozad(".lozad",{
         load: function (el) {
           el.src = el.dataset.src;
           el.onload = function () {
@@ -59,7 +75,7 @@ const Teacher = ({ settings }) => {
       }).observe();
     };
     lazyLoadImg();
-  }, [topTeacher]);
+  },[topTeacher]);
 
   const handleDetailTeacher = (data) => {
     navigate(`${data?.code_url}/ids-role/R5`);
@@ -88,39 +104,39 @@ const Teacher = ({ settings }) => {
         <div className="section-body">
           <Slider {...settings}>
             {loading
-              ? new Array(5).fill(0).map((item, index) => {
-                  return (
-                    <div key={index} className="section-item">
-                      <TeacherSkeleton />
-                    </div>
-                  );
-                })
+              ? new Array(5).fill(0).map((item,index) => {
+                return (
+                  <div key={index} className="section-item">
+                    <TeacherSkeleton />
+                  </div>
+                );
+              })
               : topTeacher?.length > 0 &&
-                topTeacher?.map((teacher, index) => {
-                  return (
-                    <div
-                      className="section-item"
-                      key={index}
-                      onClick={() => handleDetailTeacher(teacher)}
-                    >
-                      <div className="section-item-teacher">
-                        <div className="section-item-img section-item-img-teacher shadow-sm shadow-cyan-600">
-                          <img
-                            className="lozad"
-                            data-src={teacher?.image?.data}
-                            alt=""
-                          />
-                        </div>
-                        <div className="section-item-text section-item-text-teacher text-headingColor">
-                          {teacher?.positionData?.valueVn}, {teacher?.fullName}
-                          <p className="mx-auto mt-1">
-                            {teacher?.facultyData?.fullName}
-                          </p>
-                        </div>
+              topTeacher?.map((teacher,index) => {
+                return (
+                  <div
+                    className="section-item"
+                    key={index}
+                    onClick={() => handleDetailTeacher(teacher)}
+                  >
+                    <div className="section-item-teacher">
+                      <div className="section-item-img section-item-img-teacher shadow-sm shadow-cyan-600">
+                        <img
+                          className="lozad"
+                          data-src={teacher?.image?.data}
+                          alt=""
+                        />
+                      </div>
+                      <div className="section-item-text section-item-text-teacher text-headingColor">
+                        {teacher?.positionData?.valueVn}, {teacher?.fullName}
+                        <p className="mx-auto mt-1">
+                          {teacher?.facultyData?.fullName}
+                        </p>
                       </div>
                     </div>
-                  );
-                })}
+                  </div>
+                );
+              })}
           </Slider>
         </div>
       </div>

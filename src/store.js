@@ -8,6 +8,7 @@ import notificationManagerReducer from "./redux/notificationManagerSlice";
 import searchHomePageReducer from "./redux/searchSlice";
 import socketNotifyHomepageReducer from "./redux/socketNotifyHomePage";
 import socketNotifyManagerReducer from "./redux/socketNotifyManager";
+import listSearchBannerReducer from "./redux/listSearchBannerSlice"
 const store = configureStore({
   reducer: {
     authReducer,
@@ -18,6 +19,7 @@ const store = configureStore({
     searchHomePageReducer,
     socketNotifyHomepageReducer,
     socketNotifyManagerReducer,
+    listSearchBannerReducer
   },
 });
 

@@ -2,22 +2,25 @@ import React from "react";
 import Slider from "react-slick";
 import { useTranslation } from "react-i18next";
 
-import { useState, useEffect } from "react";
+import { useState,useEffect } from "react";
 import { getUserApi } from "../../../services/userService";
 
 import "./Faculty.scss";
-import { useDispatch } from "react-redux";
+import { useDispatch,useSelector } from "react-redux";
 import { path } from "../../../utils/constant";
 import { useNavigate } from "react-router";
 import { setNavigate } from "../../../redux/navigateSlice";
 import FacultySkeleton from "./SkeletonSection/FacultySkeleton";
 import lozad from "lozad";
 import Instruction from "./Instruction";
+import { setListSearchFaculty } from "../../../redux/listSearchBannerSlice";
+
 
 const Faculties = ({ settings }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
+  const [loading,setLoading] = useState(true);
+  const facultyRedux = useSelector((state) => state.listSearchBannerReducer.faculty)
 
   const imageData = [
     "https://i-vn.joboko.com/okoimg/vieclam.uet.vnu.edu.vn/xurl/images/cate-6.svg",
@@ -26,7 +29,7 @@ const Faculties = ({ settings }) => {
     "https://i-vn.joboko.com/okoimg/vieclam.uet.vnu.edu.vn/xurl/images/cate-2.svg",
   ];
 
-  const [facultyData, setFacultyData] = useState([]);
+  const [facultyData,setFacultyData] = useState([]);
 
   const { t } = useTranslation();
 
@@ -35,14 +38,25 @@ const Faculties = ({ settings }) => {
       if (data?.codeNumber === 0) {
         console.log(data.user);
         setFacultyData(data.user);
+        if (facultyRedux?.length === 0) {
+          let facultyCustom = [];
+          facultyCustom = data.user.map((item,index) => {
+            return {
+              fullName: item?.fullName,
+              roleManager: "R4",
+              code_url: item?.code_url
+            }
+          })
+          dispatch(setListSearchFaculty(facultyCustom))
+        }
         setLoading(false);
       }
     });
-  }, []);
+  },[]);
 
   useEffect(() => {
     const lazyLoadImg = () => {
-      lozad(".lozad", {
+      lozad(".lozad",{
         load: function (el) {
           el.src = el.dataset.src;
           el.onload = function () {
@@ -52,7 +66,7 @@ const Faculties = ({ settings }) => {
       }).observe();
     };
     lazyLoadImg();
-  }, [facultyData]);
+  },[facultyData]);
 
   const handleFacultyClick = (data) => {
     navigate(`${path.detail_id}/${data?.code_url}/ids-role/R4`);
@@ -73,38 +87,38 @@ const Faculties = ({ settings }) => {
         <div className="section-body">
           <Slider {...settings}>
             {loading
-              ? new Array(8).fill(0).map((item, index) => {
-                  return (
-                    <div key={index} className="section-item-faculty">
-                      <FacultySkeleton />
-                    </div>
-                  );
-                })
+              ? new Array(8).fill(0).map((item,index) => {
+                return (
+                  <div key={index} className="section-item-faculty">
+                    <FacultySkeleton />
+                  </div>
+                );
+              })
               : facultyData?.length > 0 &&
-                facultyData.map((faculty, index) => {
-                  return (
-                    <div
-                      key={index}
-                      className="section-item-faculty"
-                      onClick={() => handleFacultyClick(faculty)}
-                    >
-                      <div className="section-item-img-faculty">
-                        <img
-                          className="img lozad"
-                          data-src={
-                            imageData[index]
-                              ? imageData[index]
-                              : imageData[index - 4]
-                          }
-                          alt=""
-                        />
-                      </div>
-                      <div className="section-item-text-faculty text-headingColor">
-                        {faculty?.fullName}
-                      </div>
+              facultyData.map((faculty,index) => {
+                return (
+                  <div
+                    key={index}
+                    className="section-item-faculty"
+                    onClick={() => handleFacultyClick(faculty)}
+                  >
+                    <div className="section-item-img-faculty">
+                      <img
+                        className="img lozad"
+                        data-src={
+                          imageData[index]
+                            ? imageData[index]
+                            : imageData[index - 4]
+                        }
+                        alt=""
+                      />
                     </div>
-                  );
-                })}
+                    <div className="section-item-text-faculty text-headingColor">
+                      {faculty?.fullName}
+                    </div>
+                  </div>
+                );
+              })}
 
             {/* <div className="section-item">
               <div className="section-item-img rounded-md shadow-sm shadow-cyan-600"></div>

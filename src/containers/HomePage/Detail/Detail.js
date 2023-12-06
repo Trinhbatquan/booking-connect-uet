@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React,{ useEffect,useState } from "react";
 import moment from "moment";
 import "moment/locale/vi";
-import { useNavigate, useParams } from "react-router";
-import { useDispatch, useSelector } from "react-redux";
+import { useNavigate,useParams } from "react-router";
+import { useDispatch,useSelector } from "react-redux";
 
 import "./Detail.scss";
 import HomeHeader from "../HomeHeader";
@@ -13,9 +13,9 @@ import { getTeacherHomePageAPI } from "../../../services/teacherService";
 import convertBufferToBase64 from "../../../utils/convertBufferToBase64";
 import Schedule from "../Schedule/Schedule";
 import { getScheduleByIdAndDate } from "../../../services/scheduleService";
-import { dateFormat, path } from "../../../utils/constant";
+import { dateFormat,path } from "../../../utils/constant";
 import avatar from "../../../assets/image/uet.png";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer,toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import {
   getUserApi,
@@ -38,18 +38,18 @@ import { emit_create_booking } from "../../../utils/socket_client";
 import { handleMessageFromBackend } from "../../../utils/handleMessageFromBackend";
 import { logOutUser } from "../../../redux/studentSlice";
 
-const Detail = ({ codeUrlTeacher, roleTeacher, type }) => {
+const Detail = ({ codeUrlTeacher,roleTeacher,type }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  const [loadingTeacher, setLoadingTeacher] = useState(false);
-  const [userData, setUserData] = useState({});
-  const [timeDataApi, setTimeDataApi] = useState(null);
+  const [loading,setLoading] = useState(false);
+  const [loadingTeacher,setLoadingTeacher] = useState(false);
+  const [userData,setUserData] = useState({});
+  const [timeDataApi,setTimeDataApi] = useState(null);
 
-  const [openModalSchedule, setOpenModalSchedule] = useState(false);
-  const [dataModalSchedule, setDataModalSchedule] = useState({});
+  const [openModalSchedule,setOpenModalSchedule] = useState(false);
+  const [dataModalSchedule,setDataModalSchedule] = useState({});
 
-  const [action, setAction] = useState("schedule");
+  const [action,setAction] = useState("schedule");
 
   const codeUrlParam = useParams()?.code_url;
   const roleParam = useParams()?.roleId;
@@ -57,12 +57,12 @@ const Detail = ({ codeUrlTeacher, roleTeacher, type }) => {
   const roleId = roleTeacher || roleParam;
 
   const date_tomorrow = moment(new Date())
-    .add(1, "days")
+    .add(1,"days")
     .format(dateFormat.SEND_TO_SERVER);
 
   // const navigate = useSelector((state) => state.navigateReducer.navigate);
   const currentStudent = useSelector((state) => state.studentReducer);
-  const { t, i18n } = useTranslation();
+  const { t,i18n } = useTranslation();
 
   const getBookingScheduleNotSelected = async (
     getTime,
@@ -86,7 +86,7 @@ const Detail = ({ codeUrlTeacher, roleTeacher, type }) => {
       bookingSelected.bookingSchedule.forEach((item) => {
         bookingScheduleData.push(item?.timeType);
       });
-      getTime = checkBookedSchedule(getTime, bookingScheduleData);
+      getTime = checkBookedSchedule(getTime,bookingScheduleData);
       // }
     }
     return getTime;
@@ -126,8 +126,8 @@ const Detail = ({ codeUrlTeacher, roleTeacher, type }) => {
           if (data?.schedule?.length === 0) {
             setTimeDataApi(
               i18n.language === "en"
-                ? "Teacher don't have appointment at this day, please select another time."
-                : "Giảng viên không có lịch ngày hôm nay, vui lòng chọn thời gian khác."
+                ? "Don't have appointment at this day, please select another time."
+                : "Không có lịch ngày hôm nay, vui lòng chọn thời gian khác."
             );
           } else {
             let getTime = [];
@@ -158,9 +158,9 @@ const Detail = ({ codeUrlTeacher, roleTeacher, type }) => {
         } else {
           setLoadingTeacher(false);
         }
-      }, 0);
+      },0);
     }
-  }, []);
+  },[]);
 
   const loadTimeOfDate = async (value) => {
     console.log(value);
@@ -176,8 +176,8 @@ const Detail = ({ codeUrlTeacher, roleTeacher, type }) => {
       if (data?.schedule?.length === 0) {
         setTimeDataApi(
           i18n.language === "en"
-            ? "Teacher don't have appointment at this day, please select another time."
-            : "Giảng viên không có lịch ngày hôm nay, vui lòng chọn thời gian khác."
+            ? "Don't have appointment at this day, please select another time."
+            : "Không có lịch ngày hôm nay, vui lòng chọn thời gian khác."
         );
       } else {
         let getTime = [];
@@ -203,8 +203,8 @@ const Detail = ({ codeUrlTeacher, roleTeacher, type }) => {
     }
   };
 
-  const handleSchedule = ({ timeType, valueTime }, date) => {
-    console.log({ timeType, valueTime }, date);
+  const handleSchedule = ({ timeType,valueTime },date) => {
+    console.log({ timeType,valueTime },date);
     setOpenModalSchedule(true);
     const data = {
       currentStudent,
@@ -222,7 +222,7 @@ const Detail = ({ codeUrlTeacher, roleTeacher, type }) => {
 
   //create booking schedule
   const createBookingSchedule = async (data) => {
-    const { email, managerId, roleManager, studentId, date, timeType, reason } =
+    const { email,managerId,roleManager,studentId,date,timeType,reason } =
       data;
 
     setLoading(true);
@@ -241,7 +241,7 @@ const Detail = ({ codeUrlTeacher, roleTeacher, type }) => {
 
     if (res?.codeNumber === 0) {
       //socket_emit_booking_create
-      emit_create_booking(managerId, roleManager, "A1");
+      emit_create_booking(managerId,roleManager,"A1");
       emitter.emit("clear_data_booking_schedule");
       setOpenModalSchedule(false);
       setLoading(false);
@@ -255,7 +255,7 @@ const Detail = ({ codeUrlTeacher, roleTeacher, type }) => {
           }
         );
       } else {
-        toast.info(i18n.language === "en" ? res?.message_en : res?.message_vn, {
+        toast.info(i18n.language === "en" ? res?.message_en : res?.message_vn,{
           autoClose: 6000,
           position: "bottom-right",
           theme: "colored",
@@ -264,8 +264,8 @@ const Detail = ({ codeUrlTeacher, roleTeacher, type }) => {
       loadTimeOfDate(date);
     } else {
       setLoading(false);
-      const response = handleMessageFromBackend(data, i18n.language);
-      toast.error(response, {
+      const response = handleMessageFromBackend(data,i18n.language);
+      toast.error(response,{
         autoClose: 3000,
         theme: "colored",
         position: "bottom-right",
@@ -280,7 +280,7 @@ const Detail = ({ codeUrlTeacher, roleTeacher, type }) => {
               );
             }
           });
-        }, 5000);
+        },5000);
       }
     }
   };
@@ -296,7 +296,7 @@ const Detail = ({ codeUrlTeacher, roleTeacher, type }) => {
       ...data,
     };
     setLoading(true);
-    await createQuestionService.create({}, body).then((res) => {
+    await createQuestionService.create({},body).then((res) => {
       if (res?.codeNumber === 0) {
         setLoading(false);
         if (res?.type === "create" || res?.type === "sent") {
@@ -311,7 +311,7 @@ const Detail = ({ codeUrlTeacher, roleTeacher, type }) => {
           emitter.emit("EVENT_CLEAR_DATA");
           if (res?.type === "create") {
             //socket_emit_booking_create
-            emit_create_booking(+userData?.id, roleId, "A2");
+            emit_create_booking(+userData?.id,roleId,"A2");
           }
         } else {
           toast.info(
@@ -326,8 +326,8 @@ const Detail = ({ codeUrlTeacher, roleTeacher, type }) => {
         }
       } else {
         setLoading(false);
-        const response = handleMessageFromBackend(data, i18n.language);
-        toast.error(response, {
+        const response = handleMessageFromBackend(data,i18n.language);
+        toast.error(response,{
           autoClose: 3000,
           theme: "colored",
           position: "bottom-right",
@@ -342,7 +342,7 @@ const Detail = ({ codeUrlTeacher, roleTeacher, type }) => {
                 );
               }
             });
-          }, 5000);
+          },5000);
         }
       }
     });
@@ -366,23 +366,21 @@ const Detail = ({ codeUrlTeacher, roleTeacher, type }) => {
         <>
           {" "}
           <div
-            className={`${
-              type
+            className={`${type
                 ? "detail-teacher-faculty-container"
                 : "detail-teacher-container"
-            }`}
+              }`}
           >
             <div className="detail-teacher">
               <div
                 className="detail-teacher-avatar flex-3"
                 style={{
-                  backgroundImage: `url(${
-                    roleId === "R5"
+                  backgroundImage: `url(${roleId === "R5"
                       ? userData?.image
                         ? userData?.image
                         : avatar
                       : avatar
-                  })`,
+                    })`,
                 }}
               ></div>
               <div className="detail-teacher-content flex-1">
@@ -410,11 +408,10 @@ const Detail = ({ codeUrlTeacher, roleTeacher, type }) => {
                 <button
                   type="button"
                   class={`hover:bg-blue-800 hover:text-white rounded-lg focus:ring-4 focus:ring-blue-300 font-medium  text-md px-5 py-2.5 mr-2 mb-2 focus:outline-none
-                  ${
-                    action === "schedule"
+                  ${action === "schedule"
                       ? "text-white bg-blue-800"
                       : "text-gray-400 bg-white border border-gray-600"
-                  }`}
+                    }`}
                   onClick={() => setAction("schedule")}
                 >
                   {t("teacher.schedule.name")}
@@ -422,11 +419,10 @@ const Detail = ({ codeUrlTeacher, roleTeacher, type }) => {
                 <button
                   type="button"
                   class={`hover:bg-blue-800 hover:text-white  focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-md px-5 py-2.5 mr-2 mb-2 focus:outline-none
-                  ${
-                    action === "question"
+                  ${action === "question"
                       ? "text-white bg-blue-800"
                       : "text-gray-400 bg-white border border-gray-600"
-                  }`}
+                    }`}
                   onClick={() => setAction("question")}
                 >
                   {t("teacher.question.name")}
@@ -450,11 +446,11 @@ const Detail = ({ codeUrlTeacher, roleTeacher, type }) => {
                   dangerouslySetInnerHTML={
                     roleId === "R5"
                       ? {
-                          __html: userData?.markdownData_teacher?.markdownHtml,
-                        }
+                        __html: userData?.markdownData_teacher?.markdownHtml,
+                      }
                       : {
-                          __html: userData?.markdownData_other?.markdownHtml,
-                        }
+                        __html: userData?.markdownData_other?.markdownHtml,
+                      }
                   }
                 ></div>
               )}

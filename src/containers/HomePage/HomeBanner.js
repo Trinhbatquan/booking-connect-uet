@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
+import React,{ useEffect,useRef,useState } from "react";
 
 import { FaSearch } from "react-icons/fa";
-import { BsHouses, BsDatabase } from "react-icons/bs";
+import { BsHouses,BsDatabase } from "react-icons/bs";
 import { RiHeartsLine } from "react-icons/ri";
 import { GiMedicalPackAlt } from "react-icons/gi";
 import { HiOutlineBookOpen } from "react-icons/hi";
@@ -10,177 +10,125 @@ import { useTranslation } from "react-i18next";
 // HỆ THỐNG ĐẶT LỊCH ONLINE
 
 import "./HomeBanner.scss";
-import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { Link,NavLink,useLocation,useNavigate } from "react-router-dom";
+import { useDispatch,useSelector } from "react-redux";
 import filterSearchInputHomePage from "../../utils/filterSearchHomePage";
 import { setSearchText } from "../../redux/searchSlice";
 import { path } from "../../utils/constant";
 
 const HomeBanner = () => {
-  const { t, i18n } = useTranslation();
+  const { t,i18n } = useTranslation();
   const dispatch = useDispatch();
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue,setInputValue] = useState("");
   const navigate = useNavigate();
   const searchInput = useRef();
   const dropDownSearch = useRef();
   const searchText = useSelector((state) => state.searchHomePageReducer.search);
+  const listSearchBanner = useSelector((state) => state.listSearchBannerReducer)
+
+  const { department,faculty,teacher,healthStudent } = listSearchBanner;
+
   let dataSearch = [
-    {
-      label_en: "Teacher",
-      label_vn: "Giảng viên",
-      data: [
-        {
-          url: `${path.HOMEPAGE}/dinh-thi-thai-mai/ids-role/R5`,
-          label: "Đinh Thị Thái Mai",
-          code: "dinh thi thai mai",
-        },
-        {
-          url: `${path.HOMEPAGE}/bui-trung-ninh/ids-role/R5`,
-          label: "Bùi Trung Ninh",
-          code: "bui trung ninh",
-        },
-        {
-          url: `${path.HOMEPAGE}/chu-thi-phuong-dung/ids-role/R5`,
-          label: "Chu Thị Phương Dung",
-          code: "chu thi phuong dung",
-        },
-        {
-          url: `${path.HOMEPAGE}/tran-nhu-chi/ids-role/R5`,
-          label: "Trần Như Chí",
-          code: "tran nhu chi",
-        },
-        {
-          url: `${path.HOMEPAGE}/nguyen-thu-hang/ids-role/R5`,
-          label: "Nguyễn Thu Hằng",
-          code: "nguyen thu hang",
-        },
-        {
-          url: `${path.HOMEPAGE}/pham-dinh-tuan/ids-role/R5`,
-          label: "Phạm Đình Tuân",
-          code: "pham dinh tuan",
-        },
-        {
-          url: `${path.HOMEPAGE}/hoang-gia-hung/ids-role/R5`,
-          label: "Hoàng Gia Hưng",
-          code: "hoang gia hung",
-        },
-      ],
-    },
 
     {
       label_en: "Department",
       label_vn: "Phòng ban",
-
-      data: [
-        {
-          url: `${path.HOMEPAGE}/phong-dao-tao/ids-role/R2`,
-          label: "Phòng Đào tạo",
-          code: "phong dao tao",
-        },
-        {
-          url: `${path.HOMEPAGE}/phong-to-chuc-can-bo/ids-role/R2`,
-          label: "Phòng Tổ Chức Cán Bộ",
-          code: "phong to chuc can bo",
-        },
-        {
-          url: `${path.HOMEPAGE}/phong-cong-tac-sinh-vien/ids-role/R2`,
-          label: "Phòng Công Tác Sinh Viên",
-          code: "phong cong tac sinh vien",
-        },
-        {
-          url: `${path.HOMEPAGE}/phong-hanh-chinh-quan-tri/ids-role/R2`,
-          label: "Phòng Hành chính Quản trị",
-          code: "phong hanh chinh quan tri",
-        },
-        {
-          url: `${path.HOMEPAGE}/phong-ke-hoach-tai-chinh/ids-role/R2`,
-          label: "Phòng Kế hoạch Tài chính",
-          code: "phong ke hoach tai chinh",
-        },
-        {
-          url: `${path.HOMEPAGE}/phong-khoa-hoc-cong-nghe-va-hop-tac-phat-trien/ids-role/R2`,
-          label: "Phòng Khoa học Công nghệ và Hợp tác Phát triển",
-          code: "phong khoa hocj cong nghe va hop tac phat trien",
-        },
-        {
-          url: `${path.HOMEPAGE}/phong-thanh-tra-va-phap-che/ids-role/R2`,
-          label: "Phòng Thanh tra và Pháp chế",
-          code: "phong thanh tra va phap che",
-        },
-        {
-          url: `${path.HOMEPAGE}/trung-tam-dam-bao-chat-luong/ids-role/R2`,
-          label: "Trung tâm Đảm bảo chất lượng",
-          code: "trung tam bao dam chat luong",
-        },
-      ],
+      data: department?.length === 0 ? [] : department.map((item) => {
+        return {
+          url: `${path.HOMEPAGE}/${item?.code_url}/ids-role/${item?.roleManager}`,
+          label: item?.fullName
+        }
+      })
     },
 
     {
       label_en: "Faculties",
       label_vn: "Khoa Viện",
-      data: [
-        {
-          url: `${path.HOMEPAGE}/detail/khoa-cong-nghe-thong-tin/ids-role/R4`,
-          label: "Khoa Công nghệ Thông tin",
-          code: "khoa cong nghe thong tin",
-        },
-        {
-          url: `${path.HOMEPAGE}/detail/khoa-dien-tu-vien-thong/ids-role/R4`,
-          label: "Khoa Điện tử Viễn Thông",
-          code: "khoa dien tu vien thong",
-        },
-        {
-          url: `${path.HOMEPAGE}/detail/khoa-vat-ly-ki-thuat-va-cong-nghe-nano/ids-role/R4`,
-          label: "Khoa Vật lý Kĩ thuật và Công nghệ Nano",
-          code: "khoa vat ly ki thuat va cong nghe nano",
-        },
-        {
-          url: `${path.HOMEPAGE}/detail/khoa-co-ki-thuat-va-tu-dong-hoa/ids-role/R4`,
-          label: "Khoa Cơ học Kỹ thuật và Tự động hoá",
-          code: "khoa co ky thuat va tu dong hoa",
-        },
-        {
-          url: `${path.HOMEPAGE}/detail/khoa-cong-nghe-nong-nghiep/ids-role/R4`,
-          label: "Khoa Công nghệ Nông nghiệp",
-          code: "khoa cong nghe nong nghiep",
-        },
-        {
-          url: `${path.HOMEPAGE}/detail/khoa-cong-nghe-xay-dung-va-giao-thong/ids-role/R4`,
-          label: "Khoa Công nghệ Xây dựng và Giao Thông",
-          code: "khoa cong nghe xay dung va giao thong",
-        },
-        {
-          url: `${path.HOMEPAGE}/detail/vien-cong-nghe-hang-khong-vu-tru 	/ids-role/R4`,
-          label: "Viện Công nghệ Hàng không Vũ trụ",
-          code: "vien cong nghe hang khong vu tru",
-        },
-        {
-          url: `${path.HOMEPAGE}/detail/vien-tri-tue-nhan-taog/ids-role/R4`,
-          label: "Viện Trí tuệ Nhân tạo",
-          code: "vien tri tue nhan tao",
-        },
-      ],
+      // data: [
+      //   {
+      //     url: `${path.HOMEPAGE}/detail/khoa-cong-nghe-thong-tin/ids-role/R4`,
+      //     label: "Khoa Công nghệ Thông tin",
+      //     code: "khoa cong nghe thong tin",
+      //   },
+      //   {
+      //     url: `${path.HOMEPAGE}/detail/khoa-dien-tu-vien-thong/ids-role/R4`,
+      //     label: "Khoa Điện tử Viễn Thông",
+      //     code: "khoa dien tu vien thong",
+      //   },
+      //   {
+      //     url: `${path.HOMEPAGE}/detail/khoa-vat-ly-ki-thuat-va-cong-nghe-nano/ids-role/R4`,
+      //     label: "Khoa Vật lý Kĩ thuật và Công nghệ Nano",
+      //     code: "khoa vat ly ki thuat va cong nghe nano",
+      //   },
+      //   {
+      //     url: `${path.HOMEPAGE}/detail/khoa-co-ki-thuat-va-tu-dong-hoa/ids-role/R4`,
+      //     label: "Khoa Cơ học Kỹ thuật và Tự động hoá",
+      //     code: "khoa co ky thuat va tu dong hoa",
+      //   },
+      //   {
+      //     url: `${path.HOMEPAGE}/detail/khoa-cong-nghe-nong-nghiep/ids-role/R4`,
+      //     label: "Khoa Công nghệ Nông nghiệp",
+      //     code: "khoa cong nghe nong nghiep",
+      //   },
+      //   {
+      //     url: `${path.HOMEPAGE}/detail/khoa-cong-nghe-xay-dung-va-giao-thong/ids-role/R4`,
+      //     label: "Khoa Công nghệ Xây dựng và Giao Thông",
+      //     code: "khoa cong nghe xay dung va giao thong",
+      //   },
+      //   {
+      //     url: `${path.HOMEPAGE}/detail/vien-cong-nghe-hang-khong-vu-tru 	/ids-role/R4`,
+      //     label: "Viện Công nghệ Hàng không Vũ trụ",
+      //     code: "vien cong nghe hang khong vu tru",
+      //   },
+      //   {
+      //     url: `${path.HOMEPAGE}/detail/vien-tri-tue-nhan-taog/ids-role/R4`,
+      //     label: "Viện Trí tuệ Nhân tạo",
+      //     code: "vien tri tue nhan tao",
+      //   },
+      // ],
+      data: faculty?.length === 0 ? [] : faculty.map((item) => {
+        return {
+          url: `${path.HOMEPAGE}/${path.detail_id}/${item?.code_url}/ids-role/${item?.roleManager}`,
+          label: item?.fullName
+        }
+      })
     },
     {
       label_en: "Student Health Department",
       label_vn: "Ban sức khoẻ sinh viên",
-      data: [
-        {
-          url: `${path.HOMEPAGE}/ban-quan-ly-suc-khoe-sinh-vien/ids-role/R6`,
-          label: "Ban quản lý sức khoẻ sinh viên",
-          code: "ban quan ly suc khoe sinh vien",
-        },
-        {
-          url: `${path.HOMEPAGE}/ban-ho-tro-tam-ly-sinh-vien/ids-role/R6`,
-          label: "Ban Hỗ trợ Tâm lý sinh viên",
-          code: "ban ho tro tam ly sinh vien",
-        },
-      ],
+      // data: [
+      //   {
+      //     url: `${path.HOMEPAGE}/ban-quan-ly-suc-khoe-sinh-vien/ids-role/R6`,
+      //     label: "Ban quản lý sức khoẻ sinh viên",
+      //     code: "ban quan ly suc khoe sinh vien",
+      //   },
+      //   {
+      //     url: `${path.HOMEPAGE}/ban-ho-tro-tam-ly-sinh-vien/ids-role/R6`,
+      //     label: "Ban Hỗ trợ Tâm lý sinh viên",
+      //     code: "ban ho tro tam ly sinh vien",
+      //   },
+      // ],
+      data: healthStudent?.length === 0 ? [] : healthStudent.map((item) => {
+        return {
+          url: `${path.HOMEPAGE}/${item?.code_url}/ids-role/${item?.roleManager}`,
+          label: item?.fullName
+        }
+      })
+    },
+    {
+      label_en: "Teacher",
+      label_vn: "Giảng viên",
+      data: teacher?.length === 0 ? [] : teacher.map((item) => {
+        return {
+          url: `${path.HOMEPAGE}/${item?.code_url}/ids-role/${item?.roleManager}`,
+          label: item?.fullName
+        }
+      })
     },
   ];
 
   if (searchText) {
-    dataSearch = filterSearchInputHomePage(searchText, dataSearch);
+    dataSearch = filterSearchInputHomePage(searchText,dataSearch);
   }
 
   const handleNavigateSearch = (subItem) => {
@@ -188,7 +136,7 @@ const HomeBanner = () => {
   };
 
   useEffect(() => {
-    searchInput.current.addEventListener("focus", () => {
+    searchInput.current.addEventListener("focus",() => {
       dropDownSearch.current.style.display = "block";
     });
 
@@ -202,13 +150,13 @@ const HomeBanner = () => {
       }
     }
 
-    document.addEventListener("click", handleClick);
+    document.addEventListener("click",handleClick);
 
     // Xóa sự kiện khi component bị unmounted
     return () => {
-      document.removeEventListener("click", handleClick);
+      document.removeEventListener("click",handleClick);
     };
-  }, []);
+  },[]);
 
   const removeHashFromURL = (event) => {
     console.log(event);
@@ -273,9 +221,9 @@ const HomeBanner = () => {
             ref={dropDownSearch}
           >
             {dataSearch[0]?.data?.length === 0 &&
-            dataSearch[1]?.data?.length === 0 &&
-            dataSearch[2]?.data?.length === 0 &&
-            dataSearch[3]?.data?.length === 0 ? (
+              dataSearch[1]?.data?.length === 0 &&
+              dataSearch[2]?.data?.length === 0 &&
+              dataSearch[3]?.data?.length === 0 ? (
               <span
                 style={{
                   paddingTop: "13px",
@@ -289,7 +237,7 @@ const HomeBanner = () => {
                   : "Không có kết quả cho từ mà bạn tìm kiếm."}
               </span>
             ) : (
-              dataSearch.map((item, index) => {
+              dataSearch.map((item,index) => {
                 return (
                   <div key={index}>
                     {item?.data?.length === 0 ? (
@@ -408,7 +356,7 @@ const HomeBanner = () => {
         <NavLink
           className="topic flex flex-col justify-start items-center"
           to={`${path.HOMEPAGE}/${path.health}`}
-          // onClick={removeHashFromURL}
+        // onClick={removeHashFromURL}
         >
           <GiMedicalPackAlt className="topic-icon text-gray-600 cursor-pointer py-3 rounded-full shadow-md backdrop-blur-md border border-blurColor" />
           <span className="topic-content  cursor-pointer text-xl">
