@@ -1,12 +1,12 @@
 const db = require("../models");
 const configText = require("../utils/configText");
 
-const getTeacherHomePageService = (limit, page) => {
-  return new Promise(async (resolve, reject) => {
+const getTeacherHomePageService = (limit,page) => {
+  return new Promise(async (resolve,reject) => {
     try {
       const totalTeacher = await db.Teacher.count();
-      const pageSize = limit ? limit : 6;
-      const currentPage = page ? page : 1;
+      const pageSize = limit ? +limit : 6;
+      const currentPage = page ? +page : 1;
       const data = await db.Teacher.findAll({
         attributes: {
           exclude: ["password"],
@@ -15,12 +15,12 @@ const getTeacherHomePageService = (limit, page) => {
           {
             model: db.AllCode,
             as: "positionData",
-            attributes: ["valueEn", "valueVn"],
+            attributes: ["valueEn","valueVn"],
           },
           {
             model: db.AllCode,
             as: "genderData",
-            attributes: ["valueEn", "valueVn"],
+            attributes: ["valueEn","valueVn"],
           },
           {
             model: db.OtherUser,
@@ -29,8 +29,8 @@ const getTeacherHomePageService = (limit, page) => {
           },
         ],
         order: [
-          ["createdAt", "DESC"],
-          ["updatedAt", "DESC"],
+          ["createdAt","DESC"],
+          ["updatedAt","DESC"],
         ],
         limit: pageSize,
         offset: (currentPage - 1) * pageSize,
@@ -69,7 +69,7 @@ const getTeacherHomePageService = (limit, page) => {
 };
 
 const getTeacherSystemService = () => {
-  return new Promise(async (resolve, reject) => {
+  return new Promise(async (resolve,reject) => {
     try {
       const data = await db.Teacher.findAll({
         attributes: {
@@ -79,12 +79,12 @@ const getTeacherSystemService = () => {
           {
             model: db.AllCode,
             as: "positionData",
-            attributes: ["valueEn", "valueVn"],
+            attributes: ["valueEn","valueVn"],
           },
           {
             model: db.AllCode,
             as: "genderData",
-            attributes: ["valueEn", "valueVn"],
+            attributes: ["valueEn","valueVn"],
           },
           {
             model: db.OtherUser,
@@ -93,8 +93,8 @@ const getTeacherSystemService = () => {
           },
         ],
         order: [
-          ["createdAt", "ASC"],
-          ["updatedAt", "ASC"],
+          ["createdAt","ASC"],
+          ["updatedAt","ASC"],
         ],
         raw: true,
         nest: true, //fix result.get is not a function
@@ -106,35 +106,39 @@ const getTeacherSystemService = () => {
   });
 };
 
-const getTeacherBySearchService = (search) => {
-  return new Promise(async (resolve, reject) => {
+const getTeacherBySearchService = (search,option,facultyId) => {
+  return new Promise(async (resolve,reject) => {
     try {
       const text = configText(search);
       console.log(text);
       let data = await db.Teacher.findAll({
+        where: facultyId ? {
+          facultyId
+        } : {
+        },
         attributes: {
           exclude: ["password"],
         },
-        include: [
+        include: !option ? [
           {
             model: db.AllCode,
             as: "positionData",
-            attributes: ["valueEn", "valueVn"],
+            attributes: ["valueEn","valueVn"],
           },
           {
             model: db.AllCode,
             as: "genderData",
-            attributes: ["valueEn", "valueVn"],
+            attributes: ["valueEn","valueVn"],
           },
           {
             model: db.OtherUser,
             as: "facultyData",
             attributes: ["fullName"],
           },
-        ],
+        ] : [],
         order: [
-          ["createdAt", "DESC"],
-          ["updatedAt", "DESC"],
+          ["createdAt","DESC"],
+          ["updatedAt","DESC"],
         ],
         raw: true,
         nest: true, //fix result.get is not a function
@@ -161,7 +165,9 @@ const getTeacherBySearchService = (search) => {
           }
         }
       };
-      await saveMarkDown();
+      if (!option) {
+        await saveMarkDown();
+      }
       resolve({
         codeNumber: 0,
         teacherData: data,
@@ -174,7 +180,7 @@ const getTeacherBySearchService = (search) => {
 };
 
 const getOneTeacherService = (code_url) => {
-  return new Promise(async (resolve, reject) => {
+  return new Promise(async (resolve,reject) => {
     try {
       const data = await db.Teacher.findOne({
         attributes: {
@@ -184,12 +190,12 @@ const getOneTeacherService = (code_url) => {
           {
             model: db.AllCode,
             as: "positionData",
-            attributes: ["valueEn", "valueVn"],
+            attributes: ["valueEn","valueVn"],
           },
           {
             model: db.AllCode,
             as: "genderData",
-            attributes: ["valueEn", "valueVn"],
+            attributes: ["valueEn","valueVn"],
           },
           // {
           //   model: db.MarkDown,
@@ -218,7 +224,7 @@ const getOneTeacherService = (code_url) => {
           type: "teacher",
         },
         attributes: {
-          exclude: ["id", "userId", "type", "createdAt", "updatedAt"],
+          exclude: ["id","userId","type","createdAt","updatedAt"],
         },
       });
       resolve({
@@ -237,8 +243,8 @@ const getOneTeacherService = (code_url) => {
   });
 };
 
-const createTeacherInfoService = async (teacherId, facultyId, note, action) => {
-  return new Promise(async (resolve, reject) => {
+const createTeacherInfoService = async (teacherId,facultyId,note,action) => {
+  return new Promise(async (resolve,reject) => {
     try {
       if (action === "create") {
         await db.Teacher_Info.create({
@@ -274,7 +280,7 @@ const createTeacherInfoService = async (teacherId, facultyId, note, action) => {
 };
 
 const getTeacherInfoByIdService = async (id) => {
-  return new Promise(async (resolve, reject) => {
+  return new Promise(async (resolve,reject) => {
     try {
       const data = await db.Teacher_Info.findOne({
         where: {
@@ -299,9 +305,17 @@ const getTeacherInfoByIdService = async (id) => {
   });
 };
 
-const getTeacherByFacultyService = (facultyId) => {
-  return new Promise(async (resolve, reject) => {
+const getTeacherByFacultyService = (facultyId,page) => {
+  const pageSize = 3;
+  const currentPage = page ? +page : 1;
+
+  return new Promise(async (resolve,reject) => {
     try {
+      const totalTeacher = await db.Teacher.count({
+        where: {
+          facultyId,
+        }
+      })
       const data = await db.Teacher.findAll({
         where: {
           facultyId,
@@ -309,52 +323,49 @@ const getTeacherByFacultyService = (facultyId) => {
         attributes: {
           exclude: ["password"],
         },
-        include: [
-          {
-            model: db.AllCode,
-            as: "positionData",
-            attributes: ["valueEn", "valueVn"],
-          },
-          {
-            model: db.AllCode,
-            as: "genderData",
-            attributes: ["valueEn", "valueVn"],
-          },
-          // {
-          //   model: db.MarkDown,
-          //   as: "markdownData_teacher",
-          //   attributes: ["markdownHtml", "markdownText", "description"],
-          //   where: {
-          //     type: "teacher",
-          //   },
-          // },
-        ],
+        // include: [
+        //   {
+        //     model: db.AllCode,
+        //     as: "positionData",
+        //     attributes: ["valueEn","valueVn"],
+        //   },
+        //   {
+        //     model: db.AllCode,
+        //     as: "genderData",
+        //     attributes: ["valueEn","valueVn"],
+        //   },
+
+        // ],
+        limit: pageSize,
+        offset: (currentPage - 1) * pageSize,
         raw: true,
         nest: true, //fix result.get is not a function
       });
-      let markDownTeacher = [];
-      const saveMarkDown = async () => {
-        if (data?.length > 0) {
-          let count = data.length;
-          while (count > 0) {
-            await db.MarkDown.findOne({
-              where: {
-                userId: data[data.length - count].id,
-                type: "teacher",
-              },
-            }).then(async (main) => {
-              console.log(main);
-              markDownTeacher.push(main?.description ? main.description : "");
-              count--;
-            });
-          }
-        }
-      };
-      await saveMarkDown();
+      // let markDownTeacher = [];
+      // const saveMarkDown = async () => {
+      //   if (data?.length > 0) {
+      //     let count = data.length;
+      //     while (count > 0) {
+      //       await db.MarkDown.findOne({
+      //         where: {
+      //           userId: data[data.length - count].id,
+      //           type: "teacher",
+      //         },
+      //       }).then(async (main) => {
+      //         console.log(main);
+      //         markDownTeacher.push(main?.description ? main.description : "");
+      //         count--;
+      //       });
+      //     }
+      //   }
+      // };
+      // await saveMarkDown();
       resolve({
         codeNumber: 0,
+        totalTeacher: +totalTeacher,
+        page: currentPage,
         teacherByFaculty: data,
-        markDownTeacher,
+        // markDownTeacher,
       });
     } catch (e) {
       reject(e);

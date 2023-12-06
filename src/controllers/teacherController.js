@@ -8,10 +8,10 @@ const {
   getTeacherBySearchService,
 } = require("../services/teacherService");
 
-const getTeacherHomePageController = async (req, res) => {
-  const { limit, page } = req.query;
+const getTeacherHomePageController = async (req,res) => {
+  const { limit,page } = req.query;
   try {
-    const data = await getTeacherHomePageService(limit, page);
+    const data = await getTeacherHomePageService(limit,page);
     res.status(200).send(data);
   } catch (e) {
     console.log(e);
@@ -23,7 +23,7 @@ const getTeacherHomePageController = async (req, res) => {
   }
 };
 
-const getTeacherSystemController = async (req, res) => {
+const getTeacherSystemController = async (req,res) => {
   try {
     const data = await getTeacherSystemService();
     res.status(200).send({
@@ -41,10 +41,10 @@ const getTeacherSystemController = async (req, res) => {
   }
 };
 
-const getTeacherBySearchController = async (req, res) => {
-  const { search } = req.query;
+const getTeacherBySearchController = async (req,res) => {
+  const { search,option,facultyId } = req.query;
   try {
-    const data = await getTeacherBySearchService(search);
+    const data = await getTeacherBySearchService(search,option,facultyId);
     res.status(200).send(data);
   } catch (e) {
     console.log(e);
@@ -56,7 +56,7 @@ const getTeacherBySearchController = async (req, res) => {
   }
 };
 
-const getOneTeacherController = async (req, res) => {
+const getOneTeacherController = async (req,res) => {
   const { code_url } = req.query;
   if (!code_url) {
     res.status(400).send({
@@ -77,9 +77,9 @@ const getOneTeacherController = async (req, res) => {
   }
 };
 
-const createTeacherInfoController = async (req, res) => {
-  const { teacherId, facultyId, note, action } = req.body;
-  console.log(teacherId, facultyId, note, action);
+const createTeacherInfoController = async (req,res) => {
+  const { teacherId,facultyId,note,action } = req.body;
+  console.log(teacherId,facultyId,note,action);
   if (!teacherId || !facultyId || !action) {
     return res.status(400).send({
       codeNumber: 1,
@@ -106,7 +106,7 @@ const createTeacherInfoController = async (req, res) => {
   }
 };
 
-const getTeacherInfoController = async (req, res) => {
+const getTeacherInfoController = async (req,res) => {
   const { id } = req.query;
   if (!id) {
     res.status(400).json({
@@ -128,9 +128,9 @@ const getTeacherInfoController = async (req, res) => {
   }
 };
 
-const getOneTeacherByFacultyController = async (req, res) => {
+const getOneTeacherByFacultyController = async (req,res) => {
   try {
-    const { facultyId } = req.query;
+    const { facultyId,page } = req.query;
     if (!facultyId) {
       res.status(400).json({
         codeNumber: 1,
@@ -138,7 +138,7 @@ const getOneTeacherByFacultyController = async (req, res) => {
         message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên",
       });
     } else {
-      const data = await getTeacherByFacultyService(facultyId);
+      const data = await getTeacherByFacultyService(facultyId,page);
       return res.status(200).json(data);
     }
   } catch (e) {
