@@ -32,27 +32,27 @@ const updateProfileStudentService = ({
   gender,
   image,
 }) => {
-  return new Promise(async (resolve, reject) => {
+  return new Promise(async (resolve,reject) => {
     try {
       const data = await db.Student.update(
         image
           ? {
-              fullName,
-              phoneNumber,
-              address,
-              faculty,
-              classroom,
-              gender,
-              image,
-            }
+            fullName,
+            phoneNumber,
+            address,
+            faculty,
+            classroom,
+            gender,
+            image,
+          }
           : {
-              fullName,
-              phoneNumber,
-              address,
-              faculty,
-              classroom,
-              gender,
-            },
+            fullName,
+            phoneNumber,
+            address,
+            faculty,
+            classroom,
+            gender,
+          },
         {
           where: {
             id,
@@ -80,7 +80,7 @@ const updatePasswordStudentService = ({
     currentPassword,
     newPassword,
   });
-  return new Promise(async (resolve, reject) => {
+  return new Promise(async (resolve,reject) => {
     try {
       //check current password
       const checkPassword = await bcrypt.compare(
@@ -93,23 +93,26 @@ const updatePasswordStudentService = ({
           message_en: "Current password is wrong. Please try again.",
           message_vn: "Mật khẩu hiện tại sai. Vui lòng thử lại.",
         });
-      }
-      const hashPs = await bcrypt.hashSync(newPassword, 10);
-      await db.Student.update(
-        {
-          password: hashPs,
-        },
-        {
-          where: {
-            id: student?.id,
+      } else {
+        const hashPs = await bcrypt.hashSync(newPassword,10);
+        await db.Student.update(
+          {
+            password: hashPs,
           },
-        }
-      );
-      resolve({
-        codeNumber: 0,
-        message_en: "Update Password Succeed.",
-        message_vn: "Cập nhật mật khẩu thành công.",
-      });
+          {
+            where: {
+              id: student?.id,
+            },
+          }
+        );
+        resolve({
+          codeNumber: 0,
+          message_en: "Update Password Succeed.",
+          message_vn: "Cập nhật mật khẩu thành công.",
+        });
+
+      }
+
     } catch (e) {
       reject(e);
     }
@@ -127,28 +130,28 @@ const updateProfileManagerService = ({
   gender,
   image,
 }) => {
-  return new Promise(async (resolve, reject) => {
+  return new Promise(async (resolve,reject) => {
     try {
       if (roleManager === "R5") {
         await db.Teacher.update(
           image
             ? {
-                fullName,
-                phoneNumber,
-                address,
-                facultyId: faculty,
-                positionId: position,
-                gender,
-                image,
-              }
+              fullName,
+              phoneNumber,
+              address,
+              facultyId: faculty,
+              positionId: position,
+              gender,
+              image,
+            }
             : {
-                fullName,
-                phoneNumber,
-                address,
-                facultyId: faculty,
-                positionId: position,
-                gender,
-              },
+              fullName,
+              phoneNumber,
+              address,
+              facultyId: faculty,
+              positionId: position,
+              gender,
+            },
           {
             where: {
               id,

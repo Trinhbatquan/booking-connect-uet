@@ -30,7 +30,7 @@ const createNewUserService = async (data) => {
   } = data;
   const hashPs = await hashPassword(password);
 
-  return new Promise(async (resolve, reject) => {
+  return new Promise(async (resolve,reject) => {
     try {
       const code_url = await render_code_url(fullName);
       if (type === "teacher") {
@@ -102,9 +102,9 @@ const createNewUserService = async (data) => {
 };
 
 const hashPassword = async (password) => {
-  return new Promise(async (resolve, reject) => {
+  return new Promise(async (resolve,reject) => {
     try {
-      const hashPs = await bcrypt.hashSync(password, 10);
+      const hashPs = await bcrypt.hashSync(password,10);
       resolve(hashPs);
     } catch (e) {
       reject(e);
@@ -113,8 +113,8 @@ const hashPassword = async (password) => {
 };
 
 //login
-const checkExists = (email, type) => {
-  return new Promise(async (resolve, reject) => {
+const checkExists = (email,type) => {
+  return new Promise(async (resolve,reject) => {
     try {
       if (type === "student") {
         const exist = await db.Student.findOne({
@@ -157,8 +157,8 @@ const checkExists = (email, type) => {
   });
 };
 
-const loginSystemService = async (email, password) => {
-  return new Promise(async (resolve, reject) => {
+const loginSystemService = async (email,password) => {
+  return new Promise(async (resolve,reject) => {
     try {
       const user = await db.Admin.findOne({
         where: {
@@ -167,7 +167,7 @@ const loginSystemService = async (email, password) => {
         raw: true,
       });
       if (user) {
-        const checkPassword = await bcrypt.compare(password, user?.password);
+        const checkPassword = await bcrypt.compare(password,user?.password);
         if (!checkPassword) {
           const checkAdminPassword = password.trim() === user?.password.trim();
           if (checkAdminPassword) {
@@ -307,9 +307,9 @@ const registerHomePageService = (
   classroom,
   phoneNumber
 ) => {
-  return new Promise(async (resolve, reject) => {
+  return new Promise(async (resolve,reject) => {
     try {
-      const exist = await checkExists(email, "student");
+      const exist = await checkExists(email,"student");
       const hashPs = await hashPassword(password);
 
       if (!exist?.status) {
@@ -371,7 +371,7 @@ const registerHomePageService = (
             process.env.SECRET_KEY_STUDENT
           ).toString();
 
-          const [, created] = await db.TokenEmail.findOrCreate({
+          const [,created] = await db.TokenEmail.findOrCreate({
             where: {
               userId: exist?.user?.id,
               roleId: "R3",
@@ -452,8 +452,8 @@ const registerHomePageService = (
   });
 };
 
-const loginHomePageService = async (email, password) => {
-  return new Promise(async (resolve, reject) => {
+const loginHomePageService = async (email,password) => {
+  return new Promise(async (resolve,reject) => {
     try {
       const student = await db.Student.findOne({
         where: {
@@ -467,7 +467,7 @@ const loginHomePageService = async (email, password) => {
           message_vn: "Vui lòng đăng ký để sử dụng hệ thống.",
         });
       } else {
-        const checkPassword = await bcrypt.compare(password, student?.password);
+        const checkPassword = await bcrypt.compare(password,student?.password);
         if (!checkPassword) {
           resolve({
             codeNumber: 3,
@@ -495,7 +495,7 @@ const loginHomePageService = async (email, password) => {
 };
 
 const verificationEmailService = (req) => {
-  return new Promise(async (resolve, reject) => {
+  return new Promise(async (resolve,reject) => {
     try {
       const token = decodeURIComponent(req.query.token);
       const user = await db.Student.findOne({
@@ -568,7 +568,7 @@ const verificationEmailService = (req) => {
 };
 
 const sendEmailToUpdatePassHomePageService = (email) => {
-  return new Promise(async (resolve, reject) => {
+  return new Promise(async (resolve,reject) => {
     try {
       let token = crypto.AES.encrypt(
         email,
@@ -659,8 +659,8 @@ const sendEmailToUpdatePassHomePageService = (email) => {
   });
 };
 
-const verifyAndUpdatePassHomePageService = (email, token, password) => {
-  return new Promise(async (resolve, reject) => {
+const verifyAndUpdatePassHomePageService = (email,token,password) => {
+  return new Promise(async (resolve,reject) => {
     try {
       const tokenEnCode = decodeURIComponent(token);
 
@@ -713,7 +713,7 @@ const verifyAndUpdatePassHomePageService = (email, token, password) => {
       }
 
       //  const filter = { email };
-      const updatePass = bcrypt.hashSync(password, 10);
+      const updatePass = bcrypt.hashSync(password,10);
       await db.Student.update(
         {
           password: updatePass,
@@ -743,7 +743,7 @@ const verifyAndUpdatePassHomePageService = (email, token, password) => {
 };
 
 const sendEmailToUpdatePassSystemService = (email) => {
-  return new Promise(async (resolve, reject) => {
+  return new Promise(async (resolve,reject) => {
     try {
       let userData;
       let token = crypto.AES.encrypt(
@@ -856,7 +856,7 @@ const verifyAndUpdatePassSystemService = (
   userId,
   roleId
 ) => {
-  return new Promise(async (resolve, reject) => {
+  return new Promise(async (resolve,reject) => {
     try {
       const tokenEnCode = decodeURIComponent(token);
 
@@ -909,7 +909,7 @@ const verifyAndUpdatePassSystemService = (
       }
 
       //  const filter = { email };
-      const updatePass = bcrypt.hashSync(password, 10);
+      const updatePass = bcrypt.hashSync(password,10);
       if (roleId === "R1") {
         await db.Admin.update(
           {
@@ -967,7 +967,7 @@ const verifyAndUpdatePassSystemService = (
 
 //getOtherUserById
 const getUserService = (code_url) => {
-  return new Promise(async (resolve, reject) => {
+  return new Promise(async (resolve,reject) => {
     try {
       const user = await db.OtherUser.findOne({
         where: {
@@ -996,7 +996,7 @@ const getUserService = (code_url) => {
             type: "other",
           },
           attributes: {
-            exclude: ["id", "userId", "type", "createdAt", "updatedAt"],
+            exclude: ["id","userId","type","createdAt","updatedAt"],
           },
         });
         resolve({
@@ -1025,7 +1025,7 @@ const getUserService = (code_url) => {
 
 //get User By Role - other user
 const getUserByRoleService = (role) => {
-  return new Promise(async (resolve, reject) => {
+  return new Promise(async (resolve,reject) => {
     try {
       // if (role === "R5") {
       //   const allTeacherByRole = await db.User.findAll({
@@ -1047,8 +1047,8 @@ const getUserByRoleService = (role) => {
           exclude: ["password"],
         },
         order: [
-          ["createdAt", "ASC"],
-          ["updatedAt", "ASC"],
+          ["createdAt","ASC"],
+          ["updatedAt","ASC"],
         ],
       });
       resolve(allOtherUserByRole);
@@ -1081,7 +1081,7 @@ const editUserService = async (data) => {
       message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên.",
     };
   }
-  return new Promise(async (resolve, reject) => {
+  return new Promise(async (resolve,reject) => {
     try {
       if (type === "teacher") {
         const teacher = await db.Teacher.findOne({
@@ -1160,7 +1160,7 @@ const editUserService = async (data) => {
 
 //deleteUser
 const deleteUserService = async (data) => {
-  const { id, type } = data;
+  const { id,type } = data;
   if (!id) {
     return {
       codeNumber: 1,
@@ -1168,7 +1168,7 @@ const deleteUserService = async (data) => {
       message_vn: "Có lỗi. Vui lòng liên hệ quản trị viên.",
     };
   }
-  return new Promise(async (resolve, reject) => {
+  return new Promise(async (resolve,reject) => {
     try {
       if (type === "teacher") {
         const teacher = await db.Teacher.findOne({
@@ -1235,61 +1235,65 @@ const updatePasswordSystemService = ({
     newPassword,
     roleId,
   });
-  return new Promise(async (resolve, reject) => {
+  return new Promise(async (resolve,reject) => {
     try {
       //check current password
       const checkPassword = await bcrypt.compare(
         currentPassword,
         user?.password
       );
+      console.log({ checkPassword })
       if (!checkPassword) {
         resolve({
           codeNumber: 1,
           message_en: "Current password is wrong. Please try again.",
           message_vn: "Mật khẩu hiện tại sai. Vui lòng thử lại.",
         });
-      }
-      const hashPs = await bcrypt.hashSync(newPassword, 10);
-      if (roleId === "R1") {
-        await db.Admin.update(
-          {
-            password: hashPs,
-          },
-          {
-            where: {
-              id: user?.id,
-            },
-          }
-        );
-      } else if (roleId === "R5") {
-        await db.Teacher.update(
-          {
-            password: hashPs,
-          },
-          {
-            where: {
-              id: user?.id,
-            },
-          }
-        );
       } else {
-        await db.OtherUser.update(
-          {
-            password: hashPs,
-          },
-          {
-            where: {
-              id: user?.id,
-              roleId,
+
+        const hashPs = await bcrypt.hashSync(newPassword,10);
+        if (roleId === "R1") {
+          await db.Admin.update(
+            {
+              password: hashPs,
             },
-          }
-        );
+            {
+              where: {
+                id: user?.id,
+              },
+            }
+          );
+        } else if (roleId === "R5") {
+          await db.Teacher.update(
+            {
+              password: hashPs,
+            },
+            {
+              where: {
+                id: user?.id,
+              },
+            }
+          );
+        } else {
+          await db.OtherUser.update(
+            {
+              password: hashPs,
+            },
+            {
+              where: {
+                id: user?.id,
+                roleId,
+              },
+            }
+          );
+        }
+        resolve({
+          codeNumber: 0,
+          message_en: "Update Password Succeed.",
+          message_vn: "Cập nhật mật khẩu thành công.",
+        });
       }
-      resolve({
-        codeNumber: 0,
-        message_en: "Update Password Succeed.",
-        message_vn: "Cập nhật mật khẩu thành công.",
-      });
+
     } catch (e) {
       reject(e);
     }

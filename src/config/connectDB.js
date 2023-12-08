@@ -4,6 +4,7 @@ require("dotenv").config();
 // Option 3: Passing parameters separately (other dialects)
 const customDB = {
   host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
   dialect: process.env.DB_DIALECT,
   logging: false,
   timezone: "+07:00",

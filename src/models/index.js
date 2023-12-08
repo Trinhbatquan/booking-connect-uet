@@ -13,6 +13,7 @@ let sequelize;
 
 const customDB = {
   host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
   dialect: process.env.DB_DIALECT,
   logging: false,
   timezone: "+07:00",
@@ -45,7 +46,7 @@ fs.readdirSync(__dirname)
     );
   })
   .forEach((file) => {
-    const model = require(path.join(__dirname, file))(
+    const model = require(path.join(__dirname,file))(
       sequelize,
       Sequelize.DataTypes
     );
