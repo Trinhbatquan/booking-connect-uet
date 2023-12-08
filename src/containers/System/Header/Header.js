@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router";
-import { useDispatch, useSelector } from "react-redux";
+import React,{ useEffect,useState } from "react";
+import { useLocation,useNavigate } from "react-router";
+import { useDispatch,useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 
 import { BsFillPersonFill } from "react-icons/bs";
 import { IoIosArrowDown } from "react-icons/io";
-import { IoMdArrowDropdown, IoMdArrowDropup } from "react-icons/io";
+import { IoMdArrowDropdown,IoMdArrowDropup } from "react-icons/io";
 import {
   MdOutlineEmail,
   MdOutlineNotificationAdd,
   MdNotificationsNone,
 } from "react-icons/md";
-import { AiFillEdit, AiFillUnlock } from "react-icons/ai";
+import { AiFillEdit,AiFillUnlock } from "react-icons/ai";
 import { BiLogOutCircle } from "react-icons/bi";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion,AnimatePresence } from "framer-motion";
 import { IoMdEye } from "react-icons/io";
 import { BsEyeSlash } from "react-icons/bs";
 import { RiDeleteBack2Fill } from "react-icons/ri";
@@ -26,11 +26,11 @@ import "./Header.scss";
 import { logOutUser } from "../../../redux/authSlice";
 import { path } from "../../../utils/constant";
 import { NavLink } from "react-router-dom";
-import { logOutApi, updatePasswordSystem } from "../../../services/userService";
+import { logOutApi,updatePasswordSystem } from "../../../services/userService";
 import moment from "moment";
 
 import { socket } from "../../../index";
-import { toast, ToastContainer } from "react-toastify";
+import { toast,ToastContainer } from "react-toastify";
 import {
   getNotiFy,
   updateNotifyToOld,
@@ -47,10 +47,10 @@ import {
 const HeaderUser = ({ openModelUpdatePass }) => {
   const pathName = useLocation()?.pathname;
 
-  const { t, i18n } = useTranslation();
-  const [openModelUser, setOpenModelUser] = useState(false);
+  const { t,i18n } = useTranslation();
+  const [openModelUser,setOpenModelUser] = useState(false);
   const currentUser = useSelector((state) => state.authReducer);
-  const [socketNotify, setSocketNotify] = useState(false);
+  const [socketNotify,setSocketNotify] = useState(false);
   const dispatch = useDispatch();
   const countNewNotificationRedux = useSelector(
     (state) => state.socketNotifyManagerReducer.countNewNotifyManager
@@ -59,9 +59,9 @@ const HeaderUser = ({ openModelUpdatePass }) => {
     (state) => state.socketNotifyManagerReducer.changeNotifyIcon
   );
 
-  const [isPathNameOfNotifySeeAll, setIsPathNameOfNotifySeeAll] =
+  const [isPathNameOfNotifySeeAll,setIsPathNameOfNotifySeeAll] =
     useState(false);
-  const [countNewNotification, setCountNewNotification] = useState(
+  const [countNewNotification,setCountNewNotification] = useState(
     countNewNotificationRedux
   );
 
@@ -80,17 +80,17 @@ const HeaderUser = ({ openModelUpdatePass }) => {
   useEffect(() => {
     const listenNewBookingFromBackend = (data) => {
       console.log("1");
-      const { managerId, roleManager, action } = data;
+      const { managerId,roleManager,action } = data;
       if (managerId === currentUser?.id && roleManager === currentUser?.role) {
         if (action === "A1") {
           toast.info(
             i18n.language === "en"
               ? `You recently had a new appointment from student(${moment(
-                  new Date()
-                ).calendar()}).`
+                new Date()
+              ).calendar()}).`
               : `Bạn vừa có một lịch hẹn mới từ sinh viên (${moment(
-                  new Date()
-                ).calendar()}).`,
+                new Date()
+              ).calendar()}).`,
             {
               autoClose: 5000,
               theme: "colored",
@@ -101,11 +101,11 @@ const HeaderUser = ({ openModelUpdatePass }) => {
           toast.info(
             i18n.language === "en"
               ? `You recently had a new question from student (${moment(
-                  new Date()
-                ).calendar()}).`
+                new Date()
+              ).calendar()}).`
               : `Bạn vừa có một câu hỏi mới từ sinh viên (${moment(
-                  new Date()
-                ).calendar()}).`,
+                new Date()
+              ).calendar()}).`,
             {
               autoClose: 5000,
               theme: "colored",
@@ -136,17 +136,17 @@ const HeaderUser = ({ openModelUpdatePass }) => {
       console.log("2");
       console.log(data);
 
-      const { dataRoleManager, time } = data;
+      const { dataRoleManager,time } = data;
       const checkRole = dataRoleManager.includes(currentUser?.role);
       if (checkRole) {
         toast.info(
           i18n.language === "en"
             ? `You recently had a new notification from system (${moment(
-                time
-              ).calendar()}).`
+              time
+            ).calendar()}).`
             : `Bạn vừa có một thông báo mới từ hệ thống (${moment(
-                time
-              ).calendar()}).`,
+              time
+            ).calendar()}).`,
           {
             autoClose: 5000,
             theme: "colored",
@@ -173,16 +173,16 @@ const HeaderUser = ({ openModelUpdatePass }) => {
     };
 
     const listenCheckEventBookingScheduleComingFromBackend = (data) => {
-      const { managerId, roleManager } = data;
+      const { managerId,roleManager } = data;
       if (managerId === currentUser?.id && roleManager === currentUser?.role) {
         toast.info(
           i18n.language === "en"
             ? `You have an appointment with a student tomorrow. Check now! (${moment(
-                new Date()
-              ).calendar()})`
+              new Date()
+            ).calendar()})`
             : `Bạn có một lịch hẹn với sinh viên vào ngày mai. Kiểm tra ngay! (${moment(
-                new Date()
-              ).calendar()})`,
+              new Date()
+            ).calendar()})`,
           {
             autoClose: 5000,
             theme: "colored",
@@ -209,28 +209,28 @@ const HeaderUser = ({ openModelUpdatePass }) => {
     };
 
     if (!socket.hasListeners("new_booking")) {
-      socket.on("new_booking", (data) => listenNewBookingFromBackend(data));
+      socket.on("new_booking",(data) => listenNewBookingFromBackend(data));
     }
     if (!socket.hasListeners("new_notification_system")) {
-      socket.on("new_notification_system", (data) =>
+      socket.on("new_notification_system",(data) =>
         listenNewNotifyFromSystem(data)
       );
     }
     if (!socket.hasListeners("check_event_booking_schedule_coming")) {
-      socket.on("check_event_booking_schedule_coming", (data) =>
+      socket.on("check_event_booking_schedule_coming",(data) =>
         listenCheckEventBookingScheduleComingFromBackend(data)
       );
     }
 
     return () => {
-      socket.off("new_booking", listenNewBookingFromBackend);
-      socket.off("new_notification_system", listenNewNotifyFromSystem);
+      socket.off("new_booking",listenNewBookingFromBackend);
+      socket.off("new_notification_system",listenNewNotifyFromSystem);
       socket.off(
         "check_event_booking_schedule_coming",
         listenCheckEventBookingScheduleComingFromBackend
       );
     };
-  }, []);
+  },[]);
 
   useEffect(() => {
     //getCountNewNotify
@@ -247,7 +247,7 @@ const HeaderUser = ({ openModelUpdatePass }) => {
           setCountNewNotification(data?.countNewNotify);
         }
       });
-  }, []);
+  },[]);
 
   useEffect(() => {
     const handleToggleProfileSystem = (e) => {
@@ -275,10 +275,10 @@ const HeaderUser = ({ openModelUpdatePass }) => {
     const divProfileSystem = document.querySelector(".div-profile-system");
 
     if (divProfileSystem) {
-      divProfileSystem.addEventListener("click", handleToggleProfileSystem);
+      divProfileSystem.addEventListener("click",handleToggleProfileSystem);
     }
 
-    document.addEventListener("click", handleCloseProfileSystem);
+    document.addEventListener("click",handleCloseProfileSystem);
 
     return () => {
       if (divProfileSystem) {
@@ -288,9 +288,9 @@ const HeaderUser = ({ openModelUpdatePass }) => {
         );
       }
 
-      document.removeEventListener("click", handleCloseProfileSystem);
+      document.removeEventListener("click",handleCloseProfileSystem);
     };
-  }, []);
+  },[]);
 
   const navigate = useNavigate();
   const handleLogOutSystem = () => {
@@ -320,6 +320,8 @@ const HeaderUser = ({ openModelUpdatePass }) => {
       });
     } else {
       navigate(`${path.MANAGER}/${path.notification}`);
+      dispatch(setChangeNotifyIcon(false));
+
     }
   };
 
@@ -361,13 +363,13 @@ const HeaderUser = ({ openModelUpdatePass }) => {
               style={({ isActive }) =>
                 isActive
                   ? {
-                      color: "#004aac",
-                      backgroundColor: "#d3ecfc",
-                      transition: "background-color 0.1s",
-                      fontWeight: "600",
-                      lineHeight: "20px",
-                      padding: "10px 15px",
-                    }
+                    color: "#004aac",
+                    backgroundColor: "#d3ecfc",
+                    transition: "background-color 0.1s",
+                    fontWeight: "600",
+                    lineHeight: "20px",
+                    padding: "10px 15px",
+                  }
                   : {}
               }
             >
@@ -382,13 +384,13 @@ const HeaderUser = ({ openModelUpdatePass }) => {
               style={({ isActive }) =>
                 isActive
                   ? {
-                      color: "#004aac",
-                      backgroundColor: "#d3ecfc",
-                      transition: "background-color 0.1s",
-                      fontWeight: "600",
-                      lineHeight: "20px",
-                      padding: "10px 15px",
-                    }
+                    color: "#004aac",
+                    backgroundColor: "#d3ecfc",
+                    transition: "background-color 0.1s",
+                    fontWeight: "600",
+                    lineHeight: "20px",
+                    padding: "10px 15px",
+                  }
                   : {}
               }
             >
@@ -424,18 +426,16 @@ const HeaderUser = ({ openModelUpdatePass }) => {
       <div className="system-header-item-right flex items-center justify-items-end gap-8">
         <span
           className={`font-semibold text-lg cursor-pointer
-        hover:text-white ${
-          i18n.language === "vi" ? "text-blurColor" : "text-white"
-        }`}
+        hover:text-white ${i18n.language === "vi" ? "text-blurColor" : "text-white"
+            }`}
           onClick={() => handleChangeLanguages("en")}
         >
           EN
         </span>
         <span
           className={`font-semibold text-lg cursor-pointer
-        hover:text-white ${
-          i18n.language === "vi" ? "text-white" : "text-blurColor"
-        }`}
+        hover:text-white ${i18n.language === "vi" ? "text-white" : "text-blurColor"
+            }`}
           onClick={() => handleChangeLanguages("vi")}
         >
           VN
@@ -450,10 +450,10 @@ const HeaderUser = ({ openModelUpdatePass }) => {
           <IoMdArrowDropdown />
 
           <div
-            initial={{ opacity: 0, translateY: -50 }}
-            animate={{ opacity: 1, translateY: 0 }}
-            exit={{ opacity: 0, translateY: -50 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
+            initial={{ opacity: 0,translateY: -50 }}
+            animate={{ opacity: 1,translateY: 0 }}
+            exit={{ opacity: 0,translateY: -50 }}
+            transition={{ duration: 0.5,delay: 0.1 }}
             className="profile-system-dropdown avatar-modal absolute top-16 -right-0 z-5 rounded-lg shadow w-72 bg-blue-800 divide-blue-600"
           >
             <div className="px-4 py-3 text-md text-white">
@@ -503,7 +503,7 @@ const HeaderUser = ({ openModelUpdatePass }) => {
 };
 
 const HeaderAdmin = ({ openModelUpdatePass }) => {
-  const { t, i18n } = useTranslation();
+  const { t,i18n } = useTranslation();
   const currentUser = useSelector((state) => state.authReducer);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -546,10 +546,10 @@ const HeaderAdmin = ({ openModelUpdatePass }) => {
     const divProfileSystem = document.querySelector(".div-profile-system");
 
     if (divProfileSystem) {
-      divProfileSystem.addEventListener("click", handleToggleProfileSystem);
+      divProfileSystem.addEventListener("click",handleToggleProfileSystem);
     }
 
-    document.addEventListener("click", handleCloseProfileSystem);
+    document.addEventListener("click",handleCloseProfileSystem);
 
     return () => {
       if (divProfileSystem) {
@@ -559,9 +559,9 @@ const HeaderAdmin = ({ openModelUpdatePass }) => {
         );
       }
 
-      document.removeEventListener("click", handleCloseProfileSystem);
+      document.removeEventListener("click",handleCloseProfileSystem);
     };
-  }, []);
+  },[]);
 
   return (
     <div className="system-header-container fixed top-0 left-0 right-0 flex items-center justify-between shadow-md backdrop-blur-md shadow-blurColor">
@@ -600,13 +600,13 @@ const HeaderAdmin = ({ openModelUpdatePass }) => {
               style={({ isActive }) =>
                 isActive
                   ? {
-                      color: "#004aac",
-                      backgroundColor: "#d3ecfc",
-                      transition: "background-color 0.1s",
-                      fontWeight: "600",
-                      lineHeight: "20px",
-                      padding: "10px 15px",
-                    }
+                    color: "#004aac",
+                    backgroundColor: "#d3ecfc",
+                    transition: "background-color 0.1s",
+                    fontWeight: "600",
+                    lineHeight: "20px",
+                    padding: "10px 15px",
+                  }
                   : {}
               }
             >
@@ -622,13 +622,13 @@ const HeaderAdmin = ({ openModelUpdatePass }) => {
               style={({ isActive }) =>
                 isActive
                   ? {
-                      color: "#004aac",
-                      backgroundColor: "#d3ecfc",
-                      transition: "background-color 0.1s",
-                      fontWeight: "600",
-                      lineHeight: "20px",
-                      padding: "10px 15px",
-                    }
+                    color: "#004aac",
+                    backgroundColor: "#d3ecfc",
+                    transition: "background-color 0.1s",
+                    fontWeight: "600",
+                    lineHeight: "20px",
+                    padding: "10px 15px",
+                  }
                   : {}
               }
             >
@@ -664,13 +664,13 @@ const HeaderAdmin = ({ openModelUpdatePass }) => {
               style={({ isActive }) =>
                 isActive
                   ? {
-                      color: "#004aac",
-                      backgroundColor: "#d3ecfc",
-                      transition: "background-color 0.1s",
-                      fontWeight: "600",
-                      lineHeight: "20px",
-                      padding: "10px 15px",
-                    }
+                    color: "#004aac",
+                    backgroundColor: "#d3ecfc",
+                    transition: "background-color 0.1s",
+                    fontWeight: "600",
+                    lineHeight: "20px",
+                    padding: "10px 15px",
+                  }
                   : {}
               }
             >
@@ -686,13 +686,13 @@ const HeaderAdmin = ({ openModelUpdatePass }) => {
               style={({ isActive }) =>
                 isActive
                   ? {
-                      color: "#004aac",
-                      backgroundColor: "#d3ecfc",
-                      transition: "background-color 0.1s",
-                      fontWeight: "600",
-                      lineHeight: "20px",
-                      padding: "10px 15px",
-                    }
+                    color: "#004aac",
+                    backgroundColor: "#d3ecfc",
+                    transition: "background-color 0.1s",
+                    fontWeight: "600",
+                    lineHeight: "20px",
+                    padding: "10px 15px",
+                  }
                   : {}
               }
             >
@@ -708,13 +708,13 @@ const HeaderAdmin = ({ openModelUpdatePass }) => {
               style={({ isActive }) =>
                 isActive
                   ? {
-                      color: "#004aac",
-                      backgroundColor: "#d3ecfc",
-                      transition: "background-color 0.1s",
-                      fontWeight: "600",
-                      lineHeight: "20px",
-                      padding: "10px 15px",
-                    }
+                    color: "#004aac",
+                    backgroundColor: "#d3ecfc",
+                    transition: "background-color 0.1s",
+                    fontWeight: "600",
+                    lineHeight: "20px",
+                    padding: "10px 15px",
+                  }
                   : {}
               }
             >
@@ -730,13 +730,13 @@ const HeaderAdmin = ({ openModelUpdatePass }) => {
               style={({ isActive }) =>
                 isActive
                   ? {
-                      color: "#004aac",
-                      backgroundColor: "#d3ecfc",
-                      transition: "background-color 0.1s",
-                      fontWeight: "600",
-                      lineHeight: "20px",
-                      padding: "10px 15px",
-                    }
+                    color: "#004aac",
+                    backgroundColor: "#d3ecfc",
+                    transition: "background-color 0.1s",
+                    fontWeight: "600",
+                    lineHeight: "20px",
+                    padding: "10px 15px",
+                  }
                   : {}
               }
             >
@@ -775,13 +775,13 @@ const HeaderAdmin = ({ openModelUpdatePass }) => {
               style={({ isActive }) =>
                 isActive
                   ? {
-                      color: "#004aac",
-                      backgroundColor: "#d3ecfc",
-                      transition: "background-color 0.1s",
-                      fontWeight: "600",
-                      lineHeight: "20px",
-                      padding: "10px 15px",
-                    }
+                    color: "#004aac",
+                    backgroundColor: "#d3ecfc",
+                    transition: "background-color 0.1s",
+                    fontWeight: "600",
+                    lineHeight: "20px",
+                    padding: "10px 15px",
+                  }
                   : {}
               }
             >
@@ -793,13 +793,13 @@ const HeaderAdmin = ({ openModelUpdatePass }) => {
               style={({ isActive }) =>
                 isActive
                   ? {
-                      color: "#004aac",
-                      backgroundColor: "#d3ecfc",
-                      transition: "background-color 0.1s",
-                      fontWeight: "600",
-                      lineHeight: "20px",
-                      padding: "10px 15px",
-                    }
+                    color: "#004aac",
+                    backgroundColor: "#d3ecfc",
+                    transition: "background-color 0.1s",
+                    fontWeight: "600",
+                    lineHeight: "20px",
+                    padding: "10px 15px",
+                  }
                   : {}
               }
             >
@@ -812,18 +812,16 @@ const HeaderAdmin = ({ openModelUpdatePass }) => {
       <div className="system-header-item-right flex items-center justify-items-end gap-8">
         <span
           className={`font-semibold text-lg cursor-pointer
-        hover:text-white ${
-          i18n.language === "vi" ? "text-blurColor" : "text-white"
-        }`}
+        hover:text-white ${i18n.language === "vi" ? "text-blurColor" : "text-white"
+            }`}
           onClick={() => handleChangeLanguages("en")}
         >
           EN
         </span>
         <span
           className={`font-semibold text-lg cursor-pointer
-        hover:text-white ${
-          i18n.language === "vi" ? "text-white" : "text-blurColor"
-        }`}
+        hover:text-white ${i18n.language === "vi" ? "text-white" : "text-blurColor"
+            }`}
           onClick={() => handleChangeLanguages("vi")}
         >
           VN
@@ -879,20 +877,20 @@ const HeaderAdmin = ({ openModelUpdatePass }) => {
 };
 
 const Header = () => {
-  const { t, i18n } = useTranslation();
+  const { t,i18n } = useTranslation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   console.log("render");
   const currentUser = useSelector((state) => state.authReducer);
-  const [isUpdatePassword, setIsUpdatePassword] = useState(false);
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [notifyCheckState, setNotifyCheckState] = useState("");
-  const [eye, setEye] = useState(false);
+  const [isUpdatePassword,setIsUpdatePassword] = useState(false);
+  const [currentPassword,setCurrentPassword] = useState("");
+  const [newPassword,setNewPassword] = useState("");
+  const [confirmPassword,setConfirmPassword] = useState("");
+  const [notifyCheckState,setNotifyCheckState] = useState("");
+  const [eye,setEye] = useState(false);
 
   const handleUpdatePassword = () => {
-    const stateArr = [currentPassword, newPassword, confirmPassword];
+    const stateArr = [currentPassword,newPassword,confirmPassword];
     const notification_en = [
       "Current Password",
       "New password",
@@ -955,8 +953,8 @@ const Header = () => {
           }
         );
       } else {
-        const response = handleMessageFromBackend(data, i18n.language);
-        toast.error(response, {
+        const response = handleMessageFromBackend(data,i18n.language);
+        toast.error(response,{
           autoClose: 3000,
           theme: "colored",
           position: "bottom-right",
@@ -971,7 +969,7 @@ const Header = () => {
                 );
               }
             });
-          }, 5000);
+          },5000);
         }
       }
     });
@@ -992,10 +990,10 @@ const Header = () => {
       <AnimatePresence>
         {isUpdatePassword && (
           <motion.div
-            initial={{ opacity: 0, translateY: -50 }}
-            animate={{ opacity: 1, translateY: 0 }}
-            exit={{ opacity: 0, translateY: -50 }}
-            transition={{ duration: 0.4, delay: 0.1 }}
+            initial={{ opacity: 0,translateY: -50 }}
+            animate={{ opacity: 1,translateY: 0 }}
+            exit={{ opacity: 0,translateY: -50 }}
+            transition={{ duration: 0.4,delay: 0.1 }}
             className="modal-update-password-dropdown fixed top-1 w-[60%] flex flex-col h-auto bg-white rounded-lg shadow backdrop-blur-md mx-auto mt-16 py-3 px-5 overflow-hidden"
             style={{ left: "20%" }}
           >
@@ -1074,14 +1072,14 @@ const Header = () => {
             <div className="flex items-center justify-between">
               <button
                 className={`bg-blurThemeColor text-white mt-6 py-2 px-1 font-semibold rounded-md shadow backdrop-blur-md bg-opacity-80 hover:bg-opacity-100`}
-                style={{ maxWidth: "15%", width: "15%" }}
+                style={{ maxWidth: "15%",width: "15%" }}
                 onClick={() => handleUpdatePassword()}
               >
                 {t("system.teacher.save")}
               </button>
               <button
                 className={` text-white mt-6 py-2 px-1 font-semibold rounded-md shadow backdrop-blur-md bg-opacity-80 hover:bg-opacity-100 bg-green-600`}
-                style={{ maxWidth: "10%", width: "10%" }}
+                style={{ maxWidth: "10%",width: "10%" }}
                 onClick={() => setIsUpdatePassword(false)}
               >
                 {t("system.teacher.close")}

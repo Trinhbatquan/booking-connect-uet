@@ -1,8 +1,8 @@
-import React, { useRef } from "react";
-import { useState, useEffect } from "react";
+import React,{ useRef } from "react";
+import { useState,useEffect } from "react";
 
-import { BsBox, BsCheck2Square, BsXCircle } from "react-icons/bs";
-import { AiOutlineFileDone, AiOutlineDelete } from "react-icons/ai";
+import { BsBox,BsCheck2Square,BsXCircle } from "react-icons/bs";
+import { AiOutlineFileDone,AiOutlineDelete } from "react-icons/ai";
 import { FaEye } from "react-icons/fa";
 import { FaRunning } from "react-icons/fa";
 import { GrRefresh } from "react-icons/gr";
@@ -16,22 +16,22 @@ import Loading from "../../../utils/Loading";
 
 import { useTranslation } from "react-i18next";
 import moment from "moment";
-import { dateFormat, path } from "../../../utils/constant";
+import { dateFormat,path } from "../../../utils/constant";
 
 import "../DepartmentSystem/DepartmentManager.scss";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { motion,AnimatePresence } from "framer-motion";
 
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
-import { FilterMatchMode, FilterOperator } from "primereact/api";
+import { FilterMatchMode,FilterOperator } from "primereact/api";
 import { Ripple } from "primereact/ripple";
 import { Dropdown } from "primereact/dropdown";
 import { classNames } from "primereact/utils";
 import { Tooltip } from "primereact/tooltip";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch,useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { logOutApi } from "../../../services/userService";
 import { logOutUser } from "../../../redux/authSlice";
@@ -42,13 +42,13 @@ import convertBufferToBase64 from "../../../utils/convertBufferToBase64";
 import { emit_new_notification_update_booking_for_student } from "../../../utils/socket_client";
 import { getAnswerById } from "../../../services/answerService";
 
-const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
-  const [loading, setLoading] = useState(false);
-  const [loadingFull, setLoadingFull] = useState(false);
-  const [dataBookingFilter, setDataBookingFilter] = useState([]);
-  const [dataBookingTotal, setDataBookingTotal] = useState([]);
+const ActionItem = ({ action,managerId,roleManager,reviewNotify }) => {
+  const [loading,setLoading] = useState(false);
+  const [loadingFull,setLoadingFull] = useState(false);
+  const [dataBookingFilter,setDataBookingFilter] = useState([]);
+  const [dataBookingTotal,setDataBookingTotal] = useState([]);
 
-  const [status, setStatus] = useState(
+  const [status,setStatus] = useState(
     reviewNotify
       ? reviewNotify === "check_event"
         ? "process"
@@ -56,33 +56,33 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
       : "total"
   );
 
-  const [detail, setDetail] = useState(false);
-  const [dataBookingSelect, setDataBookingSelect] = useState([]);
-  const [answer, setAnswer] = useState(false);
-  const [dataAnswer, setDataAnswer] = useState("");
-  const [isOpenModalConfirmAction, setIsOpenModalConfirmAction] =
+  const [detail,setDetail] = useState(false);
+  const [dataBookingSelect,setDataBookingSelect] = useState([]);
+  const [answer,setAnswer] = useState(false);
+  const [dataAnswer,setDataAnswer] = useState("");
+  const [isOpenModalConfirmAction,setIsOpenModalConfirmAction] =
     useState(false);
-  const [dataConfirmAction, setDataConfirmAction] = useState([]);
-  const [isOpenModelCancel, setIsOpenModelCancel] = useState(false);
-  const [dataModalCancel, setDataModelCancel] = useState([]);
-  const [answerDataForDoneQuestion, setAnswerDataForDoneQuestion] =
+  const [dataConfirmAction,setDataConfirmAction] = useState([]);
+  const [isOpenModelCancel,setIsOpenModelCancel] = useState(false);
+  const [dataModalCancel,setDataModelCancel] = useState([]);
+  const [answerDataForDoneQuestion,setAnswerDataForDoneQuestion] =
     useState("");
   console.log(dataBookingSelect);
 
-  const { t, i18n } = useTranslation();
+  const { t,i18n } = useTranslation();
   const currentUser = useSelector((state) => state.authReducer);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   //dataTable
-  const [filters1, setFilters1] = useState(null);
-  const [globalFilterValue1, setGlobalFilterValue1] = useState("");
-  const [selectedProducts8, setSelectedProducts8] = useState(null);
+  const [filters1,setFilters1] = useState(null);
+  const [globalFilterValue1,setGlobalFilterValue1] = useState("");
+  const [selectedProducts8,setSelectedProducts8] = useState(null);
   // const [currentPage, setCurrentPage] = useState();
-  const [first1, setFirst1] = useState(0);
-  const [rows1, setRows1] = useState(8);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageInputTooltip, setPageInputTooltip] = useState(
+  const [first1,setFirst1] = useState(0);
+  const [rows1,setRows1] = useState(8);
+  const [currentPage,setCurrentPage] = useState(1);
+  const [pageInputTooltip,setPageInputTooltip] = useState(
     i18n.language === "en"
       ? "Press 'Enter' key to go to this page."
       : "Sử dụng phím Enter để di chuyển trang."
@@ -105,7 +105,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
   const onPageInputChange = (event) => {
     setCurrentPage(event.target.value);
   };
-  const onPageInputKeyDown = (event, options) => {
+  const onPageInputKeyDown = (event,options) => {
     if (event.key === "Enter") {
       const page = parseInt(currentPage);
       if (page < 1 || page > options.totalPages) {
@@ -182,7 +182,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
         (options.view.endPage === options.page &&
           options.page + 1 !== options.totalPages)
       ) {
-        const className = classNames(options.className, { "p-disabled": true });
+        const className = classNames(options.className,{ "p-disabled": true });
 
         return (
           <span className={className} style={{ userSelect: "none" }}>
@@ -204,8 +204,8 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
     },
     RowsPerPageDropdown: (options) => {
       const dropdownOptions = [
-        { label: 8, value: 8 },
-        { label: 12, value: 12 },
+        { label: 8,value: 8 },
+        { label: 12,value: 12 },
         {
           label: i18n.language === "en" ? "All" : "Tất cả",
           value: options.totalRecords,
@@ -225,26 +225,26 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
   //filter
   const initFilters1 = () => {
     setFilters1({
-      global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+      global: { value: null,matchMode: FilterMatchMode.CONTAINS },
       statusId: {
         operator: FilterOperator.AND,
-        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+        constraints: [{ value: null,matchMode: FilterMatchMode.STARTS_WITH }],
       },
       "studentData.fullName": {
         operator: FilterOperator.AND,
-        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+        constraints: [{ value: null,matchMode: FilterMatchMode.STARTS_WITH }],
       },
       "studentData.email": {
         operator: FilterOperator.AND,
-        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+        constraints: [{ value: null,matchMode: FilterMatchMode.STARTS_WITH }],
       },
       date: {
         operator: FilterOperator.AND,
-        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+        constraints: [{ value: null,matchMode: FilterMatchMode.STARTS_WITH }],
       },
       updatedAt: {
         operator: FilterOperator.AND,
-        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+        constraints: [{ value: null,matchMode: FilterMatchMode.STARTS_WITH }],
       },
     });
     setGlobalFilterValue1("");
@@ -280,10 +280,9 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
               type="button"
               // icon="pi pi-filter-slash"
               label={i18n.language === "en" ? "Delete" : "Xoá"}
-              className={`p-button-outlined ${
-                selectedProducts8?.length >= 1 ? "" : "disabled"
-              }`}
-              // onClick={() => handleDeleteManyData()}
+              className={`p-button-outlined ${selectedProducts8?.length >= 1 ? "" : "disabled"
+                }`}
+            // onClick={() => handleDeleteManyData()}
             />
           )}
         </div>
@@ -292,15 +291,14 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
           <InputText
             value={globalFilterValue1}
             onChange={onGlobalFilterChange1}
-            placeholder={`${
-              action === "schedule"
-                ? i18n.language === "en"
-                  ? "Search by name, email or status"
-                  : "Tìm kiếm theo tên, email, ngày hoặc trạng thái"
-                : i18n.language === "en"
+            placeholder={`${action === "schedule"
+              ? i18n.language === "en"
+                ? "Search by name, email or status"
+                : "Tìm kiếm theo tên, email, ngày hoặc trạng thái"
+              : i18n.language === "en"
                 ? "Search by name, email, time or status"
                 : "Tìm kiếm theo tên, email, thời gian hoặc trạng thái"
-            }`}
+              }`}
             style={{ width: "100%" }}
           />
         </span>
@@ -349,7 +347,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
             >
               <BsCheck2Square
                 className="text-xl"
-                // onClick={() => HandleDetailBooking(rowData)}
+              // onClick={() => HandleDetailBooking(rowData)}
               />
             </Button>
           )}
@@ -392,7 +390,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                   }}
                   onClick={() => {
                     // setDataBookingSelect(rowData);
-                    acceptOrCancelSchedule(rowData, "cancel");
+                    acceptOrCancelSchedule(rowData,"cancel");
                   }}
                 >
                   <BsXCircle className="text-xl " />
@@ -416,7 +414,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
               >
                 <BiMessageSquareEdit
                   className="text-xl"
-                  onClick={() => HandleDetailBooking(rowData, "answer")}
+                  onClick={() => HandleDetailBooking(rowData,"answer")}
                 />
               </Button>
             ))}
@@ -465,7 +463,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
   useEffect(() => {
     let statusId = [];
     if (status === "total") {
-      statusId = ["S1", "S2", "S3", "S4"];
+      statusId = ["S1","S2","S3","S4"];
     } else if (status === "process") {
       statusId = ["S2"];
     } else if (status === "new") {
@@ -485,7 +483,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
       managerId,
       roleManager,
       actionId: action === "schedule" ? "A1" : "A2",
-      statusId: ["S1", "S2", "S3", "S4"],
+      statusId: ["S1","S2","S3","S4"],
     };
     setLoading(true);
     setTimeout(async () => {
@@ -510,16 +508,16 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
         }
       });
       setLoading(false);
-    }, 0);
+    },0);
     initFilters1();
     setSelectedProducts8(null);
     setDetail(false);
     setAnswer(false);
     setDataBookingSelect([]);
     setAnswerDataForDoneQuestion("");
-  }, [action, status]);
+  },[action,status]);
 
-  console.log(dataBookingFilter, action);
+  console.log(dataBookingFilter,action);
 
   let countProcess = 0,
     countDone = 0,
@@ -545,7 +543,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
         managerId,
         roleManager,
         actionId: action === "schedule" ? "A1" : "A2",
-        statusId: ["S1", "S2", "S3", "S4"],
+        statusId: ["S1","S2","S3","S4"],
       };
       getAllBooking.getByManagerAndAction(params).then((res) => {
         if (res?.codeNumber === 0) {
@@ -572,7 +570,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
     }
   };
 
-  const HandleDetailBooking = (data, actionId) => {
+  const HandleDetailBooking = (data,actionId) => {
     setDetail(true);
     setDataBookingSelect(data);
     setSelectedProducts8([data]);
@@ -600,9 +598,9 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
     setAnswer(true);
   };
 
-  const openModalConfirmAction = (data, type) => {
+  const openModalConfirmAction = (data,type) => {
     if (type === "answer" && !dataAnswer) {
-      toast.error(t("system.notification.miss"), {
+      toast.error(t("system.notification.miss"),{
         autoClose: 3000,
         position: "bottom-right",
         theme: "colored",
@@ -633,10 +631,10 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
       type: "done",
       answer: dataAnswer,
     };
-    await updateStatusBookingSchedule.update({}, body).then((res) => {
+    await updateStatusBookingSchedule.update({},body).then((res) => {
       if (res?.codeNumber === -1) {
         setLoadingFull(false);
-        toast.error(`${t("system.notification.fail")}`, {
+        toast.error(`${t("system.notification.fail")}`,{
           autoClose: 2000,
           position: "bottom-right",
           theme: "colored",
@@ -645,7 +643,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
       } else if (res?.codeNumber === -2) {
         setLoadingFull(false);
 
-        toast.error(`${t("system.token.mess")}`, {
+        toast.error(`${t("system.token.mess")}`,{
           autoClose: 5000,
           position: "bottom-right",
           theme: "colored",
@@ -657,11 +655,11 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
               navigate(`${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`);
             }
           });
-        }, 5000);
+        },5000);
       } else if (res?.codeNumber === 1) {
         setLoadingFull(false);
 
-        toast.error(`${t("system.notification.fail")}`, {
+        toast.error(`${t("system.notification.fail")}`,{
           autoClose: 2000,
           position: "bottom-right",
           theme: "colored",
@@ -700,7 +698,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
   };
 
   //handle schedule
-  const acceptOrCancelSchedule = async (data, type) => {
+  const acceptOrCancelSchedule = async (data,type) => {
     // setSelectedProducts8([data]);
     if (type === "process" || type === "done") {
       if (type === "done") {
@@ -708,10 +706,9 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
         const dateSchedule = data.date.split("-")[1].trim();
         if (currentDate < dateSchedule) {
           toast.error(
-            `${
-              i18n.language === "en"
-                ? "This appointment is not occurred yet."
-                : "Cuộc hẹn này chưa xảy ra."
+            `${i18n.language === "en"
+              ? "This appointment is not occurred yet."
+              : "Cuộc hẹn này chưa xảy ra."
             }`,
             {
               autoClose: 3000,
@@ -728,10 +725,9 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
             .split(":")[0];
           if (currentHour < hourShedule) {
             toast.error(
-              `${
-                i18n.language === "en"
-                  ? "This appointment is not occurred yet."
-                  : "Cuộc hẹn này chưa xảy ra."
+              `${i18n.language === "en"
+                ? "This appointment is not occurred yet."
+                : "Cuộc hẹn này chưa xảy ra."
               }`,
               {
                 autoClose: 3000,
@@ -745,7 +741,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
       }
       setLoadingFull(true);
       let dateFormat = data.date.split("-")[1].trim().split("/");
-      dateFormat = new Date(+dateFormat[2], +dateFormat[1] - 1, +dateFormat[0]);
+      dateFormat = new Date(+dateFormat[2],+dateFormat[1] - 1,+dateFormat[0]);
       const body = {
         email: currentUser?.email,
         managerId: data?.managerId,
@@ -758,11 +754,11 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
         type,
       };
       console.log(body);
-      await updateStatusBookingSchedule.update({}, body).then((res) => {
+      await updateStatusBookingSchedule.update({},body).then((res) => {
         if (res?.codeNumber === -1) {
           setLoadingFull(false);
 
-          toast.error(`${t("system.notification.fail")}`, {
+          toast.error(`${t("system.notification.fail")}`,{
             autoClose: 2000,
             position: "bottom-right",
             theme: "colored",
@@ -770,7 +766,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
         } else if (res?.codeNumber === -2) {
           setLoadingFull(false);
 
-          toast.error(`${t("system.token.mess")}`, {
+          toast.error(`${t("system.token.mess")}`,{
             autoClose: 5000,
             position: "bottom-right",
             theme: "colored",
@@ -784,11 +780,11 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                 );
               }
             });
-          }, 5000);
+          },5000);
         } else if (res?.codeNumber === 1) {
           setLoadingFull(false);
 
-          toast.error(`${t("system.notification.fail")}`, {
+          toast.error(`${t("system.notification.fail")}`,{
             autoClose: 2000,
             position: "bottom-right",
             theme: "colored",
@@ -810,8 +806,8 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                   ? "Confirm Completion Successfully."
                   : "Approve Schedule Successfully."
                 : type === "done"
-                ? "Xác nhận hoàn thành thành công."
-                : "Chấp nhận lịch hẹn thành công.",
+                  ? "Xác nhận hoàn thành thành công."
+                  : "Chấp nhận lịch hẹn thành công.",
               {
                 autoClose: 2000,
                 position: "bottom-right",
@@ -837,9 +833,9 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
     setIsOpenModelCancel(false);
     setDataModelCancel([]);
   };
-  const confirmCancelSchedule = async (data, reason) => {
+  const confirmCancelSchedule = async (data,reason) => {
     if (!reason) {
-      toast.error(t("system.notification.miss"), {
+      toast.error(t("system.notification.miss"),{
         autoClose: 3000,
         position: "bottom-right",
         theme: "colored",
@@ -847,7 +843,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
     } else {
       setLoadingFull(true);
       let dateFormat = data.date.split("-")[1].trim().split("/");
-      dateFormat = new Date(+dateFormat[2], +dateFormat[1] - 1, +dateFormat[0]);
+      dateFormat = new Date(+dateFormat[2],+dateFormat[1] - 1,+dateFormat[0]);
       const body = {
         email: currentUser?.email,
         managerId: data?.managerId,
@@ -860,10 +856,10 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
         type: "cancel",
         reasonCancel: reason,
       };
-      await updateStatusBookingSchedule.update({}, body).then((res) => {
+      await updateStatusBookingSchedule.update({},body).then((res) => {
         if (res?.codeNumber === -1) {
           setLoadingFull(false);
-          toast.error(`${t("system.notification.fail")}`, {
+          toast.error(`${t("system.notification.fail")}`,{
             autoClose: 2000,
             position: "bottom-right",
             theme: "colored",
@@ -872,7 +868,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
         } else if (res?.codeNumber === -2) {
           setLoadingFull(false);
 
-          toast.error(`${t("system.token.mess")}`, {
+          toast.error(`${t("system.token.mess")}`,{
             autoClose: 5000,
             position: "bottom-right",
             theme: "colored",
@@ -886,11 +882,11 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                 );
               }
             });
-          }, 5000);
+          },5000);
         } else if (res?.codeNumber === 1) {
           setLoadingFull(false);
 
-          toast.error(res?.message, {
+          toast.error(res?.message,{
             autoClose: 2000,
             position: "bottom-right",
             theme: "colored",
@@ -933,23 +929,21 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
           <button
             type="button"
             class={`hover:bg-blue-800 flex items-center justify-center gap-1 transition-all duration-500 flex-1 hover:text-white rounded-lg focus:ring-4 focus:ring-blue-300 font-medium  text-md px-5 py-2.5 mr-2 mb-2 focus:outline-none
-                ${
-                  status === "total"
-                    ? "text-white bg-blue-800"
-                    : "text-gray-400 bg-white border border-gray-600"
-                }`}
+                ${status === "total"
+                ? "text-white bg-blue-800"
+                : "text-gray-400 bg-white border border-gray-600"
+              }`}
             onClick={() => setStatus("total")}
           >
             <BsBox />
-            {`${
-              action === "schedule"
-                ? i18n.language === "en"
-                  ? "Total of schedule:"
-                  : "Tổng số lịch hẹn:"
-                : i18n.language === "en"
+            {`${action === "schedule"
+              ? i18n.language === "en"
+                ? "Total of schedule:"
+                : "Tổng số lịch hẹn:"
+              : i18n.language === "en"
                 ? "Total of question"
                 : "Tổng số câu hỏi:"
-            }`}{" "}
+              }`}{" "}
             <span className="text">
               {dataBookingTotal?.length ? dataBookingTotal.length : 0}
             </span>
@@ -957,11 +951,10 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
           <button
             type="button"
             class={`hover:bg-blue-800 flex items-center justify-center gap-1 transition-all duration-500 flex-1 hover:text-white rounded-lg focus:ring-4 focus:ring-blue-300 font-medium  text-md px-5 py-2.5 mr-2 mb-2 focus:outline-none
-               ${
-                 status === "new"
-                   ? "text-white bg-blue-800"
-                   : "text-gray-400 bg-white border border-gray-600"
-               }`}
+               ${status === "new"
+                ? "text-white bg-blue-800"
+                : "text-gray-400 bg-white border border-gray-600"
+              }`}
             onClick={() => setStatus("new")}
           >
             <FaRunning /> {i18n.language === "en" ? "New:" : "Mới:"}
@@ -971,11 +964,10 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
             <button
               type="button"
               class={`hover:bg-blue-800 flex items-center justify-center gap-1 transition-all duration-500 flex-1 hover:text-white rounded-lg focus:ring-4 focus:ring-blue-300 font-medium  text-md px-5 py-2.5 mr-2 mb-2 focus:outline-none
-                  ${
-                    status === "process"
-                      ? "text-white bg-blue-800"
-                      : "text-gray-400 bg-white border border-gray-600"
-                  }`}
+                  ${status === "process"
+                  ? "text-white bg-blue-800"
+                  : "text-gray-400 bg-white border border-gray-600"
+                }`}
               onClick={() => setStatus("process")}
             >
               <FaRunning />{" "}
@@ -986,11 +978,10 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
           <button
             type="button"
             class={`hover:bg-blue-800 flex items-center justify-center gap-1 transition-all duration-500 flex-1 hover:text-white rounded-lg focus:ring-4 focus:ring-blue-300 font-medium  text-md px-5 py-2.5 mr-2 mb-2 focus:outline-none
-               ${
-                 status === "done"
-                   ? "text-white bg-blue-800"
-                   : "text-gray-400 bg-white border border-gray-600"
-               }`}
+               ${status === "done"
+                ? "text-white bg-blue-800"
+                : "text-gray-400 bg-white border border-gray-600"
+              }`}
             onClick={() => setStatus("done")}
           >
             <AiOutlineFileDone />
@@ -1001,11 +992,10 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
             <button
               type="button"
               class={`hover:bg-blue-800 flex items-center justify-center gap-1 transition-all duration-500 flex-1 hover:text-white rounded-lg focus:ring-4 focus:ring-blue-300 font-medium  text-md px-5 py-2.5 mr-2 mb-2 focus:outline-none
-                  ${
-                    status === "cancel"
-                      ? "text-white bg-blue-800"
-                      : "text-gray-400 bg-white border border-gray-600"
-                  }`}
+                  ${status === "cancel"
+                  ? "text-white bg-blue-800"
+                  : "text-gray-400 bg-white border border-gray-600"
+                }`}
               onClick={() => setStatus("cancel")}
             >
               <AiOutlineFileDone />
@@ -1043,7 +1033,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                   first={first1}
                   rows={rows1}
                   onPage={onCustomPage1}
-                  rowsPerPageOptions={[4, 8, 12]}
+                  rowsPerPageOptions={[4,8,12]}
                   paginatorLeft={paginatorLeft}
                   paginatorRight={paginatorRight}
                   filters={filters1}
@@ -1051,17 +1041,17 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                   globalFilterFields={
                     action === "schedule"
                       ? [
-                          "statusId",
-                          "studentData.fullName",
-                          "studentData.email",
-                          "date",
-                        ]
+                        "statusId",
+                        "studentData.fullName",
+                        "studentData.email",
+                        "date",
+                      ]
                       : [
-                          "statusId",
-                          "studentData.fullName",
-                          "studentData.email",
-                          "updatedAt",
-                        ]
+                        "statusId",
+                        "studentData.fullName",
+                        "studentData.email",
+                        "updatedAt",
+                      ]
                   }
                   header={header1}
                   emptyMessage="No customers found."
@@ -1076,9 +1066,9 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                   resizableColumns
                   columnResizeMode="fit"
                   showGridlines
-                  // onAllRowsSelect={(e) => setAllRowSelected(e)}
-                  // onAllRowsUnselect={() => setAllRowSelected(false)}
-                  // dataKey="id"
+                // onAllRowsSelect={(e) => setAllRowSelected(e)}
+                // onAllRowsUnselect={() => setAllRowSelected(false)}
+                // dataKey="id"
                 >
                   {/* {(status === "cancel" || status === "done") && (
                     <Column
@@ -1129,9 +1119,9 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
               {detail && (
                 <motion.div
                   className="mt-5 w-full mx-auto"
-                  initial={{ opacity: 0, translateX: -50 }}
-                  animate={{ opacity: 1, translateX: 0 }}
-                  exit={{ opacity: 0, translateX: -50 }}
+                  initial={{ opacity: 0,translateX: -50 }}
+                  animate={{ opacity: 1,translateX: 0 }}
+                  exit={{ opacity: 0,translateX: -50 }}
                 >
                   {action === "schedule" ? (
                     <div className="rounded-sm shadow-sm px-4 py-5 bg-gray-200 flex flex-col items-start justify-center gap-5">
@@ -1279,7 +1269,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                             class={`border border-blue-600 hover:bg-blue-600 hover:text-white bg-white text-blue-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-md px-5 py-2 mr-2 mb-2 focus:outline-none
                     `}
                             onClick={() =>
-                              openModalConfirmAction(dataBookingSelect, "done")
+                              openModalConfirmAction(dataBookingSelect,"done")
                             }
                           >
                             {i18n.language === "en"
@@ -1333,6 +1323,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                     </div>
                   ) : (
                     <div className="rounded-sm shadow-sm px-4 py-5 bg-gray-200 flex flex-col items-start justify-center gap-5">
+                      {console.log(dataBookingSelect)}
                       <div className="flex items-center justify-start gap-5 w-full">
                         <div className="flex-1">
                           <label
@@ -1417,7 +1408,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                           />
                         </div>
-                        {dataBookingSelect?.image?.data && (
+                        {/* {selectedProducts8?.image?.data?.length > 0 && (
                           <div className="flex-1">
                             <label
                               htmlFor="helper-text"
@@ -1442,7 +1433,7 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                               ></div>
                             </div>
                           </div>
-                        )}
+                        )} */}
                       </div>
                       <div className="w-full">
                         <label
@@ -1511,10 +1502,10 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                               !answer
                                 ? handleAnswerQuestion
                                 : () =>
-                                    openModalConfirmAction(
-                                      dataBookingSelect,
-                                      "answer"
-                                    )
+                                  openModalConfirmAction(
+                                    dataBookingSelect,
+                                    "answer"
+                                  )
                             }
                           >
                             {answer
@@ -1522,8 +1513,8 @@ const ActionItem = ({ action, managerId, roleManager, reviewNotify }) => {
                                 ? "Confirm Answer"
                                 : "Xác nhận trả lời"
                               : i18n.language === "en"
-                              ? "Answer"
-                              : "Trả lời"}
+                                ? "Answer"
+                                : "Trả lời"}
                           </button>
                         )}
                         <button

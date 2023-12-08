@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
+import React,{ useState,useEffect,useRef } from "react";
 import moment from "moment";
-import { toast, ToastContainer } from "react-toastify";
+import { toast,ToastContainer } from "react-toastify";
 import { useTranslation } from "react-i18next";
 import HomeHeader from "../HomeHeader";
 import Loading from "../../../utils/Loading";
@@ -16,16 +16,16 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
-import { FilterMatchMode, FilterOperator } from "primereact/api";
+import { FilterMatchMode,FilterOperator } from "primereact/api";
 import { Ripple } from "primereact/ripple";
 import { Dropdown } from "primereact/dropdown";
 import { classNames } from "primereact/utils";
 import { Tooltip } from "primereact/tooltip";
-import { useDispatch, useSelector } from "react-redux";
-import { logOutApi, logOutHomePageApi } from "../../../services/userService";
-import { useLocation, useNavigate } from "react-router";
+import { useDispatch,useSelector } from "react-redux";
+import { logOutApi,logOutHomePageApi } from "../../../services/userService";
+import { useLocation,useNavigate } from "react-router";
 import "moment/locale/vi";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion,AnimatePresence } from "framer-motion";
 
 import convertBufferToBase64 from "./../../../utils/convertBufferToBase64";
 import {
@@ -53,14 +53,14 @@ import { logOutUser } from "../../../redux/studentSlice";
 const ProcessBooking = () => {
   const actionParam = useLocation()?.search?.split("?")[1];
 
-  const { i18n, t } = useTranslation();
-  const [loading, setLoading] = useState(false);
-  const [action, setAction] = useState(actionParam || "A1");
+  const { i18n,t } = useTranslation();
+  const [loading,setLoading] = useState(false);
+  const [action,setAction] = useState(actionParam || "A1");
   const currentUser = useSelector((state) => state.studentReducer);
-  const [dataBooking, setDataBooking] = useState([]);
-  const [isOpenDetailBooking, setIsOpenDetailBooking] = useState(false);
-  const [answerData, setAnswerData] = useState([]);
-  const [isConfirmSentDirectly, setIsConfirmSentDirectly] = useState(false);
+  const [dataBooking,setDataBooking] = useState([]);
+  const [isOpenDetailBooking,setIsOpenDetailBooking] = useState(false);
+  const [answerData,setAnswerData] = useState([]);
+  const [isConfirmSentDirectly,setIsConfirmSentDirectly] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const customDataBookingStudent = (res) => {
@@ -123,8 +123,14 @@ const ProcessBooking = () => {
             console.log(data?.studentBooking);
             if (data?.studentBooking?.length > 0) {
               let dataBookingCustom = data.studentBooking;
-              dataBookingCustom = customDataBookingStudent(dataBookingCustom);
-              setDataBooking(dataBookingCustom);
+              if (dataBookingCustom?.length > 0) {
+                console.log(1);
+                dataBookingCustom = customDataBookingStudent(dataBookingCustom);
+                setDataBooking(dataBookingCustom);
+              }
+            } else {
+              console.log(2);
+              setDataBooking([]);
             }
             setLoading(false);
           } else {
@@ -144,7 +150,7 @@ const ProcessBooking = () => {
       setIsOpenDetailBooking(false);
       setSelectedProducts8([]);
     }
-  }, [action, i18n.language]);
+  },[action,i18n.language]);
 
   const handleRefresh = () => {
     setLoading(true);
@@ -158,8 +164,12 @@ const ProcessBooking = () => {
           console.log(data?.studentBooking);
           if (data?.studentBooking?.length > 0) {
             let dataBookingCustom = data.studentBooking;
-            dataBookingCustom = customDataBookingStudent(dataBookingCustom);
+            if (dataBookingCustom?.length > 0) {
+              dataBookingCustom = customDataBookingStudent(dataBookingCustom);
+            }
             setDataBooking(dataBookingCustom);
+          } else {
+            setDataBooking([]);
           }
           setLoading(false);
         } else {
@@ -254,7 +264,7 @@ const ProcessBooking = () => {
       option: "directly",
     };
     setLoading(true);
-    await createQuestionService.create({}, body).then(async (res) => {
+    await createQuestionService.create({},body).then(async (res) => {
       if (res?.codeNumber === 0) {
         // setLoading(false);
         if (res?.type === "create" || res?.type === "sent") {
@@ -272,7 +282,7 @@ const ProcessBooking = () => {
           // emitter.emit("EVENT_CLEAR_DATA");
           if (res?.type === "create") {
             //socket_emit_booking_create
-            emit_create_booking(+data?.managerId, data?.roleManager, "A2");
+            emit_create_booking(+data?.managerId,data?.roleManager,"A2");
           }
         } else {
           setLoading(false);
@@ -290,8 +300,8 @@ const ProcessBooking = () => {
         }
       } else {
         setLoading(false);
-        const response = handleMessageFromBackend(data, i18n.language);
-        toast.error(response, {
+        const response = handleMessageFromBackend(data,i18n.language);
+        toast.error(response,{
           autoClose: 3000,
           theme: "colored",
           position: "bottom-right",
@@ -306,24 +316,24 @@ const ProcessBooking = () => {
                 );
               }
             });
-          }, 5000);
+          },5000);
         }
       }
     });
   };
 
   //dataTable
-  const [filters1, setFilters1] = useState(null);
-  const [globalFilterValue1, setGlobalFilterValue1] = useState("");
+  const [filters1,setFilters1] = useState(null);
+  const [globalFilterValue1,setGlobalFilterValue1] = useState("");
   // const [filters1, setFilters1] = useState(null);
   // const [globalFilterValue1, setGlobalFilterValue1] = useState("");
-  const [selectedProducts8, setSelectedProducts8] = useState([]);
-  const [allRowSelected, setAllRowSelected] = useState(false);
+  const [selectedProducts8,setSelectedProducts8] = useState([]);
+  const [allRowSelected,setAllRowSelected] = useState(false);
   // const [currentPage, setCurrentPage] = useState();
-  const [first1, setFirst1] = useState(0);
-  const [rows1, setRows1] = useState(8);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageInputTooltip, setPageInputTooltip] = useState(
+  const [first1,setFirst1] = useState(0);
+  const [rows1,setRows1] = useState(8);
+  const [currentPage,setCurrentPage] = useState(1);
+  const [pageInputTooltip,setPageInputTooltip] = useState(
     i18n.language === "en"
       ? "Press 'Enter' key to go to this page."
       : "Sử dụng phím Enter để di chuyển trang."
@@ -354,7 +364,7 @@ const ProcessBooking = () => {
   const onPageInputChange = (event) => {
     setCurrentPage(event.target.value);
   };
-  const onPageInputKeyDown = (event, options) => {
+  const onPageInputKeyDown = (event,options) => {
     if (event.key === "Enter") {
       const page = parseInt(currentPage);
       if (page < 1 || page > options.totalPages) {
@@ -431,7 +441,7 @@ const ProcessBooking = () => {
         (options.view.endPage === options.page &&
           options.page + 1 !== options.totalPages)
       ) {
-        const className = classNames(options.className, { "p-disabled": true });
+        const className = classNames(options.className,{ "p-disabled": true });
 
         return (
           <span className={className} style={{ userSelect: "none" }}>
@@ -453,9 +463,9 @@ const ProcessBooking = () => {
     },
     RowsPerPageDropdown: (options) => {
       const dropdownOptions = [
-        { label: 8, value: 8 },
-        { label: 12, value: 12 },
-        { label: "All", value: options.totalRecords },
+        { label: 8,value: 8 },
+        { label: 12,value: 12 },
+        { label: "All",value: options.totalRecords },
       ];
 
       return (
@@ -489,18 +499,18 @@ const ProcessBooking = () => {
   // filter
   const initFilters1 = () => {
     setFilters1({
-      global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+      global: { value: null,matchMode: FilterMatchMode.CONTAINS },
       nameCustom: {
         operator: FilterOperator.AND,
-        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+        constraints: [{ value: null,matchMode: FilterMatchMode.STARTS_WITH }],
       },
       statusCustom: {
         operator: FilterOperator.AND,
-        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+        constraints: [{ value: null,matchMode: FilterMatchMode.STARTS_WITH }],
       },
       subject: {
         operator: FilterOperator.AND,
-        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+        constraints: [{ value: null,matchMode: FilterMatchMode.STARTS_WITH }],
       },
     });
     setGlobalFilterValue1("");
@@ -548,15 +558,14 @@ const ProcessBooking = () => {
           <InputText
             value={globalFilterValue1}
             onChange={onGlobalFilterChange1}
-            placeholder={`${
-              action === "A1"
-                ? i18n.language === "en"
-                  ? "Search for name, status"
-                  : "Tìm kiếm theo tên, trạng thái"
-                : i18n.language === "en"
+            placeholder={`${action === "A1"
+              ? i18n.language === "en"
+                ? "Search for name, status"
+                : "Tìm kiếm theo tên, trạng thái"
+              : i18n.language === "en"
                 ? "Search for name, subject, status"
                 : "Tìm kiếm theo tên, chủ đề, trạng thái"
-            }`}
+              }`}
             style={{ width: "100%" }}
           />
         </span>
@@ -678,11 +687,10 @@ const ProcessBooking = () => {
           >
             <div className="flex items-center justify-start gap-8">
               <button
-                class={`px-5 py-1.5 flex transition-all ease-in duration-150 items-center justify-center overflow-hidden text-md font-semibold border border-blue-500 rounded-2xl hover:text-white hover:bg-blue-500 hover:opacity-100 ${
-                  action === "A1"
-                    ? "text-white bg-blue-500"
-                    : "text-blue-500 bg-white opacity-50"
-                }`}
+                class={`px-5 py-1.5 flex transition-all ease-in duration-150 items-center justify-center overflow-hidden text-md font-semibold border border-blue-500 rounded-2xl hover:text-white hover:bg-blue-500 hover:opacity-100 ${action === "A1"
+                  ? "text-white bg-blue-500"
+                  : "text-blue-500 bg-white opacity-50"
+                  }`}
                 onClick={() => setAction("A1")}
               >
                 <span class="">
@@ -690,11 +698,10 @@ const ProcessBooking = () => {
                 </span>
               </button>
               <button
-                class={`px-5 py-1.5 flex transition-all ease-in duration-150 items-center justify-center overflow-hidden text-md font-semibold border border-blue-500 rounded-2xl hover:text-white hover:bg-blue-500 hover:opacity-100 ${
-                  action === "A2"
-                    ? "text-white bg-blue-500"
-                    : "text-blue-500 bg-white opacity-50"
-                }`}
+                class={`px-5 py-1.5 flex transition-all ease-in duration-150 items-center justify-center overflow-hidden text-md font-semibold border border-blue-500 rounded-2xl hover:text-white hover:bg-blue-500 hover:opacity-100 ${action === "A2"
+                  ? "text-white bg-blue-500"
+                  : "text-blue-500 bg-white opacity-50"
+                  }`}
                 onClick={() => setAction("A2")}
               >
                 <span class="">
@@ -725,10 +732,10 @@ const ProcessBooking = () => {
                 first={first1}
                 rows={rows1}
                 onPage={onCustomPage1}
-                rowsPerPageOptions={[4, 8, 12]}
+                rowsPerPageOptions={[4,8,12]}
                 filters={filters1}
                 filterDisplay="menu"
-                globalFilterFields={["nameCustom", "statusCustom", "subject"]}
+                globalFilterFields={["nameCustom","statusCustom","subject"]}
                 header={header1}
                 emptyMessage="No customers found."
                 // selectionMode={`${
@@ -813,9 +820,9 @@ const ProcessBooking = () => {
                 {isOpenDetailBooking && (
                   <motion.div
                     className="mt-5 w-full mx-auto"
-                    initial={{ opacity: 0, translateX: -50 }}
-                    animate={{ opacity: 1, translateX: 0 }}
-                    exit={{ opacity: 0, translateX: -50 }}
+                    initial={{ opacity: 0,translateX: -50 }}
+                    animate={{ opacity: 1,translateX: 0 }}
+                    exit={{ opacity: 0,translateX: -50 }}
                   >
                     {action === "A1" ? (
                       <div className="rounded-sm shadow-sm px-4 py-5 bg-gray-200 flex flex-col items-start justify-center gap-5">
@@ -938,9 +945,9 @@ const ProcessBooking = () => {
                               value={
                                 i18n.language === "en"
                                   ? selectedProducts8[0]?.timeDataBooking
-                                      ?.valueEn
+                                    ?.valueEn
                                   : selectedProducts8[0]?.timeDataBooking
-                                      ?.valueVn
+                                    ?.valueVn
                               }
                               class="bg-gray-50 border border-gray-300 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             />
@@ -1182,24 +1189,24 @@ const ProcessBooking = () => {
                         </div>
                         {(selectedProducts8[0]?.statusId === "S3" ||
                           selectedProducts8[0]?.statusId === "S5") && (
-                          <div className="w-full">
-                            <label
-                              htmlFor="helper-text"
-                              class="block mb-2 text-md font-medium text-gray-900 dark:text-white"
-                            >
-                              {i18n.language === "en"
-                                ? "Answer"
-                                : "Câu trả lời"}
-                            </label>
-                            <textarea
-                              id="helper-text"
-                              row="1"
-                              value={answerData?.answer}
-                              disabled
-                              className="bg-gray-50 border border-gray-300 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                            />
-                          </div>
-                        )}
+                            <div className="w-full">
+                              <label
+                                htmlFor="helper-text"
+                                class="block mb-2 text-md font-medium text-gray-900 dark:text-white"
+                              >
+                                {i18n.language === "en"
+                                  ? "Answer"
+                                  : "Câu trả lời"}
+                              </label>
+                              <textarea
+                                id="helper-text"
+                                row="1"
+                                value={answerData?.answer}
+                                disabled
+                                className="bg-gray-50 border border-gray-300 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                              />
+                            </div>
+                          )}
 
                         <div className="flex items-center justify-start gap-6 py-4 w-full">
                           {selectedProducts8[0]?.statusId === "S5" && (

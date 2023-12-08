@@ -1,6 +1,6 @@
-import React, { useRef } from "react";
-import { useState, useEffect } from "react";
-import { toast, ToastContainer } from "react-toastify";
+import React,{ useRef } from "react";
+import { useState,useEffect } from "react";
+import { toast,ToastContainer } from "react-toastify";
 import Select from "react-select";
 import MdEditor from "react-markdown-editor-lite";
 import MarkdownIt from "markdown-it";
@@ -27,39 +27,39 @@ import { emit_new_notification_from_system } from "../../../utils/socket_client"
 import nodata from "../../../assets/image/nodata.png";
 
 const NotificationSystem = () => {
-  const [loading, setLoading] = useState(true);
-  const [notifyCheckState, setNotifyCheckState] = useState("");
-  const [user, setUser] = useState([]);
-  const [detail, setDetail] = useState("");
-  const [contentHtml, setContentHtml] = useState("");
-  const [title, setTitle] = useState("");
-  const [previewImage, setPreviewImage] = useState("");
-  const [image, setImage] = useState("");
-  const [action, setAction] = useState("");
-  const [isUpdateNotify, setIsUpdateNotify] = useState(false);
-  const [dataUpdateNotify, setDataUpdateNotify] = useState();
-  const [isDeleteNotify, setIsDeleteNotify] = useState(false);
-  const [dataDeleteNotify, setDataDeleteNotify] = useState();
-  const [notifyData, setNotifyData] = useState({});
-  const [pageCurrent, setPageCurrent] = useState(1);
-  const [countNotifyData, setCountNotifyData] = useState([]);
-  const { i18n, t } = useTranslation();
+  const [loading,setLoading] = useState(true);
+  const [notifyCheckState,setNotifyCheckState] = useState("");
+  const [user,setUser] = useState([]);
+  const [detail,setDetail] = useState("");
+  const [contentHtml,setContentHtml] = useState("");
+  const [title,setTitle] = useState("");
+  const [previewImage,setPreviewImage] = useState("");
+  const [image,setImage] = useState("");
+  const [action,setAction] = useState("");
+  const [isUpdateNotify,setIsUpdateNotify] = useState(false);
+  const [dataUpdateNotify,setDataUpdateNotify] = useState();
+  const [isDeleteNotify,setIsDeleteNotify] = useState(false);
+  const [dataDeleteNotify,setDataDeleteNotify] = useState();
+  const [notifyData,setNotifyData] = useState({});
+  const [pageCurrent,setPageCurrent] = useState(1);
+  const [countNotifyData,setCountNotifyData] = useState([]);
+  const { i18n,t } = useTranslation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const mdParser = new MarkdownIt(/* Markdown-it options */);
   const userPotions_en = [
-    { value: "R3", label: "Student" },
-    { value: "R2", label: "Department" },
-    { value: "R4", label: "Faculty" },
-    { value: "R5", label: "Teacher" },
-    { value: "R6", label: "Student Health" },
+    { value: "R3",label: "Student" },
+    { value: "R2",label: "Department" },
+    { value: "R4",label: "Faculty" },
+    { value: "R5",label: "Teacher" },
+    { value: "R6",label: "Student Health" },
   ];
   const userPotions_vn = [
-    { value: "R3", label: "Sinh viên" },
-    { value: "R2", label: "Phòng ban" },
-    { value: "R4", label: "Khoa/Viện" },
-    { value: "R5", label: "Giảng viên" },
-    { value: "R6", label: "Ban Sức khoẻ Sinh viên" },
+    { value: "R3",label: "Sinh viên" },
+    { value: "R2",label: "Phòng ban" },
+    { value: "R4",label: "Khoa/Viện" },
+    { value: "R5",label: "Giảng viên" },
+    { value: "R6",label: "Ban Sức khoẻ Sinh viên" },
   ];
 
   const inputFileRef = useRef();
@@ -77,7 +77,7 @@ const NotificationSystem = () => {
           setLoading(false);
         }
       });
-  }, []);
+  },[]);
 
   useEffect(() => {
     if (action) {
@@ -112,7 +112,7 @@ const NotificationSystem = () => {
           }
         });
     }
-  }, [action, pageCurrent]);
+  },[action,pageCurrent]);
 
   const handleNavigatePage = (page) => setPageCurrent(page);
 
@@ -123,10 +123,9 @@ const NotificationSystem = () => {
       if (file?.size > 400000) {
         inputFileRef.current.value = "";
         toast.error(
-          `${
-            i18n.language === "en"
-              ? "This image is too big, please use image size < 400KB"
-              : "Ảnh hiện tại quá lớn. Vui lòng sử dụng ảnh dưới 400KB"
+          `${i18n.language === "en"
+            ? "This image is too big, please use image size < 400KB"
+            : "Ảnh hiện tại quá lớn. Vui lòng sử dụng ảnh dưới 400KB"
           }`,
           {
             autoClose: 3000,
@@ -147,15 +146,15 @@ const NotificationSystem = () => {
     }
   };
 
-  function handleEditorChange({ html, text }) {
+  function handleEditorChange({ html,text }) {
     setContentHtml(html);
     setDetail(text);
   }
 
   const handleCheckNullState = () => {
     let result = true;
-    const stateArr = [user?.length, title, detail];
-    const notification_en = ["User", "Title", "Detail"];
+    const stateArr = [user?.length,title,detail];
+    const notification_en = ["User","Title","Detail"];
     const notification_vi = [
       "Trường người dùng",
       "Trường tiêu đề",
@@ -220,16 +219,16 @@ const NotificationSystem = () => {
           isNew: 1,
         });
       }
-      await createNotifySystem({}, { notifyData }).then((res) => {
+      await createNotifySystem({},{ notifyData }).then((res) => {
         if (res?.codeNumber === -1) {
-          toast.error(`${t("system.notification.fail")}`, {
+          toast.error(`${t("system.notification.fail")}`,{
             autoClose: 2000,
             position: "bottom-right",
             theme: "colored",
           });
           setLoading(false);
         } else if (res?.codeNumber === -2) {
-          toast.error(`${t("system.token.mess")}`, {
+          toast.error(`${t("system.token.mess")}`,{
             autoClose: 5000,
             position: "bottom-right",
             theme: "colored",
@@ -243,9 +242,9 @@ const NotificationSystem = () => {
                 );
               }
             });
-          }, 5000);
+          },5000);
         } else if (res?.codeNumber === 1) {
-          toast.error(res?.message, {
+          toast.error(res?.message,{
             autoClose: 2000,
             position: "bottom-right",
             theme: "colored",
@@ -283,7 +282,7 @@ const NotificationSystem = () => {
                 inputFileRef.current.value = "";
                 setPreviewImage("");
                 setLoading(false);
-                toast.success(`${t("system.notification.create")}`, {
+                toast.success(`${t("system.notification.create")}`,{
                   autoClose: 2000,
                   position: "bottom-right",
                   theme: "colored",
@@ -335,34 +334,34 @@ const NotificationSystem = () => {
       setNotifyCheckState("");
       const body = image
         ? {
-            notifyId: dataUpdateNotify?.id,
-            notifyData: {
-              content: detail,
-              contentHtml,
-              title,
-              image,
-              roleManager: user[0]?.value ? user[0].value : user.value,
-            },
-          }
+          notifyId: dataUpdateNotify?.id,
+          notifyData: {
+            content: detail,
+            contentHtml,
+            title,
+            image,
+            roleManager: user[0]?.value ? user[0].value : user.value,
+          },
+        }
         : {
-            notifyId: dataUpdateNotify?.id,
-            notifyData: {
-              content: detail,
-              contentHtml,
-              title,
-              roleManager: user[0]?.value ? user[0].value : user.value,
-            },
-          };
-      updateNotifySystem({}, body).then(async (res) => {
+          notifyId: dataUpdateNotify?.id,
+          notifyData: {
+            content: detail,
+            contentHtml,
+            title,
+            roleManager: user[0]?.value ? user[0].value : user.value,
+          },
+        };
+      updateNotifySystem({},body).then(async (res) => {
         if (res?.codeNumber === -1) {
-          toast.error(`${t("system.notification.fail")}`, {
+          toast.error(`${t("system.notification.fail")}`,{
             autoClose: 2000,
             position: "bottom-right",
             theme: "colored",
           });
           setLoading(false);
         } else if (res?.codeNumber === -2) {
-          toast.error(`${t("system.token.mess")}`, {
+          toast.error(`${t("system.token.mess")}`,{
             autoClose: 5000,
             position: "bottom-right",
             theme: "colored",
@@ -376,9 +375,9 @@ const NotificationSystem = () => {
                 );
               }
             });
-          }, 5000);
+          },5000);
         } else if (res?.codeNumber === 1) {
-          toast.error(res?.message, {
+          toast.error(res?.message,{
             autoClose: 2000,
             position: "bottom-right",
             theme: "colored",
@@ -419,7 +418,7 @@ const NotificationSystem = () => {
                   pageCurrent: res?.pageCurrent,
                   pageTotal: res?.pageTotal,
                 });
-                toast.success(`${t("system.notification.update")}`, {
+                toast.success(`${t("system.notification.update")}`,{
                   autoClose: 2000,
                   position: "bottom-right",
                   theme: "colored",
@@ -460,14 +459,14 @@ const NotificationSystem = () => {
       roleManager: dataDeleteNotify?.roleManager,
     }).then(async (res) => {
       if (res?.codeNumber === -1) {
-        toast.error(`${t("system.notification.fail")}`, {
+        toast.error(`${t("system.notification.fail")}`,{
           autoClose: 2000,
           position: "bottom-right",
           theme: "colored",
         });
         setLoading(false);
       } else if (res?.codeNumber === -2) {
-        toast.error(`${t("system.token.mess")}`, {
+        toast.error(`${t("system.token.mess")}`,{
           autoClose: 5000,
           position: "bottom-right",
           theme: "colored",
@@ -479,9 +478,9 @@ const NotificationSystem = () => {
               navigate(`${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`);
             }
           });
-        }, 5000);
+        },5000);
       } else if (res?.codeNumber === 1) {
-        toast.error(res?.message, {
+        toast.error(res?.message,{
           autoClose: 2000,
           position: "bottom-right",
           theme: "colored",
@@ -524,7 +523,7 @@ const NotificationSystem = () => {
                 pageCurrent: res?.pageCurrent,
                 pageTotal: res?.pageTotal,
               });
-              toast.success(`${t("system.notification.delete")}`, {
+              toast.success(`${t("system.notification.delete")}`,{
                 autoClose: 2000,
                 position: "bottom-right",
                 theme: "colored",
@@ -543,7 +542,7 @@ const NotificationSystem = () => {
       <div className="w-full" style={{ height: "100px" }}></div>
       <div
         className="mt-3 flex flex-col mx-auto pb-10"
-        style={{ maxWidth: "80%", width: "80%" }}
+        style={{ maxWidth: "80%",width: "80%" }}
       >
         <ToastContainer />
         <p className="mx-auto text-2xl text-blue-500 font-semibold">
@@ -556,7 +555,7 @@ const NotificationSystem = () => {
           }`}
           // type="text"
           // onClick={() => setIsCreateUser(true)}
-          style={{ maxWidth: "20%", width: "20%" }}
+          style={{ maxWidth: "20%",width: "20%" }}
         >
           {i18n.language === "en" ? "Create new notification" : "Tạo thông báo"}
         </div>
@@ -663,11 +662,10 @@ const NotificationSystem = () => {
           </div>
           <div className="flex items-center gap-5">
             <button
-              className={`${
-                isUpdateNotify ? "bg-backColor" : "bg-blue-500"
-              } text-white
+              className={`${isUpdateNotify ? "bg-backColor" : "bg-blue-500"
+                } text-white
               } text-white mt-6 py-2 px-1 font-semibold rounded-md shadow backdrop-blur-md bg-opacity-100 hover:bg-opacity-80`}
-              style={{ maxWidth: "15%", width: "15%" }}
+              style={{ maxWidth: "15%",width: "15%" }}
               onClick={
                 isUpdateNotify
                   ? () => handleUpdateNotify()
@@ -681,7 +679,7 @@ const NotificationSystem = () => {
             {isUpdateNotify && (
               <button
                 className={`text-white mt-6 py-2 px-1 font-semibold rounded-md shadow backdrop-blur-md bg-opacity-100 hover:bg-opacity-80 bg-blue-500`}
-                style={{ maxWidth: "10%", width: "10%" }}
+                style={{ maxWidth: "10%",width: "10%" }}
                 onClick={() => handleCloseUpdateUser()}
               >
                 {t("system.department.close")}
@@ -703,7 +701,7 @@ const NotificationSystem = () => {
                 }`}
           // type="text"
           // onClick={() => setIsCreateUser(true)}
-          style={{ maxWidth: "20%", width: "calc(20% - 1.25rem)" }}
+          style={{ maxWidth: "20%",width: "calc(20% - 1.25rem)" }}
         >
           {i18n.language === "en"
             ? "Notification Management"
@@ -714,11 +712,10 @@ const NotificationSystem = () => {
           <button
             type="button"
             class={`hover:bg-blue-800 transition-all duration-500  hover:text-white  focus:ring-4 focus:ring-blue-300 font-medium rounded-lg px-5 py-2.5  mb-2 focus:outline-none
-                      ${
-                        action === "R3"
-                          ? "text-white bg-blue-800"
-                          : "text-gray-400 bg-white border border-gray-600"
-                      }`}
+                      ${action === "R3"
+                ? "text-white bg-blue-800"
+                : "text-gray-400 bg-white border border-gray-600"
+              }`}
             onClick={() => setAction("R3")}
           >
             {i18n.language === "en"
@@ -728,11 +725,10 @@ const NotificationSystem = () => {
           <button
             type="button"
             class={`hover:bg-blue-800 transition-all duration-500  hover:text-white  focus:ring-4 focus:ring-blue-300 font-medium rounded-lg px-5 py-2.5  mb-2 focus:outline-none
-                      ${
-                        action === "R2"
-                          ? "text-white bg-blue-800"
-                          : "text-gray-400 bg-white border border-gray-600"
-                      }`}
+                      ${action === "R2"
+                ? "text-white bg-blue-800"
+                : "text-gray-400 bg-white border border-gray-600"
+              }`}
             onClick={() => setAction("R2")}
           >
             {i18n.language === "en"
@@ -742,11 +738,10 @@ const NotificationSystem = () => {
           <button
             type="button"
             class={`hover:bg-blue-800 transition-all duration-500  hover:text-white  focus:ring-4 focus:ring-blue-300 font-medium rounded-lg px-5 py-2.5  mb-2 focus:outline-none
-                      ${
-                        action === "R4"
-                          ? "text-white bg-blue-800"
-                          : "text-gray-400 bg-white border border-gray-600"
-                      }`}
+                      ${action === "R4"
+                ? "text-white bg-blue-800"
+                : "text-gray-400 bg-white border border-gray-600"
+              }`}
             onClick={() => setAction("R4")}
           >
             {i18n.language === "en"
@@ -756,25 +751,23 @@ const NotificationSystem = () => {
           <button
             type="button"
             class={`hover:bg-blue-800 transition-all duration-500  hover:text-white  focus:ring-4 focus:ring-blue-300 font-medium rounded-lg px-5 py-2.5  mb-2 focus:outline-none
-                      ${
-                        action === "R5"
-                          ? "text-white bg-blue-800"
-                          : "text-gray-400 bg-white border border-gray-600"
-                      }`}
+                      ${action === "R5"
+                ? "text-white bg-blue-800"
+                : "text-gray-400 bg-white border border-gray-600"
+              }`}
             onClick={() => setAction("R5")}
           >
             {i18n.language === "en"
-              ? `Teacher (${countNotifyData[4]})`
-              : `Giảng viên (${countNotifyData[4]})`}
+              ? `Teacher (${countNotifyData[3]})`
+              : `Giảng viên (${countNotifyData[3]})`}
           </button>
           <button
             type="button"
             class={`hover:bg-blue-800 transition-all duration-500  hover:text-white  focus:ring-4 focus:ring-blue-300 font-medium rounded-lg px-5 py-2.5  mb-2 focus:outline-none
-                      ${
-                        action === "R6"
-                          ? "text-white bg-blue-800"
-                          : "text-gray-400 bg-white border border-gray-600"
-                      }`}
+                      ${action === "R6"
+                ? "text-white bg-blue-800"
+                : "text-gray-400 bg-white border border-gray-600"
+              }`}
             onClick={() => setAction("R6")}
           >
             {i18n.language === "en"
@@ -786,7 +779,7 @@ const NotificationSystem = () => {
         {action ? (
           <div className="notify w-full py-8 mx-auto flex flex-col items-start justify-start gap-8">
             {notifyData?.notify?.length > 0 ? (
-              notifyData?.notify.map((item, index) => {
+              notifyData?.notify.map((item,index) => {
                 return (
                   <div
                     key={index}

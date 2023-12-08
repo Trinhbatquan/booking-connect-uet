@@ -1,6 +1,6 @@
-import React, { Fragment, useEffect, useRef, useState } from "react";
+import React,{ Fragment,useEffect,useRef,useState } from "react";
 
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { Link,NavLink,useLocation } from "react-router-dom";
 import { FaBars } from "react-icons/fa";
 import { MdContactSupport } from "react-icons/md";
 import { useTranslation } from "react-i18next";
@@ -12,21 +12,21 @@ import "./HomeHeader.scss";
 import { path } from "../../utils/constant";
 import { BsFillPersonFill } from "react-icons/bs";
 import { GoBell } from "react-icons/go";
-import { IoMdArrowDropdown, IoMdArrowDropup } from "react-icons/io";
+import { IoMdArrowDropdown,IoMdArrowDropup } from "react-icons/io";
 import { MdOutlineEmail } from "react-icons/md";
-import { AiFillEdit, AiFillUnlock } from "react-icons/ai";
+import { AiFillEdit,AiFillUnlock } from "react-icons/ai";
 import { BiLogOutCircle } from "react-icons/bi";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion,AnimatePresence } from "framer-motion";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { logOutApi, logOutHomePageApi } from "../../services/userService";
+import { logOutApi,logOutHomePageApi } from "../../services/userService";
 import { logOutUser } from "../../redux/studentSlice";
 import { IoMdEye } from "react-icons/io";
 import { BsEyeSlash } from "react-icons/bs";
 import { RiDeleteBack2Fill } from "react-icons/ri";
 import { updateStudent } from "../../services/studentService";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer,toast } from "react-toastify";
 import { handleMessageFromBackend } from "../../utils/handleMessageFromBackend";
 import { socket } from "../../index";
 import moment from "moment";
@@ -54,19 +54,19 @@ import surveyImage from "../../assets/image/survey.png";
 //connect_socket_backend
 
 const HomeHeader = ({ action }) => {
-  const { t, i18n } = useTranslation();
+  const { t,i18n } = useTranslation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const pathName = useLocation()?.pathname;
 
   //update password
-  const [isUpdatePassword, setIsUpdatePassword] = useState(false);
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [notifyCheckState, setNotifyCheckState] = useState("");
-  const [eye, setEye] = useState(false);
-  const [isOpenMentalSurvey, setIsOpenMentalSurvey] = useState(false);
+  const [isUpdatePassword,setIsUpdatePassword] = useState(false);
+  const [currentPassword,setCurrentPassword] = useState("");
+  const [newPassword,setNewPassword] = useState("");
+  const [confirmPassword,setConfirmPassword] = useState("");
+  const [notifyCheckState,setNotifyCheckState] = useState("");
+  const [eye,setEye] = useState(false);
+  const [isOpenMentalSurvey,setIsOpenMentalSurvey] = useState(false);
   const currentUser = useSelector((state) => state.studentReducer);
   const countNewNotificationRedux = useSelector(
     (state) => state.socketNotifyHomepageReducer.countNewNotifyHomePage
@@ -82,9 +82,9 @@ const HomeHeader = ({ action }) => {
   //   (state) => state.socketNotifyHomepageReducer.pathNameOfNotifySeeAll
   // );
 
-  const [isPathNameOfNotifySeeAll, setIsPathNameOfNotifySeeAll] =
+  const [isPathNameOfNotifySeeAll,setIsPathNameOfNotifySeeAll] =
     useState(false);
-  const [countNewNotification, setCountNewNotification] = useState(
+  const [countNewNotification,setCountNewNotification] = useState(
     countNewNotificationRedux
   );
 
@@ -107,7 +107,7 @@ const HomeHeader = ({ action }) => {
     setIsPathNameOfNotifySeeAll(false);
   }
   useEffect(() => {
-    let divProfile, divLanguage;
+    let divProfile,divLanguage;
     const handleClickDivLanguage = () => {
       languageDropDownRef.current.classList.toggle("appear");
     };
@@ -136,42 +136,42 @@ const HomeHeader = ({ action }) => {
       }
     }
     divLanguage = document.querySelector(".header_homepage_language");
-    divLanguage.addEventListener("click", handleClickDivLanguage);
-    document.addEventListener("click", handleClickOutDiv);
+    divLanguage.addEventListener("click",handleClickDivLanguage);
+    document.addEventListener("click",handleClickOutDiv);
     if (JSON.parse(localStorage.getItem("auth-bookingCare-UET_student"))) {
       divProfile = document.querySelector(".header_homepage_profile");
 
-      divProfile.addEventListener("click", handleClickDivProfile);
+      divProfile.addEventListener("click",handleClickDivProfile);
     }
 
     return () => {
       console.log("running");
-      document.removeEventListener("click", handleClickOutDiv);
-      divLanguage.removeEventListener("click", handleClickDivLanguage);
+      document.removeEventListener("click",handleClickOutDiv);
+      divLanguage.removeEventListener("click",handleClickDivLanguage);
       if (JSON.parse(localStorage.getItem("auth-bookingCare-UET_student"))) {
         if (divProfile) {
-          divProfile.removeEventListener("click", handleClickDivProfile);
+          divProfile.removeEventListener("click",handleClickDivProfile);
         }
       }
     };
-  }, []);
+  },[]);
 
   useEffect(() => {
     const listenNewUpdateBookingFromBackend = (data) => {
       console.log("action" + JSON.stringify(data));
 
-      const { studentId, type, actionId } = data;
+      const { studentId,type,actionId } = data;
       if (studentId === currentUser?.id) {
         if (actionId === "A2") {
           if (type === "done") {
             toast.info(
               i18n.language === "en"
                 ? `A question has recently answered. Check now! (${moment(
-                    new Date()
-                  ).calendar()})`
+                  new Date()
+                ).calendar()})`
                 : `Một câu hỏi của bạn vừa được trả lời. Kiểm tra ngay! (${moment(
-                    new Date()
-                  ).calendar()})`,
+                  new Date()
+                ).calendar()})`,
               {
                 autoClose: 5000,
                 theme: "colored",
@@ -184,11 +184,11 @@ const HomeHeader = ({ action }) => {
             toast.info(
               i18n.language === "en"
                 ? `A appointment has recently approved. Check now! (${moment(
-                    new Date()
-                  ).calendar()})`
+                  new Date()
+                ).calendar()})`
                 : `Một lịch hẹn của bạn vừa được chấp nhận. Kiểm tra ngay! (${moment(
-                    new Date()
-                  ).calendar()})`,
+                  new Date()
+                ).calendar()})`,
               {
                 autoClose: 5000,
                 theme: "colored",
@@ -199,11 +199,11 @@ const HomeHeader = ({ action }) => {
             toast.info(
               i18n.language === "en"
                 ? `A appointment has recently finished. Thanks for your using! (${moment(
-                    new Date()
-                  ).calendar()})`
+                  new Date()
+                ).calendar()})`
                 : `Một lịch hẹn của bạn vừa được xác nhận hoàn thành. Cảm ơn vì đã sử dụng dịch vụ! (${moment(
-                    new Date()
-                  ).calendar()})`,
+                  new Date()
+                ).calendar()})`,
               {
                 autoClose: 5000,
                 theme: "colored",
@@ -214,11 +214,11 @@ const HomeHeader = ({ action }) => {
             toast.info(
               i18n.language === "en"
                 ? `Ohhh! A appointment has recently canceled. Please find the reason of the cancelation. (${moment(
-                    new Date()
-                  ).calendar()})`
+                  new Date()
+                ).calendar()})`
                 : `Ohhh! Một lịch hẹn của bạn vừa bị huỷ. Vui lòng tìm hiểu lý do huỷ. (${moment(
-                    new Date()
-                  ).calendar()})`,
+                  new Date()
+                ).calendar()})`,
               {
                 autoClose: 5000,
                 theme: "colored",
@@ -247,16 +247,17 @@ const HomeHeader = ({ action }) => {
     };
 
     const listenCheckEventBookingScheduleComingFromBackend = (data) => {
+      console.log(data);
       const { studentId } = data;
       if (studentId && studentId === currentUser?.id) {
         toast.info(
           i18n.language === "en"
             ? `You have an appointment tomorrow. Check now! (${moment(
-                new Date()
-              ).calendar()})`
+              new Date()
+            ).calendar()})`
             : `Bạn có một lịch hẹn vào ngày mai. Kiểm tra ngay! (${moment(
-                new Date()
-              ).calendar()})`,
+              new Date()
+            ).calendar()})`,
           {
             autoClose: 5000,
             theme: "colored",
@@ -283,17 +284,17 @@ const HomeHeader = ({ action }) => {
     };
 
     const listenNewNotifyFromSystem = (data) => {
-      const { dataRoleManager, time } = data;
+      const { dataRoleManager,time } = data;
       const checkRole = dataRoleManager.includes(currentUser?.role);
       if (checkRole) {
         toast.info(
           i18n.language === "en"
             ? `You recently had a new notification from system (${moment(
-                time
-              ).calendar()}).`
+              time
+            ).calendar()}).`
             : `Bạn vừa có một thông báo mới từ hệ thống (${moment(
-                time
-              ).calendar()}).`,
+              time
+            ).calendar()}).`,
           {
             autoClose: 5000,
             theme: "colored",
@@ -324,7 +325,7 @@ const HomeHeader = ({ action }) => {
       !socket.hasListeners("new_notification_for_student_about_update_booking")
     ) {
       console.log("listen");
-      socket.on("new_notification_for_student_about_update_booking", (data) =>
+      socket.on("new_notification_for_student_about_update_booking",(data) =>
         listenNewUpdateBookingFromBackend(data)
       );
     }
@@ -334,7 +335,7 @@ const HomeHeader = ({ action }) => {
       !socket.hasListeners("check_event_booking_schedule_coming")
     ) {
       console.log("listen1");
-      socket.on("check_event_booking_schedule_coming", (data) =>
+      socket.on("check_event_booking_schedule_coming",(data) =>
         listenCheckEventBookingScheduleComingFromBackend(data)
       );
     }
@@ -343,7 +344,7 @@ const HomeHeader = ({ action }) => {
       JSON.parse(localStorage.getItem("auth-bookingCare-UET_student")) &&
       !socket.hasListeners("new_notification_system")
     ) {
-      socket.on("new_notification_system", (data) =>
+      socket.on("new_notification_system",(data) =>
         listenNewNotifyFromSystem(data)
       );
     }
@@ -358,9 +359,9 @@ const HomeHeader = ({ action }) => {
         "check_event_booking_schedule_coming",
         listenCheckEventBookingScheduleComingFromBackend
       );
-      socket.off("new_notification_system", listenNewNotifyFromSystem);
+      socket.off("new_notification_system",listenNewNotifyFromSystem);
     };
-  }, []);
+  },[]);
 
   useEffect(() => {
     //getCountNewNotify
@@ -378,7 +379,7 @@ const HomeHeader = ({ action }) => {
           }
         });
     }
-  }, []);
+  },[]);
 
   const handleChangeLanguages = (language) => {
     i18n.changeLanguage(language);
@@ -395,7 +396,7 @@ const HomeHeader = ({ action }) => {
   };
 
   const handleUpdatePassword = () => {
-    const stateArr = [currentPassword, newPassword, confirmPassword];
+    const stateArr = [currentPassword,newPassword,confirmPassword];
     const notification_en = [
       "Current Password",
       "New password",
@@ -459,8 +460,8 @@ const HomeHeader = ({ action }) => {
             }
           );
         } else {
-          const response = handleMessageFromBackend(data, i18n.language);
-          toast.error(response, {
+          const response = handleMessageFromBackend(data,i18n.language);
+          toast.error(response,{
             autoClose: 3000,
             theme: "colored",
             position: "bottom-right",
@@ -475,7 +476,7 @@ const HomeHeader = ({ action }) => {
                   );
                 }
               });
-            }, 5000);
+            },5000);
           }
         }
       });
@@ -494,6 +495,8 @@ const HomeHeader = ({ action }) => {
       });
     } else {
       navigate(`${path.HOMEPAGE}/${path.notify}`);
+      dispatch(setChangeNotifyIcon(false));
+
     }
   };
 
@@ -513,7 +516,7 @@ const HomeHeader = ({ action }) => {
           <div>
             <div
               className=""
-              style={{ color: "#1d5193", fontSize: "15px", fontWeight: "700" }}
+              style={{ color: "#1d5193",fontSize: "15px",fontWeight: "700" }}
             >
               {t("header.UET")}
             </div>
@@ -527,25 +530,25 @@ const HomeHeader = ({ action }) => {
             {JSON.parse(
               localStorage.getItem("auth-bookingCare-UET_student")
             ) && (
-              <div
-                className="relative cursor-pointer pr-2 flex items-center justify-center gap-2"
-                onClick={() => handleResetNotify()}
-              >
-                {changeNotifyIcon ? (
-                  <TbBellRinging className="bell relative -top-[1px] text-blurThemeColor text-xl" />
-                ) : (
-                  <GoBell className="text-blurThemeColor text-xl relative -top-[1px]" />
-                )}
-                {+countNewNotificationRedux > 0 && (
-                  <div className="absolute right-[68px] -top-[12px] flex items-center justify-center w-6 h-5 p-1 text-white bg-red-600 rounded-full">
-                    <span className="text-xs">{`${countNewNotificationRedux}+`}</span>
-                  </div>
-                )}
-                <span className="text-sm">
-                  {i18n.language === "en" ? "Notification" : "Thông báo"}
-                </span>
-              </div>
-            )}
+                <div
+                  className="relative cursor-pointer pr-2 flex items-center justify-center gap-2"
+                  onClick={() => handleResetNotify()}
+                >
+                  {changeNotifyIcon ? (
+                    <TbBellRinging className="bell relative -top-[1px] text-blurThemeColor text-xl" />
+                  ) : (
+                    <GoBell className="text-blurThemeColor text-xl relative -top-[1px]" />
+                  )}
+                  {+countNewNotificationRedux > 0 && (
+                    <div className="absolute right-[68px] -top-[12px] flex items-center justify-center w-6 h-5 p-1 text-white bg-red-600 rounded-full">
+                      <span className="text-xs">{`${countNewNotificationRedux}+`}</span>
+                    </div>
+                  )}
+                  <span className="text-sm">
+                    {i18n.language === "en" ? "Notification" : "Thông báo"}
+                  </span>
+                </div>
+              )}
             <div className="relative">
               {i18n.language === "vi" ? (
                 <div
@@ -597,9 +600,8 @@ const HomeHeader = ({ action }) => {
               >
                 <li className="">
                   <div
-                    className={`text-center rounded-sm py-[4px] mx-[5px] my-[3px] hover:bg-gray-300 ${
-                      i18n.language === "vi" ? "bg-gray-300" : "bg-white"
-                    }`}
+                    className={`text-center rounded-sm py-[4px] mx-[5px] my-[3px] hover:bg-gray-300 ${i18n.language === "vi" ? "bg-gray-300" : "bg-white"
+                      }`}
                     onClick={() => handleChangeLanguages("vi")}
                   >
                     {i18n.language === "en" ? "Vietnamese" : "Tiếng Việt"}
@@ -607,9 +609,8 @@ const HomeHeader = ({ action }) => {
                 </li>
                 <li className="mt-1">
                   <div
-                    className={`text-center rounded-sm py-[4px] mx-[5px] my-[3px] hover:bg-gray-300 ${
-                      i18n.language === "en" ? "bg-gray-300" : "bg-white"
-                    }`}
+                    className={`text-center rounded-sm py-[4px] mx-[5px] my-[3px] hover:bg-gray-300 ${i18n.language === "en" ? "bg-gray-300" : "bg-white"
+                      }`}
                     onClick={() => handleChangeLanguages("en")}
                   >
                     {i18n.language === "en" ? "English" : "Tiếng Anh"}
@@ -629,17 +630,16 @@ const HomeHeader = ({ action }) => {
                   <div
                     className="flex items-center justify-center rounded-full bg-blue-700 text-white
                             "
-                    style={{ width: "30px", height: "30px", fontSize: "15px" }}
+                    style={{ width: "30px",height: "30px",fontSize: "15px" }}
                   >
-                    {currentUser?.fullName.slice(0, 1)}
+                    {currentUser?.fullName.slice(0,1)}
                   </div>
                   <div
                     className="flex items-center justify-start gap-0.5 text-black "
                     style={{ fontSize: "13px" }}
                   >
-                    {`${currentUser?.fullName} - #${
-                      currentUser?.email.split("@")[0]
-                    }`}
+                    {`${currentUser?.fullName} - #${currentUser?.email.split("@")[0]
+                      }`}
                   </div>
                 </div>
 
@@ -672,10 +672,10 @@ const HomeHeader = ({ action }) => {
                         <div
                           className="flex items-center justify-center rounded-full bg-blue-700 text-white
                             absolute top-0 right-0 bottom-0 left-0 w-full h-full m-auto"
-                          style={{ width: "60px", height: "60px" }}
+                          style={{ width: "60px",height: "60px" }}
                         >
                           <span className="" style={{ fontSize: "30px" }}>
-                            {currentUser?.fullName.slice(0, 1)}
+                            {currentUser?.fullName.slice(0,1)}
                           </span>
                         </div>
                       </div>
@@ -777,8 +777,8 @@ const HomeHeader = ({ action }) => {
                 style={({ isActive }) =>
                   isActive
                     ? {
-                        color: "#1d5193",
-                      }
+                      color: "#1d5193",
+                    }
                     : {}
                 }
               >
@@ -790,8 +790,8 @@ const HomeHeader = ({ action }) => {
                 style={({ isActive }) =>
                   isActive
                     ? {
-                        color: "#1d5193",
-                      }
+                      color: "#1d5193",
+                    }
                     : {}
                 }
               >
@@ -807,8 +807,8 @@ const HomeHeader = ({ action }) => {
                 style={({ isActive }) =>
                   isActive
                     ? {
-                        color: "#1d5193",
-                      }
+                      color: "#1d5193",
+                    }
                     : {}
                 }
               >
@@ -817,13 +817,13 @@ const HomeHeader = ({ action }) => {
 
               <div
                 className="relative navigation text-md text-black hover:text-blue-700"
-                // style={({ isActive }) =>
-                //   isActive
-                //     ? {
-                //         color: "#1d5193",
-                //       }
-                //     : { color: "#000" }
-                // }
+              // style={({ isActive }) =>
+              //   isActive
+              //     ? {
+              //         color: "#1d5193",
+              //       }
+              //     : { color: "#000" }
+              // }
               >
                 {/* <span className="flex items-center justify-center gap-1">
                 {i18n.language === "en" ? "STUDENT HANDBOOK" : "SỔ TAY SINH VIÊN"}
@@ -858,8 +858,8 @@ const HomeHeader = ({ action }) => {
                 style={({ isActive }) =>
                   isActive
                     ? {
-                        color: "#1d5193",
-                      }
+                      color: "#1d5193",
+                    }
                     : { color: "#000" }
                 }
               >
@@ -941,10 +941,10 @@ const HomeHeader = ({ action }) => {
         <AnimatePresence>
           {isUpdatePassword && (
             <motion.div
-              initial={{ opacity: 0, translateY: -50 }}
-              animate={{ opacity: 1, translateY: 0 }}
-              exit={{ opacity: 0, translateY: -50 }}
-              transition={{ duration: 0.4, delay: 0.1 }}
+              initial={{ opacity: 0,translateY: -50 }}
+              animate={{ opacity: 1,translateY: 0 }}
+              exit={{ opacity: 0,translateY: -50 }}
+              transition={{ duration: 0.4,delay: 0.1 }}
               className="modal-update-password-dropdown fixed top-1 w-[60%] flex flex-col h-auto bg-white rounded-lg shadow backdrop-blur-md mx-auto mt-16 py-3 px-5 overflow-hidden"
               style={{ left: "20%" }}
             >
@@ -1025,14 +1025,14 @@ const HomeHeader = ({ action }) => {
               <div className="flex items-center justify-between">
                 <button
                   className={`bg-blurThemeColor text-white mt-6 py-2 px-1 font-semibold rounded-md shadow backdrop-blur-md bg-opacity-80 hover:bg-opacity-100`}
-                  style={{ maxWidth: "15%", width: "15%" }}
+                  style={{ maxWidth: "15%",width: "15%" }}
                   onClick={() => handleUpdatePassword()}
                 >
                   {t("system.teacher.save")}
                 </button>
                 <button
                   className={` text-white mt-6 py-2 px-1 font-semibold rounded-md shadow backdrop-blur-md bg-opacity-80 hover:bg-opacity-100 bg-green-600`}
-                  style={{ maxWidth: "10%", width: "10%" }}
+                  style={{ maxWidth: "10%",width: "10%" }}
                   onClick={() => setIsUpdatePassword(false)}
                 >
                   {t("system.teacher.close")}
@@ -1049,10 +1049,10 @@ const HomeHeader = ({ action }) => {
         {isOpenMentalSurvey && (
           <AnimatePresence>
             <motion.div
-              initial={{ opacity: 0, translateY: -50 }}
-              animate={{ opacity: 1, translateY: 0 }}
-              exit={{ opacity: 0, translateY: -50 }}
-              transition={{ duration: 0.4, delay: 0.1 }}
+              initial={{ opacity: 0,translateY: -50 }}
+              animate={{ opacity: 1,translateY: 0 }}
+              exit={{ opacity: 0,translateY: -50 }}
+              transition={{ duration: 0.4,delay: 0.1 }}
               className="fixed modal-update-password-overlay top-0 bottom-0 flex items-center justify-center mx-auto left-0 right-0 w-full max-h-full bg-black bg-opacity-25"
             >
               <div
@@ -1090,7 +1090,7 @@ const HomeHeader = ({ action }) => {
                     <button
                       class={`flex gap-1 px-5 w-[60%] py-1.5 transition-all ease-in duration-150 items-center justify-center overflow-hidden text-md font-semibold border border-blue-500 bg-blue-500 text-white rounded-2xl hover:bg-blue-600 
             `}
-                      // onClick={() => handleRefreshNotification()}
+                    // onClick={() => handleRefreshNotification()}
                     >
                       <span class="">Khảo sát ngay</span>
                     </button>
