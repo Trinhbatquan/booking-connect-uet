@@ -355,65 +355,68 @@ const registerHomePageService = (
             "Một email đã gửi đến tài khoản của bạn. Vui lòng xác minh.",
         });
       } else if (exist?.status && !exist?.user?.verified) {
-        const checkPassword = await bcrypt.compare(
-          password,
-          exist.user.password
-        );
-        if (!checkPassword) {
-          resolve({
-            codeNumber: 3,
-            message_en: "Password is wrong. Please try again.",
-            message_vn: "Mật khẩu sai. Vui lòng thử lại.",
-          });
-        } else {
-          let token = crypto.AES.encrypt(
-            email,
-            process.env.SECRET_KEY_STUDENT
-          ).toString();
-
-          const [,created] = await db.TokenEmail.findOrCreate({
+        // const checkPassword = await bcrypt.compare(
+        //   password,
+        //   exist.user.password
+        // );
+        await db.Student.update(
+          {
+            password: hashPs
+          },
+          {
             where: {
-              userId: exist?.user?.id,
-              roleId: "R3",
-              action: "verifyEmail",
-            },
-            defaults: {
-              userId: exist?.user?.id,
-              roleId: "R3",
-              token: token,
-              action: "verifyEmail",
-            },
-          });
-          if (!created) {
-            await db.TokenEmail.update(
-              {
-                token: token,
-              },
-              {
-                where: {
-                  userId: exist?.user?.id,
-                  roleId: "R3",
-                  action: "verifyEmail",
-                },
-              }
-            );
+              id: exist?.user?.id
+            }
           }
-          token = encodeURIComponent(token);
-          const url = `${process.env.BASE_URL_FRONTEND}/${process.env.HOMEPAGE}/users/${exist.user.id}/verify/${token}`;
-          await sendEmail({
-            email,
-            studentData: exist.user,
-            subject: "Xác thực đăng ký tài khoản",
-            link: url,
-            type: "verifyEmail",
-          });
-          resolve({
-            codeNumber: 2,
-            message_en: "An Email sent to your account. Please verify.",
-            message_vn:
-              "Một email đã gửi đến tài khoản của bạn. Vui lòng xác minh.",
-          });
+        );
+        let token = crypto.AES.encrypt(
+          email,
+          process.env.SECRET_KEY_STUDENT
+        ).toString();
+
+        const [,created] = await db.TokenEmail.findOrCreate({
+          where: {
+            userId: exist?.user?.id,
+            roleId: "R3",
+            action: "verifyEmail",
+          },
+          defaults: {
+            userId: exist?.user?.id,
+            roleId: "R3",
+            token: token,
+            action: "verifyEmail",
+          },
+        });
+        if (!created) {
+          await db.TokenEmail.update(
+            {
+              token: token,
+            },
+            {
+              where: {
+                userId: exist?.user?.id,
+                roleId: "R3",
+                action: "verifyEmail",
+              },
+            }
+          );
         }
+        token = encodeURIComponent(token);
+        const url = `${process.env.BASE_URL_FRONTEND}/${process.env.HOMEPAGE}/users/${exist.user.id}/verify/${token}`;
+        await sendEmail({
+          email,
+          studentData: exist.user,
+          subject: "Xác thực đăng ký tài khoản",
+          link: url,
+          type: "verifyEmail",
+        });
+        resolve({
+          codeNumber: 2,
+          message_en: "An Email sent to your account. Please verify.",
+          message_vn:
+            "Một email đã gửi đến tài khoản của bạn. Vui lòng xác minh.",
+        });
+
       } else if (exist?.status && exist?.user?.verified) {
         // const checkPassword = await bcrypt.compare(
         //   password,
@@ -501,11 +504,13 @@ const verificationEmailService = (req) => {
       const user = await db.Student.findOne({
         where: { id: req.query.id },
       });
-      if (!user)
+      if (!user) {
         resolve({
           codeNumber: 1,
           message: "Invalid Link",
         });
+        return;
+      }
 
       const checkToken = await db.TokenEmail.findOne({
         where: {
@@ -514,11 +519,13 @@ const verificationEmailService = (req) => {
           action: "verifyEmail",
         },
       });
-      if (!checkToken)
+      if (!checkToken) {
         resolve({
           codeNumber: 1,
           message: "Invalid Link",
         });
+        return;
+      }
       //check expires of token email (crypto aes encrypt)
       // allow exist into 1 hour
       // console.log(checkToken.updatedAt + 7 * 60 * 60);
@@ -527,11 +534,13 @@ const verificationEmailService = (req) => {
       // console.log(new Date(Date.now()));
       // console.log(new Date());
       const date_now = new Date(Date.now()).getTime();
-      if (Math.abs(Math.floor((date_now - updateTime) / 1000)) > 1 * 60 * 60) {
+      if (Math.abs(Math.floor((date_now - updateTime) / 1000)) > 1 * 10 * 60) {
         resolve({
-          codeNumber: 1,
-          message: "Invalid Link",
+          codeNumber: 2,
+          message_vn: "Token hết hạn. Vui lòng đăng ký lại để nhận link mới.",
+          message_en: "Token is expired. Please sign up again to take new link",
         });
+        return;
       }
 
       await db.Student.update(
@@ -583,6 +592,7 @@ const sendEmailToUpdatePassHomePageService = (email) => {
           message_en: "This Account is not exist. Please sign up.",
           message_vn: "Tài khoản không tồn tại. Vui lòng đăng ký.",
         });
+        return;
       } else if (user && !user.verified) {
         resolve({
           codeNumber: 1,
@@ -590,6 +600,7 @@ const sendEmailToUpdatePassHomePageService = (email) => {
           message_vn:
             "Tài khoản này chưa được xác minh. Vui lòng đăng ký để xác minh.",
         });
+        return;
       }
       const checkToken = await db.TokenEmail.findOne({
         where: {
@@ -672,6 +683,7 @@ const verifyAndUpdatePassHomePageService = (email,token,password) => {
           code: 1,
           message: "Invalid Link 1",
         });
+        return;
       }
 
       console.log("tokenUser " + tokenEnCode);
@@ -685,11 +697,13 @@ const verifyAndUpdatePassHomePageService = (email,token,password) => {
       });
       console.log(checkToken?.token);
       // console.log(checkToken?.token + "\n" + token);
-      if (!checkToken)
+      if (!checkToken) {
         resolve({
           codeNumber: 1,
           message: "Invalid Link 2",
         });
+        return;
+      }
       //check expires of token email (crypto aes encrypt)
       // allow exist into 5 minutes
       // console.log(checkToken.updatedAt + 7 * 60 * 60);
@@ -710,6 +724,7 @@ const verifyAndUpdatePassHomePageService = (email,token,password) => {
           message_en: "Token is expired. Please click into Send new link.",
           message_vn: "Token đã hết hạn. Vui lòng nhấn vào Gửi link mới.",
         });
+        return;
       }
 
       //  const filter = { email };
@@ -777,6 +792,7 @@ const sendEmailToUpdatePassSystemService = (email) => {
               message_vn:
                 "Tài khoản không tồn tại. Vui lòng sử dụng tài khoản khác.",
             });
+            return;
           }
         }
       }
@@ -881,11 +897,12 @@ const verifyAndUpdatePassSystemService = (
       });
       console.log(checkToken?.token);
       // console.log(checkToken?.token + "\n" + token);
-      if (!checkToken)
+      if (!checkToken) {
         resolve({
           codeNumber: 1,
           message: "Invalid Link 2",
         });
+      }
       //check expires of token email (crypto aes encrypt)
       // allow exist into 5 minutes
       // console.log(checkToken.updatedAt + 7 * 60 * 60);
@@ -906,6 +923,7 @@ const verifyAndUpdatePassSystemService = (
           message_en: "Token is expired. Please click into Send new link.",
           message_vn: "Token đã hết hạn. Vui lòng nhấn vào Gửi link mới.",
         });
+        return;
       }
 
       //  const filter = { email };

@@ -14,12 +14,16 @@ let isIntervalRunning = false;
 
 const connectSocket = (io) => {
   io.on("connect",(socket) => {
+    console.log("connect")
     //check_connect_client
     socket.emit("connected",null);
 
     //listen for creating booking
     socket.on("create_booking",(data) => {
       //notify the booking for user
+      console.log("--------------------")
+      console.log("--------------------")
+      console.log("--------------------")
       socket.broadcast.emit("new_booking",{
         ...data,
       });

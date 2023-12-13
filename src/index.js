@@ -28,12 +28,7 @@ const io = new Server(server,{
     //response header return access-control-allow-credential: true ==> Oke
   },
 });
-// io.on("connection", (socket) => {
-//   console.log("new client " + socket.id);
-//   console.log("new client " + socket.data);
 
-//   socket.emit("connected", null);
-// });
 
 // middleware
 /* dữ liệu client gửi lên thường là JSON (vd: axios tự động convert từ oj sang json) 
@@ -50,14 +45,30 @@ app.use(cookieParser()); //set vào req.cookie một object với key là cookie
 configViewEngine(app);
 
 //config client request
-app.use(
-  cors({
-    origin: true,
-    credentials: true,
-    //fix cross blocked
-    //response header return access-control-allow-credential: true ==> Oke
-  })
-);
+// app.use(
+//   cors({
+//     origin: true,
+//     credentials: true,
+//     //fix cross blocked
+//     //response header return access-control-allow-credential: true ==> Oke
+//   })
+// );
+// app.use((req,res,next) => {
+//   // res.header("Access-Control-Allow-Origin","*");
+//   res.header("Access-Control-Allow-Methods","GET, POST, PUT, DELETE");
+//   res.header(
+//     "Access-Control-Allow-Headers",
+//     "Origin, X-Requested-With, Content-Type, Accept"
+//   );
+//   res.header('Access-Control-Allow-Credentials','true');
+//   next();
+// });
+
+
+
+app.use(cors({ origin: true,credentials: true,}));
+
+
 
 //test connect database xampp
 const connectDatabase = async () => {

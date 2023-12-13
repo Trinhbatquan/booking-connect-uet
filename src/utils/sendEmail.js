@@ -25,14 +25,15 @@ module.exports = async ({
     port: Number(process.env.EMAIL_PORT),
     secure: Boolean(process.env.SECURE),
     auth: {
-      user: `${process.env.USER}${process.env.USER_SUB}`,
+      user: `${process.env.USERMAIL}${process.env.USER_SUBMAIL}`,
       pass: process.env.PASS,
     },
   });
+  console.log(`${process.env.USERMAIL}${process.env.USER_SUBMAIL}`)
 
   if (type === "verifyEmail") {
     await transporter.sendMail({
-      from: `Quản trị viên của Hệ thống hỗ trợ đặt lịch hẹn UET: <${process.env.USER}${process.env.USER_SUB}>`,
+      from: `Quản trị viên của Hệ thống hỗ trợ đặt lịch hẹn UET: <${process.env.USERMAIL}${process.env.USER_SUBMAIL}>`,
       to: email,
       subject,
       html: `
@@ -49,7 +50,7 @@ module.exports = async ({
     console.log("email sent successfully");
   } else if (type === "forgotPass") {
     await transporter.sendMail({
-      from: `Quản trị viên của Hệ thống hỗ trợ đặt lịch hẹn UET: <${process.env.USER}${process.env.USER_SUB}>`,
+      from: `Quản trị viên của Hệ thống hỗ trợ đặt lịch hẹn UET: <${process.env.USERMAIL}${process.env.USER_SUBMAIL}>`,
       to: email,
       subject,
       html: `
@@ -65,40 +66,36 @@ module.exports = async ({
     });
     console.log("email sent successfully");
   } else if (type === "booking-schedule-success") {
-    const { date, time, role } = bookingData;
+    const { date,time,role } = bookingData;
     await transporter.sendMail({
-      from: `Quản trị viên của Hệ thống hỗ trợ đặt lịch hẹn UET: <${process.env.USER}${process.env.USER_SUB}>`,
+      from: `Quản trị viên của Hệ thống hỗ trợ đặt lịch hẹn UET: <${process.env.USERMAIL}${process.env.USER_SUBMAIL}>`,
       to: email,
       subject,
       html: `
       <h3>Xin chào ${studentData?.fullName}</h3>
       <h3>Email: ${studentData?.email}</h3>
-      <p>Bạn đã đặt lịch hẹn gặp mặt trao đổi với ${
-        role === "R5" ? "Giảng viên" : "Đơn vị"
-      } ${managerData.fullName} vào ${date} với thời gian ${time}. </p>
-      <p>Lịch hẹn của bạn đã được chấp nhận bởi ${
-        role === "R5" ? "Giảng viên" : "Đơn vị"
-      } ${managerData.fullName}.</p>
+      <p>Bạn đã đặt lịch hẹn gặp mặt trao đổi với ${role === "R5" ? "Giảng viên" : "Đơn vị"
+        } ${managerData.fullName} vào ${date} với thời gian ${time}. </p>
+      <p>Lịch hẹn của bạn đã được chấp nhận bởi ${role === "R5" ? "Giảng viên" : "Đơn vị"
+        } ${managerData.fullName}.</p>
       <p>Vui lòng ghi nhớ thời gian cũng như địa điểm gặp mặt. Chúc buổi trao đổi của bạn thành công.</p>
       <p>Xin chân thành cảm ơn bạn.</p>
       `,
     });
     console.log("email sent successfully");
   } else if (type === "booking-schedule-cancel") {
-    const { date, time, role, reasonCancel } = bookingData;
+    const { date,time,role,reasonCancel } = bookingData;
     await transporter.sendMail({
-      from: `Quản trị viên của Hệ thống hỗ trợ đặt lịch hẹn UET: <${process.env.USER}${process.env.USER_SUB}>`,
+      from: `Quản trị viên của Hệ thống hỗ trợ đặt lịch hẹn UET: <${process.env.USERMAIL}${process.env.USER_SUBMAIL}>`,
       to: email,
       subject,
       html: `
       <h3>Xin chào ${studentData?.fullName}</h3>
       <h3>Email: ${studentData?.email}</h3>
-      <p>Bạn đã đặt lịch hẹn gặp mặt trao đổi với ${
-        role === "R3" ? "Giảng viên" : "Đơn vị"
-      } ${managerData.fullName} vào ${date} với thời gian ${time}. </p>
-      <p>Tuy nhiên, lịch hẹn của bạn đã bị huỷ bởi ${
-        role === "R3" ? "Giảng viên" : "Đơn vị"
-      } ${managerData.fullName}.</p>
+      <p>Bạn đã đặt lịch hẹn gặp mặt trao đổi với ${role === "R3" ? "Giảng viên" : "Đơn vị"
+        } ${managerData.fullName} vào ${date} với thời gian ${time}. </p>
+      <p>Tuy nhiên, lịch hẹn của bạn đã bị huỷ bởi ${role === "R3" ? "Giảng viên" : "Đơn vị"
+        } ${managerData.fullName}.</p>
       <p>Lý do huỷ lịch hẹn: ${reasonCancel}</p>
       <p>Rất xin lỗi bạn vì sự cố này. Mong bạn thông cảm và có sự điều chỉnh một lịch hẹn khác</p>
       <p>Xin chân thành cảm ơn bạn.</p>
@@ -106,42 +103,37 @@ module.exports = async ({
     });
     console.log("email sent successfully");
   } else if (type === "booking-schedule-done") {
-    const { date, time, role } = bookingData;
+    const { date,time,role } = bookingData;
     await transporter.sendMail({
-      from: `Quản trị viên của Hệ thống hỗ trợ đặt lịch hẹn UET: <${process.env.USER}${process.env.USER_SUB}>`,
+      from: `Quản trị viên của Hệ thống hỗ trợ đặt lịch hẹn UET: <${process.env.USERMAIL}${process.env.USER_SUBMAIL}>`,
       to: email,
       subject,
       html: `
       <h3>Xin chào ${studentData?.fullName}</h3>
       <h3>Email: ${studentData?.email}</h3>
-      <p>Bạn đã đặt lịch hẹn gặp mặt trao đổi với ${
-        role === "R5" ? "Giảng viên" : "Đơn vị"
-      } ${managerData.fullName} vào ${date} với thời gian ${time}. </p>
-      <p>Buổi hẹn của bạn đã được xác nhận hoàn thành bởi ${
-        role === "R5" ? "Giảng viên" : "Đơn vị"
-      } ${managerData.fullName}.</p>
+      <p>Bạn đã đặt lịch hẹn gặp mặt trao đổi với ${role === "R5" ? "Giảng viên" : "Đơn vị"
+        } ${managerData.fullName} vào ${date} với thời gian ${time}. </p>
+      <p>Buổi hẹn của bạn đã được xác nhận hoàn thành bởi ${role === "R5" ? "Giảng viên" : "Đơn vị"
+        } ${managerData.fullName}.</p>
       <p>Mong buổi hẹn vừa rồi đã giải quyết được những thắc mắc của bạn. Để hệ thống trở nên tốt hơn, vui lòng đưa ra những đánh giá về hệ thống trong phần "Khảo sát --> Ý kiến sinh viên"</p>
       <p>Xin chân thành cảm ơn bạn.</p>
       `,
     });
     console.log("email sent successfully");
   } else if (type === "question-done") {
-    const { role, subjectQuestion, answer } = bookingData;
+    const { role,subjectQuestion,answer } = bookingData;
     await transporter.sendMail({
-      from: `Quản trị viên của Hệ thống hỗ trợ đặt lịch hẹn UET: <${process.env.USER}${process.env.USER_SUB}>`,
+      from: `Quản trị viên của Hệ thống hỗ trợ đặt lịch hẹn UET: <${process.env.USERMAIL}${process.env.USER_SUBMAIL}>`,
       to: email,
       subject,
       html: `
       <h3>Xin chào ${studentData?.fullName}</h3>
       <h3>Email: ${studentData?.email}</h3>
-      <p>Bạn đã đặt câu hỏi cho ${role === "R5" ? "Giảng viên" : "Đơn vị"} ${
-        managerData.fullName
-      } với nội dung về ${subjectQuestion}. </p>
-      <p>Câu hỏi của bạn đã được trả lời bỏi ${
-        role === "R5" ? "Giảng viên" : "Đơn vị"
-      } ${
-        managerData.fullName
-      } như sau: (Bạn có thể kéo dãn để nhìn thấy toàn bộ câu trả lời)</p>
+      <p>Bạn đã đặt câu hỏi cho ${role === "R5" ? "Giảng viên" : "Đơn vị"} ${managerData.fullName
+        } với nội dung về ${subjectQuestion}. </p>
+      <p>Câu hỏi của bạn đã được trả lời bỏi ${role === "R5" ? "Giảng viên" : "Đơn vị"
+        } ${managerData.fullName
+        } như sau: (Bạn có thể kéo dãn để nhìn thấy toàn bộ câu trả lời)</p>
       <textarea id="w3review" name="w3review">
         ${answer}
       </textarea>
@@ -151,19 +143,17 @@ module.exports = async ({
     });
     console.log("email sent successfully");
   } else if (type === "notify-checking-manager") {
-    const { role, reason, date, timeType, address } = bookingData;
+    const { role,reason,date,timeType,address } = bookingData;
     await transporter.sendMail({
-      from: `Quản trị viên của Hệ thống hỗ trợ đặt lịch hẹn UET: <${process.env.USER}${process.env.USER_SUB}>`,
+      from: `Quản trị viên của Hệ thống hỗ trợ đặt lịch hẹn UET: <${process.env.USERMAIL}${process.env.USER_SUBMAIL}>`,
       to: email,
       subject,
       html: `
-      <h3>Xin chào ${role === "R5" ? "Giảng viên" : "Đơn vị"} ${
-        managerData?.fullName
-      }</h3>
+      <h3>Xin chào ${role === "R5" ? "Giảng viên" : "Đơn vị"} ${managerData?.fullName
+        }</h3>
       <h3>Email: ${managerData?.email}</h3>
-      <p>Bạn có lịch hẹn trao đổi với sinh viên ${
-        studentData.fullName
-      } với nội dung về ${reason}. </p>
+      <p>Bạn có lịch hẹn trao đổi với sinh viên ${studentData.fullName
+        } với nội dung về ${reason}. </p>
      <p>Lưu ý rằng cuộc họp sẽ diễn ra vào [ngày mai] ${date} trong khoảng thời gian ${timeType} tại ${address}.</p>
      <p>Chúc bạn có một buổi thảo luận thành công.</p>
       <p>Xin chân thành cảm ơn bạn.</p>
@@ -171,17 +161,16 @@ module.exports = async ({
     });
     console.log("email sent successfully");
   } else if (type === "notify-checking-student") {
-    const { role, reason, date, timeType, address } = bookingData;
+    const { role,reason,date,timeType,address } = bookingData;
     await transporter.sendMail({
-      from: `Quản trị viên của Hệ thống hỗ trợ đặt lịch hẹn UET: <${process.env.USER}${process.env.USER_SUB}>`,
+      from: `Quản trị viên của Hệ thống hỗ trợ đặt lịch hẹn UET: <${process.env.USERMAIL}${process.env.USER_SUBMAIL}>`,
       to: email,
       subject,
       html: `
         <h3>Xin chào sinh viên ${studentData.fullName}</h3>
       <h3>Email: ${studentData?.email}</h3>
-      <p>Bạn có lịch hẹn trao đổi với ${
-        role === "R5" ? "Giảng viên" : "Đơn vị"
-      } ${managerData?.fullName} với nội dung về ${reason}. </p>
+      <p>Bạn có lịch hẹn trao đổi với ${role === "R5" ? "Giảng viên" : "Đơn vị"
+        } ${managerData?.fullName} với nội dung về ${reason}. </p>
      <p>Lưu ý rằng cuộc họp sẽ diễn ra vào [ngày mai] ${date} trong khoảng thời gian ${timeType} tại ${address}</p>
      <p>Chúc bạn có một buổi thảo luận thành công.</p>
       <p>Xin chân thành cảm ơn bạn.</p>
@@ -189,17 +178,16 @@ module.exports = async ({
     });
     console.log("email sent successfully");
   } else if (type === "new-appointment") {
-    const { role, reason, date, timeType, address } = bookingData;
+    const { role,reason,date,timeType,address } = bookingData;
     await transporter.sendMail({
-      from: `Quản trị viên của Hệ thống hỗ trợ đặt lịch hẹn UET: <${process.env.USER}${process.env.USER_SUB}>`,
+      from: `Quản trị viên của Hệ thống hỗ trợ đặt lịch hẹn UET: <${process.env.USERMAIL}${process.env.USER_SUBMAIL}>`,
       to: email,
       subject,
       html: `
         <h3>Xin chào sinh viên ${studentData.fullName}</h3>
       <h3>Email: ${studentData?.email}</h3>
-      <p>Bạn đã đặt lịch hẹn với ${role === "R5" ? "Giảng viên" : "Đơn vị"} ${
-        managerData?.fullName
-      } với nội dung về ${reason}. </p>
+      <p>Bạn đã đặt lịch hẹn với ${role === "R5" ? "Giảng viên" : "Đơn vị"} ${managerData?.fullName
+        } với nội dung về ${reason}. </p>
      <p>Lịch trình cuộc gặp mặt: vào ${date} trong khoảng thời gian ${timeType} tại ${address}</p>
      <p>Lịch hẹn đã được chuyển đến người nhận và đang chờ xác nhận từ họ. Vui lòng theo dõi thông tin trên email và website để cập nhật trạng thái lịch hẹn của bạn.</p>
       <p>Xin chân thành cảm ơn bạn.</p>
@@ -207,17 +195,16 @@ module.exports = async ({
     });
     console.log("email sent successfully");
   } else if (type === "new-question") {
-    const { role, subjectQuestion } = bookingData;
+    const { role,subjectQuestion } = bookingData;
     await transporter.sendMail({
-      from: `Quản trị viên của Hệ thống hỗ trợ đặt lịch hẹn UET: <${process.env.USER}${process.env.USER_SUB}>`,
+      from: `Quản trị viên của Hệ thống hỗ trợ đặt lịch hẹn UET: <${process.env.USERMAIL}${process.env.USER_SUBMAIL}>`,
       to: email,
       subject,
       html: `
       <h3>Xin chào ${studentData?.fullName}</h3>
       <h3>Email: ${studentData?.email}</h3>
-      <p>Bạn đã đặt câu hỏi cho ${role === "R5" ? "Giảng viên" : "Đơn vị"} ${
-        managerData.fullName
-      } với nội dung về ${subjectQuestion}. </p>
+      <p>Bạn đã đặt câu hỏi cho ${role === "R5" ? "Giảng viên" : "Đơn vị"} ${managerData.fullName
+        } với nội dung về ${subjectQuestion}. </p>
       <p>Câu hỏi đã được gửi đến người nhận và đang chờ câu trả lời từ họ. Vui lòng theo dõi thông tin trên email và website để nhận được câu trả lời sớm nhất.</p>
       <p>Xin chân thành cảm ơn bạn.</p>
       `,
