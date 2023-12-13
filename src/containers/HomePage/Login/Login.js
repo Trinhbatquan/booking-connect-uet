@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React,{ useEffect,useState,useRef } from "react";
 import { BsEyeSlash } from "react-icons/bs";
 import { IoMdEye } from "react-icons/io";
 import { useDispatch } from "react-redux";
@@ -8,7 +8,7 @@ import { path } from "../../../utils/constant";
 
 import "./Login.scss";
 import { loginHomePageApi } from "../../../services/userService";
-import { loginUserFailed, loginUserSucceed } from "../../../redux/studentSlice";
+import { loginUserFailed,loginUserSucceed } from "../../../redux/studentSlice";
 import Loading from "./../../../utils/Loading";
 import { select_faculty } from "../../../utils/constant";
 
@@ -16,43 +16,43 @@ import { FaPencilAlt } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 import HomeHeader from "../HomeHeader";
 import { useTranslation } from "react-i18next";
-import { toast, ToastContainer } from "react-toastify";
+import { toast,ToastContainer } from "react-toastify";
 
 const Login = () => {
   //login
-  const [focusEmail_login, setFocusEmail_login] = useState(false);
-  const [focusPassword_login, setFocusPassword_login] = useState(false);
-  const [eye_login, setEye_login] = useState(false);
-  const [email_login, setEmail_login] = useState("");
-  const [password_login, setPassword_login] = useState("");
-  const [messageLogin, setMessageLogin] = useState("");
+  const [focusEmail_login,setFocusEmail_login] = useState(false);
+  const [focusPassword_login,setFocusPassword_login] = useState(false);
+  const [eye_login,setEye_login] = useState(false);
+  const [email_login,setEmail_login] = useState("");
+  const [password_login,setPassword_login] = useState("");
+  const [messageLogin,setMessageLogin] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   //register
-  const [focusFullName, setFocusFullName] = useState(false);
-  const [focusEmail_register, setFocusEmail_register] = useState(false);
-  const [focusPassword_register, setFocusPassword_register] = useState(false);
-  const [focusConformPassword_register, setFocusConformPassword_register] =
+  const [focusFullName,setFocusFullName] = useState(false);
+  const [focusEmail_register,setFocusEmail_register] = useState(false);
+  const [focusPassword_register,setFocusPassword_register] = useState(false);
+  const [focusConformPassword_register,setFocusConformPassword_register] =
     useState(false);
-  const [focusFaculty, setFocusFaculty] = useState(false);
-  const [focusClassroom, setFocusClassroom] = useState(false);
-  const [focusPhone, setFocusPhone] = useState(false);
-  const [eye_register, setEye_register] = useState(false);
-  const [fullName, setFullName] = useState("");
-  const [email_register, setEmail_register] = useState("");
-  const [password_register, setPassword_register] = useState("");
-  const [confirmPs, setConfirmPs] = useState("");
-  const [faculty, setFaculty] = useState("");
-  const [messageRegister, setMessageRegister] = useState("");
-  const [classroom, setClassroom] = useState("");
-  const [phone, setPhone] = useState("");
+  const [focusFaculty,setFocusFaculty] = useState(false);
+  const [focusClassroom,setFocusClassroom] = useState(false);
+  const [focusPhone,setFocusPhone] = useState(false);
+  const [eye_register,setEye_register] = useState(false);
+  const [fullName,setFullName] = useState("");
+  const [email_register,setEmail_register] = useState("");
+  const [password_register,setPassword_register] = useState("");
+  const [confirmPs,setConfirmPs] = useState("");
+  const [faculty,setFaculty] = useState("");
+  const [messageRegister,setMessageRegister] = useState("");
+  const [classroom,setClassroom] = useState("");
+  const [phone,setPhone] = useState("");
 
-  const [loading, setLoading] = useState(false);
+  const [loading,setLoading] = useState(false);
 
-  const [active, setActive] = useState(false);
+  const [active,setActive] = useState(false);
   const containerRef = useRef();
-  const { t, i18n } = useTranslation();
+  const { t,i18n } = useTranslation();
   //login
   const handleFocusPassword_login = () => {
     setFocusPassword_login(true);
@@ -67,16 +67,15 @@ const Login = () => {
   //check null state
   const handleCheckNullState_Login = () => {
     let result = true;
-    const stateArr = [email_login, password_login];
-    const notification_en = ["Email", "Password"];
-    const notification_vn = ["Trường Email", "Trường mật khẩu"];
+    const stateArr = [email_login,password_login];
+    const notification_en = ["Email","Password"];
+    const notification_vn = ["Trường Email","Trường mật khẩu"];
     for (let i = 0; i < stateArr.length; i++) {
       if (!stateArr[i]) {
         setMessageLogin(
-          `${
-            i18n.language === "en"
-              ? `${notification_en[i]} ${t("system.table.mess-2")}`
-              : `${notification_vn[i]} ${t("system.table.mess-2")}`
+          `${i18n.language === "en"
+            ? `${notification_en[i]} ${t("system.table.mess-2")}`
+            : `${notification_vn[i]} ${t("system.table.mess-2")}`
           }`
         );
         result = false;
@@ -112,7 +111,7 @@ const Login = () => {
       setLoading(true);
       setMessageLogin("");
       loginHomePageApi
-        .loginUser({}, { email: email_login, password: password_login })
+        .loginUser({},{ email: email_login,password: password_login })
         .then((data) => {
           if (data?.codeNumber === 0) {
             //success
@@ -140,7 +139,7 @@ const Login = () => {
     if (userInfo && userInfo?.isLogin === true && userInfo?.role === "R3") {
       navigate(`${path.HOMEPAGE}`);
     }
-  }, []);
+  },[]);
 
   const handleSignIn = () => {
     setActive(false);
@@ -210,10 +209,9 @@ const Login = () => {
     for (let i = 0; i < stateArr.length; i++) {
       if (!stateArr[i]) {
         setMessageRegister(
-          `${
-            i18n.language === "en"
-              ? `${notification_en[i]} ${t("system.table.mess-2")}`
-              : `${notification_vn[i]} ${t("system.table.mess-2")}`
+          `${i18n.language === "en"
+            ? `${notification_en[i]} ${t("system.table.mess-2")}`
+            : `${notification_vn[i]} ${t("system.table.mess-2")}`
           }`
         );
         result = false;
@@ -292,7 +290,7 @@ const Login = () => {
 
   return (
     <div className="login-register-homepage-container">
-      {console.log("render")}
+      {/* {console.log("render")} */}
       {loading && (
         <div className="fixed loading-overlay top-0 bottom-0 flex items-center justify-center mx-auto left-0 right-0 w-full max-h-full bg-black bg-opacity-25">
           <div className="absolute top-[50%] left-[50%]">
@@ -309,24 +307,22 @@ const Login = () => {
               {t("login_register.signin")}
             </div>
             <div
-              className={`${
-                messageLogin?.codeNumber === 2
+              className={`${messageLogin?.codeNumber === 2
                   ? "messageLogin-email"
                   : "messageLogin-text"
-              } text-center mt-1`}
+                } text-center mt-1`}
               style={
                 messageLogin || messageLogin?.codeNumber
                   ? { opacity: "1" }
                   : { opacity: "0" }
               }
             >
-              {`${
-                messageLogin?.message
+              {`${messageLogin?.message
                   ? messageLogin?.message
                   : messageLogin
-                  ? messageLogin
-                  : "none"
-              }`}
+                    ? messageLogin
+                    : "none"
+                }`}
             </div>
             <div className="flex items-center justify-center"></div>
             <div className="login-form w-2/3 flex flex-col items-start justify-center pb-4 mt-2">
@@ -341,11 +337,10 @@ const Login = () => {
                 onFocus={() => handleFocusEmail_login()}
                 onBlur={() => setFocusEmail_login(false)}
                 className={`w-full py-2 px-3 rounded-md placeholder:text-slate-400 outline-none
-                                  ${
-                                    focusEmail_login
-                                      ? "bg-white duration-200 transition-all"
-                                      : "bg-slate-200 duration-200 transition-all"
-                                  }
+                                  ${focusEmail_login
+                    ? "bg-white duration-200 transition-all"
+                    : "bg-slate-200 duration-200 transition-all"
+                  }
                                   `}
                 value={email_login}
                 id="email"
@@ -364,11 +359,10 @@ const Login = () => {
                 onFocus={() => handleFocusPassword_login()}
                 onBlur={() => setFocusPassword_login(false)}
                 className={`w-full py-2 px-3 rounded-md placeholder:text-slate-400 outline-none
-                                  ${
-                                    focusPassword_login
-                                      ? "bg-white duration-300 transition-all"
-                                      : "bg-slate-200 duration-300 transition-all"
-                                  }
+                                  ${focusPassword_login
+                    ? "bg-white duration-300 transition-all"
+                    : "bg-slate-200 duration-300 transition-all"
+                  }
                                   `}
                 value={password_login}
                 id="password"
@@ -413,24 +407,22 @@ const Login = () => {
               {t("login_register.signup")}
             </div>
             <div
-              className={`${
-                messageRegister?.codeNumber === 2
+              className={`${messageRegister?.codeNumber === 2
                   ? "messageRegister-email"
                   : "messageRegister-text"
-              } text-center mt-1`}
+                } text-center mt-1`}
               style={
                 messageRegister || messageRegister?.codeNumber
                   ? { opacity: "1" }
                   : { opacity: "0" }
               }
             >
-              {`${
-                messageRegister?.message
+              {`${messageRegister?.message
                   ? messageRegister?.message
                   : messageRegister
-                  ? messageRegister
-                  : "none"
-              }`}
+                    ? messageRegister
+                    : "none"
+                }`}
             </div>
             <div className="flex items-center justify-center"></div>
             <div className="register-form w-2/3 flex flex-col items-start justify-center pb-4 mt-2">
@@ -445,11 +437,10 @@ const Login = () => {
                 onFocus={() => handleFocusFullName_register()}
                 onBlur={() => setFocusFullName(false)}
                 className={`w-full py-2 px-3 rounded-md placeholder:text-slate-400 outline-none
-                                  ${
-                                    focusFullName
-                                      ? "bg-white duration-200 transition-all"
-                                      : "bg-slate-200 duration-200 transition-all"
-                                  }
+                                  ${focusFullName
+                    ? "bg-white duration-200 transition-all"
+                    : "bg-slate-200 duration-200 transition-all"
+                  }
                                   `}
                 value={fullName}
                 id="name_register"
@@ -468,11 +459,10 @@ const Login = () => {
                 onFocus={() => handleFocusEmail_register()}
                 onBlur={() => setFocusEmail_register(false)}
                 className={`w-full py-2 px-3 rounded-md placeholder:text-slate-400 outline-none
-                                  ${
-                                    focusEmail_register
-                                      ? "bg-white duration-200 transition-all"
-                                      : "bg-slate-200 duration-200 transition-all"
-                                  }
+                                  ${focusEmail_register
+                    ? "bg-white duration-200 transition-all"
+                    : "bg-slate-200 duration-200 transition-all"
+                  }
                                   `}
                 value={email_register}
                 id="email_re"
@@ -491,11 +481,10 @@ const Login = () => {
                 onFocus={() => handleFocusPassword_register()}
                 onBlur={() => setFocusPassword_register(false)}
                 className={`w-full py-2 px-3 rounded-md placeholder:text-slate-400 outline-none
-                                  ${
-                                    focusPassword_register
-                                      ? "bg-white duration-200 transition-all"
-                                      : "bg-slate-200 duration-200 transition-all"
-                                  }
+                                  ${focusPassword_register
+                    ? "bg-white duration-200 transition-all"
+                    : "bg-slate-200 duration-200 transition-all"
+                  }
                                   `}
                 value={password_register}
                 id="pass_re"
@@ -529,11 +518,10 @@ const Login = () => {
                 onFocus={() => handleFocusConfirmPassword_register()}
                 onBlur={() => setFocusConformPassword_register(false)}
                 className={`w-full py-2 px-3 rounded-md placeholder:text-slate-400 outline-none
-                                  ${
-                                    focusConformPassword_register
-                                      ? "bg-white duration-300 transition-all"
-                                      : "bg-slate-200 duration-300 transition-all"
-                                  }
+                                  ${focusConformPassword_register
+                    ? "bg-white duration-300 transition-all"
+                    : "bg-slate-200 duration-300 transition-all"
+                  }
                                   `}
                 value={confirmPs}
                 id="password"
@@ -553,11 +541,10 @@ const Login = () => {
               </label>
               <select
                 className={`w-full py-2 px-3 rounded-md text-sm placeholder:text-slate-400 outline-none
-                                  ${
-                                    focusFaculty
-                                      ? "bg-white duration-200 transition-all"
-                                      : "bg-slate-200 duration-200 transition-all"
-                                  }
+                                  ${focusFaculty
+                    ? "bg-white duration-200 transition-all"
+                    : "bg-slate-200 duration-200 transition-all"
+                  }
                                   `}
                 name="faculties"
                 id="faculties"
@@ -570,7 +557,7 @@ const Login = () => {
                   {i18n.language === "en" ? "Select---" : "Chọn---"}
                 </option>
                 {select_faculty?.length > 0 &&
-                  select_faculty?.map((e, i) => {
+                  select_faculty?.map((e,i) => {
                     return (
                       <option
                         key={i}
@@ -593,11 +580,10 @@ const Login = () => {
                 onFocus={() => handleFocusClassroom_register()}
                 onBlur={() => setFocusClassroom(false)}
                 className={`w-full py-2 px-3 rounded-md placeholder:text-slate-400 outline-none
-                                  ${
-                                    focusClassroom
-                                      ? "bg-white duration-200 transition-all"
-                                      : "bg-slate-200 duration-200 transition-all"
-                                  }
+                                  ${focusClassroom
+                    ? "bg-white duration-200 transition-all"
+                    : "bg-slate-200 duration-200 transition-all"
+                  }
                                   `}
                 value={classroom}
                 id="classroom"
@@ -616,11 +602,10 @@ const Login = () => {
                 onFocus={() => handleFocusPhone_register()}
                 onBlur={() => setFocusPhone(false)}
                 className={`w-full py-2 px-3 rounded-md placeholder:text-slate-400 outline-none
-                                  ${
-                                    focusPhone
-                                      ? "bg-white duration-200 transition-all"
-                                      : "bg-slate-200 duration-200 transition-all"
-                                  }
+                                  ${focusPhone
+                    ? "bg-white duration-200 transition-all"
+                    : "bg-slate-200 duration-200 transition-all"
+                  }
                                   `}
                 value={phone}
                 id="phone"
@@ -655,7 +640,7 @@ const Login = () => {
 
             <button class="btn btnSign-in" onClick={() => handleSignIn()}>
               {t("login_register.signup")}
-              {} <i class="bi bi-arrow-right"></i>
+              { } <i class="bi bi-arrow-right"></i>
             </button>
           </div>
 
@@ -670,7 +655,7 @@ const Login = () => {
             <button class="btn btnSign-up" onClick={() => handleSignUp()}>
               <i class="bi bi-arrow-left"></i>
               {t("login_register.signin")}
-              {}
+              { }
             </button>
           </div>
         </div>

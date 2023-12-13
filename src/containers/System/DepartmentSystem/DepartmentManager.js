@@ -1,11 +1,11 @@
 import "./DepartmentManager.scss";
-import React, { Fragment, useEffect, useState, useRef } from "react";
+import React,{ Fragment,useEffect,useState,useRef } from "react";
 import { Buffer } from "buffer";
 import { FiEdit } from "react-icons/fi";
 import { BsEyeSlash } from "react-icons/bs";
 import { IoMdEye } from "react-icons/io";
 import { AiOutlineDelete } from "react-icons/ai";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer,toast } from "react-toastify";
 import { BsPersonPlusFill } from "react-icons/bs";
 import { useContext } from "react";
 // import { ContextScrollTop } from "../RootSystem";
@@ -27,42 +27,42 @@ import { emitter } from "../../../utils/emitter";
 import Loading from "./../../../utils/Loading";
 import DeleteModal from "./../Modal/DeleteModal";
 import convertFileToBase64 from "../../../utils/convertFileToBase64";
-import { ascertain_user, path } from "../../../utils/constant";
+import { ascertain_user,path } from "../../../utils/constant";
 import { logOutUser } from "../../../redux/authSlice";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
-import { FilterMatchMode, FilterOperator } from "primereact/api";
+import { FilterMatchMode,FilterOperator } from "primereact/api";
 import { Ripple } from "primereact/ripple";
 import { Dropdown } from "primereact/dropdown";
 import { classNames } from "primereact/utils";
 
 const DepartmentManager = () => {
   // const [isCreateUser, setIsCreateUser] = useState(false);
-  const [isDeleteUser, setIsDeleteUser] = useState(false);
-  const [dataUserDelete, setDataUserDelete] = useState("");
-  const [isUpdateUser, setIsUpdateUser] = useState(false);
-  const [dataUserUpdate, setDataUserUpdate] = useState("");
+  const [isDeleteUser,setIsDeleteUser] = useState(false);
+  const [dataUserDelete,setDataUserDelete] = useState("");
+  const [isUpdateUser,setIsUpdateUser] = useState(false);
+  const [dataUserUpdate,setDataUserUpdate] = useState("");
 
-  const [users, setUsers] = useState([]);
-  const [eye, setEye] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [users,setUsers] = useState([]);
+  const [eye,setEye] = useState(false);
+  const [loading,setLoading] = useState(false);
   // const [genderAPI, setGenderAPI] = useState([]);
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [fullName, setFullName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [email,setEmail] = useState("");
+  const [password,setPassword] = useState("");
+  const [fullName,setFullName] = useState("");
+  const [phoneNumber,setPhoneNumber] = useState("");
   // const [avatar, setAvatar] = useState("");
-  const [address, setAddress] = useState("");
+  const [address,setAddress] = useState("");
   // const [gender, setGender] = useState("");
-  const [notifyCheckState, setNotifyCheckState] = useState("");
+  const [notifyCheckState,setNotifyCheckState] = useState("");
   // const [previewAvatar, setPreviewAvatar] = useState("");
 
   //scroll top
   // const scroll = useContext(ContextScrollTop);
-  const { t, i18n } = useTranslation();
+  const { t,i18n } = useTranslation();
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -70,15 +70,15 @@ const DepartmentManager = () => {
   const inputFileRef = useRef();
 
   //dataTable
-  const [filters1, setFilters1] = useState(null);
-  const [globalFilterValue1, setGlobalFilterValue1] = useState("");
-  const [selectedProducts8, setSelectedProducts8] = useState(null);
-  const [allRowSelected, setAllRowSelected] = useState(false);
+  const [filters1,setFilters1] = useState(null);
+  const [globalFilterValue1,setGlobalFilterValue1] = useState("");
+  const [selectedProducts8,setSelectedProducts8] = useState(null);
+  const [allRowSelected,setAllRowSelected] = useState(false);
   // const [currentPage, setCurrentPage] = useState();
-  const [first1, setFirst1] = useState(0);
-  const [rows1, setRows1] = useState(8);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageInputTooltip, setPageInputTooltip] = useState(
+  const [first1,setFirst1] = useState(0);
+  const [rows1,setRows1] = useState(8);
+  const [currentPage,setCurrentPage] = useState(1);
+  const [pageInputTooltip,setPageInputTooltip] = useState(
     i18n.language === "en"
       ? "Press 'Enter' key to go to this page."
       : "Sử dụng phím Enter để di chuyển trang."
@@ -99,7 +99,7 @@ const DepartmentManager = () => {
   const onPageInputChange = (event) => {
     setCurrentPage(event.target.value);
   };
-  const onPageInputKeyDown = (event, options) => {
+  const onPageInputKeyDown = (event,options) => {
     if (event.key === "Enter") {
       const page = parseInt(currentPage);
       if (page < 1 || page > options.totalPages) {
@@ -158,7 +158,7 @@ const DepartmentManager = () => {
         (options.view.endPage === options.page &&
           options.page + 1 !== options.totalPages)
       ) {
-        const className = classNames(options.className, { "p-disabled": true });
+        const className = classNames(options.className,{ "p-disabled": true });
 
         return (
           <span className={className} style={{ userSelect: "none" }}>
@@ -180,8 +180,8 @@ const DepartmentManager = () => {
     },
     RowsPerPageDropdown: (options) => {
       const dropdownOptions = [
-        { label: 8, value: 8 },
-        { label: 12, value: 12 },
+        { label: 8,value: 8 },
+        { label: 12,value: 12 },
         {
           label: i18n.language === "en" ? "All" : "Tất cả",
           value: options.totalRecords,
@@ -200,7 +200,7 @@ const DepartmentManager = () => {
       return (
         <span
           className="mx-3"
-          style={{ color: "var(--text-color)", userSelect: "none" }}
+          style={{ color: "var(--text-color)",userSelect: "none" }}
         >
           {i18n.language === "en" ? `Go to ` : `Đến `}
 
@@ -209,7 +209,7 @@ const DepartmentManager = () => {
             className="ml-1"
             value={currentPage}
             tooltip={pageInputTooltip}
-            onKeyDown={(e) => onPageInputKeyDown(e, options)}
+            onKeyDown={(e) => onPageInputKeyDown(e,options)}
             onChange={onPageInputChange}
           />
         </span>
@@ -220,10 +220,10 @@ const DepartmentManager = () => {
   //filter
   const initFilters1 = () => {
     setFilters1({
-      global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+      global: { value: null,matchMode: FilterMatchMode.CONTAINS },
       fullName: {
         operator: FilterOperator.AND,
-        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+        constraints: [{ value: null,matchMode: FilterMatchMode.STARTS_WITH }],
       },
     });
     setGlobalFilterValue1("");
@@ -259,9 +259,8 @@ const DepartmentManager = () => {
               type="button"
               // icon="pi pi-filter-slash"
               label={i18n.language === "en" ? "Delete" : "Xoá"}
-              className={`p-button-outlined ${
-                selectedProducts8?.length >= 1 ? "" : "disabled"
-              }`}
+              className={`p-button-outlined ${selectedProducts8?.length >= 1 ? "" : "disabled"
+                }`}
               onClick={() => handleDeleteManyData()}
             />
           )}
@@ -350,9 +349,9 @@ const DepartmentManager = () => {
     });
     setLoading(false);
     initFilters1();
-  }, []);
+  },[]);
 
-  const handleChangeEvent = (value, type) => {
+  const handleChangeEvent = (value,type) => {
     const stateArr = [
       "Email",
       "Password",
@@ -396,7 +395,7 @@ const DepartmentManager = () => {
 
   const handleCheckNullState = () => {
     let result = true;
-    const stateArr = [email, password, fullName, phoneNumber, address];
+    const stateArr = [email,password,fullName,phoneNumber,address];
     const notification_en = [
       "Email",
       "Password",
@@ -476,17 +475,17 @@ const DepartmentManager = () => {
         // gender,
         // image: avatar,
       };
-      console.log(body);
-      createUserApi.create({}, body).then(async (data) => {
+      // console.log(body);
+      createUserApi.create({},body).then(async (data) => {
         if (data?.codeNumber === -1) {
-          toast.error(`${t("system.notification.fail")}`, {
+          toast.error(`${t("system.notification.fail")}`,{
             autoClose: 2000,
             position: "bottom-right",
             theme: "colored",
           });
           setLoading(false);
         } else if (data?.codeNumber === -2) {
-          toast.error(`${t("system.token.mess")}`, {
+          toast.error(`${t("system.token.mess")}`,{
             autoClose: 5000,
             position: "bottom-right",
             theme: "colored",
@@ -500,9 +499,9 @@ const DepartmentManager = () => {
                 );
               }
             });
-          }, 5000);
+          },5000);
         } else if (data?.codeNumber === 1) {
-          toast.error(data?.message, {
+          toast.error(data?.message,{
             autoClose: 2000,
             position: "bottom-right",
             theme: "colored",
@@ -518,7 +517,7 @@ const DepartmentManager = () => {
           //     emitter.emit("CLEAR_DATA_MODAL");
           //   }
           // });
-          toast.success(`${t("system.notification.create")}`, {
+          toast.success(`${t("system.notification.create")}`,{
             autoClose: 2000,
             position: "bottom-right",
             theme: "colored",
@@ -623,7 +622,7 @@ const DepartmentManager = () => {
       // } else {
       //   setPreviewAvatar("");
       // }
-    }, 0);
+    },0);
   };
 
   const handleUpdateUser = () => {
@@ -637,16 +636,16 @@ const DepartmentManager = () => {
       type: ascertain_user.other,
       // image: avatar,
     };
-    updateUserApi.update({}, body).then(async (data) => {
+    updateUserApi.update({},body).then(async (data) => {
       if (data?.codeNumber === -1) {
-        toast.error(`${t("system.notification.fail")}`, {
+        toast.error(`${t("system.notification.fail")}`,{
           autoClose: 2000,
           position: "bottom-right",
           theme: "colored",
         });
         setLoading(false);
       } else if (data?.codeNumber === -2) {
-        toast.error(`${t("system.token.mess")}`, {
+        toast.error(`${t("system.token.mess")}`,{
           autoClose: 5000,
           position: "bottom-right",
           theme: "colored",
@@ -658,9 +657,9 @@ const DepartmentManager = () => {
               navigate(`${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`);
             }
           });
-        }, 5000);
+        },5000);
       } else if (data?.codeNumber === 1) {
-        toast.error(data?.message, {
+        toast.error(data?.message,{
           autoClose: 2000,
           position: "bottom-right",
           theme: "colored",
@@ -672,7 +671,7 @@ const DepartmentManager = () => {
             setUsers(data.user);
           }
         });
-        toast.success(`${t("system.notification.update")}`, {
+        toast.success(`${t("system.notification.update")}`,{
           autoClose: 2000,
           position: "bottom-right",
           theme: "colored",
@@ -717,19 +716,19 @@ const DepartmentManager = () => {
   };
   const deleteUser = async (idData) => {
     setLoading(true);
-    console.log(idData);
+    // console.log(idData);
     deleteUserApi
-      .delete({ id: idData, type: ascertain_user.other })
+      .delete({ id: idData,type: ascertain_user.other })
       .then((data) => {
         if (data?.codeNumber === -1) {
-          toast.error(`${t("system.notification.fail")}`, {
+          toast.error(`${t("system.notification.fail")}`,{
             autoClose: 2000,
             position: "bottom-right",
             theme: "colored",
           });
           setLoading(false);
         } else if (data?.codeNumber === -2) {
-          toast.error(`${t("system.token.mess")}`, {
+          toast.error(`${t("system.token.mess")}`,{
             autoClose: 5000,
             position: "bottom-right",
             theme: "colored",
@@ -743,9 +742,9 @@ const DepartmentManager = () => {
                 );
               }
             });
-          }, 5000);
+          },5000);
         } else if (data?.codeNumber === 1) {
-          toast.error(data?.message, {
+          toast.error(data?.message,{
             autoClose: 2000,
             position: "bottom-right",
             theme: "colored",
@@ -759,7 +758,7 @@ const DepartmentManager = () => {
               setDataUserDelete("");
               setIsDeleteUser(false);
               setSelectedProducts8([]);
-              toast.success(`${t("system.notification.delete")}`, {
+              toast.success(`${t("system.notification.delete")}`,{
                 autoClose: 2000,
                 position: "bottom-right",
                 theme: "colored",
@@ -771,7 +770,7 @@ const DepartmentManager = () => {
       });
   };
   const handleDeleteManyData = () => {
-    console.log(selectedProducts8);
+    // console.log(selectedProducts8);
     let data = [];
     if (allRowSelected) {
       data = selectedProducts8?.slice(
@@ -842,7 +841,7 @@ const DepartmentManager = () => {
                   type="email"
                   id="email"
                   value={email}
-                  onChange={(e) => handleChangeEvent(e.target.value, "Email")}
+                  onChange={(e) => handleChangeEvent(e.target.value,"Email")}
                   onFocus={() => setNotifyCheckState("")}
                   required
                   disabled={isUpdateUser ? true : false}
@@ -863,7 +862,7 @@ const DepartmentManager = () => {
                   type={`${eye ? "text" : "password"}`}
                   value={password}
                   onChange={(e) =>
-                    handleChangeEvent(e.target.value, "Password")
+                    handleChangeEvent(e.target.value,"Password")
                   }
                   onFocus={() => setNotifyCheckState("")}
                   disabled={isUpdateUser ? true : false}
@@ -897,7 +896,7 @@ const DepartmentManager = () => {
                   type="text"
                   value={fullName}
                   onChange={(e) =>
-                    handleChangeEvent(e.target.value, "FullName")
+                    handleChangeEvent(e.target.value,"FullName")
                   }
                   onFocus={() => setNotifyCheckState("")}
                   placeholder="VD: Phòng Công Tác Sinh Viên"
@@ -917,7 +916,7 @@ const DepartmentManager = () => {
                   type="text"
                   value={phoneNumber}
                   onChange={(e) =>
-                    handleChangeEvent(e.target.value, "PhoneNumber")
+                    handleChangeEvent(e.target.value,"PhoneNumber")
                   }
                   onFocus={() => setNotifyCheckState("")}
                 />
@@ -938,7 +937,7 @@ const DepartmentManager = () => {
                   id="address"
                   type="text"
                   value={address}
-                  onChange={(e) => handleChangeEvent(e.target.value, "Address")}
+                  onChange={(e) => handleChangeEvent(e.target.value,"Address")}
                   onFocus={() => setNotifyCheckState("")}
                   placeholder="VD: Phòng 235 Toà E3"
                 />
@@ -1016,10 +1015,9 @@ const DepartmentManager = () => {
 
             <div className="flex items-center gap-5">
               <button
-                className={`${
-                  isUpdateUser ? "bg-backColor" : "bg-blue-500"
-                } text-white mt-6 py-2 px-1 font-semibold rounded-md shadow backdrop-blur-md bg-opacity-100 hover:bg-opacity-80`}
-                style={{ maxWidth: "15%", width: "15%" }}
+                className={`${isUpdateUser ? "bg-backColor" : "bg-blue-500"
+                  } text-white mt-6 py-2 px-1 font-semibold rounded-md shadow backdrop-blur-md bg-opacity-100 hover:bg-opacity-80`}
+                style={{ maxWidth: "15%",width: "15%" }}
                 onClick={
                   isUpdateUser
                     ? () => handleUpdateUser()
@@ -1033,7 +1031,7 @@ const DepartmentManager = () => {
               {isUpdateUser && (
                 <button
                   className={` text-white mt-6 py-2 px-1 font-semibold rounded-md shadow backdrop-blur-md bg-opacity-100 hover:bg-opacity-80 bg-blue-500`}
-                  style={{ maxWidth: "10%", width: "10%" }}
+                  style={{ maxWidth: "10%",width: "10%" }}
                   onClick={() => handleCloseUpdateUser()}
                 >
                   {t("system.department.close")}
@@ -1063,7 +1061,7 @@ const DepartmentManager = () => {
               first={first1}
               rows={rows1}
               onPage={onCustomPage1}
-              rowsPerPageOptions={[4, 8, 12]}
+              rowsPerPageOptions={[4,8,12]}
               paginatorLeft={paginatorLeft}
               paginatorRight={paginatorRight}
               filters={filters1}
@@ -1079,7 +1077,7 @@ const DepartmentManager = () => {
               showGridlines
               onAllRowsSelect={(e) => setAllRowSelected(e)}
               onAllRowsUnselect={() => setAllRowSelected(false)}
-              // dataKey="id"
+            // dataKey="id"
             >
               <Column
                 selectionMode="multiple"

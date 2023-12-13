@@ -78,7 +78,7 @@ const ProcessBooking = () => {
         )}`;
         item.phoneNumberCustom = item?.teacherData?.phoneNumber;
         item.addressCustom = item?.teacherData?.address;
-        console.log(i18n.language);
+        // console.log(i18n.language);
         item.dateCustom =
           i18n.language === "en"
             ? moment(item?.date).locale("en").format(dateFormat.LABEL_SCHEDULE)
@@ -120,16 +120,16 @@ const ProcessBooking = () => {
         })
         .then((data) => {
           if (data?.codeNumber === 0) {
-            console.log(data?.studentBooking);
+            // console.log(data?.studentBooking);
             if (data?.studentBooking?.length > 0) {
               let dataBookingCustom = data.studentBooking;
               if (dataBookingCustom?.length > 0) {
-                console.log(1);
+                // console.log(1);
                 dataBookingCustom = customDataBookingStudent(dataBookingCustom);
                 setDataBooking(dataBookingCustom);
               }
             } else {
-              console.log(2);
+              // console.log(2);
               setDataBooking([]);
             }
             setLoading(false);
@@ -161,7 +161,7 @@ const ProcessBooking = () => {
       })
       .then((data) => {
         if (data?.codeNumber === 0) {
-          console.log(data?.studentBooking);
+          // console.log(data?.studentBooking);
           if (data?.studentBooking?.length > 0) {
             let dataBookingCustom = data.studentBooking;
             if (dataBookingCustom?.length > 0) {
@@ -339,7 +339,7 @@ const ProcessBooking = () => {
       : "Sử dụng phím Enter để di chuyển trang."
   );
 
-  console.log(selectedProducts8);
+  // console.log(selectedProducts8);
 
   //pagination
   // const paginatorLeft = (
@@ -644,7 +644,7 @@ const ProcessBooking = () => {
 
   return (
     <div>
-      {console.log(dataBooking)}
+      {/* {console.log(dataBooking)} */}
       <ToastContainer />
       {loading && (
         <div className="fixed loading-overlay top-0 bottom-0 flex items-center justify-center mx-auto left-0 right-0 w-full max-h-full bg-black bg-opacity-25">

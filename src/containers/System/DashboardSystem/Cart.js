@@ -1,6 +1,6 @@
 import React from "react";
 
-import { BsArrowUp, BsArrowDown } from "react-icons/bs";
+import { BsArrowUp,BsArrowDown } from "react-icons/bs";
 
 const Cart = ({
   title = "Hello",
@@ -9,7 +9,7 @@ const Cart = ({
   time = "Since last week",
   styleSymbol = {},
 }) => {
-  console.log(styleSymbol);
+  // console.log(styleSymbol);
   return (
     <div
       className="cart-container flex flex-col items-start"

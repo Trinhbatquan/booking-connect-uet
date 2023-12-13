@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import React,{ useEffect,useState } from "react";
+import { ToastContainer,toast } from "react-toastify";
 import Loading from "../../../utils/Loading";
 import { useNavigate } from "react-router";
 import convertBufferToBase64 from "../../../utils/convertBufferToBase64";
@@ -21,7 +21,7 @@ import { FaLongArrowAltUp } from "react-icons/fa";
 import { BsTrash3Fill } from "react-icons/bs";
 import avatarNotify from "../../../assets/image/notify.jpg";
 import moment from "moment";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch,useSelector } from "react-redux";
 import contentNotify from "./../../../utils/contentNotification";
 import ConfirmDeleteNotifyManager from "./ConfirmDeleteNotifyManager";
 import { handleMessageFromBackend } from "../../../utils/handleMessageFromBackend";
@@ -39,17 +39,17 @@ const Notification = () => {
   const optionNotificationRedux = useSelector(
     (state) => state.socketNotifyManagerReducer.optionNotification
   );
-  const [loading, setLoading] = useState(false);
-  const [notifyData, setNotifyData] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPage, setTotalPage] = useState(0);
+  const [loading,setLoading] = useState(false);
+  const [notifyData,setNotifyData] = useState([]);
+  const [currentPage,setCurrentPage] = useState(1);
+  const [totalPage,setTotalPage] = useState(0);
   const navigate = useNavigate();
   const { i18n } = useTranslation();
-  const [typeNotification, setTypeNotification] = useState(
+  const [typeNotification,setTypeNotification] = useState(
     optionNotificationRedux ? optionNotificationRedux : "booking"
   );
-  const [isOpenConfirmNotify, setIsOpenConfirmNotify] = useState(false);
-  const [actionDeleteNotify, setActionDeleteNotify] = useState("");
+  const [isOpenConfirmNotify,setIsOpenConfirmNotify] = useState(false);
+  const [actionDeleteNotify,setActionDeleteNotify] = useState("");
   const currentUser = useSelector((state) => state.authReducer);
 
   const dispatch = useDispatch();
@@ -61,7 +61,7 @@ const Notification = () => {
     (state) => state.socketNotifyManagerReducer.changeNotifyButton
   );
 
-  const fetchDataNotify = ({ option, page, action }) => {
+  const fetchDataNotify = ({ option,page,action }) => {
     setLoading(true);
     getNotiFy
       .getHomePageLimited({
@@ -72,8 +72,8 @@ const Notification = () => {
       })
       .then((data) => {
         if (data?.codeNumber === 0) {
-          console.log(data);
-          const { notify, pageCurrent, countsNotify } = data;
+          // console.log(data);
+          const { notify,pageCurrent,countsNotify } = data;
           if (notify?.length > 0) {
             for (let i = 0; i < notify.length; i++) {
               if (notify[i]?.image?.data) {
@@ -117,8 +117,8 @@ const Notification = () => {
       })
       .then((data) => {
         if (data?.codeNumber === 0) {
-          console.log(data);
-          const { notify, pageCurrent, countsNotify } = data;
+          // console.log(data);
+          const { notify,pageCurrent,countsNotify } = data;
           if (notify?.length > 0) {
             for (let i = 0; i < notify.length; i++) {
               if (notify[i]?.image?.data) {
@@ -144,7 +144,7 @@ const Notification = () => {
           );
         }
       });
-  }, []);
+  },[]);
 
   const handleCallAPIWhenChangePage = (page) => {
     fetchDataNotify({
@@ -169,7 +169,7 @@ const Notification = () => {
     }
   };
 
-  const handledOpenConfirmDeleteNotify = ({ action, id }) => {
+  const handledOpenConfirmDeleteNotify = ({ action,id }) => {
     setIsOpenConfirmNotify(true);
     setActionDeleteNotify(action);
   };
@@ -206,8 +206,8 @@ const Notification = () => {
         );
       } else {
         setLoading(false);
-        const response = handleMessageFromBackend(data, i18n.language);
-        toast.error(response, {
+        const response = handleMessageFromBackend(data,i18n.language);
+        toast.error(response,{
           autoClose: 3000,
           theme: "colored",
           position: "bottom-right",
@@ -222,7 +222,7 @@ const Notification = () => {
                 );
               }
             });
-          }, 5000);
+          },5000);
         }
       }
     });
@@ -241,7 +241,7 @@ const Notification = () => {
         type: "manager",
         managerId: currentUser?.id,
         roleManager: currentUser?.role,
-      }).then((data) => {});
+      }).then((data) => { });
     }
   };
 
@@ -286,11 +286,10 @@ const Notification = () => {
           >
             <div className="flex items-center justify-start gap-8">
               <button
-                class={`px-5 py-1.5 flex transition-all ease-in duration-150 items-center justify-center overflow-hidden text-md font-semibold border border-blue-500 rounded-2xl hover:text-white hover:bg-blue-500 hover:opacity-100 ${
-                  typeNotification === "system"
+                class={`px-5 py-1.5 flex transition-all ease-in duration-150 items-center justify-center overflow-hidden text-md font-semibold border border-blue-500 rounded-2xl hover:text-white hover:bg-blue-500 hover:opacity-100 ${typeNotification === "system"
                     ? "text-white bg-blue-500"
                     : "text-blue-500 bg-white opacity-50"
-                }`}
+                  }`}
                 onClick={() => handleCallApiWhenChangeAction("system")}
               >
                 <span class="">
@@ -300,11 +299,10 @@ const Notification = () => {
                 </span>
               </button>
               <button
-                class={`px-5 py-1.5 flex transition-all ease-in duration-150 items-center justify-center overflow-hidden text-md font-semibold border border-blue-500 rounded-2xl hover:text-white hover:bg-blue-500 hover:opacity-100 ${
-                  typeNotification === "booking"
+                class={`px-5 py-1.5 flex transition-all ease-in duration-150 items-center justify-center overflow-hidden text-md font-semibold border border-blue-500 rounded-2xl hover:text-white hover:bg-blue-500 hover:opacity-100 ${typeNotification === "booking"
                     ? "text-white bg-blue-500"
                     : "text-blue-500 bg-white opacity-50"
-                }`}
+                  }`}
                 onClick={() => handleCallApiWhenChangeAction("booking")}
               >
                 <span class="">
@@ -346,7 +344,7 @@ const Notification = () => {
               }}
             >
               <div className="flex flex-col items-start justify-start w-full">
-                {notifyData.map((item, index) => {
+                {notifyData.map((item,index) => {
                   return (
                     <div
                       className="teacher-see-all-item w-full gap-8 hover:bg-gray-200 px-5"
@@ -359,26 +357,23 @@ const Notification = () => {
                       }}
                     >
                       <div
-                        className={`relative ${
-                          typeNotification === "system"
+                        className={`relative ${typeNotification === "system"
                             ? "w-[100px] h-[100px]"
                             : "w-[120px] h-[120px]"
-                        } mx-auto flex items-center justify-center`}
+                          } mx-auto flex items-center justify-center`}
                       >
                         <div
-                          className={`${
-                            typeNotification === "system"
+                          className={`${typeNotification === "system"
                               ? "w-[80px] h-[80px]"
                               : "w-[120px] h-[96px]"
-                          }`}
+                            }`}
                           style={{
-                            backgroundImage: `url(${
-                              item?.image?.data
+                            backgroundImage: `url(${item?.image?.data
                                 ? item.image.data
                                 : typeNotification === "system"
-                                ? "https://uet.vnu.edu.vn/wp-content/uploads/2018/01/GetArticleImage.jpg"
-                                : avatarNotify
-                            })`,
+                                  ? "https://uet.vnu.edu.vn/wp-content/uploads/2018/01/GetArticleImage.jpg"
+                                  : avatarNotify
+                              })`,
                             backgroundSize: "cover",
                             backgroundRepeat: "no-repeat",
                             borderRadius: "4px",
@@ -473,13 +468,13 @@ const Notification = () => {
                             >
                               {i18n.language === "en"
                                 ? contentNotify(
-                                    item?.type_notification,
-                                    item
-                                  ).en()
+                                  item?.type_notification,
+                                  item
+                                ).en()
                                 : contentNotify(
-                                    item?.type_notification,
-                                    item
-                                  ).vn()}
+                                  item?.type_notification,
+                                  item
+                                ).vn()}
                             </p>
                           </div>
                         )}
@@ -541,11 +536,10 @@ const Notification = () => {
                             <div className="absolute h-[15px] w-[200px] -top-[10px] right-0 left-0 bg-transparent"></div>
                             <li className="">
                               <div
-                                className={`flex items-center text-headingColor opacity-80 justify-start gap-2 rounded-sm py-[8px] mx-[6px] px-[5px] ${
-                                  typeNotification === "system"
+                                className={`flex items-center text-headingColor opacity-80 justify-start gap-2 rounded-sm py-[8px] mx-[6px] px-[5px] ${typeNotification === "system"
                                     ? "my-[6px]"
                                     : "mt-[6px]"
-                                } hover:bg-gray-300 `}
+                                  } hover:bg-gray-300 `}
                                 onClick={() => handleDetailNotify(item)}
                               >
                                 <MdViewDay className="text-lg" />

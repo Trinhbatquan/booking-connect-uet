@@ -159,18 +159,18 @@ const HomeBanner = () => {
   },[]);
 
   const removeHashFromURL = (event) => {
-    console.log(event);
+    // console.log(event);
     event.preventDefault();
     // Prevent the default link behavior
 
     // Get the hash from the href attribute of the clicked link
     const hash = event.target;
     const hashParent = hash.parentElement.getAttribute("href");
-    console.log(hashParent);
+    // console.log(hashParent);
 
     if (hashParent) {
       const element = document.getElementById(hashParent.slice(1));
-      console.log(element);
+      // console.log(element);
 
       if (element) {
         element.scrollIntoView({ behavior: "smooth" });

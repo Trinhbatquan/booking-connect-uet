@@ -66,7 +66,7 @@ const FacultyDetail = () => {
 
 
   const { code_url,roleId } = useParams();
-  console.log(teacherFaculty);
+  // console.log(teacherFaculty);
   const date_tomorrow = moment(new Date())
     .add(1,"days")
     .format(dateFormat.SEND_TO_SERVER);
@@ -105,7 +105,7 @@ const FacultyDetail = () => {
 
   useEffect(() => {
     if (JSON.parse(localStorage.getItem("auth-bookingCare-UET_student"))) {
-      console.log(1);
+      // console.log(1);
       let managerId;
 
       setTimeout(async () => {
@@ -193,7 +193,7 @@ const FacultyDetail = () => {
       setLoading(true);
       getTeacherHomePageAPI.getTeacherBySearch({ search,option: "no_markdown",facultyId: +idFaculty }).then((data) => {
         if (data?.codeNumber === 0) {
-          console.log(data);
+          // console.log(data);
           const { teacherData } = data;
           if (teacherData?.length > 0) {
             for (let i = 0; i < teacherData.length; i++) {
@@ -301,11 +301,11 @@ const FacultyDetail = () => {
 
     if (res?.codeNumber === 0) {
       //socket_emit_booking_create
-      emit_create_booking(managerId,roleManager,"A1");
       emitter.emit("clear_data_booking_schedule");
       setOpenModalSchedule(false);
       setLoading(false);
       if (res?.type === "create") {
+        emit_create_booking(managerId,roleManager,"A1");
         toast.success(
           i18n.language === "en" ? res?.message_en : res?.message_vn,
           {
@@ -356,7 +356,7 @@ const FacultyDetail = () => {
       ...data,
     };
     setLoading(true);
-    await createQuestionService.create({},body).then((res) => {
+    await createQuestionService.create({},body).then(async (res) => {
       if (res?.codeNumber === 0) {
         setLoading(false);
         if (res?.type === "create" || res?.type === "sent") {
@@ -368,10 +368,10 @@ const FacultyDetail = () => {
               theme: "colored",
             }
           );
-          emitter.emit("EVENT_CLEAR_DATA");
+          await emitter.emit("EVENT_CLEAR_DATA");
           if (res?.type === "create") {
             //socket_emit_booking_create
-            emit_create_booking(+facultyData?.id,roleId,"A2");
+            await emit_create_booking(+facultyData?.id,roleId,"A2");
           }
         } else {
           toast.info(

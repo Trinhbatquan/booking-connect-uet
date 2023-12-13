@@ -26,7 +26,7 @@ const Health = () => {
 
   useEffect(() => {
     getUserApi.getUserByRole({ role: "R6" }).then((data) => {
-      console.log(data);
+      // console.log(data);
       if (data?.codeNumber === 0) {
         setHealthData(data.user);
         if (healthStudentRedux?.length === 0) {

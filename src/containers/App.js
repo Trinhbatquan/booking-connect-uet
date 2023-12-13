@@ -1,5 +1,5 @@
-import { Fragment, useState, useEffect, Suspense } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Fragment,useState,useEffect,Suspense } from "react";
+import { Route,Routes } from "react-router-dom";
 import { Navigate } from "react-router-dom";
 
 import { path } from "../utils/constant";
@@ -53,8 +53,8 @@ import NotificationDetailManager from "./Manager/Notification/NotificationDetail
 import UpdateProfileManager from "./Manager/Profile";
 
 function App() {
-  const [appearScrollTop, setAppearScrollTop] = useState(false);
-  console.log(appearScrollTop);
+  const [appearScrollTop,setAppearScrollTop] = useState(false);
+  // console.log(appearScrollTop);
 
   const handleScroll = (state) => {
     if (
@@ -80,12 +80,12 @@ function App() {
 
     // Remove the event listener
     return () => {
-      window.removeEventListener("scroll", handleScroll, true);
+      window.removeEventListener("scroll",handleScroll,true);
     };
-  }, [appearScrollTop]);
+  },[appearScrollTop]);
 
   const handleScrollTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0,behavior: "smooth" });
   };
 
   return (

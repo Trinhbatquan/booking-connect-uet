@@ -1,8 +1,8 @@
-import React, { useRef, useState } from "react";
+import React,{ useRef,useState } from "react";
 
 import { useTranslation } from "react-i18next";
 import { emitter } from "../../../utils/emitter";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer,toast } from "react-toastify";
 import { BsQuestionCircle } from "react-icons/bs";
 import NoteWhenMakeQuestion from "./NoteWhenMakeQuestion";
 import convertFileToBase64 from "../../../utils/convertFileToBase64";
@@ -10,27 +10,27 @@ import { TiDelete } from "react-icons/ti";
 import { AiFillQuestionCircle } from "react-icons/ai";
 import ConfirmSendQuestion from "./ConfirmSendQuestion";
 
-const QuestionForm = ({ type, create }) => {
-  const [subject, setSubject] = useState("");
-  const [question, setQuestion] = useState("");
-  const [others, setOthers] = useState("");
-  const [notifyCheckState, setNotifyCheckState] = useState("");
-  const [isOpenNote, setIsOpenNote] = useState(false);
-  const [noteSubject, setNoteSubject] = useState(false);
-  const [noteContent, setNoteContent] = useState(false);
-  const [noteConfirm, setNoteConfirm] = useState(false);
-  const [previewAvatar, setPreviewAvatar] = useState("");
-  const [avatar, setAvatar] = useState("");
-  const [optionMakeQuestion, setOptionMakeQuestion] = useState("");
-  const [isOpenConfirmQuestion, setIsOpenConfirmQuestion] = useState(false);
+const QuestionForm = ({ type,create }) => {
+  const [subject,setSubject] = useState("");
+  const [question,setQuestion] = useState("");
+  const [others,setOthers] = useState("");
+  const [notifyCheckState,setNotifyCheckState] = useState("");
+  const [isOpenNote,setIsOpenNote] = useState(false);
+  const [noteSubject,setNoteSubject] = useState(false);
+  const [noteContent,setNoteContent] = useState(false);
+  const [noteConfirm,setNoteConfirm] = useState(false);
+  const [previewAvatar,setPreviewAvatar] = useState("");
+  const [avatar,setAvatar] = useState("");
+  const [optionMakeQuestion,setOptionMakeQuestion] = useState("");
+  const [isOpenConfirmQuestion,setIsOpenConfirmQuestion] = useState(false);
   const inputFileRef = useRef();
-  console.log(notifyCheckState);
+  // console.log(notifyCheckState);
 
-  const { i18n, t } = useTranslation();
+  const { i18n,t } = useTranslation();
 
-  const handleChangeEvent = (value, type) => {
-    const stateArr = ["Subject", "Question", "Others"];
-    const setStateArr = [setSubject, setQuestion, setOthers];
+  const handleChangeEvent = (value,type) => {
+    const stateArr = ["Subject","Question","Others"];
+    const setStateArr = [setSubject,setQuestion,setOthers];
     for (let i = 0; i < stateArr.length; i++) {
       if (type === stateArr[i]) {
         setStateArr[i](value);
@@ -41,20 +41,15 @@ const QuestionForm = ({ type, create }) => {
     }
   };
 
-  emitter.on("EVENT_CLEAR_DATA", () => {
-    setSubject("");
-    setQuestion("");
-    setOthers("");
-    setAvatar("");
-    setPreviewAvatar("");
-    inputFileRef.current.value = "";
+  emitter.on("EVENT_CLEAR_DATA",() => {
+    clearData();
   });
 
   const handleCheckNullState = () => {
     let result = true;
-    const stateArr = [subject, question];
-    const notification_en = ["Subject", "Question"];
-    const notification_vi = ["Trường chủ đề", "Trường câu hỏi"];
+    const stateArr = [subject,question];
+    const notification_en = ["Subject","Question"];
+    const notification_vi = ["Trường chủ đề","Trường câu hỏi"];
     for (let i = 0; i < stateArr.length; i++) {
       if (!stateArr[i]) {
         toast.error(
@@ -82,7 +77,7 @@ const QuestionForm = ({ type, create }) => {
   };
 
   const createQuestion = () => {
-    create({ subject, question, avatar, others, option: optionMakeQuestion });
+    create({ subject,question,avatar,others,option: optionMakeQuestion });
     setIsOpenConfirmQuestion(false);
     setOptionMakeQuestion("");
   };
@@ -91,7 +86,7 @@ const QuestionForm = ({ type, create }) => {
     setOptionMakeQuestion("");
   };
 
-  const clearData = () => {
+  function clearData() {
     setSubject("");
     setQuestion("");
     setOthers("");
@@ -117,10 +112,9 @@ const QuestionForm = ({ type, create }) => {
       if (file?.size > 400000) {
         inputFileRef.current.value = "";
         toast.error(
-          `${
-            i18n.language === "en"
-              ? "This image is too big, please use image size < 500KB"
-              : "Ảnh hiện tại quá lớn. Vui lòng sử dụng ảnh dưới 500KB"
+          `${i18n.language === "en"
+            ? "This image is too big, please use image size < 500KB"
+            : "Ảnh hiện tại quá lớn. Vui lòng sử dụng ảnh dưới 500KB"
           }`,
           {
             autoClose: 3000,
@@ -135,7 +129,7 @@ const QuestionForm = ({ type, create }) => {
           const base64File = await convertFileToBase64(file);
           setAvatar(base64File);
         } catch (e) {
-          console.log("base64 file " + e);
+          // console.log("base64 file " + e);
         }
       }
     }
@@ -150,9 +144,8 @@ const QuestionForm = ({ type, create }) => {
   return (
     <>
       <div
-        className={`${
-          type ? "question-form-faculty-container" : "question-form-container"
-        }`}
+        className={`${type ? "question-form-faculty-container" : "question-form-container"
+          }`}
       >
         <ToastContainer />
         <div>
@@ -180,7 +173,7 @@ const QuestionForm = ({ type, create }) => {
             value={subject}
             class="bg-gray-50 border border-gray-300 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             placeholder="Về + Tên Chủ Đề"
-            onChange={(e) => handleChangeEvent(e.target.value, "Subject")}
+            onChange={(e) => handleChangeEvent(e.target.value,"Subject")}
           />
         </div>
         <div className="mt-4 flex items-start justify-start gap-4 relative">
@@ -211,7 +204,7 @@ const QuestionForm = ({ type, create }) => {
               value={question}
               class="block p-2.5 w-full text-md text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
               placeholder={`Câu hỏi a? ${"\n"}Câu hỏi b? ${"\n"}Câu hỏi c?`}
-              onChange={(e) => handleChangeEvent(e.target.value, "Question")}
+              onChange={(e) => handleChangeEvent(e.target.value,"Question")}
             ></textarea>
           </div>
           <div className="flex-3">
@@ -271,7 +264,7 @@ const QuestionForm = ({ type, create }) => {
             value={others}
             class="bg-gray-50 border border-gray-300 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             placeholder="VD: Rất mong nhận được phản hồi sớm của thầy để chuẩn bị cho kế hoạch sắp tới của em..."
-            onChange={(e) => handleChangeEvent(e.target.value, "Others")}
+            onChange={(e) => handleChangeEvent(e.target.value,"Others")}
           />
         </div>
         <div className="flex items-center justify-between py-4 relative">

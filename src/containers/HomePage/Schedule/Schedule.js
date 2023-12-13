@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React,{ useState,useEffect } from "react";
 import { FaCalendarAlt } from "react-icons/fa";
 import { BsCircleFill } from "react-icons/bs";
 import { BsHandIndexThumb } from "react-icons/bs";
@@ -8,14 +8,14 @@ import moment from "moment";
 import "moment/locale/vi";
 
 import Button from "../../../utils/Button_Home";
-import { contact, dateFormat } from "../../../utils/constant";
+import { contact,dateFormat } from "../../../utils/constant";
 
-const Schedule = ({ type, change, timeData, teacher, handleSchedule }) => {
-  const [date, setDate] = useState("");
+const Schedule = ({ type,change,timeData,teacher,handleSchedule }) => {
+  const [date,setDate] = useState("");
 
-  const { t, i18n } = useTranslation();
+  const { t,i18n } = useTranslation();
 
-  console.log({ timeData });
+  // console.log({ timeData });
   const options = [];
   const date_now = new Date();
   for (let i = 1; i < 8; i++) {
@@ -23,14 +23,14 @@ const Schedule = ({ type, change, timeData, teacher, handleSchedule }) => {
     if (i18n.language === "en") {
       if (i === 1) {
         labelDate = moment(date_now)
-          .add(i, "days")
+          .add(i,"days")
           .locale("en")
           .format(dateFormat.TOMORROW_SCHEDULE_EN);
         //config error first letter
         // labelDate = labelDate.charAt(0).toUpperCase() + labelDate.slice(1);
       } else {
         labelDate = moment(date_now)
-          .add(i, "days")
+          .add(i,"days")
           .locale("en")
           .format(dateFormat.LABEL_SCHEDULE);
         //config error first letter
@@ -39,14 +39,14 @@ const Schedule = ({ type, change, timeData, teacher, handleSchedule }) => {
     } else {
       if (i === 1) {
         labelDate = moment(date_now)
-          .add(i, "days")
+          .add(i,"days")
           // .locale("en")
           .format(dateFormat.TOMORROW_SCHEDULE);
         //config error first letter
         labelDate = labelDate.charAt(0).toUpperCase() + labelDate.slice(1);
       } else {
         labelDate = moment(date_now)
-          .add(i, "days")
+          .add(i,"days")
           // .locale("en")
           .format(dateFormat.LABEL_SCHEDULE);
         //config error first letter
@@ -54,7 +54,7 @@ const Schedule = ({ type, change, timeData, teacher, handleSchedule }) => {
       }
     }
     const valueDate = moment(date_now)
-      .add(i, "days")
+      .add(i,"days")
       .format(dateFormat.SEND_TO_SERVER);
 
     options.push({
@@ -70,9 +70,8 @@ const Schedule = ({ type, change, timeData, teacher, handleSchedule }) => {
 
   return (
     <div
-      className={`${
-        type ? "schedule-faculty-container" : "schedule-container"
-      }`}
+      className={`${type ? "schedule-faculty-container" : "schedule-container"
+        }`}
     >
       {/* {console.log(i18n.language)} */}
       <div className="schedule-date">
@@ -87,7 +86,7 @@ const Schedule = ({ type, change, timeData, teacher, handleSchedule }) => {
           }}
         >
           {options?.length > 0 &&
-            options.map((option, index) => {
+            options.map((option,index) => {
               return (
                 <option key={index} value={option?.value} className="text-base">
                   {option?.label}
@@ -106,7 +105,7 @@ const Schedule = ({ type, change, timeData, teacher, handleSchedule }) => {
           </div>
           <div className="schedule-content-body">
             {timeData && Array.isArray(timeData) && timeData?.length > 0 ? (
-              timeData?.map((time, index) => {
+              timeData?.map((time,index) => {
                 return (
                   <Button
                     selected={time?.isSelected}
@@ -117,7 +116,7 @@ const Schedule = ({ type, change, timeData, teacher, handleSchedule }) => {
                         : time?.valueTimeVn
                     }
                     date={date || options[0].value}
-                    click={(text, date) =>
+                    click={(text,date) =>
                       handleSchedule(
                         {
                           timeType: time?.timeType,

@@ -67,7 +67,7 @@ const ActionItem = ({ action,managerId,roleManager,reviewNotify }) => {
   const [dataModalCancel,setDataModelCancel] = useState([]);
   const [answerDataForDoneQuestion,setAnswerDataForDoneQuestion] =
     useState("");
-  console.log(dataBookingSelect);
+  // console.log(dataBookingSelect);
 
   const { t,i18n } = useTranslation();
   const currentUser = useSelector((state) => state.authReducer);
@@ -88,7 +88,7 @@ const ActionItem = ({ action,managerId,roleManager,reviewNotify }) => {
       : "Sử dụng phím Enter để di chuyển trang."
   );
 
-  console.log(selectedProducts8);
+  // console.log(selectedProducts8);
 
   //pagination
   const paginatorLeft = (
@@ -490,9 +490,9 @@ const ActionItem = ({ action,managerId,roleManager,reviewNotify }) => {
       await getAllBooking.getByManagerAndAction(params).then((res) => {
         if (res?.codeNumber === 0) {
           if (res?.allBooking?.length > 0) {
-            console.log(res?.allBooking);
+            // console.log(res?.allBooking);
             res?.allBooking?.forEach((item) => {
-              console.log(item);
+              // console.log(item);
               item.date = moment(item?.date).format(dateFormat.LABEL_SCHEDULE);
               item.updatedAt = moment(item?.updatedAt).format(
                 dateFormat.LABEL_SCHEDULE
@@ -517,7 +517,7 @@ const ActionItem = ({ action,managerId,roleManager,reviewNotify }) => {
     setAnswerDataForDoneQuestion("");
   },[action,status]);
 
-  console.log(dataBookingFilter,action);
+  // console.log(dataBookingFilter,action);
 
   let countProcess = 0,
     countDone = 0,
@@ -548,9 +548,9 @@ const ActionItem = ({ action,managerId,roleManager,reviewNotify }) => {
       getAllBooking.getByManagerAndAction(params).then((res) => {
         if (res?.codeNumber === 0) {
           if (res?.allBooking?.length > 0) {
-            console.log(res?.allBooking);
+            // console.log(res?.allBooking);
             res?.allBooking?.forEach((item) => {
-              console.log(item);
+              // console.log(item);
               item.date = moment(item?.date).format(dateFormat.LABEL_SCHEDULE);
             });
           }
@@ -607,8 +607,8 @@ const ActionItem = ({ action,managerId,roleManager,reviewNotify }) => {
       });
       return;
     } else {
-      console.log(dataBookingSelect);
-      console.log(dataAnswer);
+      // console.log(dataBookingSelect);
+      // console.log(dataAnswer);
       setIsOpenModalConfirmAction(true);
       setDataConfirmAction(dataBookingSelect);
     }
@@ -753,7 +753,7 @@ const ActionItem = ({ action,managerId,roleManager,reviewNotify }) => {
         time: data?.timeDataBooking?.valueVn,
         type,
       };
-      console.log(body);
+      // console.log(body);
       await updateStatusBookingSchedule.update({},body).then((res) => {
         if (res?.codeNumber === -1) {
           setLoadingFull(false);
@@ -1323,7 +1323,7 @@ const ActionItem = ({ action,managerId,roleManager,reviewNotify }) => {
                     </div>
                   ) : (
                     <div className="rounded-sm shadow-sm px-4 py-5 bg-gray-200 flex flex-col items-start justify-center gap-5">
-                      {console.log(dataBookingSelect)}
+                      {/* {console.log(dataBookingSelect)} */}
                       <div className="flex items-center justify-start gap-5 w-full">
                         <div className="flex-1">
                           <label
@@ -1408,7 +1408,7 @@ const ActionItem = ({ action,managerId,roleManager,reviewNotify }) => {
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                           />
                         </div>
-                        {/* {selectedProducts8?.image?.data?.length > 0 && (
+                        {selectedProducts8?.image?.data?.length > 0 && (
                           <div className="flex-1">
                             <label
                               htmlFor="helper-text"
@@ -1433,7 +1433,7 @@ const ActionItem = ({ action,managerId,roleManager,reviewNotify }) => {
                               ></div>
                             </div>
                           </div>
-                        )} */}
+                        )}
                       </div>
                       <div className="w-full">
                         <label

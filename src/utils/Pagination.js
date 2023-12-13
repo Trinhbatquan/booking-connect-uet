@@ -1,7 +1,7 @@
 import React from "react";
 
-const Pagination = ({ numberOfPage, pages, handleNavigatePage }) => {
-  console.log({ numberOfPage, pages, handleNavigatePage });
+const Pagination = ({ numberOfPage,pages,handleNavigatePage }) => {
+  // console.log({ numberOfPage, pages, handleNavigatePage });
   return (
     <nav aria-label="Page navigation example py-3">
       <ul class="flex items-center -space-x-px h-104 text-sm">
@@ -12,9 +12,8 @@ const Pagination = ({ numberOfPage, pages, handleNavigatePage }) => {
         >
           <div
             href="#"
-            class={`flex items-center justify-center px-4 h-10 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 ${
-              +numberOfPage === 1 ? "cursor-text" : "cursor-pointer"
-            }`}
+            class={`flex items-center justify-center px-4 h-10 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 ${+numberOfPage === 1 ? "cursor-text" : "cursor-pointer"
+              }`}
           >
             <span class="sr-only text-sm">Previous</span>
             <svg
@@ -34,16 +33,15 @@ const Pagination = ({ numberOfPage, pages, handleNavigatePage }) => {
             </svg>
           </div>
         </li>
-        {[...Array(pages).keys()]?.map((pageItem, index) => {
+        {[...Array(pages).keys()]?.map((pageItem,index) => {
           return (
             <li key={index} onClick={() => handleNavigatePage(+pageItem + 1)}>
               <div
                 href="#"
-                class={`flex text-lg items-center cursor-pointer justify-center px-4 h-10 leading-tight  border border-gray-300 hover:bg-gray-100 hover:text-gray-700 ${
-                  +numberOfPage === +pageItem + 1
+                class={`flex text-lg items-center cursor-pointer justify-center px-4 h-10 leading-tight  border border-gray-300 hover:bg-gray-100 hover:text-gray-700 ${+numberOfPage === +pageItem + 1
                     ? "text-gray-700 bg-gray-200"
                     : "text-gray-500 bg-white"
-                }`}
+                  }`}
               >
                 {+pageItem + 1}
               </div>
@@ -57,9 +55,8 @@ const Pagination = ({ numberOfPage, pages, handleNavigatePage }) => {
         >
           <div
             href="#"
-            class={`flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 ${
-              +numberOfPage === +pages ? "cursor-text" : "cursor-pointer"
-            }`}
+            class={`flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 ${+numberOfPage === +pages ? "cursor-text" : "cursor-pointer"
+              }`}
           >
             <span class="sr-only text-sm">Next</span>
             <svg

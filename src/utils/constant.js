@@ -118,17 +118,25 @@ export const markdown = {
   other: "other",
 };
 
-export const positionCustom = (positionId, lang) => {
+export const positionCustom = (positionId,lang) => {
   if (positionId === "P1") {
-    return lang === "en" ? "Professor" : "Giáo sư";
+    return lang === "en" ? "Prof" : "GS";
   } else if (positionId === "P2") {
-    return lang === "en" ? "Associate Professor" : "Phó giáo sư";
-  } else {
-    return lang === "en" ? "Doctor of Philosophy" : "Tiến sĩ";
+    return lang === "en" ? "Assoc" : "PGS";
+  } else if (positionId === "P3") {
+    return lang === "en" ? "Dr" : "TS";
+  } else if (positionId === "P4") {
+    return lang === "en" ? "Master" : "ThS";
+  } else if (positionId === "P5") {
+    return lang === "en" ? "Assoc.Dr" : "PGS.TS";
+  } else if (positionId === "P6") {
+    return lang === "en" ? "Prof.Dr" : "GS.TS";
+  } else if (positionId === "P7") {
+    return lang === "en" ? "Assoc.Prof.Dr" : "PGS.GS.TS";
   }
 };
 
-export const statusCustom = (statusId, lang, actionId) => {
+export const statusCustom = (statusId,lang,actionId) => {
   if (statusId === "S1") {
     return lang === "en" ? "New" : "Mới";
   } else if (statusId === "S2") {
@@ -139,8 +147,8 @@ export const statusCustom = (statusId, lang, actionId) => {
         ? "Finished"
         : "Answer Directly"
       : actionId === "A1"
-      ? "Đã hoàn thành"
-      : "Trả lời trực tiếp";
+        ? "Đã hoàn thành"
+        : "Trả lời trực tiếp";
   } else if (statusId === "S4") {
     return lang === "en" ? "Canceled" : "Bị huỷ bỏ";
   } else {

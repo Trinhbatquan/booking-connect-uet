@@ -81,7 +81,7 @@ const Detail = ({ codeUrlTeacher,roleTeacher,type }) => {
       actionId,
     });
     if (bookingSelected.codeNumber === 0) {
-      console.log(bookingSelected.bookingSchedule);
+      // console.log(bookingSelected.bookingSchedule);
       // if (bookingSelected?.bookingSchedule?.length > 0) {
       bookingSelected.bookingSchedule.forEach((item) => {
         bookingScheduleData.push(item?.timeType);
@@ -109,7 +109,7 @@ const Detail = ({ codeUrlTeacher,roleTeacher,type }) => {
         let managerId;
         if (res?.codeNumber === 0) {
           const { data } = res;
-          console.log(data);
+          // console.log(data);
           managerId = data?.id;
           const image = data?.image?.data;
           if (image) {
@@ -148,7 +148,7 @@ const Detail = ({ codeUrlTeacher,roleTeacher,type }) => {
               "A1"
             );
 
-            console.log(getTime);
+            // console.log(getTime);
             setTimeDataApi(getTime);
           }
         }
@@ -163,7 +163,7 @@ const Detail = ({ codeUrlTeacher,roleTeacher,type }) => {
   },[]);
 
   const loadTimeOfDate = async (value) => {
-    console.log(value);
+    // console.log(value);
     const managerId = +userData?.id;
     const date = value;
     const roleManager = roleId;
@@ -188,7 +188,7 @@ const Detail = ({ codeUrlTeacher,roleTeacher,type }) => {
             valueTimeEn: item?.timeData?.valueEn,
           });
         });
-        console.log(getTime);
+        // console.log(getTime);
         getTime = await getBookingScheduleNotSelected(
           getTime,
           userData?.id,
@@ -204,7 +204,7 @@ const Detail = ({ codeUrlTeacher,roleTeacher,type }) => {
   };
 
   const handleSchedule = ({ timeType,valueTime },date) => {
-    console.log({ timeType,valueTime },date);
+    // console.log({ timeType,valueTime },date);
     setOpenModalSchedule(true);
     const data = {
       currentStudent,
@@ -212,7 +212,7 @@ const Detail = ({ codeUrlTeacher,roleTeacher,type }) => {
       valueTime,
       date,
     };
-    console.log(data);
+    // console.log(data);
     setDataModalSchedule(data);
   };
 
@@ -241,11 +241,11 @@ const Detail = ({ codeUrlTeacher,roleTeacher,type }) => {
 
     if (res?.codeNumber === 0) {
       //socket_emit_booking_create
-      emit_create_booking(managerId,roleManager,"A1");
       emitter.emit("clear_data_booking_schedule");
       setOpenModalSchedule(false);
       setLoading(false);
       if (res?.type === "create") {
+        emit_create_booking(managerId,roleManager,"A1");
         toast.success(
           i18n.language === "en" ? res?.message_en : res?.message_vn,
           {
@@ -296,7 +296,7 @@ const Detail = ({ codeUrlTeacher,roleTeacher,type }) => {
       ...data,
     };
     setLoading(true);
-    await createQuestionService.create({},body).then((res) => {
+    await createQuestionService.create({},body).then(async (res) => {
       if (res?.codeNumber === 0) {
         setLoading(false);
         if (res?.type === "create" || res?.type === "sent") {
@@ -308,10 +308,10 @@ const Detail = ({ codeUrlTeacher,roleTeacher,type }) => {
               theme: "colored",
             }
           );
-          emitter.emit("EVENT_CLEAR_DATA");
+          await emitter.emit("EVENT_CLEAR_DATA");
           if (res?.type === "create") {
             //socket_emit_booking_create
-            emit_create_booking(+userData?.id,roleId,"A2");
+            await emit_create_booking(+userData?.id,roleId,"A2");
           }
         } else {
           toast.info(
@@ -367,8 +367,8 @@ const Detail = ({ codeUrlTeacher,roleTeacher,type }) => {
           {" "}
           <div
             className={`${type
-                ? "detail-teacher-faculty-container"
-                : "detail-teacher-container"
+              ? "detail-teacher-faculty-container"
+              : "detail-teacher-container"
               }`}
           >
             <div className="detail-teacher">
@@ -376,10 +376,10 @@ const Detail = ({ codeUrlTeacher,roleTeacher,type }) => {
                 className="detail-teacher-avatar flex-3"
                 style={{
                   backgroundImage: `url(${roleId === "R5"
+                    ? userData?.image
                       ? userData?.image
-                        ? userData?.image
-                        : avatar
                       : avatar
+                    : avatar
                     })`,
                 }}
               ></div>

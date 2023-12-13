@@ -17,7 +17,7 @@ const Teacher = ({ settings }) => {
   const [topTeacher,setTopTeacher] = useState([]);
   const teacherRedux = useSelector((state) => state.listSearchBannerReducer.teacher)
 
-  const { t } = useTranslation();
+  const { t,i18n } = useTranslation();
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -25,13 +25,13 @@ const Teacher = ({ settings }) => {
 
   useEffect(() => {
     const getAPI = () => {
-      console.log(2);
+      // console.log(2);
 
       getTeacherHomePageAPI.getTeacherHomePage({ limit: 50 }).then((data) => {
         if (data?.codeNumber !== 0) {
         } else {
           // dispatch(getTopTenTeacherSucceed(data?.teacher));
-          console.log({ data });
+          // console.log({ data });
           const teacherData = data?.teacherData.slice(0,6);
           if (teacherData?.length > 0) {
             for (let i = 0; i < teacherData.length; i++) {
@@ -63,7 +63,7 @@ const Teacher = ({ settings }) => {
   },[]);
 
   useEffect(() => {
-    console.log(1);
+    // console.log(1);
     const lazyLoadImg = () => {
       lozad(".lozad",{
         load: function (el) {
@@ -103,7 +103,7 @@ const Teacher = ({ settings }) => {
         </div>
         <div className="section-body">
           <Slider {...settings}>
-            {loading
+            {topTeacher?.length === 0
               ? new Array(5).fill(0).map((item,index) => {
                 return (
                   <div key={index} className="section-item">
@@ -111,7 +111,7 @@ const Teacher = ({ settings }) => {
                   </div>
                 );
               })
-              : topTeacher?.length > 0 &&
+              :
               topTeacher?.map((teacher,index) => {
                 return (
                   <div
@@ -128,7 +128,7 @@ const Teacher = ({ settings }) => {
                         />
                       </div>
                       <div className="section-item-text section-item-text-teacher text-headingColor">
-                        {teacher?.positionData?.valueVn}, {teacher?.fullName}
+                        {i18n.language === 'en' ? `${teacher?.positionData?.valueVn}, ${teacher?.fullName}` : `${teacher?.positionData?.valueEn}, ${teacher?.fullName}`}
                         <p className="mx-auto mt-1">
                           {teacher?.facultyData?.fullName}
                         </p>

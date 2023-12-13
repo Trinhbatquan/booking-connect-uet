@@ -1,49 +1,49 @@
-import React, { useState, useEffect, useRef } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import React,{ useState,useEffect,useRef } from "react";
+import { ToastContainer,toast } from "react-toastify";
 import Loading from "../../../utils/Loading";
 import HomeHeader from "../HomeHeader";
 import { useTranslation } from "react-i18next";
 import { HiOutlinePencilAlt } from "react-icons/hi";
-import { path, select_faculty } from "../../../utils/constant";
+import { path,select_faculty } from "../../../utils/constant";
 import convertFileToBase64 from "../../../utils/convertFileToBase64";
 import {
   getAllCodeApi,
   logOutApi,
   logOutHomePageApi,
 } from "../../../services/userService";
-import { getStudent, updateStudent } from "../../../services/studentService";
+import { getStudent,updateStudent } from "../../../services/studentService";
 import { handleMessageFromBackend } from "../../../utils/handleMessageFromBackend";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch,useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { logOutUser } from "../../../redux/studentSlice";
 import convertBufferToBase64 from "../../../utils/convertBufferToBase64";
 import HomeFooter from "../HomeFooter";
 
 const UpdateProfile = () => {
-  const [loading, setLoading] = useState(true);
-  const [notifyCheckState, setNotifyCheckState] = useState("");
-  const [email, setEmail] = useState("");
-  const [fullName, setFullName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [address, setAddress] = useState("");
-  const [mssv, setMssv] = useState("");
-  const [faculty, setFaculty] = useState("");
-  const [classroom, setClassroom] = useState("");
-  const [gender, setGender] = useState("");
-  const [avatar, setAvatar] = useState("");
-  const [previewAvatar, setPreviewAvatar] = useState("");
+  const [loading,setLoading] = useState(true);
+  const [notifyCheckState,setNotifyCheckState] = useState("");
+  const [email,setEmail] = useState("");
+  const [fullName,setFullName] = useState("");
+  const [phoneNumber,setPhoneNumber] = useState("");
+  const [address,setAddress] = useState("");
+  const [mssv,setMssv] = useState("");
+  const [faculty,setFaculty] = useState("");
+  const [classroom,setClassroom] = useState("");
+  const [gender,setGender] = useState("");
+  const [avatar,setAvatar] = useState("");
+  const [previewAvatar,setPreviewAvatar] = useState("");
 
-  const [genderAPI, setGenderAPI] = useState("");
+  const [genderAPI,setGenderAPI] = useState("");
 
-  const { i18n, t } = useTranslation();
+  const { i18n,t } = useTranslation();
   const inputFileRef = useRef();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const currentUser = useSelector((state) => state.studentReducer);
-  console.log(faculty);
-  const handleGetProfileUser = ({ type, message }) => {
-    console.log(1);
-    getStudent({}, { email: currentUser?.email }).then((data) => {
+  // console.log(faculty);
+  const handleGetProfileUser = ({ type,message }) => {
+    // console.log(1);
+    getStudent({},{ email: currentUser?.email }).then((data) => {
       if (data?.codeNumber === 0) {
         const student = data?.student;
         setEmail(student?.email);
@@ -55,7 +55,7 @@ const UpdateProfile = () => {
         setGender(student?.gender);
         setLoading(false);
         if (type === "update_profile") {
-          toast.success(message, {
+          toast.success(message,{
             autoClose: 3000,
             theme: "colored",
             position: "bottom-right",
@@ -63,8 +63,8 @@ const UpdateProfile = () => {
         }
       } else {
         setLoading(false);
-        const response = handleMessageFromBackend(data, i18n.language);
-        toast.error(response, {
+        const response = handleMessageFromBackend(data,i18n.language);
+        toast.error(response,{
           autoClose: 3000,
           theme: "colored",
           position: "bottom-right",
@@ -79,7 +79,7 @@ const UpdateProfile = () => {
                 );
               }
             });
-          }, 5000);
+          },5000);
         }
       }
     });
@@ -90,13 +90,13 @@ const UpdateProfile = () => {
       getAllCodeApi.getByType({ type: gender }).then((data) => {
         if (data?.codeNumber === 0) {
           setGenderAPI(data.allCode);
-          console.log(2);
+          // console.log(2);
 
-          getStudent({}, { email: currentUser?.email }).then((data) => {
+          getStudent({},{ email: currentUser?.email }).then((data) => {
             if (data?.codeNumber === 0) {
-              console.log(data.student);
+              // console.log(data.student);
               const student = data?.student;
-              console.log(student);
+              // console.log(student);
               setEmail(student?.email);
               setFullName(student.fullName);
               setPhoneNumber(student.phoneNumber);
@@ -118,7 +118,7 @@ const UpdateProfile = () => {
                 data?.codeNumber,
                 i18n.language
               );
-              toast.error(response, {
+              toast.error(response,{
                 autoClose: 3000,
                 theme: "colored",
                 position: "bottom-right",
@@ -133,14 +133,14 @@ const UpdateProfile = () => {
                       );
                     }
                   });
-                }, 5000);
+                },5000);
               }
             }
           });
         }
       });
     }
-  }, []);
+  },[]);
 
   const handleChangeAndPreviewImage = async (e) => {
     let data = e.target.files;
@@ -149,10 +149,9 @@ const UpdateProfile = () => {
       if (file?.size > 400000) {
         inputFileRef.current.value = "";
         toast.error(
-          `${
-            i18n.language === "en"
-              ? "This image is too big, please use image size < 400KB"
-              : "Ảnh hiện tại quá lớn. Vui lòng sử dụng ảnh dưới 400KB"
+          `${i18n.language === "en"
+            ? "This image is too big, please use image size < 400KB"
+            : "Ảnh hiện tại quá lớn. Vui lòng sử dụng ảnh dưới 400KB"
           }`,
           {
             autoClose: 3000,
@@ -167,7 +166,7 @@ const UpdateProfile = () => {
           const base64File = await convertFileToBase64(file);
           setAvatar(base64File);
         } catch (e) {
-          console.log("base64 file " + e);
+          // console.log("base64 file " + e);
         }
       }
     }
@@ -252,10 +251,10 @@ const UpdateProfile = () => {
           }
         )
         .then(async (res) => {
-          console.log(1);
+          // console.log(1);
 
           if (res?.codeNumber === 0) {
-            console.log(3);
+            // console.log(3);
             await handleGetProfileUser({
               type: "update_profile",
               message:
@@ -318,7 +317,7 @@ const UpdateProfile = () => {
               res?.codeNumber,
               i18n.language
             );
-            toast.error(response, {
+            toast.error(response,{
               autoClose: 3000,
               theme: "colored",
               position: "bottom-right",
@@ -333,7 +332,7 @@ const UpdateProfile = () => {
                     );
                   }
                 });
-              }, 5000);
+              },5000);
             }
           }
         });
@@ -483,7 +482,7 @@ const UpdateProfile = () => {
                   {i18n.language === "en" ? "Select ---" : "Chọn ---"}
                 </option>
                 {select_faculty?.length > 0 &&
-                  select_faculty?.map((e, i) => {
+                  select_faculty?.map((e,i) => {
                     return (
                       <option
                         key={i}
@@ -539,7 +538,7 @@ const UpdateProfile = () => {
                   {i18n.language === "en" ? "Select ---" : "Chọn ---"}
                 </option>
                 {genderAPI?.length > 0 &&
-                  genderAPI?.map((e, i) => {
+                  genderAPI?.map((e,i) => {
                     return (
                       <option key={i} name="role" value={e?.keyMap}>
                         {i18n.language === "vi" ? e?.valueVn : e?.valueEn}

@@ -75,7 +75,7 @@ const Departments = ({ settings }) => {
         </div>
         <div className="section-body-department">
           <Slider {...settings}>
-            {loading
+            {departmentData?.length === 0
               ? new Array(5).fill(0).map((item,index) => {
                 return (
                   <div key={index} className="section-item-department">
@@ -83,7 +83,7 @@ const Departments = ({ settings }) => {
                   </div>
                 );
               })
-              : departmentData?.length > 0 &&
+              :
               departmentData.map((item,index) => {
                 return (
                   <div

@@ -36,7 +36,7 @@ const Faculties = ({ settings }) => {
   useEffect(() => {
     getUserApi.getUserByRole({ role: "R4" }).then((data) => {
       if (data?.codeNumber === 0) {
-        console.log(data.user);
+        // console.log(data.user);
         setFacultyData(data.user);
         if (facultyRedux?.length === 0) {
           let facultyCustom = [];
@@ -86,7 +86,7 @@ const Faculties = ({ settings }) => {
         </div>
         <div className="section-body">
           <Slider {...settings}>
-            {loading
+            {facultyData?.length === 0
               ? new Array(8).fill(0).map((item,index) => {
                 return (
                   <div key={index} className="section-item-faculty">
@@ -94,7 +94,7 @@ const Faculties = ({ settings }) => {
                   </div>
                 );
               })
-              : facultyData?.length > 0 &&
+              :
               facultyData.map((faculty,index) => {
                 return (
                   <div

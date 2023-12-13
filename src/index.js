@@ -36,7 +36,7 @@ reportWebVitals();
 
 //connect_socket_backend
 const socket = io(process.env.REACT_APP_URL_API);
-socket.on("connected", () => {
-  console.log("client connected");
+socket.on("connected",() => {
+  // console.log("client connected");
 });
 export { socket };

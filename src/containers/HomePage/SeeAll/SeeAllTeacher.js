@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React,{ useEffect,useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer,toast } from "react-toastify";
 import Loading from "../../../utils/Loading";
 import HomeHeader from "../HomeHeader";
 import { RiArrowDownSLine } from "react-icons/ri";
@@ -13,12 +13,12 @@ import { path } from "../../../utils/constant";
 import nodata from "../../../assets/image/nodata.png";
 const SeeAllTeacher = () => {
   const { i18n } = useTranslation();
-  const [loading, setLoading] = useState(true);
-  const [teacher, setTeacher] = useState([]);
-  const [descriptionTeacher, setDescriptionTeacher] = useState([]);
-  const [pageCurrent, setPageCurrent] = useState(1);
-  const [totalPage, setTotalPage] = useState(0);
-  const [search, setSearch] = useState("");
+  const [loading,setLoading] = useState(true);
+  const [teacher,setTeacher] = useState([]);
+  const [descriptionTeacher,setDescriptionTeacher] = useState([]);
+  const [pageCurrent,setPageCurrent] = useState(1);
+  const [totalPage,setTotalPage] = useState(0);
+  const [search,setSearch] = useState("");
   const navigate = useNavigate();
   useEffect(() => {
     if (JSON.parse(localStorage.getItem("auth-bookingCare-UET_student"))) {
@@ -26,8 +26,8 @@ const SeeAllTeacher = () => {
         .getTeacherHomePage({ page: pageCurrent })
         .then((data) => {
           if (data.codeNumber === 0) {
-            console.log(data);
-            const { totalTeacher, currentPage, teacherData, markDownTeacher } =
+            // console.log(data);
+            const { totalTeacher,currentPage,teacherData,markDownTeacher } =
               data;
             if (teacherData?.length > 0) {
               for (let i = 0; i < teacherData.length; i++) {
@@ -56,17 +56,17 @@ const SeeAllTeacher = () => {
           }
         });
     }
-  }, [pageCurrent]);
+  },[pageCurrent]);
 
   const handleOnChangeSearch = (e) => {
     setSearch(e.target.value);
-    console.log(e.target.value);
+    // console.log(e.target.value);
     if (!e.target.value) {
       setLoading(true);
       getTeacherHomePageAPI.getTeacherHomePage({ page: 1 }).then((data) => {
         if (data.codeNumber === 0) {
-          console.log(data);
-          const { totalTeacher, currentPage, teacherData, markDownTeacher } =
+          // console.log(data);
+          const { totalTeacher,currentPage,teacherData,markDownTeacher } =
             data;
           if (teacherData?.length > 0) {
             for (let i = 0; i < teacherData.length; i++) {
@@ -101,8 +101,8 @@ const SeeAllTeacher = () => {
       setLoading(true);
       getTeacherHomePageAPI.getTeacherBySearch({ search }).then((data) => {
         if (data?.codeNumber === 0) {
-          console.log(data);
-          const { teacherData, markDownTeacher } = data;
+          // console.log(data);
+          const { teacherData,markDownTeacher } = data;
           if (teacherData?.length > 0) {
             for (let i = 0; i < teacherData.length; i++) {
               if (teacherData[i]?.image?.data) {
@@ -233,7 +233,7 @@ const SeeAllTeacher = () => {
               }}
             />
           ) : (
-            teacher.map((item, index) => {
+            teacher.map((item,index) => {
               return (
                 <div
                   className="teacher-see-all-item w-full"

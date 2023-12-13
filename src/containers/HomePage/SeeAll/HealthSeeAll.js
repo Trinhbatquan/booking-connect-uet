@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React,{ useEffect,useState } from "react";
 import HomeHeader from "../HomeHeader";
 import { useTranslation } from "react-i18next";
 import HomeFooter from "../HomeFooter";
@@ -13,9 +13,9 @@ import { path } from "../../../utils/constant";
 import { BsArrowRight } from "react-icons/bs";
 
 const HealthSeeAll = () => {
-  const { i18n, t } = useTranslation();
-  const [healthData, setHealthData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { i18n,t } = useTranslation();
+  const [healthData,setHealthData] = useState([]);
+  const [loading,setLoading] = useState(true);
   const navigate = useNavigate();
   const data = [
     "https://i-vn.joboko.com/okoimg/vieclam.uet.vnu.edu.vn/xurl/images/image-1.png",
@@ -25,17 +25,17 @@ const HealthSeeAll = () => {
   useEffect(() => {
     if (JSON.parse(localStorage.getItem("auth-bookingCare-UET_student"))) {
       getUserApi.getUserByRole({ role: "R6" }).then((data) => {
-        console.log(data);
+        // console.log(data);
         if (data?.codeNumber === 0) {
           setHealthData(data.user);
           setLoading(false);
         }
       });
     }
-  }, []);
+  },[]);
   useEffect(() => {
     const lazyLoadImg = () => {
-      lozad(".lozad", {
+      lozad(".lozad",{
         load: function (el) {
           el.src = el.dataset.src;
           el.onload = function () {
@@ -47,7 +47,7 @@ const HealthSeeAll = () => {
     if (JSON.parse(localStorage.getItem("auth-bookingCare-UET_student"))) {
       lazyLoadImg();
     }
-  }, [healthData]);
+  },[healthData]);
 
   const handleHealthDetail = (data) => {
     navigate(`${path.HOMEPAGE}/${data?.code_url}/ids-role/R6`);

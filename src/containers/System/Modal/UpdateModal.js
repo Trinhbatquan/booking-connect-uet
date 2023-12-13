@@ -1,32 +1,32 @@
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import {RiDeleteBack2Fill} from 'react-icons/ri'
+import React,{ useState,useEffect } from "react";
+import { motion,AnimatePresence } from "framer-motion";
+import { RiDeleteBack2Fill } from 'react-icons/ri'
 
 
 
-const UpdateModel = ({dataUserUpdate, isClose, updateUser}) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [fullName, setFullName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [notifyCheckState, setNotifyCheckState] = useState("");
+const UpdateModel = ({ dataUserUpdate,isClose,updateUser }) => {
+  const [email,setEmail] = useState("");
+  const [password,setPassword] = useState("");
+  const [fullName,setFullName] = useState("");
+  const [phoneNumber,setPhoneNumber] = useState("");
+  const [notifyCheckState,setNotifyCheckState] = useState("");
 
 
 
   useEffect(() => {
     if (dataUserUpdate) {
-        const {email, fullName, phoneNumber} = dataUserUpdate
-        setEmail(email);
-        setPhoneNumber(phoneNumber);
-        setFullName(fullName);
-        setPassword("hardCode");
+      const { email,fullName,phoneNumber } = dataUserUpdate
+      setEmail(email);
+      setPhoneNumber(phoneNumber);
+      setFullName(fullName);
+      setPassword("hardCode");
     }
-  }, [])
+  },[])
 
 
-  const handleChangeEvent = (value, type) => {
-    const stateArr = ["Email", "Password", "FullName", "PhoneNumber"];
-    const setStateArr = [setEmail, setPassword, setFullName, setPhoneNumber];
+  const handleChangeEvent = (value,type) => {
+    const stateArr = ["Email","Password","FullName","PhoneNumber"];
+    const setStateArr = [setEmail,setPassword,setFullName,setPhoneNumber];
     for (let i = 0; i < stateArr.length; i++) {
       if (type === stateArr[i]) {
         setStateArr[i](value);
@@ -36,19 +36,19 @@ const UpdateModel = ({dataUserUpdate, isClose, updateUser}) => {
   };
 
   //clear data modal with emitter
-//   emitter.on("CLEAR_DATA_MODAL", () => {
-//     setEmail("");
-//     setFullName("");
-//     setPassword("");
-//     setPhoneNumber("");
-//   });
+  //   emitter.on("CLEAR_DATA_MODAL", () => {
+  //     setEmail("");
+  //     setFullName("");
+  //     setPassword("");
+  //     setPhoneNumber("");
+  //   });
 
   const handleCheckNullState = () => {
     let result = true;
-    const stateArr = [email, password, fullName, phoneNumber];
-    const notification = ["Email", "Password", "FullName", "PhoneNumber"];
+    const stateArr = [email,password,fullName,phoneNumber];
+    const notification = ["Email","Password","FullName","PhoneNumber"];
     for (let i = 0; i < stateArr.length; i++) {
-      console.log(stateArr[i]);
+      // console.log(stateArr[i]);
       if (!stateArr[i]) {
         setNotifyCheckState(`${notification[i]} is required`);
         result = false;
@@ -63,10 +63,10 @@ const UpdateModel = ({dataUserUpdate, isClose, updateUser}) => {
   const handleCheckValidate = () => {
     let result = true;
     const checkNullState = handleCheckNullState();
-    console.log(checkNullState);
+    // console.log(checkNullState);
     if (checkNullState) {
       const regexEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-      console.log(regexEmail.test(email));
+      // console.log(regexEmail.test(email));
       if (!regexEmail.test(email)) {
         setNotifyCheckState("Please enter correct format of email");
         result = false;
@@ -79,7 +79,7 @@ const UpdateModel = ({dataUserUpdate, isClose, updateUser}) => {
 
   const handleUpdateUser = () => {
     if (handleCheckValidate()) {
-        updateUser({
+      updateUser({
         id: dataUserUpdate?.id,
         fullName,
         phoneNumber,
@@ -90,10 +90,10 @@ const UpdateModel = ({dataUserUpdate, isClose, updateUser}) => {
   return (
     <AnimatePresence>
       <motion.div
-        initial={{ opacity: 0, translateY: -50 }}
-        animate={{ opacity: 1, translateY: 0 }}
-        exit={{ opacity: 0, translateY: -50 }}
-        transition={{ duration: 0.4, delay: 0.1 }}
+        initial={{ opacity: 0,translateY: -50 }}
+        animate={{ opacity: 1,translateY: 0 }}
+        exit={{ opacity: 0,translateY: -50 }}
+        transition={{ duration: 0.4,delay: 0.1 }}
         className=" z-50 fixed top-0 left-1/4 w-1/2 max-w-[1/2] flex overflow-hidden flex-col h-auto bg-white rounded-lg shadow backdrop-blur-md mx-auto mt-16"
       >
         {/* Header UpdateModel */}
@@ -116,7 +116,7 @@ const UpdateModel = ({dataUserUpdate, isClose, updateUser}) => {
                 name="email"
                 type="email"
                 value={email}
-                onChange={(e) => handleChangeEvent(e.target.value, "Email")}
+                onChange={(e) => handleChangeEvent(e.target.value,"Email")}
                 onFocus={() => setNotifyCheckState("")}
                 required
                 disabled
@@ -129,7 +129,7 @@ const UpdateModel = ({dataUserUpdate, isClose, updateUser}) => {
                 name="password"
                 type="password"
                 value={password}
-                onChange={(e) => handleChangeEvent(e.target.value, "Password")}
+                onChange={(e) => handleChangeEvent(e.target.value,"Password")}
                 onFocus={() => setNotifyCheckState("")}
                 disabled
               />
@@ -144,7 +144,7 @@ const UpdateModel = ({dataUserUpdate, isClose, updateUser}) => {
                 name="name"
                 type="text"
                 value={fullName}
-                onChange={(e) => handleChangeEvent(e.target.value, "FullName")}
+                onChange={(e) => handleChangeEvent(e.target.value,"FullName")}
                 onFocus={() => setNotifyCheckState("")}
               />
             </div>
@@ -156,7 +156,7 @@ const UpdateModel = ({dataUserUpdate, isClose, updateUser}) => {
                 type="text"
                 value={phoneNumber}
                 onChange={(e) =>
-                  handleChangeEvent(e.target.value, "PhoneNumber")
+                  handleChangeEvent(e.target.value,"PhoneNumber")
                 }
                 onFocus={() => setNotifyCheckState("")}
               />
@@ -238,14 +238,14 @@ const UpdateModel = ({dataUserUpdate, isClose, updateUser}) => {
           <div>
             <button
               className="bg-blue-600 text-white mt-6 py-2 px-1 font-semibold rounded-md shadow backdrop-blur-md bg-opacity-80 hover:bg-opacity-100 "
-              style={{ maxWidth: "15%", width: "15%" }}
+              style={{ maxWidth: "15%",width: "15%" }}
               onClick={() => handleUpdateUser()}
             >
               Save Changes
             </button>
             <button
               className="bg-green-800 text-white mt-6 py-2 px-1 ml-3 font-semibold rounded-md shadow backdrop-blur-md bg-opacity-80 hover:bg-opacity-100"
-              style={{ maxWidth: "10%", width: "10%" }}
+              style={{ maxWidth: "10%",width: "10%" }}
               onClick={() => isClose()}
             >
               Close
@@ -254,7 +254,7 @@ const UpdateModel = ({dataUserUpdate, isClose, updateUser}) => {
         </div>
 
         <RiDeleteBack2Fill className="absolute top-2 right-2 text-white text-xl cursor-pointer"
-            onClick={() => isClose()}
+          onClick={() => isClose()}
         />
 
         {/* <AiOutlineClose

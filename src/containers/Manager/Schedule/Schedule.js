@@ -1,14 +1,14 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React,{ useState,useEffect,Fragment } from "react";
 import Select from "react-select";
 import DatePicker from "react-datepicker";
 import moment from "moment";
 import { FiEdit } from "react-icons/fi";
 import { AiOutlineDelete } from "react-icons/ai";
-import { ToastContainer, toast } from "react-toastify";
-import { useDispatch, useSelector } from "react-redux";
+import { ToastContainer,toast } from "react-toastify";
+import { useDispatch,useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { motion,AnimatePresence } from "framer-motion";
 
 import Button from "../../../utils/Button";
 import {
@@ -16,7 +16,7 @@ import {
   getUserApi,
   logOutApi,
 } from "../../../services/userService";
-import { dateFormat, path } from "../../../utils/constant";
+import { dateFormat,path } from "../../../utils/constant";
 import {
   createSchedule,
   deleteScheduleByIdAndDate,
@@ -33,7 +33,7 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button as ButtonPrimeReact } from "primereact/button";
 import { InputText } from "primereact/inputtext";
-import { FilterMatchMode, FilterOperator } from "primereact/api";
+import { FilterMatchMode,FilterOperator } from "primereact/api";
 import { Ripple } from "primereact/ripple";
 import { Dropdown } from "primereact/dropdown";
 import { classNames } from "primereact/utils";
@@ -43,22 +43,22 @@ import Loading from "../../../utils/Loading";
 const ScheduleManager = () => {
   // const [selectedOptionObject, setSelectedOptionObject] = useState({});
   // const [selectedOption, setSelectedOption] = useState({});
-  const [startDate, setStartDate] = useState(
+  const [startDate,setStartDate] = useState(
     new Date().setDate(new Date().getDate() + 1)
   );
 
   // const [userData, setUserData] = useState([]);
-  const [timeData, setTimeData] = useState([]);
-  const [timeUserSelected, setTimeUserSelected] = useState([]);
+  const [timeData,setTimeData] = useState([]);
+  const [timeUserSelected,setTimeUserSelected] = useState([]);
   // const [optionSelected, setOptionSelected] = useState();
-  const [loading, setLoading] = useState(true);
+  const [loading,setLoading] = useState(true);
 
-  const [isUpdate, setIsUpdate] = useState(false);
-  const [isDelete, setIsDelete] = useState(false);
-  const [dataScheduleDelete, setDataScheduleDelete] = useState([]);
+  const [isUpdate,setIsUpdate] = useState(false);
+  const [isDelete,setIsDelete] = useState(false);
+  const [dataScheduleDelete,setDataScheduleDelete] = useState([]);
 
-  const { t, i18n } = useTranslation();
-  console.log({ timeData });
+  const { t,i18n } = useTranslation();
+  // console.log({ timeData });
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const currentUser = useSelector((state) => state.authReducer);
@@ -66,13 +66,13 @@ const ScheduleManager = () => {
   //dataTable
   // const [filters1, setFilters1] = useState(null);
   // const [globalFilterValue1, setGlobalFilterValue1] = useState("");
-  const [selectedProducts8, setSelectedProducts8] = useState(null);
-  const [allRowSelected, setAllRowSelected] = useState(false);
+  const [selectedProducts8,setSelectedProducts8] = useState(null);
+  const [allRowSelected,setAllRowSelected] = useState(false);
   // const [currentPage, setCurrentPage] = useState();
-  const [first1, setFirst1] = useState(0);
-  const [rows1, setRows1] = useState(8);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageInputTooltip, setPageInputTooltip] = useState(
+  const [first1,setFirst1] = useState(0);
+  const [rows1,setRows1] = useState(8);
+  const [currentPage,setCurrentPage] = useState(1);
+  const [pageInputTooltip,setPageInputTooltip] = useState(
     i18n.language === "en"
       ? "Press 'Enter' key to go to this page."
       : "Sử dụng phím Enter để di chuyển trang."
@@ -101,7 +101,7 @@ const ScheduleManager = () => {
   const onPageInputChange = (event) => {
     setCurrentPage(event.target.value);
   };
-  const onPageInputKeyDown = (event, options) => {
+  const onPageInputKeyDown = (event,options) => {
     if (event.key === "Enter") {
       const page = parseInt(currentPage);
       if (page < 1 || page > options.totalPages) {
@@ -160,7 +160,7 @@ const ScheduleManager = () => {
         (options.view.endPage === options.page &&
           options.page + 1 !== options.totalPages)
       ) {
-        const className = classNames(options.className, { "p-disabled": true });
+        const className = classNames(options.className,{ "p-disabled": true });
 
         return (
           <span className={className} style={{ userSelect: "none" }}>
@@ -182,8 +182,8 @@ const ScheduleManager = () => {
     },
     RowsPerPageDropdown: (options) => {
       const dropdownOptions = [
-        { label: 8, value: 8 },
-        { label: 12, value: 12 },
+        { label: 8,value: 8 },
+        { label: 12,value: 12 },
         {
           label: i18n.language === "en" ? "All" : "Tất cả",
           value: options.totalRecords,
@@ -202,7 +202,7 @@ const ScheduleManager = () => {
       return (
         <span
           className="mx-3"
-          style={{ color: "var(--text-color)", userSelect: "none" }}
+          style={{ color: "var(--text-color)",userSelect: "none" }}
         >
           {i18n.language === "en" ? `Go to ` : `Đến `}
           <InputText
@@ -210,7 +210,7 @@ const ScheduleManager = () => {
             className="ml-1"
             value={currentPage}
             tooltip={pageInputTooltip}
-            onKeyDown={(e) => onPageInputKeyDown(e, options)}
+            onKeyDown={(e) => onPageInputKeyDown(e,options)}
             onChange={onPageInputChange}
           />
         </span>
@@ -269,9 +269,8 @@ const ScheduleManager = () => {
             type="button"
             // icon="pi pi-filter-slash"
             label={i18n.language === "en" ? "Delete" : "Xoá"}
-            className={`p-button-outlined ${
-              selectedProducts8?.length >= 1 ? "" : "disabled"
-            }`}
+            className={`p-button-outlined ${selectedProducts8?.length >= 1 ? "" : "disabled"
+              }`}
             onClick={() => handleDeleteManyData()}
           />
         )}
@@ -280,8 +279,8 @@ const ScheduleManager = () => {
   };
   const header1 = renderHeader1();
   const actionTemplate = (rowData) => {
-    console.log(rowData);
-    console.log(selectedProducts8);
+    // console.log(rowData);
+    // console.log(selectedProducts8);
     return (
       <div className="flex items-center justify-center gap-6">
         {rowData[0]?.date === selectedProducts8[0][0]?.date && (
@@ -333,21 +332,21 @@ const ScheduleManager = () => {
         {" "}
         {i18n.language === "vi"
           ? `${moment(rowData[0]?.date)
-              .format(dateFormat.LABEL_SCHEDULE)
-              .charAt(0)
-              .toUpperCase()}${moment(rowData[0]?.date)
+            .format(dateFormat.LABEL_SCHEDULE)
+            .charAt(0)
+            .toUpperCase()}${moment(rowData[0]?.date)
               .format(dateFormat.LABEL_SCHEDULE)
               .slice(1)}`
           : `${moment(rowData[0]?.date)
-              .locale("en")
-              .format(dateFormat.LABEL_SCHEDULE)}`}
+            .locale("en")
+            .format(dateFormat.LABEL_SCHEDULE)}`}
       </span>
     );
   };
   const timeTemplate = (rowData) => {
     return (
       <div className="flex flex-wrap items-center justify-start gap-1">
-        {rowData.map((time, index) => {
+        {rowData.map((time,index) => {
           return (
             <div className="mx-3" key={index} style={{ minWidth: "130px" }}>
               {i18n.language === "vi"
@@ -366,7 +365,7 @@ const ScheduleManager = () => {
         if (data?.codeNumber === 0) {
           let { allCode } = data;
           if (allCode.length > 0) {
-            allCode = allCode.map((time, index) => ({
+            allCode = allCode.map((time,index) => ({
               ...time,
               isSelected: false,
             }));
@@ -375,11 +374,11 @@ const ScheduleManager = () => {
         }
       });
       await getScheduleSystem
-        .get({ managerId: currentUser?.id, roleManager: currentUser?.role })
+        .get({ managerId: currentUser?.id,roleManager: currentUser?.role })
         .then((data) => {
           if (data?.codeNumber === 0 && data?.schedule_user?.length > 0) {
             //sort by id
-            data.schedule_user.sort((a, b) => a.id - b.id);
+            data.schedule_user.sort((a,b) => a.id - b.id);
             let timeScheduleData = [];
             while (data.schedule_user.length > 1) {
               const arr = data.schedule_user;
@@ -391,7 +390,7 @@ const ScheduleManager = () => {
                   indexArr.push(i);
                 }
               }
-              data.schedule_user = data.schedule_user.filter((item, index) => {
+              data.schedule_user = data.schedule_user.filter((item,index) => {
                 return !indexArr.includes(index);
               });
               timeScheduleData.push(filterArr);
@@ -399,7 +398,7 @@ const ScheduleManager = () => {
             if (data.schedule_user.length === 1) {
               timeScheduleData.push([data.schedule_user[0]]);
             }
-            timeScheduleData.sort((a, b) =>
+            timeScheduleData.sort((a,b) =>
               moment(a[0].date)
                 .format(dateFormat.SEND_TO_SERVER)
                 .localeCompare(
@@ -429,7 +428,7 @@ const ScheduleManager = () => {
     fetchData();
 
     // initFilters1();
-  }, []);
+  },[]);
 
   //option-general select
   // let option_general = [
@@ -522,7 +521,7 @@ const ScheduleManager = () => {
 
   //handle click schedule button
   const clickButton = (time) => {
-    const result = timeData.map((item, index) => {
+    const result = timeData.map((item,index) => {
       if (item?.id === time?.id) {
         item.isSelected = !item.isSelected;
       }
@@ -542,7 +541,7 @@ const ScheduleManager = () => {
     //   return false;
     // }
     if (!startDate) {
-      toast.error("please choose date", {
+      toast.error("please choose date",{
         autoClose: 2000,
         position: "bottom-right",
         theme: "colored",
@@ -551,18 +550,18 @@ const ScheduleManager = () => {
     }
     let selectedTimeArr = [];
     let output = [];
-    selectedTimeArr = timeData.filter((time, index) => {
+    selectedTimeArr = timeData.filter((time,index) => {
       return time.isSelected === true;
     });
     if (selectedTimeArr?.length === 0) {
-      toast.error("please choose time", {
+      toast.error("please choose time",{
         autoClose: 2000,
         position: "bottom-right",
         theme: "colored",
       });
       return false;
     }
-    selectedTimeArr.forEach((selectedTime, index) => {
+    selectedTimeArr.forEach((selectedTime,index) => {
       output.push({
         managerId: currentUser?.id,
         roleManager: currentUser?.role,
@@ -574,7 +573,7 @@ const ScheduleManager = () => {
   };
 
   const handleUpdateData = (times) => {
-    console.log({ times });
+    // console.log({ times });
     setIsUpdate(true);
     setStartDate(times[0].date);
     let keyMapSelected = [];
@@ -604,12 +603,12 @@ const ScheduleManager = () => {
       scheduleData: handleCheckNull(),
       action,
     };
-    const data = await createSchedule.create({}, body);
+    const data = await createSchedule.create({},body);
     if (data?.codeNumber === 0) {
       if (data?.message === "create") {
         setLoading(false);
 
-        toast.success(`${t("system.notification.create")}`, {
+        toast.success(`${t("system.notification.create")}`,{
           autoClose: 2000,
           position: "bottom-right",
           theme: "colored",
@@ -619,7 +618,7 @@ const ScheduleManager = () => {
       } else {
         setLoading(false);
 
-        toast.success(`${t("system.notification.update")}`, {
+        toast.success(`${t("system.notification.update")}`,{
           autoClose: 2000,
           position: "bottom-right",
           theme: "colored",
@@ -641,8 +640,8 @@ const ScheduleManager = () => {
         .then((data) => {
           if (data?.codeNumber === 0 && data?.schedule_user?.length > 0) {
             //sort by id
-            console.log(data.schedule_user);
-            data.schedule_user.sort((a, b) => a.id - b.id);
+            // console.log(data.schedule_user);
+            data.schedule_user.sort((a,b) => a.id - b.id);
             let timeScheduleData = [];
             while (data.schedule_user.length > 1) {
               const arr = data.schedule_user;
@@ -654,7 +653,7 @@ const ScheduleManager = () => {
                   indexArr.push(i);
                 }
               }
-              data.schedule_user = data.schedule_user.filter((item, index) => {
+              data.schedule_user = data.schedule_user.filter((item,index) => {
                 return !indexArr.includes(index);
               });
               timeScheduleData.push(filterArr);
@@ -662,8 +661,8 @@ const ScheduleManager = () => {
             if (data.schedule_user.length === 1) {
               timeScheduleData.push([data.schedule_user[0]]);
             }
-            console.log(timeScheduleData);
-            timeScheduleData.sort((a, b) =>
+            // console.log(timeScheduleData);
+            timeScheduleData.sort((a,b) =>
               moment(a[0].date)
                 .format(dateFormat.SEND_TO_SERVER)
                 .localeCompare(
@@ -678,7 +677,7 @@ const ScheduleManager = () => {
     } else if (data?.codeNumber === -1) {
       setLoading(false);
 
-      toast.error(`${t("system.notification.fail")}`, {
+      toast.error(`${t("system.notification.fail")}`,{
         autoClose: 2000,
         position: "bottom-right",
         theme: "colored",
@@ -686,7 +685,7 @@ const ScheduleManager = () => {
     } else if (data?.codeNumber === -2) {
       setLoading(false);
 
-      toast.error(`${t("system.token.mess")}`, {
+      toast.error(`${t("system.token.mess")}`,{
         autoClose: 5000,
         position: "bottom-right",
         theme: "colored",
@@ -698,7 +697,7 @@ const ScheduleManager = () => {
             navigate(`${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`);
           }
         });
-      }, 5000);
+      },5000);
     } else if (data?.codeNumber === 1) {
       setLoading(false);
 
@@ -724,19 +723,19 @@ const ScheduleManager = () => {
 
   //delete
   const isOpenModalDeleteUser = (times) => {
-    console.log(times);
+    // console.log(times);
     setIsDelete(true);
     setDataScheduleDelete(times);
   };
   const isCloseDeleteUserModal = () => {
     setIsDelete(false);
   };
-  const deleteSchedule = async (managerId, date, roleManager) => {
-    console.log(date);
+  const deleteSchedule = async (managerId,date,roleManager) => {
+    // console.log(date);
     setLoading(true);
 
     deleteScheduleByIdAndDate
-      .delete({ managerId, date, roleManager }, { email: currentUser?.email })
+      .delete({ managerId,date,roleManager },{ email: currentUser?.email })
       .then((res) => {
         if (res?.codeNumber === 0) {
           setIsDelete(false);
@@ -748,10 +747,10 @@ const ScheduleManager = () => {
           setTimeData(timeData);
 
           //load data
-          getScheduleSystem.get({ managerId, roleManager }).then((data) => {
+          getScheduleSystem.get({ managerId,roleManager }).then((data) => {
             if (data?.codeNumber === 0 && data?.schedule_user?.length > 0) {
               //sort by id
-              data.schedule_user.sort((a, b) => a.id - b.id);
+              data.schedule_user.sort((a,b) => a.id - b.id);
               let timeScheduleData = [];
               while (data.schedule_user.length > 1) {
                 const arr = data.schedule_user;
@@ -764,7 +763,7 @@ const ScheduleManager = () => {
                   }
                 }
                 data.schedule_user = data.schedule_user.filter(
-                  (item, index) => {
+                  (item,index) => {
                     return !indexArr.includes(index);
                   }
                 );
@@ -773,7 +772,7 @@ const ScheduleManager = () => {
               if (data.schedule_user.length === 1) {
                 timeScheduleData.push([data.schedule_user[0]]);
               }
-              timeScheduleData.sort((a, b) =>
+              timeScheduleData.sort((a,b) =>
                 moment(a[0].date)
                   .format(dateFormat.SEND_TO_SERVER)
                   .localeCompare(
@@ -788,7 +787,7 @@ const ScheduleManager = () => {
             }
             setSelectedProducts8([]);
           });
-          toast.success(`${t("system.notification.delete")}`, {
+          toast.success(`${t("system.notification.delete")}`,{
             autoClose: 2000,
             position: "bottom-right",
             theme: "colored",
@@ -796,7 +795,7 @@ const ScheduleManager = () => {
         } else if (res?.codeNumber === -1) {
           setLoading(false);
 
-          toast.error(`${t("system.notification.fail")}`, {
+          toast.error(`${t("system.notification.fail")}`,{
             autoClose: 2000,
             position: "bottom-right",
             theme: "colored",
@@ -804,7 +803,7 @@ const ScheduleManager = () => {
         } else if (res?.codeNumber === -2) {
           setLoading(false);
 
-          toast.error(`${t("system.token.mess")}`, {
+          toast.error(`${t("system.token.mess")}`,{
             autoClose: 5000,
             position: "bottom-right",
             theme: "colored",
@@ -818,7 +817,7 @@ const ScheduleManager = () => {
                 );
               }
             });
-          }, 5000);
+          },5000);
         } else if (res?.codeNumber === 1) {
           setLoading(false);
 
@@ -861,7 +860,7 @@ const ScheduleManager = () => {
       )}
       <div
         className="mt-3 flex flex-col items-start mx-auto pb-5 gap-8"
-        style={{ maxWidth: "80%", width: "80%" }}
+        style={{ maxWidth: "80%",width: "80%" }}
       >
         <p className="mx-auto text-2xl text-blue-600 font-semibold">
           {/* {t("system.schedule.manager")} */}
@@ -869,10 +868,10 @@ const ScheduleManager = () => {
         </p>
         <div className="flex items-start justify-between w-full gap-10">
           <motion.div
-            initial={{ opacity: 0, translateX: 50 }}
-            animate={{ opacity: 1, translateX: 0 }}
-            exit={{ opacity: 0, translateX: 50 }}
-            transition={{ duration: 0.3, delay: 0.1 }}
+            initial={{ opacity: 0,translateX: 50 }}
+            animate={{ opacity: 1,translateX: 0 }}
+            exit={{ opacity: 0,translateX: 50 }}
+            transition={{ duration: 0.3,delay: 0.1 }}
             className="flex-1 flex flex-col justify-center gap-1"
           >
             <label className="text-lg text-opacity-60 text-black">
@@ -888,10 +887,10 @@ const ScheduleManager = () => {
         </div>
 
         <motion.div
-          initial={{ opacity: 0, translateX: 50 }}
-          animate={{ opacity: 1, translateX: 0 }}
-          exit={{ opacity: 0, translateX: 50 }}
-          transition={{ duration: 0.3, delay: 0.1 }}
+          initial={{ opacity: 0,translateX: 50 }}
+          animate={{ opacity: 1,translateX: 0 }}
+          exit={{ opacity: 0,translateX: 50 }}
+          transition={{ duration: 0.3,delay: 0.1 }}
           className="w-full"
         >
           <div className="flex flex-col justify-center items-start gap-1 mb-5">
@@ -900,7 +899,7 @@ const ScheduleManager = () => {
             </label>
             <div className="flex items-center justify-start gap-5 flex-wrap">
               {timeData.length > 0 &&
-                timeData.map((time, index) => (
+                timeData.map((time,index) => (
                   <Button
                     key={index}
                     text={
@@ -916,18 +915,17 @@ const ScheduleManager = () => {
 
           <div className="flex items-center justify-start gap-3">
             <Button
-              text={`${
-                isUpdate
+              text={`${isUpdate
                   ? t("system.schedule.update")
                   : t("system.schedule.save")
-              }`}
+                }`}
               type={`${isUpdate ? "update" : "save"}`}
               click={handleSaveOrUpdateSchedule}
             />
             {isUpdate && (
               <button
                 className={` text-white mb-2 py-2 px-1 font-semibold rounded-md shadow backdrop-blur-md bg-opacity-100 hover:bg-opacity-80 bg-blue-500`}
-                style={{ maxWidth: "10%", width: "10%" }}
+                style={{ maxWidth: "10%",width: "10%" }}
                 onClick={() => handleCloseUpdateSchedule()}
               >
                 {t("system.department.close")}
@@ -938,7 +936,7 @@ const ScheduleManager = () => {
       </div>
       <div
         className="flex items-start mx-auto pb-16"
-        style={{ maxWidth: "80%", width: "80%" }}
+        style={{ maxWidth: "80%",width: "80%" }}
       >
         {timeUserSelected?.length === 0 ? null : (
           <div className="w-full mt-8">
@@ -950,7 +948,7 @@ const ScheduleManager = () => {
               first={first1}
               rows={rows1}
               onPage={onCustomPage1}
-              rowsPerPageOptions={[4, 8, 12]}
+              rowsPerPageOptions={[4,8,12]}
               paginatorLeft={paginatorLeft}
               paginatorRight={paginatorRight}
               // filters={filters1}
@@ -966,7 +964,7 @@ const ScheduleManager = () => {
               showGridlines
               onAllRowsSelect={(e) => setAllRowSelected(e)}
               onAllRowsUnselect={() => setAllRowSelected(false)}
-              // dataKey="id"
+            // dataKey="id"
             >
               <Column
                 selectionMode="multiple"

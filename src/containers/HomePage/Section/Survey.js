@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React,{ useState,useEffect } from "react";
 import Slider from "react-slick";
 import lozad from "lozad";
 import { useTranslation } from "react-i18next";
-import { NextArrow, PrevArrow } from "./ArrowCustom";
+import { NextArrow,PrevArrow } from "./ArrowCustom";
 import { getFeedback } from "../../../services/student_feedback";
 import convertBufferToBase64 from "../../../utils/convertBufferToBase64";
 import SurveySkeleton from "./SkeletonSection/SurveySkeleton";
 
 const Survey = ({ settings }) => {
-  const { t, i18n } = useTranslation();
-  const [feelingStudent, setFeelingStudent] = useState([]);
+  const { t,i18n } = useTranslation();
+  const [feelingStudent,setFeelingStudent] = useState([]);
 
-  const [currentSlice, setCurrentSlice] = useState(1);
+  const [currentSlice,setCurrentSlice] = useState(1);
 
   useEffect(() => {
     getFeedback({}).then((data) => {
@@ -30,11 +30,11 @@ const Survey = ({ settings }) => {
         setFeelingStudent(feedback);
       }
     });
-  }, []);
+  },[]);
 
   useEffect(() => {
     const lazyLoadImg = () => {
-      lozad(".lozad", {
+      lozad(".lozad",{
         load: function (el) {
           el.src = el.dataset.src;
           el.onload = function () {
@@ -44,33 +44,57 @@ const Survey = ({ settings }) => {
       }).observe();
     };
     lazyLoadImg();
-  }, [feelingStudent]);
+  },[feelingStudent]);
 
   const studentSetting = {
-    // dots: true,
-    infinite: true,
+    dots: false,
+    infinite: false,
+    speed: 500,
     slidesToShow: 3,
     slidesToScroll: 1,
-    // autoplay: true,
-    // autoplaySpeed: 3000,
-    // pauseOnHover: true,
     responsive: [
+      {
+        breakpoint: 1536,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 1,
+          infinite: false,
+          dots: false,
+          // nextArrow: <NextArrow />,
+          // prevArrow: <PrevArrow />,
+        },
+      },
+      {
+        breakpoint: 1280,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 1,
+          infinite: false,
+          dots: false,
+          // nextArrow: <NextArrow />,
+          // prevArrow: <PrevArrow />,
+        },
+      },
       {
         breakpoint: 1024,
         settings: {
           slidesToShow: 3,
           slidesToScroll: 1,
-          infinite: true,
-          dots: true,
+          infinite: false,
+          dots: false,
+          // nextArrow: <NextArrow />,
+          // prevArrow: <PrevArrow />,
         },
       },
       {
-        breakpoint: 600,
+        breakpoint: 768,
         settings: {
           slidesToShow: 2,
           slidesToScroll: 1,
-          infinite: true,
-          dots: true,
+          infinite: false,
+          dots: false,
+          // nextArrow: <NextArrow type="disable" />,
+          // prevArrow: <PrevArrow type="disable" />,
         },
       },
       {
@@ -78,15 +102,17 @@ const Survey = ({ settings }) => {
         settings: {
           slidesToShow: 1,
           slidesToScroll: 1,
-          infinite: true,
+          infinite: false,
           dots: true,
+          // nextArrow: <NextArrow type="disable" />,
+          // prevArrow: <PrevArrow type="disable" />,
         },
       },
     ],
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
-    beforeChange: function (currentSlide, nextSlide) {
-      console.log("before change", currentSlide, nextSlide);
+    beforeChange: function (currentSlide,nextSlide) {
+      // console.log("before change",currentSlide,nextSlide);
       setCurrentSlice(
         nextSlide + 1 > (feelingStudent?.length ? feelingStudent.length - 1 : 0)
           ? 0
@@ -109,35 +135,32 @@ const Survey = ({ settings }) => {
           </button> */}
         </div>
         <div className="w-full">
-          {feelingStudent?.length > 0 ? (
+          {feelingStudent?.length > 2 ? (
             <Slider {...studentSetting}>
-              {feelingStudent.map((item, index) => {
+              {feelingStudent.map((item,index) => {
                 return (
                   <div key={index} className={`section-item-contact w-[391px]`}>
                     <div
-                      className={`feedback_item w-full ${
-                        index === currentSlice ? "" : "pt-[60px]"
-                      }`}
+                      className={`feedback_item w-full ${index === currentSlice ? "" : "pt-[60px]"
+                        }`}
                       style={{
                         transition: "all 0.3s ease",
                         textAlign: "center",
                       }}
                     >
                       <div
-                        className={`feedback_item-content ${
-                          index === currentSlice
-                            ? "px-[32px] text-white minHeight-[224px] -mx-[30px] relative"
-                            : "px-[52px] text-gray-400 minHeight-[201px]"
-                        }`}
+                        className={`feedback_item-content ${index === currentSlice
+                          ? "px-[32px] text-white minHeight-[224px] -mx-[30px] relative"
+                          : "px-[52px] text-gray-400 minHeight-[201px]"
+                          }`}
                         style={{
                           borderRadius: "15px",
                           paddingTop: "65px",
                           paddingBottom: "52px",
-                          background: `${
-                            index === currentSlice
-                              ? "url('https://i-vn2.joboko.com/okoimg/resource.joboko.com/xurl/images/common/quote.png') no-repeat center top, #1d5193"
-                              : "url('https://i-vn2.joboko.com/okoimg/resource.joboko.com/xurl/images/common/quote.png') no-repeat center top, #f8f8f8"
-                          }`,
+                          background: `${index === currentSlice
+                            ? "url('https://i-vn2.joboko.com/okoimg/resource.joboko.com/xurl/images/common/quote.png') no-repeat center top, #1d5193"
+                            : "url('https://i-vn2.joboko.com/okoimg/resource.joboko.com/xurl/images/common/quote.png') no-repeat center top, #f8f8f8"
+                            }`,
                         }}
                       >
                         <p
@@ -156,34 +179,32 @@ const Survey = ({ settings }) => {
                       </div>
 
                       <div
-                        className={`feedback_item-detail ${
-                          index === currentSlice
-                            ? "relative mt-[43px] pt-0 px-0"
-                            : "-mt-[39px] py-0 px-[30px]"
-                        }`}
+                        className={`feedback_item-detail ${index === currentSlice
+                          ? "relative mt-[43px] pt-0 px-0"
+                          : "-mt-[39px] py-0 px-[30px]"
+                          }`}
                         style={{
                           zIndex: 5,
                         }}
                       >
                         <div
-                          className={`feedback_avatar ${
-                            index === currentSlice
-                              ? "absolute w-[144px] h-[144px] inset-0 -top-[85px] p-[8px]"
-                              : "w-[90px] h-[90px] border-spacing-2 border-white"
-                          }`}
+                          className={`feedback_avatar ${index === currentSlice
+                            ? "absolute w-[144px] h-[144px] inset-0 -top-[85px] p-[8px]"
+                            : "w-[90px] h-[90px] border-spacing-2 border-white"
+                            }`}
                           style={
                             index === currentSlice
                               ? {
-                                  borderRadius: "50%",
-                                  margin: "0 auto 4px",
-                                  backgroundColor: "#fff",
-                                  border: "1px solid rgb(249, 221, 221)",
-                                }
+                                borderRadius: "50%",
+                                margin: "0 auto 4px",
+                                backgroundColor: "#fff",
+                                border: "1px solid rgb(249, 221, 221)",
+                              }
                               : {
-                                  borderRadius: "50%",
-                                  margin: "0 auto 4px",
-                                  backgroundColor: "#fff",
-                                }
+                                borderRadius: "50%",
+                                margin: "0 auto 4px",
+                                backgroundColor: "#fff",
+                              }
                           }
                         >
                           <img
@@ -204,9 +225,8 @@ const Survey = ({ settings }) => {
                           />
                         </div>
                         <p
-                          className={`font-semibold ${
-                            index === currentSlice ? "pt-[72px]" : ""
-                          }`}
+                          className={`font-semibold ${index === currentSlice ? "pt-[72px]" : ""
+                            }`}
                           style={{
                             fontSize: "14px",
                             margin: "0 0 2px",

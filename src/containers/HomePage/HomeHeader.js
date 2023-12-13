@@ -112,7 +112,7 @@ const HomeHeader = ({ action }) => {
       languageDropDownRef.current.classList.toggle("appear");
     };
     const handleClickDivProfile = () => {
-      console.log(2222222);
+      // console.log(2222222);
       profileDropDownRef.current.classList.toggle("appear");
     };
     function handleClickOutDiv(event) {
@@ -130,7 +130,7 @@ const HomeHeader = ({ action }) => {
           event.target !== profileDivRef.current.childNodes[0] &&
           event.target !== profileDivRef.current.childNodes[1]
         ) {
-          console.log(33333);
+          // console.log(33333);
           profileDropDownRef.current.classList.remove("appear");
         }
       }
@@ -145,7 +145,7 @@ const HomeHeader = ({ action }) => {
     }
 
     return () => {
-      console.log("running");
+      // console.log("running");
       document.removeEventListener("click",handleClickOutDiv);
       divLanguage.removeEventListener("click",handleClickDivLanguage);
       if (JSON.parse(localStorage.getItem("auth-bookingCare-UET_student"))) {
@@ -158,7 +158,7 @@ const HomeHeader = ({ action }) => {
 
   useEffect(() => {
     const listenNewUpdateBookingFromBackend = (data) => {
-      console.log("action" + JSON.stringify(data));
+      // console.log("action" + JSON.stringify(data));
 
       const { studentId,type,actionId } = data;
       if (studentId === currentUser?.id) {
@@ -247,7 +247,7 @@ const HomeHeader = ({ action }) => {
     };
 
     const listenCheckEventBookingScheduleComingFromBackend = (data) => {
-      console.log(data);
+      // console.log(data);
       const { studentId } = data;
       if (studentId && studentId === currentUser?.id) {
         toast.info(
@@ -324,7 +324,7 @@ const HomeHeader = ({ action }) => {
       JSON.parse(localStorage.getItem("auth-bookingCare-UET_student")) &&
       !socket.hasListeners("new_notification_for_student_about_update_booking")
     ) {
-      console.log("listen");
+      // console.log("listen");
       socket.on("new_notification_for_student_about_update_booking",(data) =>
         listenNewUpdateBookingFromBackend(data)
       );
@@ -334,7 +334,7 @@ const HomeHeader = ({ action }) => {
       JSON.parse(localStorage.getItem("auth-bookingCare-UET_student")) &&
       !socket.hasListeners("check_event_booking_schedule_coming")
     ) {
-      console.log("listen1");
+      // console.log("listen1");
       socket.on("check_event_booking_schedule_coming",(data) =>
         listenCheckEventBookingScheduleComingFromBackend(data)
       );
@@ -350,7 +350,7 @@ const HomeHeader = ({ action }) => {
     }
 
     return () => {
-      console.log("cleanup");
+      // console.log("cleanup");
       socket.off(
         "new_notification_for_student_about_update_booking",
         listenNewUpdateBookingFromBackend
@@ -494,6 +494,7 @@ const HomeHeader = ({ action }) => {
         navigate(`${path.HOMEPAGE}/${path.notify}`);
       });
     } else {
+      setCountNewNotification(0);
       navigate(`${path.HOMEPAGE}/${path.notify}`);
       dispatch(setChangeNotifyIcon(false));
 

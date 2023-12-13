@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import React,{ useEffect,useState } from "react";
+import { ToastContainer,toast } from "react-toastify";
 import Loading from "../../../utils/Loading";
 import HomeHeader from "../HomeHeader";
 import { useNavigate } from "react-router";
@@ -14,10 +14,10 @@ import HomeFooter from "../HomeFooter";
 import nodata from "../../../assets/image/nodata.png";
 
 const NewsSeeAll = () => {
-  const [loading, setLoading] = useState(false);
-  const [newsData, setNewsData] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPage, setTotalPage] = useState(0);
+  const [loading,setLoading] = useState(false);
+  const [newsData,setNewsData] = useState([]);
+  const [currentPage,setCurrentPage] = useState(1);
+  const [totalPage,setTotalPage] = useState(0);
   const navigate = useNavigate();
   const { i18n } = useTranslation();
   const mdParser = new MarkdownIt(/* Markdown-it options */);
@@ -27,7 +27,7 @@ const NewsSeeAll = () => {
       setLoading(true);
       news.get({ page: currentPage }).then((data) => {
         if (data?.codeNumber === 0) {
-          const { news, pageCurrent, countNews } = data;
+          const { news,pageCurrent,countNews } = data;
           if (news?.length > 0) {
             for (let i = 0; i < news.length; i++) {
               if (news[i]?.avatarNew?.data) {
@@ -39,8 +39,8 @@ const NewsSeeAll = () => {
             setNewsData(newsData.concat(news));
             setCurrentPage(+pageCurrent);
             setTotalPage(+countNews);
-            setLoading(false);
           }
+          setLoading(false);
         } else {
           setLoading(false);
           toast.error(
@@ -54,7 +54,7 @@ const NewsSeeAll = () => {
         }
       });
     }
-  }, [currentPage]);
+  },[currentPage]);
 
   return (
     <div>
@@ -104,7 +104,7 @@ const NewsSeeAll = () => {
               }}
             />
           ) : (
-            newsData.map((item, index) => {
+            newsData.map((item,index) => {
               return (
                 <div
                   className="teacher-see-all-item w-full gap-8"
@@ -116,9 +116,9 @@ const NewsSeeAll = () => {
                     marginBottom: "20px",
                     paddingBottom: "20px",
                   }}
-                  // onClick={() =>
-                  //   navigate(`${path.HOMEPAGE}/${item?.code_url}/ids-role/R5`)
-                  // }
+                // onClick={() =>
+                //   navigate(`${path.HOMEPAGE}/${item?.code_url}/ids-role/R5`)
+                // }
                 >
                   <div className="relative w-[230px] h-[152px] mx-auto flex items-start justify-center">
                     <div

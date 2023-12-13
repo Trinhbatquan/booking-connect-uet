@@ -70,7 +70,7 @@ const NotificationSystem = () => {
         type: "system",
       })
       .then((res) => {
-        console.log(res);
+        // console.log(res);
 
         if (res?.codeNumber === 0) {
           setCountNotifyData(res?.allNotifyCount);
@@ -82,7 +82,7 @@ const NotificationSystem = () => {
   useEffect(() => {
     if (action) {
       setLoading(true);
-      console.log(1);
+      // console.log(1);
       getNotiFy
         .get({
           roleManager: action,
@@ -90,7 +90,7 @@ const NotificationSystem = () => {
           type: "system",
         })
         .then((res) => {
-          console.log(res);
+          // console.log(res);
 
           if (res?.codeNumber === 0) {
             const data = res?.notify;
@@ -140,7 +140,7 @@ const NotificationSystem = () => {
           const base64File = await convertFileToBase64(file);
           setImage(base64File);
         } catch (e) {
-          console.log("base64 file " + e);
+          // console.log("base64 file " + e);
         }
       }
     }
@@ -256,8 +256,8 @@ const NotificationSystem = () => {
           for (let i = 0; i < user?.length; i++) {
             dataRoleManager.push(user[i]?.value);
           }
-          console.log(dataRoleManager);
-          console.log(user);
+          // console.log(dataRoleManager);
+          // console.log(user);
           if (dataRoleManager?.length > 0) {
             emit_new_notification_from_system({
               dataRoleManager,
@@ -269,7 +269,7 @@ const NotificationSystem = () => {
               type: "system",
             })
             .then((result) => {
-              console.log(result);
+              // console.log(result);
 
               if (result?.codeNumber === 0) {
                 setCountNotifyData(result?.allNotifyCount);
@@ -389,7 +389,7 @@ const NotificationSystem = () => {
               type: "system",
             })
             .then((result) => {
-              console.log(result);
+              // console.log(result);
 
               if (result?.codeNumber === 0) {
                 setCountNotifyData(result?.allNotifyCount);
@@ -492,7 +492,7 @@ const NotificationSystem = () => {
             type: "system",
           })
           .then((result) => {
-            console.log(result);
+            // console.log(result);
 
             if (result?.codeNumber === 0) {
               setCountNotifyData(result?.allNotifyCount);
@@ -505,7 +505,7 @@ const NotificationSystem = () => {
             type: "system",
           })
           .then((res) => {
-            console.log(res);
+            // console.log(res);
 
             if (res?.codeNumber === 0) {
               const data = res?.notify;

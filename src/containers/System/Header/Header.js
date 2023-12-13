@@ -79,7 +79,7 @@ const HeaderUser = ({ openModelUpdatePass }) => {
 
   useEffect(() => {
     const listenNewBookingFromBackend = (data) => {
-      console.log("1");
+      console.log("new book");
       const { managerId,roleManager,action } = data;
       if (managerId === currentUser?.id && roleManager === currentUser?.role) {
         if (action === "A1") {
@@ -133,8 +133,8 @@ const HeaderUser = ({ openModelUpdatePass }) => {
     };
 
     const listenNewNotifyFromSystem = (data) => {
-      console.log("2");
-      console.log(data);
+      console.log("notify");
+      // console.log(data);
 
       const { dataRoleManager,time } = data;
       const checkRole = dataRoleManager.includes(currentUser?.role);
@@ -242,7 +242,7 @@ const HeaderUser = ({ openModelUpdatePass }) => {
       })
       .then((data) => {
         if (data?.codeNumber === 0) {
-          console.log("header_user");
+          // console.log("header_user");
           dispatch(setCountNewNotifyManager(data?.countNewNotify));
           setCountNewNotification(data?.countNewNotify);
         }
@@ -251,7 +251,7 @@ const HeaderUser = ({ openModelUpdatePass }) => {
 
   useEffect(() => {
     const handleToggleProfileSystem = (e) => {
-      console.log(divProfileSystem);
+      // console.log(divProfileSystem);
       // const profileSystemDropdown = document.querySelector(
       //   ".profile-system-dropdown"
       // );
@@ -260,13 +260,13 @@ const HeaderUser = ({ openModelUpdatePass }) => {
     };
 
     const handleCloseProfileSystem = (e) => {
-      console.log(3);
+      // console.log(3);
       const divProfileSystem = document.querySelector(".div-profile-system");
       if (
         divProfileSystem.childNodes[0] !== e.target &&
         divProfileSystem.childNodes[1] !== e.target
       ) {
-        console.log(4);
+        // console.log(4);
 
         divProfileSystem.classList.remove("appear");
       }
@@ -319,11 +319,14 @@ const HeaderUser = ({ openModelUpdatePass }) => {
         navigate(`${path.MANAGER}/${path.notification}`);
       });
     } else {
+      setCountNewNotification(0);
       navigate(`${path.MANAGER}/${path.notification}`);
       dispatch(setChangeNotifyIcon(false));
 
     }
   };
+
+  // console.log(countNewNotification);
 
   return (
     <div className="system-header-container fixed top-0 left-0 right-0 flex items-center justify-between shadow-md backdrop-blur-md shadow-blurColor">
@@ -522,7 +525,7 @@ const HeaderAdmin = ({ openModelUpdatePass }) => {
 
   useEffect(() => {
     const handleToggleProfileSystem = (e) => {
-      console.log(divProfileSystem);
+      // console.log(divProfileSystem);
       // const profileSystemDropdown = document.querySelector(
       //   ".profile-system-dropdown"
       // );
@@ -531,13 +534,13 @@ const HeaderAdmin = ({ openModelUpdatePass }) => {
     };
 
     const handleCloseProfileSystem = (e) => {
-      console.log(3);
+      // console.log(3);
       const divProfileSystem = document.querySelector(".div-profile-system");
       if (
         divProfileSystem.childNodes[0] !== e.target &&
         divProfileSystem.childNodes[1] !== e.target
       ) {
-        console.log(4);
+        // console.log(4);
 
         divProfileSystem.classList.remove("appear");
       }
@@ -880,7 +883,7 @@ const Header = () => {
   const { t,i18n } = useTranslation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  console.log("render");
+  // console.log("render");
   const currentUser = useSelector((state) => state.authReducer);
   const [isUpdatePassword,setIsUpdatePassword] = useState(false);
   const [currentPassword,setCurrentPassword] = useState("");

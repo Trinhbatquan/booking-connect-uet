@@ -2,7 +2,7 @@ import React from "react";
 import Slider from "react-slick";
 import { useTranslation } from "react-i18next";
 
-import { useState, useEffect } from "react";
+import { useState,useEffect } from "react";
 import lozad from "lozad";
 import { BsArrowRight } from "react-icons/bs";
 import "./News.scss";
@@ -13,9 +13,9 @@ import { useNavigate } from "react-router";
 import { path } from "../../../utils/constant";
 
 const News = ({ settings }) => {
-  const [newsData, setNewsData] = useState([]);
-  const { t, i18n } = useTranslation();
-  const [loading, setLoading] = useState(true);
+  const [newsData,setNewsData] = useState([]);
+  const { t,i18n } = useTranslation();
+  const [loading,setLoading] = useState(true);
   const navigate = useNavigate();
   useEffect(() => {
     // getNotiFy.getHomePageLimited({}).then((data) => {
@@ -37,7 +37,7 @@ const News = ({ settings }) => {
       if (data?.codeNumber === 0) {
         const res = data?.news;
         if (res?.length > 0) {
-          console.log(res);
+          // console.log(res);
           for (let i = 0; i < res?.length; i++) {
             if (res[i]?.avatarNew?.data) {
               res[i].avatarNew.data = convertBufferToBase64(
@@ -50,11 +50,11 @@ const News = ({ settings }) => {
         }
       }
     });
-  }, []);
+  },[]);
 
   useEffect(() => {
     const lazyLoadImg = () => {
-      lozad(".lozad", {
+      lozad(".lozad",{
         load: function (el) {
           el.src = el.dataset.src;
           el.onload = function () {
@@ -64,7 +64,7 @@ const News = ({ settings }) => {
       }).observe();
     };
     lazyLoadImg();
-  }, [newsData]);
+  },[newsData]);
 
   return (
     <div className="section-container notification-container w-full h-auto">
@@ -151,7 +151,7 @@ const News = ({ settings }) => {
                 </div>
               </div>
               <div className="h-[375px] overflow-hidden flex flex-col items-start justify-between">
-                {newsData.slice(1, newsData.length).map((item, index) => {
+                {newsData.slice(1,newsData.length).map((item,index) => {
                   return (
                     <div
                       key={index}

@@ -1,11 +1,11 @@
 import "./TeacherManager.scss";
-import React, { Fragment, useEffect, useState, useRef } from "react";
+import React,{ Fragment,useEffect,useState,useRef } from "react";
 import { Buffer } from "buffer";
 import { FiEdit } from "react-icons/fi";
 import { BsEyeSlash } from "react-icons/bs";
 import { IoMdEye } from "react-icons/io";
 import { AiOutlineDelete } from "react-icons/ai";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer,toast } from "react-toastify";
 import { BsPersonPlusFill } from "react-icons/bs";
 import { useContext } from "react";
 import { ContextScrollTop } from "../RootSystem";
@@ -27,48 +27,48 @@ import Loading from "./../../../utils/Loading";
 import DeleteModal from "./../Modal/DeleteModal";
 import convertFileToBase64 from "../../../utils/convertFileToBase64";
 import { getTeacherHomePageAPI } from "../../../services/teacherService";
-import { ascertain_user, path } from "../../../utils/constant";
+import { ascertain_user,path } from "../../../utils/constant";
 import { logOutUser } from "../../../redux/authSlice";
 
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
-import { FilterMatchMode, FilterOperator } from "primereact/api";
+import { FilterMatchMode,FilterOperator } from "primereact/api";
 import { Ripple } from "primereact/ripple";
 import { Dropdown } from "primereact/dropdown";
 import { classNames } from "primereact/utils";
 
 const TeacherManager = () => {
   // const [isCreateUser, setIsCreateUser] = useState(false);
-  const [isDeleteUser, setIsDeleteUser] = useState(false);
-  const [dataUserDelete, setDataUserDelete] = useState("");
-  const [isUpdateUser, setIsUpdateUser] = useState(false);
-  const [dataUserUpdate, setDataUserUpdate] = useState("");
+  const [isDeleteUser,setIsDeleteUser] = useState(false);
+  const [dataUserDelete,setDataUserDelete] = useState("");
+  const [isUpdateUser,setIsUpdateUser] = useState(false);
+  const [dataUserUpdate,setDataUserUpdate] = useState("");
 
-  const [users, setUsers] = useState([]);
-  const [eye, setEye] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [genderAPI, setGenderAPI] = useState([]);
-  const [positionAPI, setPositionAPI] = useState([]);
-  const [facultyAPI, setFacultyAPI] = useState([]);
+  const [users,setUsers] = useState([]);
+  const [eye,setEye] = useState(false);
+  const [loading,setLoading] = useState(false);
+  const [genderAPI,setGenderAPI] = useState([]);
+  const [positionAPI,setPositionAPI] = useState([]);
+  const [facultyAPI,setFacultyAPI] = useState([]);
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [fullName, setFullName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [avatar, setAvatar] = useState("");
-  const [address, setAddress] = useState("");
-  const [gender, setGender] = useState("");
-  const [position, setPosition] = useState("");
-  const [faculty, setFaculty] = useState("");
-  const [note, setNote] = useState("");
-  const [notifyCheckState, setNotifyCheckState] = useState("");
-  const [previewAvatar, setPreviewAvatar] = useState("");
+  const [email,setEmail] = useState("");
+  const [password,setPassword] = useState("");
+  const [fullName,setFullName] = useState("");
+  const [phoneNumber,setPhoneNumber] = useState("");
+  const [avatar,setAvatar] = useState("");
+  const [address,setAddress] = useState("");
+  const [gender,setGender] = useState("");
+  const [position,setPosition] = useState("");
+  const [faculty,setFaculty] = useState("");
+  const [note,setNote] = useState("");
+  const [notifyCheckState,setNotifyCheckState] = useState("");
+  const [previewAvatar,setPreviewAvatar] = useState("");
 
   //scroll top
   // const scroll = useContext(ContextScrollTop);
-  const { t, i18n } = useTranslation();
+  const { t,i18n } = useTranslation();
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -77,15 +77,15 @@ const TeacherManager = () => {
   const inputFileRef = useRef();
 
   //dataTable
-  const [filters1, setFilters1] = useState(null);
-  const [globalFilterValue1, setGlobalFilterValue1] = useState("");
-  const [selectedProducts8, setSelectedProducts8] = useState(null);
-  const [allRowSelected, setAllRowSelected] = useState(false);
+  const [filters1,setFilters1] = useState(null);
+  const [globalFilterValue1,setGlobalFilterValue1] = useState("");
+  const [selectedProducts8,setSelectedProducts8] = useState(null);
+  const [allRowSelected,setAllRowSelected] = useState(false);
   // const [currentPage, setCurrentPage] = useState();
-  const [first1, setFirst1] = useState(0);
-  const [rows1, setRows1] = useState(8);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageInputTooltip, setPageInputTooltip] = useState(
+  const [first1,setFirst1] = useState(0);
+  const [rows1,setRows1] = useState(8);
+  const [currentPage,setCurrentPage] = useState(1);
+  const [pageInputTooltip,setPageInputTooltip] = useState(
     i18n.language === "en"
       ? "Press 'Enter' key to go to this page."
       : "Sử dụng phím Enter để di chuyển trang."
@@ -106,7 +106,7 @@ const TeacherManager = () => {
   const onPageInputChange = (event) => {
     setCurrentPage(event.target.value);
   };
-  const onPageInputKeyDown = (event, options) => {
+  const onPageInputKeyDown = (event,options) => {
     if (event.key === "Enter") {
       const page = parseInt(currentPage);
       if (page < 1 || page > options.totalPages) {
@@ -165,7 +165,7 @@ const TeacherManager = () => {
         (options.view.endPage === options.page &&
           options.page + 1 !== options.totalPages)
       ) {
-        const className = classNames(options.className, { "p-disabled": true });
+        const className = classNames(options.className,{ "p-disabled": true });
 
         return (
           <span className={className} style={{ userSelect: "none" }}>
@@ -187,8 +187,8 @@ const TeacherManager = () => {
     },
     RowsPerPageDropdown: (options) => {
       const dropdownOptions = [
-        { label: 8, value: 8 },
-        { label: 12, value: 12 },
+        { label: 8,value: 8 },
+        { label: 12,value: 12 },
         {
           label: i18n.language === "en" ? "All" : "Tất cả",
           value: options.totalRecords,
@@ -207,7 +207,7 @@ const TeacherManager = () => {
       return (
         <span
           className="mx-3"
-          style={{ color: "var(--text-color)", userSelect: "none" }}
+          style={{ color: "var(--text-color)",userSelect: "none" }}
         >
           {i18n.language === "en" ? `Go to ` : `Đến `}
 
@@ -216,7 +216,7 @@ const TeacherManager = () => {
             className="ml-1"
             value={currentPage}
             tooltip={pageInputTooltip}
-            onKeyDown={(e) => onPageInputKeyDown(e, options)}
+            onKeyDown={(e) => onPageInputKeyDown(e,options)}
             onChange={onPageInputChange}
           />
         </span>
@@ -227,10 +227,10 @@ const TeacherManager = () => {
   //filter
   const initFilters1 = () => {
     setFilters1({
-      global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+      global: { value: null,matchMode: FilterMatchMode.CONTAINS },
       fullName: {
         operator: FilterOperator.AND,
-        constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+        constraints: [{ value: null,matchMode: FilterMatchMode.STARTS_WITH }],
       },
     });
     setGlobalFilterValue1("");
@@ -266,9 +266,8 @@ const TeacherManager = () => {
               type="button"
               // icon="pi pi-filter-slash"
               label={i18n.language === "en" ? "Delete" : "Xoá"}
-              className={`p-button-outlined ${
-                selectedProducts8?.length >= 1 ? "" : "disabled"
-              }`}
+              className={`p-button-outlined ${selectedProducts8?.length >= 1 ? "" : "disabled"
+                }`}
               onClick={() => handleDeleteManyData()}
             />
           )}
@@ -389,17 +388,17 @@ const TeacherManager = () => {
       });
       setLoading(false);
       initFilters1();
-    }, 0);
-  }, []);
+    },0);
+  },[]);
 
   let optionsFaculties = [];
   if (facultyAPI.length > 0) {
-    facultyAPI.forEach((user, index) => {
-      optionsFaculties.push({ value: user?.id, label: user?.fullName });
+    facultyAPI.forEach((user,index) => {
+      optionsFaculties.push({ value: user?.id,label: user?.fullName });
     });
   }
 
-  const handleChangeEvent = (value, type) => {
+  const handleChangeEvent = (value,type) => {
     const stateArr = [
       "Email",
       "Password",
@@ -439,10 +438,9 @@ const TeacherManager = () => {
       if (file?.size > 500000) {
         inputFileRef.current.value = "";
         toast.error(
-          `${
-            i18n.language === "en"
-              ? "This image is too big, please use image size < 500KB"
-              : "Ảnh hiện tại quá lớn. Vui lòng sử dụng ảnh dưới 500KB"
+          `${i18n.language === "en"
+            ? "This image is too big, please use image size < 500KB"
+            : "Ảnh hiện tại quá lớn. Vui lòng sử dụng ảnh dưới 500KB"
           }`,
           {
             autoClose: 3000,
@@ -457,7 +455,7 @@ const TeacherManager = () => {
           const base64File = await convertFileToBase64(file);
           setAvatar(base64File);
         } catch (e) {
-          console.log("base64 file " + e);
+          // console.log("base64 file " + e);
         }
       }
     }
@@ -561,16 +559,16 @@ const TeacherManager = () => {
         note,
         type: ascertain_user.teacher,
       };
-      createUserApi.create({}, body).then(async (data) => {
+      createUserApi.create({},body).then(async (data) => {
         if (data?.codeNumber === -1) {
-          toast.error(`${t("system.notification.fail")}`, {
+          toast.error(`${t("system.notification.fail")}`,{
             autoClose: 2000,
             position: "bottom-right",
             theme: "colored",
           });
           setLoading(false);
         } else if (data?.codeNumber === -2) {
-          toast.error(`${t("system.token.mess")}`, {
+          toast.error(`${t("system.token.mess")}`,{
             autoClose: 5000,
             position: "bottom-right",
             theme: "colored",
@@ -584,9 +582,9 @@ const TeacherManager = () => {
                 );
               }
             });
-          }, 5000);
+          },5000);
         } else if (data?.codeNumber === 1) {
-          toast.error(data?.message, {
+          toast.error(data?.message,{
             autoClose: 2000,
             position: "bottom-right",
             theme: "colored",
@@ -602,7 +600,7 @@ const TeacherManager = () => {
           //     emitter.emit("CLEAR_DATA_MODAL");
           //   }
           // });
-          toast.success(`${t("system.notification.create")}`, {
+          toast.success(`${t("system.notification.create")}`,{
             autoClose: 2000,
             position: "bottom-right",
             theme: "colored",
@@ -687,12 +685,12 @@ const TeacherManager = () => {
 
   //update user
   const isOpenUpdateUser = async (user) => {
-    console.log(user);
+    // console.log(user);
     setLoading(true);
     setDataUserUpdate(user);
     let base64File = "";
     if (user?.image?.data) {
-      base64File = new Buffer(user.image.data, "base64").toString("binary");
+      base64File = new Buffer(user.image.data,"base64").toString("binary");
     }
     setTimeout(async () => {
       setEmail(user?.email);
@@ -711,7 +709,7 @@ const TeacherManager = () => {
       } else {
         setPreviewAvatar("");
       }
-    }, 0);
+    },0);
   };
 
   const handleUpdateUser = () => {
@@ -728,16 +726,16 @@ const TeacherManager = () => {
       image: avatar,
       type: ascertain_user.teacher,
     };
-    updateUserApi.update({}, body).then(async (data) => {
+    updateUserApi.update({},body).then(async (data) => {
       if (data?.codeNumber === -1) {
-        toast.error(`${t("system.notification.fail")}`, {
+        toast.error(`${t("system.notification.fail")}`,{
           autoClose: 2000,
           position: "bottom-right",
           theme: "colored",
         });
         setLoading(false);
       } else if (data?.codeNumber === -2) {
-        toast.error(`${t("system.token.mess")}`, {
+        toast.error(`${t("system.token.mess")}`,{
           autoClose: 5000,
           position: "bottom-right",
           theme: "colored",
@@ -749,9 +747,9 @@ const TeacherManager = () => {
               navigate(`${path.SYSTEM}/${path.LOGIN_SYSTEM}?redirect=/system`);
             }
           });
-        }, 5000);
+        },5000);
       } else if (data?.codeNumber === 1) {
-        toast.error(data?.message, {
+        toast.error(data?.message,{
           autoClose: 2000,
           position: "bottom-right",
           theme: "colored",
@@ -763,7 +761,7 @@ const TeacherManager = () => {
             setUsers(data.teacher);
           }
         });
-        toast.success(`${t("system.notification.update")}`, {
+        toast.success(`${t("system.notification.update")}`,{
           autoClose: 2000,
           position: "bottom-right",
           theme: "colored",
@@ -821,14 +819,14 @@ const TeacherManager = () => {
       })
       .then((data) => {
         if (data?.codeNumber === -1) {
-          toast.error(`${t("system.notification.fail")}`, {
+          toast.error(`${t("system.notification.fail")}`,{
             autoClose: 2000,
             position: "bottom-right",
             theme: "colored",
           });
           setLoading(false);
         } else if (data?.codeNumber === -2) {
-          toast.error(`${t("system.token.mess")}`, {
+          toast.error(`${t("system.token.mess")}`,{
             autoClose: 5000,
             position: "bottom-right",
             theme: "colored",
@@ -842,9 +840,9 @@ const TeacherManager = () => {
                 );
               }
             });
-          }, 5000);
+          },5000);
         } else if (data?.codeNumber === 1) {
-          toast.error(data?.message, {
+          toast.error(data?.message,{
             autoClose: 2000,
             position: "bottom-right",
             theme: "colored",
@@ -857,7 +855,7 @@ const TeacherManager = () => {
               setLoading(false);
               setIsDeleteUser(false);
               setDataUserDelete("");
-              toast.success(`${t("system.notification.delete")}`, {
+              toast.success(`${t("system.notification.delete")}`,{
                 autoClose: 2000,
                 position: "bottom-right",
                 theme: "colored",
@@ -869,7 +867,7 @@ const TeacherManager = () => {
       });
   };
   const handleDeleteManyData = () => {
-    console.log(selectedProducts8);
+    // console.log(selectedProducts8);
     let data = [];
     if (allRowSelected) {
       data = selectedProducts8?.slice(
@@ -917,7 +915,7 @@ const TeacherManager = () => {
                   type="email"
                   id="email"
                   value={email}
-                  onChange={(e) => handleChangeEvent(e.target.value, "Email")}
+                  onChange={(e) => handleChangeEvent(e.target.value,"Email")}
                   onFocus={() => setNotifyCheckState("")}
                   required
                   disabled={isUpdateUser ? true : false}
@@ -938,7 +936,7 @@ const TeacherManager = () => {
                   type={`${eye ? "text" : "password"}`}
                   value={password}
                   onChange={(e) =>
-                    handleChangeEvent(e.target.value, "Password")
+                    handleChangeEvent(e.target.value,"Password")
                   }
                   onFocus={() => setNotifyCheckState("")}
                   disabled={isUpdateUser ? true : false}
@@ -972,7 +970,7 @@ const TeacherManager = () => {
                   type="text"
                   value={fullName}
                   onChange={(e) =>
-                    handleChangeEvent(e.target.value, "FullName")
+                    handleChangeEvent(e.target.value,"FullName")
                   }
                   onFocus={() => setNotifyCheckState("")}
                 />
@@ -991,7 +989,7 @@ const TeacherManager = () => {
                   type="text"
                   value={phoneNumber}
                   onChange={(e) =>
-                    handleChangeEvent(e.target.value, "PhoneNumber")
+                    handleChangeEvent(e.target.value,"PhoneNumber")
                   }
                   onFocus={() => setNotifyCheckState("")}
                 />
@@ -1012,7 +1010,7 @@ const TeacherManager = () => {
                   id="address"
                   type="text"
                   value={address}
-                  onChange={(e) => handleChangeEvent(e.target.value, "Address")}
+                  onChange={(e) => handleChangeEvent(e.target.value,"Address")}
                   onFocus={() => setNotifyCheckState("")}
                 />
               </div>
@@ -1030,7 +1028,7 @@ const TeacherManager = () => {
                   id="position"
                   value={position}
                   onChange={(e) =>
-                    handleChangeEvent(e.target.value, "Position")
+                    handleChangeEvent(e.target.value,"Position")
                   }
                   onFocus={() => setNotifyCheckState("")}
                 >
@@ -1038,7 +1036,7 @@ const TeacherManager = () => {
                     Select---
                   </option>
                   {positionAPI?.length > 0 &&
-                    positionAPI?.map((e, i) => {
+                    positionAPI?.map((e,i) => {
                       return (
                         <option key={i} name="position" value={e?.keyMap}>
                           {i18n.language === "vi" ? e?.valueVn : e?.valueEn}
@@ -1060,14 +1058,14 @@ const TeacherManager = () => {
                   type="text"
                   id="faculty"
                   value={faculty}
-                  onChange={(e) => handleChangeEvent(e.target.value, "Faculty")}
+                  onChange={(e) => handleChangeEvent(e.target.value,"Faculty")}
                   onFocus={() => setNotifyCheckState("")}
                 >
                   <option name="faculty" value="">
                     Select---
                   </option>
                   {optionsFaculties?.length > 0 &&
-                    optionsFaculties?.map((e, i) => {
+                    optionsFaculties?.map((e,i) => {
                       return (
                         <option key={i} name="faculty" value={e?.value}>
                           {e?.label}
@@ -1086,7 +1084,7 @@ const TeacherManager = () => {
                   rows="1"
                   className="shadow-sm bg-gray-50 border border-gray-400 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-2 py-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
                   value={note}
-                  onChange={(e) => setNote(e.target.value, "Note")}
+                  onChange={(e) => setNote(e.target.value,"Note")}
                   onFocus={() => setNotifyCheckState("")}
                 />
               </div>
@@ -1106,14 +1104,14 @@ const TeacherManager = () => {
                   type="text"
                   id="gender"
                   value={gender}
-                  onChange={(e) => handleChangeEvent(e.target.value, "Gender")}
+                  onChange={(e) => handleChangeEvent(e.target.value,"Gender")}
                   onFocus={() => setNotifyCheckState("")}
                 >
                   <option name="gender" value="">
                     Select---
                   </option>
                   {genderAPI?.length > 0 &&
-                    genderAPI?.map((e, i) => {
+                    genderAPI?.map((e,i) => {
                       return (
                         <option key={i} name="role" value={e?.keyMap}>
                           {i18n.language === "vi" ? e?.valueVn : e?.valueEn}
@@ -1164,10 +1162,9 @@ const TeacherManager = () => {
 
             <div className="flex items-center gap-5">
               <button
-                className={`${
-                  isUpdateUser ? "bg-backColor" : "bg-blue-600"
-                } text-white mt-6 py-2 px-1 font-semibold rounded-md shadow backdrop-blur-md bg-opacity-80 hover:bg-opacity-100`}
-                style={{ maxWidth: "15%", width: "15%" }}
+                className={`${isUpdateUser ? "bg-backColor" : "bg-blue-600"
+                  } text-white mt-6 py-2 px-1 font-semibold rounded-md shadow backdrop-blur-md bg-opacity-80 hover:bg-opacity-100`}
+                style={{ maxWidth: "15%",width: "15%" }}
                 onClick={
                   isUpdateUser
                     ? () => handleUpdateUser()
@@ -1181,7 +1178,7 @@ const TeacherManager = () => {
               {isUpdateUser && (
                 <button
                   className={` text-white mt-6 py-2 px-1 font-semibold rounded-md shadow backdrop-blur-md bg-opacity-80 hover:bg-opacity-100 bg-blue-600`}
-                  style={{ maxWidth: "10%", width: "10%" }}
+                  style={{ maxWidth: "10%",width: "10%" }}
                   onClick={() => handleCloseUpdateUser()}
                 >
                   {t("system.teacher.close")}
@@ -1201,7 +1198,7 @@ const TeacherManager = () => {
             /> */}
         </div>
 
-        {console.log(users)}
+        {/* {console.log(users)} */}
         {users?.length === 0 ? null : (
           <div className="w-full mt-8">
             <DataTable
@@ -1212,7 +1209,7 @@ const TeacherManager = () => {
               first={first1}
               rows={rows1}
               onPage={onCustomPage1}
-              rowsPerPageOptions={[4, 8, 12]}
+              rowsPerPageOptions={[4,8,12]}
               paginatorLeft={paginatorLeft}
               paginatorRight={paginatorRight}
               filters={filters1}
@@ -1228,7 +1225,7 @@ const TeacherManager = () => {
               showGridlines
               onAllRowsSelect={(e) => setAllRowSelected(e)}
               onAllRowsUnselect={() => setAllRowSelected(false)}
-              // dataKey="id"
+            // dataKey="id"
             >
               <Column
                 selectionMode="multiple"

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React,{ useState,useEffect } from "react";
+import { motion,AnimatePresence } from "framer-motion";
 import { RiDeleteBack2Fill } from "react-icons/ri";
 import { HiOutlinePencilAlt } from "react-icons/hi";
 import { useTranslation } from "react-i18next";
@@ -7,7 +7,7 @@ import { TiUserAdd } from "react-icons/ti";
 import { MdOutlineEditCalendar } from "react-icons/md";
 import { IoTime } from "react-icons/io5";
 import avatar from "../../../assets/image/uet.png";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer,toast } from "react-toastify";
 import "../Detail/Detail.scss";
 
 import { emitter } from "../../../utils/emitter";
@@ -22,29 +22,29 @@ const BookingModal = ({
   create,
   roleManager,
 }) => {
-  console.log(dataModalSchedule);
-  const [email, setEmail] = useState(
+  // console.log(dataModalSchedule);
+  const [email,setEmail] = useState(
     dataModalSchedule?.currentStudent?.email
       ? dataModalSchedule.currentStudent.email
       : ""
   );
-  const [fullName, setFullName] = useState(
+  const [fullName,setFullName] = useState(
     dataModalSchedule?.currentStudent?.fullName
       ? dataModalSchedule.currentStudent.fullName
       : ""
   );
-  const [mssv, setMssv] = useState(() => {
+  const [mssv,setMssv] = useState(() => {
     if (dataModalSchedule?.currentStudent?.email) {
       return dataModalSchedule?.currentStudent?.email.split("@")[0];
     } else {
       return "";
     }
   });
-  const [reason, setReason] = useState("");
-  const [isConfirmMakeAppoint, setIsConfirmMakeAppoint] = useState(false);
-  const { t, i18n } = useTranslation();
+  const [reason,setReason] = useState("");
+  const [isConfirmMakeAppoint,setIsConfirmMakeAppoint] = useState(false);
+  const { t,i18n } = useTranslation();
 
-  const handleChangeEvent = (value, type) => {
+  const handleChangeEvent = (value,type) => {
     const stateArr = ["Reason"];
     const setStateArr = [setReason];
     for (let i = 0; i < stateArr.length; i++) {
@@ -55,7 +55,7 @@ const BookingModal = ({
     }
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => { },[]);
 
   // clear data modal with emitter
   // emitter.on("CLEAR_DATA_MODAL", () => {
@@ -65,7 +65,7 @@ const BookingModal = ({
   //   setPhoneNumber("");
   // });
 
-  emitter.on("clear_data_booking_schedule", () => {
+  emitter.on("clear_data_booking_schedule",() => {
     setReason("");
   });
 
@@ -119,10 +119,10 @@ const BookingModal = ({
       <ToastContainer />
       <AnimatePresence>
         <motion.div
-          initial={{ opacity: 0, translateY: -50 }}
-          animate={{ opacity: 1, translateY: 0 }}
-          exit={{ opacity: 0, translateY: -50 }}
-          transition={{ duration: 0.4, delay: 0.1 }}
+          initial={{ opacity: 0,translateY: -50 }}
+          animate={{ opacity: 1,translateY: 0 }}
+          exit={{ opacity: 0,translateY: -50 }}
+          transition={{ duration: 0.4,delay: 0.1 }}
           className="modal-schedule-container pb-4 fixed top-[10%] w-[65%] max-w-[65%] flex overflow-y-scroll flex-col bg-white rounded-lg shadow backdrop-blur-md mx-auto mt-16"
           style={{ left: "17.5%" }}
         >
@@ -180,7 +180,7 @@ const BookingModal = ({
                   name="email"
                   type="email"
                   value={email}
-                  onChange={(e) => handleChangeEvent(e.target.value, "Email")}
+                  onChange={(e) => handleChangeEvent(e.target.value,"Email")}
                   disabled
                 />
               </div>
@@ -195,7 +195,7 @@ const BookingModal = ({
                   type="text"
                   value={fullName}
                   onChange={(e) =>
-                    handleChangeEvent(e.target.value, "FullName")
+                    handleChangeEvent(e.target.value,"FullName")
                   }
                   disabled
                 />
@@ -212,7 +212,7 @@ const BookingModal = ({
                   name="mssv"
                   type="text"
                   value={mssv}
-                  onChange={(e) => handleChangeEvent(e.target.value, "Mssv")}
+                  onChange={(e) => handleChangeEvent(e.target.value,"Mssv")}
                   disabled
                 />
               </div>
@@ -231,7 +231,7 @@ const BookingModal = ({
                   type="text"
                   rows="3"
                   value={reason}
-                  onChange={(e) => setReason(e.target.value, "Reason")}
+                  onChange={(e) => setReason(e.target.value,"Reason")}
                 />
               </div>
             </div>

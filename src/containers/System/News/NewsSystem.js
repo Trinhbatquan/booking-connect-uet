@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
+import React,{ useState,useEffect,useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer,toast } from "react-toastify";
 
 import MdEditor from "react-markdown-editor-lite";
 import MarkdownIt from "markdown-it";
@@ -20,27 +20,27 @@ import { FaStreetView } from "react-icons/fa";
 import nodata from "../../../assets/image/nodata.png";
 
 const NewsSystem = () => {
-  const { i18n, t } = useTranslation();
+  const { i18n,t } = useTranslation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const mdParser = new MarkdownIt(/* Markdown-it options */);
-  const [notifyCheckState, setNotifyCheckState] = useState("");
-  const [title, setTitle] = useState("");
+  const [notifyCheckState,setNotifyCheckState] = useState("");
+  const [title,setTitle] = useState("");
   const inputFileRef = useRef();
-  const [previewImage, setPreviewImage] = useState("");
-  const [avatarNew, setAvatarNew] = useState("");
-  const [content, setContent] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [contentHtml, setContentHtml] = useState("");
-  const [pageCurrent, setPageCurrent] = useState(1);
-  const [countNewsData, setCountNewsData] = useState(0);
-  const [isUpdateNews, setIsUpdateNews] = useState(false);
-  const [dataUpdateNews, setDataUpdateNews] = useState();
-  const [isDeleteNews, setIsDeleteNews] = useState(false);
-  const [dataDeleteNews, setDataDeleteNews] = useState();
-  const [newsData, setNewsData] = useState();
+  const [previewImage,setPreviewImage] = useState("");
+  const [avatarNew,setAvatarNew] = useState("");
+  const [content,setContent] = useState("");
+  const [loading,setLoading] = useState(true);
+  const [contentHtml,setContentHtml] = useState("");
+  const [pageCurrent,setPageCurrent] = useState(1);
+  const [countNewsData,setCountNewsData] = useState(0);
+  const [isUpdateNews,setIsUpdateNews] = useState(false);
+  const [dataUpdateNews,setDataUpdateNews] = useState();
+  const [isDeleteNews,setIsDeleteNews] = useState(false);
+  const [dataDeleteNews,setDataDeleteNews] = useState();
+  const [newsData,setNewsData] = useState();
 
-  console.log(loading);
+  // console.log(loading);
 
   useEffect(() => {
     news.get({ page: pageCurrent }).then((data) => {
@@ -60,7 +60,7 @@ const NewsSystem = () => {
             pageTotal: data?.pageTotal,
           });
           setCountNewsData(data?.countNews);
-          console.log(newsData);
+          // console.log(newsData);
         }
         setLoading(false);
       } else {
@@ -75,7 +75,7 @@ const NewsSystem = () => {
         );
       }
     });
-  }, [pageCurrent]);
+  },[pageCurrent]);
 
   const handleFileImage = async (e) => {
     let data = e.target.files;
@@ -87,12 +87,12 @@ const NewsSystem = () => {
         const base64File = await convertFileToBase64(file);
         setAvatarNew(base64File);
       } catch (e) {
-        console.log("base64 file " + e);
+        // console.log("base64 file " + e);
       }
     }
   };
 
-  function handleEditorChange({ html, text }) {
+  function handleEditorChange({ html,text }) {
     setContentHtml(html);
     setContent(text);
   }
@@ -100,9 +100,9 @@ const NewsSystem = () => {
 
   const handleCheckNullState = () => {
     let result = true;
-    const stateArr = [title, content, avatarNew];
-    const notification_en = ["Title", "Content", "Avatar"];
-    const notification_vi = ["Trường chủ đề", "Trường chi tiết", "Trường ảnh"];
+    const stateArr = [title,content,avatarNew];
+    const notification_en = ["Title","Content","Avatar"];
+    const notification_vi = ["Trường chủ đề","Trường chi tiết","Trường ảnh"];
     if (isUpdateNews) {
       for (let i = 0; i < stateArr.length - 1; i++) {
         if (!stateArr[i]) {
@@ -187,7 +187,7 @@ const NewsSystem = () => {
                   setPreviewImage("");
                   // setIsUpdateNotify(false);
                   // setDataUpdateNotify(null);
-                  toast.success(`${t("system.notification.create")}`, {
+                  toast.success(`${t("system.notification.create")}`,{
                     autoClose: 3000,
                     theme: "colored",
                     position: "bottom-right",
@@ -207,8 +207,8 @@ const NewsSystem = () => {
             });
           } else {
             setLoading(false);
-            const response = handleMessageFromBackend(data, i18n.language);
-            toast.error(response, {
+            const response = handleMessageFromBackend(data,i18n.language);
+            toast.error(response,{
               autoClose: 3000,
               theme: "colored",
               position: "bottom-right",
@@ -223,7 +223,7 @@ const NewsSystem = () => {
                     );
                   }
                 });
-              }, 5000);
+              },5000);
             }
           }
         });
@@ -325,8 +325,8 @@ const NewsSystem = () => {
             });
           } else {
             setLoading(false);
-            const response = handleMessageFromBackend(res, i18n.language);
-            toast.error(response, {
+            const response = handleMessageFromBackend(res,i18n.language);
+            toast.error(response,{
               autoClose: 3000,
               theme: "colored",
               position: "bottom-right",
@@ -341,7 +341,7 @@ const NewsSystem = () => {
                     );
                   }
                 });
-              }, 5000);
+              },5000);
             }
           }
         });
@@ -406,8 +406,8 @@ const NewsSystem = () => {
         });
       } else {
         setLoading(false);
-        const response = handleMessageFromBackend(res, i18n.language);
-        toast.error(response, {
+        const response = handleMessageFromBackend(res,i18n.language);
+        toast.error(response,{
           autoClose: 3000,
           theme: "colored",
           position: "bottom-right",
@@ -422,7 +422,7 @@ const NewsSystem = () => {
                 );
               }
             });
-          }, 5000);
+          },5000);
         }
       }
     });
@@ -433,7 +433,7 @@ const NewsSystem = () => {
       <div className="w-full" style={{ height: "100px" }}></div>
       <div
         className="mt-3 flex flex-col mx-auto pb-10"
-        style={{ maxWidth: "80%", width: "80%" }}
+        style={{ maxWidth: "80%",width: "80%" }}
       >
         <ToastContainer />
         <p className="mx-auto text-2xl text-blue-500 font-semibold">
@@ -445,7 +445,7 @@ const NewsSystem = () => {
           }`}
           // type="text"
           // onClick={() => setIsCreateUser(true)}
-          style={{ maxWidth: "14%", width: "14%" }}
+          style={{ maxWidth: "14%",width: "14%" }}
         >
           {i18n.language === "en" ? "Create news" : "Tạo tin tức"}
         </div>
@@ -530,11 +530,10 @@ const NewsSystem = () => {
           </div>
           <div className="flex items-center gap-5">
             <button
-              className={`${
-                isUpdateNews ? "bg-backColor" : "bg-blue-500"
-              } text-white
+              className={`${isUpdateNews ? "bg-backColor" : "bg-blue-500"
+                } text-white
               } text-white mt-6 py-2 px-1 font-semibold rounded-md shadow backdrop-blur-md bg-opacity-100 hover:bg-opacity-80`}
-              style={{ maxWidth: "15%", width: "15%" }}
+              style={{ maxWidth: "15%",width: "15%" }}
               onClick={
                 isUpdateNews
                   ? () => handleUpdateNews()
@@ -548,7 +547,7 @@ const NewsSystem = () => {
             {isUpdateNews && (
               <button
                 className={`text-white mt-6 py-2 px-1 font-semibold rounded-md shadow backdrop-blur-md bg-opacity-100 hover:bg-opacity-80 bg-blue-500`}
-                style={{ maxWidth: "10%", width: "10%" }}
+                style={{ maxWidth: "10%",width: "10%" }}
                 onClick={() => handleCloseUpdateNews()}
               >
                 {t("system.department.close")}
@@ -570,16 +569,15 @@ const NewsSystem = () => {
                 }`}
             // type="text"
             // onClick={() => setIsCreateUser(true)}
-            style={{ maxWidth: "14%", width: "14%" }}
+            style={{ maxWidth: "14%",width: "14%" }}
           >
             {i18n.language === "en" ? "News Management" : "Quản lý tin tức"}
           </div>
           <div className="w-fit bg-blurThemeColor font-semibold text-white rounded-lg py-[8px] px-[12px]">
             <p className="text-white text-md flex items-center justify-start gap-1.5">
               <FaStreetView className="text-white text-xl" />
-              {`${
-                i18n.language === "en" ? "Total of news:" : "Tổng số tin tức:"
-              } ${countNewsData}`}
+              {`${i18n.language === "en" ? "Total of news:" : "Tổng số tin tức:"
+                } ${countNewsData}`}
             </p>
           </div>
         </div>
@@ -590,7 +588,7 @@ const NewsSystem = () => {
         </p> */}
         <div className="notify w-full py-8 mx-auto flex flex-col items-start justify-start gap-8">
           {newsData?.news?.length > 0 ? (
-            newsData?.news?.map((item, index) => {
+            newsData?.news?.map((item,index) => {
               return (
                 <div
                   key={index}

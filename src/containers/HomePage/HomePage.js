@@ -1,8 +1,8 @@
-import React, { lazy, Suspense, useEffect } from "react";
+import React,{ lazy,Suspense,useEffect } from "react";
 import { useNavigate } from "react-router";
 import "./Section/Section.scss";
 
-import { NextArrow, PrevArrow } from "./Section/ArrowCustom";
+import { NextArrow,PrevArrow } from "./Section/ArrowCustom";
 // import HomeHeader from './HomeHeader'
 // import HomeBanner from './HomeBanner'
 // import Departments from './Section/Departments'
@@ -202,11 +202,11 @@ const HomePage = () => {
     ],
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
-    beforeChange: function (currentSlide, nextSlide) {
-      console.log("before change", currentSlide, nextSlide);
+    beforeChange: function (currentSlide,nextSlide) {
+      // console.log("before change", currentSlide, nextSlide);
     },
     afterChange: function (currentSlide) {
-      console.log("after change", currentSlide);
+      // console.log("after change", currentSlide);
     },
   };
 
